@@ -1,0 +1,10 @@
+displayName = CoolerItemVisualEffect(更酷的物品视觉效果)
+author = 阿汪(向内延伸的对数螺线)
+version = 0.1.1
+hideResources = false
+hideCode = false
+includeSource = true
+includePDB = true
+side = client
+homepage = https://space.bilibili.com/259264134
+buildIgnore = *.csproj, *.sln, obj\*, bin\*, *.suo, *.user, .git\*, .vs\*, Libraries\*

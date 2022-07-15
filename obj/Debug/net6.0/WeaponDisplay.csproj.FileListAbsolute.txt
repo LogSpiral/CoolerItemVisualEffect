@@ -1,0 +1,359 @@
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\WeaponDisplay.deps.json
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\WeaponDisplay.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\ref\WeaponDisplay.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\WeaponDisplay.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Basic.Reference.Assemblies.Net60.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\CsvHelper.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\FNA.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Hjson.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Ionic.Zip.Reduced.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\log4net.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.Mdb.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.Pdb.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.Rocks.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\MonoMod.RuntimeDetour.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\MonoMod.Utils.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\MP3Sharp.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Newtonsoft.Json.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\NVorbis.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\RailSDK.Net.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\ReLogic.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\SixLabors.ImageSharp.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Steamworks.NET.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\SteelSeriesEngineWrapper.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\System.CodeDom.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\System.Configuration.ConfigurationManager.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\System.Diagnostics.PerformanceCounter.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\System.Drawing.Common.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\System.Security.Permissions.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\System.Windows.Extensions.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\TerrariaHooks.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\tModLoader.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\tModLoader.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\tModLoader.xml
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\FNA.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Hjson.xml
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.xml
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.CSharp.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.CSharp.xml
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.xml
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.Mdb.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.Pdb.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.Rocks.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\MonoMod.RuntimeDetour.xml
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\MonoMod.Utils.xml
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\ReLogic.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\ReLogic.xml
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\SixLabors.ImageSharp.xml
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\System.CodeDom.xml
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\System.Configuration.ConfigurationManager.xml
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\System.Diagnostics.PerformanceCounter.xml
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\System.Drawing.Common.xml
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\System.Security.Cryptography.ProtectedData.xml
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\System.Security.Permissions.xml
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\System.Windows.Extensions.xml
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\cs\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\de\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\es\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\fr\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\it\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\ja\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\ko\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\pl\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\ru\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\tr\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\bin\Debug\net6.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.csproj.AssemblyReference.cache
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.AssemblyInfoInputs.cache
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.AssemblyInfo.cs
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.csproj.CoreCompileInputs.cache
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.csproj.CopyComplete
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\obj\Debug\net6.0\ref\WeaponDisplay.dll
+C:\Users\OMEN\Documents\My Games\Terraria\ModLoader\Beta\Mod Sources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\WeaponDisplay.deps.json
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\WeaponDisplay.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ref\WeaponDisplay.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\WeaponDisplay.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Basic.Reference.Assemblies.Net60.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\CsvHelper.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\FNA.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Hjson.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Ionic.Zip.Reduced.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\log4net.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.Mdb.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.Pdb.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.Rocks.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\MonoMod.RuntimeDetour.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\MonoMod.Utils.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\MP3Sharp.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Newtonsoft.Json.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\NVorbis.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\RailSDK.Net.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ReLogic.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\SixLabors.ImageSharp.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Steamworks.NET.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\SteelSeriesEngineWrapper.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.CodeDom.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Configuration.ConfigurationManager.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Diagnostics.PerformanceCounter.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Drawing.Common.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Security.Permissions.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Windows.Extensions.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\TerrariaHooks.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\tModLoader.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\tModLoader.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\tModLoader.xml
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\FNA.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Hjson.xml
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.xml
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.CSharp.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.CSharp.xml
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.xml
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.Mdb.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.Pdb.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.Rocks.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\MonoMod.RuntimeDetour.xml
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\MonoMod.Utils.xml
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ReLogic.pdb
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ReLogic.xml
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\SixLabors.ImageSharp.xml
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.CodeDom.xml
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Configuration.ConfigurationManager.xml
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Diagnostics.PerformanceCounter.xml
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Drawing.Common.xml
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Security.Cryptography.ProtectedData.xml
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Security.Permissions.xml
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Windows.Extensions.xml
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\cs\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\de\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\es\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\fr\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\it\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ja\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ko\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\pl\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ru\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\tr\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.csproj.AssemblyReference.cache
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.AssemblyInfoInputs.cache
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.AssemblyInfo.cs
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.csproj.CoreCompileInputs.cache
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.csproj.CopyComplete
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\obj\Debug\net6.0\ref\WeaponDisplay.dll
+C:\Users\OMEN\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.pdb
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.csproj.AssemblyReference.cache
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.GeneratedMSBuildEditorConfig.editorconfig
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.AssemblyInfoInputs.cache
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.AssemblyInfo.cs
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.csproj.CoreCompileInputs.cache
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\obj\Debug\net6.0\ref\WeaponDisplay.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.pdb
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\WeaponDisplay.deps.json
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\WeaponDisplay.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ref\WeaponDisplay.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\WeaponDisplay.pdb
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Basic.Reference.Assemblies.Net60.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\CsvHelper.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\FNA.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Hjson.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Humanizer.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Ionic.Zip.Reduced.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\log4net.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.Bcl.AsyncInterfaces.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.Build.Locator.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.CSharp.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.Workspaces.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.Workspaces.MSBuild.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.Mdb.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.Pdb.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.Rocks.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\MonoMod.RuntimeDetour.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\MonoMod.Utils.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\MP3Sharp.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Newtonsoft.Json.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\NVorbis.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\RailSDK.Net.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ReLogic.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\SixLabors.ImageSharp.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Steamworks.NET.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\SteelSeriesEngineWrapper.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.CodeDom.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Composition.AttributedModel.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Composition.Convention.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Composition.Hosting.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Composition.Runtime.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Composition.TypedParts.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Configuration.ConfigurationManager.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Diagnostics.PerformanceCounter.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Drawing.Common.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.IO.Pipelines.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Reflection.MetadataLoadContext.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Security.Cryptography.ProtectedData.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Security.Permissions.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Windows.Extensions.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\TerrariaHooks.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\tModLoader.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\tModPorter.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\UtfUnknown.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\tModLoader.pdb
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\tModLoader.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\FNA.pdb
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Hjson.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.Bcl.AsyncInterfaces.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.pdb
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.CSharp.Workspaces.pdb
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.CSharp.Workspaces.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.CSharp.pdb
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.CSharp.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.Workspaces.pdb
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.Workspaces.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.Workspaces.MSBuild.pdb
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.CodeAnalysis.Workspaces.MSBuild.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.pdb
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.Mdb.pdb
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.Pdb.pdb
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\Mono.Cecil.Rocks.pdb
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\MonoMod.RuntimeDetour.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\MonoMod.Utils.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ReLogic.pdb
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ReLogic.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\SixLabors.ImageSharp.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.CodeDom.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Composition.AttributedModel.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Composition.Convention.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Composition.Hosting.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Composition.Runtime.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Composition.TypedParts.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Configuration.ConfigurationManager.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Diagnostics.PerformanceCounter.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Drawing.Common.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.IO.Pipelines.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Reflection.MetadataLoadContext.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Security.Cryptography.ProtectedData.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Security.Permissions.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\System.Windows.Extensions.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\tModPorter.pdb
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\tModPorter.dll.config
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\UtfUnknown.xml
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\cs\Microsoft.CodeAnalysis.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\de\Microsoft.CodeAnalysis.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\es\Microsoft.CodeAnalysis.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\fr\Microsoft.CodeAnalysis.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\it\Microsoft.CodeAnalysis.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ja\Microsoft.CodeAnalysis.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ko\Microsoft.CodeAnalysis.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\pl\Microsoft.CodeAnalysis.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ru\Microsoft.CodeAnalysis.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\tr\Microsoft.CodeAnalysis.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\cs\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\de\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\es\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\fr\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\it\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ja\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ko\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\pl\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\ru\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\bin\Debug\net6.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
+d:\Users\wendy\Documents\My Games\Terraria\tModLoader\ModSources\WeaponDisplay\obj\Debug\net6.0\WeaponDisplay.csproj.CopyComplete

@@ -1,0 +1,18 @@
+[i:3456][i:3457][i:3458][i:3459][i:3456][i:3457][i:3458][i:3459]
+内容：
+Contents：
+实现了手持武器的显示，因为模组武器的实现方法各不相同，所以这个模组无法适配于所有模组武器。
+The display of the hand-held weapon is realized. Because modded weapons are implemented in different ways, this mod can not be adapted to all modded weapons.
+实现了更炫酷的挥砍效果（修改了武器的碰撞箱）。
+Implemented more cool slashing effects(The hitbox of the weapon is modified).
+[i:3456][i:3457][i:3458][i:3459][i:3456][i:3457][i:3458][i:3459]
+加入了未实现的武器——第一分形。
+With a unrealized weapon called the FirstFractal.
+
+[i:3456][i:3457][i:3458][i:3459][i:3456][i:3457][i:3458][i:3459]
+制作人员：
+Staff：
+程序：
+[c/9966cc:阿汪(向内延伸的对数螺线)]
+Programmer：
+[c/9966cc:阿汪(InwardExtendingLogarithmicSpiral)]
