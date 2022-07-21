@@ -8,36 +8,9 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs" />
-    <Compile Include="obj\Debug\net6.0\CoolerItemVisualEffect.AssemblyInfo.cs" />
-    <Compile Include="obj\Debug\net6.0\WeaponDisplay.AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="obj\CoolerItemVisualEffect.csproj.nuget.dgspec.json" />
-    <Content Include="obj\Debug\net6.0\WeaponDisplay.csproj.FileListAbsolute.txt" />
-    <Content Include="obj\project.assets.json" />
-    <Content Include="obj\WeaponDisplay.csproj.nuget.dgspec.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="obj\CoolerItemVisualEffect.csproj.nuget.g.props" />
-    <None Include="obj\CoolerItemVisualEffect.csproj.nuget.g.targets" />
-    <None Include="obj\Debug\net6.0\CoolerItemVisualEffect.AssemblyInfoInputs.cache" />
-    <None Include="obj\Debug\net6.0\CoolerItemVisualEffect.assets.cache" />
-    <None Include="obj\Debug\net6.0\CoolerItemVisualEffect.csproj.AssemblyReference.cache" />
-    <None Include="obj\Debug\net6.0\CoolerItemVisualEffect.GeneratedMSBuildEditorConfig.editorconfig" />
-    <None Include="obj\Debug\net6.0\refint\WeaponDisplay.dll" />
-    <None Include="obj\Debug\net6.0\ref\WeaponDisplay.dll" />
-    <None Include="obj\Debug\net6.0\WeaponDisplay.AssemblyInfoInputs.cache" />
-    <None Include="obj\Debug\net6.0\WeaponDisplay.assets.cache" />
-    <None Include="obj\Debug\net6.0\WeaponDisplay.csproj.AssemblyReference.cache" />
-    <None Include="obj\Debug\net6.0\WeaponDisplay.csproj.CopyComplete" />
-    <None Include="obj\Debug\net6.0\WeaponDisplay.csproj.CoreCompileInputs.cache" />
-    <None Include="obj\Debug\net6.0\WeaponDisplay.dll" />
-    <None Include="obj\Debug\net6.0\WeaponDisplay.GeneratedMSBuildEditorConfig.editorconfig" />
-    <None Include="obj\Debug\net6.0\WeaponDisplay.pdb" />
-    <None Include="obj\project.nuget.cache" />
-    <None Include="obj\WeaponDisplay.csproj.nuget.g.props" />
-    <None Include="obj\WeaponDisplay.csproj.nuget.g.targets" />
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />

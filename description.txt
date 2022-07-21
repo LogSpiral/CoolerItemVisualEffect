@@ -15,4 +15,4 @@ Staff：
 程序：
 [c/9966cc:阿汪(向内延伸的对数螺线)]
 Programmer：
-[c/9966cc:阿汪(InwardExtendingLogarithmicSpiral)]
+[c/9966cc:阿汪(LogarithmicSpiralThatExtendsInward)]
