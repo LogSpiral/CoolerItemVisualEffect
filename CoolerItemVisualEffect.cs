@@ -203,6 +203,7 @@ namespace CoolerItemVisualEffect
             //    case 14: str = "幻世边境:第四回 无间狱暮雾蒙蒙，人间世长夜漫漫。"; break;
 
             //}
+            if(!ConfigurationPreInstall.instance.DontChangeMyTitle)
             Main.instance.Window.Title = Language.GetTextValue("Mods.CoolerItemVisualEffect.StrangeTitle." + Main.rand.Next(15));//"幻世边境：完了泰拉成替身了";//"{$Mods.CoolerItemVisualEffect.StrangeTitle." + Main.rand.Next(15)+"}"
 
             if (Main.netMode == NetmodeID.MultiplayerClient)

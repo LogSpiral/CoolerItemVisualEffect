@@ -123,6 +123,8 @@ Mods:{
 			Label_2:SlashingPreInstall
 			47:PreInstall Style
 			48:You can change the settings in the other page.
+			49:Do you want the title changes while swing Sword
+			50:OMG this is so wired.
 		}
 		Config:{
 			Label:Visual Settings

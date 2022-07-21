@@ -141,6 +141,11 @@ namespace CoolerItemVisualEffect
         [Label("$Mods.CoolerItemVisualEffect.ConfigurationServer.HitboxName")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigurationServer.HitboxTooltip")]
         public bool UseHitbox;
+
+        [DefaultValue(true)]
+        [Label("$Mods.CoolerItemVisualEffect.Config.49")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.Config.50")]
+        public bool DontChangeMyTitle;
         public static ConfigurationPreInstall instance => ModContent.GetInstance<ConfigurationPreInstall>();
 
     }
