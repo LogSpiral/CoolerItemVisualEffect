@@ -143,8 +143,8 @@ namespace CoolerItemVisualEffect
         public bool UseHitbox;
 
         [DefaultValue(true)]
-        [Label("$Mods.CoolerItemVisualEffect.Config.49")]
-        [Tooltip("$Mods.CoolerItemVisualEffect.Config.50")]
+        [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.49")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.50")]
         public bool DontChangeMyTitle;
         public static ConfigurationPreInstall instance => ModContent.GetInstance<ConfigurationPreInstall>();
 

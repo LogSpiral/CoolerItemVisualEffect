@@ -164,7 +164,7 @@ namespace CoolerItemVisualEffect
                 modPlayer.rotationForShadowNext = vec.ToRotation() + Main.rand.NextFloat(-MathHelper.Pi / 6, MathHelper.Pi / 6);
                 if (modPlayer.rotationForShadow == 0) modPlayer.rotationForShadow = vec.ToRotation();
             }
-            else 
+            else
             {
                 modPlayer.rotationForShadow = vec.ToRotation() + Main.rand.NextFloat(-MathHelper.Pi / 6, MathHelper.Pi / 6);
             }
@@ -177,7 +177,7 @@ namespace CoolerItemVisualEffect
                 modPlayer.kValueNext = Main.rand.NextFloat(1, 2);
                 if (modPlayer.kValue == 0) modPlayer.kValue = modPlayer.kValueNext;
             }
-            else 
+            else
             {
                 modPlayer.kValue = Main.rand.NextFloat(1, 2);
             }
@@ -203,8 +203,8 @@ namespace CoolerItemVisualEffect
             //    case 14: str = "幻世边境:第四回 无间狱暮雾蒙蒙，人间世长夜漫漫。"; break;
 
             //}
-            if(!ConfigurationPreInstall.instance.DontChangeMyTitle)
-            Main.instance.Window.Title = Language.GetTextValue("Mods.CoolerItemVisualEffect.StrangeTitle." + Main.rand.Next(15));//"幻世边境：完了泰拉成替身了";//"{$Mods.CoolerItemVisualEffect.StrangeTitle." + Main.rand.Next(15)+"}"
+            if (!ConfigurationPreInstall.instance.DontChangeMyTitle)
+                Main.instance.Window.Title = Language.GetTextValue("Mods.CoolerItemVisualEffect.StrangeTitle." + Main.rand.Next(15));//"幻世边境：完了泰拉成替身了";//"{$Mods.CoolerItemVisualEffect.StrangeTitle." + Main.rand.Next(15)+"}"
 
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
@@ -959,7 +959,7 @@ namespace CoolerItemVisualEffect
 
 
                 //RenderTarget2D render = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
-                bool useRender = instance.distortFactor != 0;
+                bool useRender = instance.distortFactor != 0 && Lighting.Mode != Terraria.Graphics.Light.LightMode.Retro && Lighting.Mode != Terraria.Graphics.Light.LightMode.Trippy;
                 var gd = Main.graphics.GraphicsDevice;
                 var sb = Main.spriteBatch;
                 var passCount = 0;

@@ -29,6 +29,7 @@ namespace CoolerItemVisualEffect
         public (Texture2D tex, int type) colorBar;
 
         public float direct;
+        public ConfigurationSwoosh configurationSwoosh;
         Player player => Player;
         public float factorGeter
         {

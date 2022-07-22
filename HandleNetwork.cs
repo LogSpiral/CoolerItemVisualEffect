@@ -15,6 +15,7 @@ namespace CoolerItemVisualEffect
         internal static void HandlePacket(BinaryReader reader, int whoAmI)
         {
             MessageType msgType = (MessageType)reader.ReadByte();
+            
             if (Main.netMode == NetmodeID.Server)
             {
                 switch (msgType)
@@ -86,6 +87,7 @@ namespace CoolerItemVisualEffect
             }
             else
             {
+                Main.NewText(msgType);
                 switch (msgType)
                 {
                     case MessageType.BasicStats:
