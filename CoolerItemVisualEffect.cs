@@ -17,6 +17,7 @@ using Terraria.UI;
 using static Terraria.GameContent.Skies.CreditsRoll.Segments.PlayerSegment;
 using static CoolerItemVisualEffect.ConfigurationSwoosh;
 using Terraria.Localization;
+using System.Linq;
 
 namespace CoolerItemVisualEffect
 {
@@ -30,7 +31,7 @@ namespace CoolerItemVisualEffect
         //internal static bool UseItemTexForSwoosh = false;
 
         internal static CoolerItemVisualEffect Instance;
-
+        //public static ConfigurationSwoosh[] configurationSwooshes = new ConfigurationSwoosh[256];
         public override void Load()
         {
             Instance = this;
@@ -132,9 +133,11 @@ namespace CoolerItemVisualEffect
         {
             Instance = null;
         }
-
+        public static int NetCounter;
         public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
+            //Main.NewText("接收信息111111111111111111111");
+            NetCounter++;
             HandleNetwork.HandlePacket(reader, whoAmI);
             base.HandlePacket(reader, whoAmI);
         }
@@ -164,7 +167,7 @@ namespace CoolerItemVisualEffect
                 modPlayer.rotationForShadowNext = vec.ToRotation() + Main.rand.NextFloat(-MathHelper.Pi / 6, MathHelper.Pi / 6);
                 if (modPlayer.rotationForShadow == 0) modPlayer.rotationForShadow = vec.ToRotation();
             }
-            else 
+            else
             {
                 modPlayer.rotationForShadow = vec.ToRotation() + Main.rand.NextFloat(-MathHelper.Pi / 6, MathHelper.Pi / 6);
             }
@@ -177,7 +180,7 @@ namespace CoolerItemVisualEffect
                 modPlayer.kValueNext = Main.rand.NextFloat(1, 2);
                 if (modPlayer.kValue == 0) modPlayer.kValue = modPlayer.kValueNext;
             }
-            else 
+            else
             {
                 modPlayer.kValue = Main.rand.NextFloat(1, 2);
             }
@@ -203,22 +206,31 @@ namespace CoolerItemVisualEffect
             //    case 14: str = "幻世边境:第四回 无间狱暮雾蒙蒙，人间世长夜漫漫。"; break;
 
             //}
-            if(!ConfigurationPreInstall.instance.DontChangeMyTitle)
-            Main.instance.Window.Title = Language.GetTextValue("Mods.CoolerItemVisualEffect.StrangeTitle." + Main.rand.Next(15));//"幻世边境：完了泰拉成替身了";//"{$Mods.CoolerItemVisualEffect.StrangeTitle." + Main.rand.Next(15)+"}"
+            if (!ConfigurationPreInstall.instance.DontChangeMyTitle)
+                Main.instance.Window.Title = Language.GetTextValue("Mods.CoolerItemVisualEffect.StrangeTitle." + Main.rand.Next(15));//"幻世边境：完了泰拉成替身了";//"{$Mods.CoolerItemVisualEffect.StrangeTitle." + Main.rand.Next(15)+"}"
 
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
-                ModPacket packet = Instance.GetPacket();
-                packet.Write((byte)HandleNetwork.MessageType.BasicStats);
-                packet.Write(modPlayer.negativeDir);
-                packet.Write(modPlayer.rotationForShadow);
-                packet.Write(modPlayer.rotationForShadowNext);
-                packet.Write(modPlayer.kValue);
-                packet.Write(modPlayer.kValueNext);
-                packet.Write(modPlayer.UseSlash);
+                try
+                {
+                    ModPacket packet = Instance.GetPacket();
+                    packet.Write((byte)HandleNetwork.MessageType.BasicStats);
+                    packet.Write(modPlayer.negativeDir);
+                    packet.Write(modPlayer.rotationForShadow);
+                    packet.Write(modPlayer.rotationForShadowNext);
+                    packet.Write(modPlayer.kValue);
+                    packet.Write(modPlayer.kValueNext);
+                    packet.Write(modPlayer.UseSlash);
 
-                packet.Send(-1, -1); // 发包到服务器上 再由服务器转发到其他客户端
-                NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, player.whoAmI); // 同步direction
+                    //Main.NewText("发射！");
+
+                    packet.Send(-1, -1); // 发包到服务器上 再由服务器转发到其他客户端
+                    NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, player.whoAmI); // 同步direction
+                }
+                catch
+                {
+                    Main.NewText("囸");
+                }
             }
         }
         private void PlayerDrawLayers_DrawPlayer_27_HeldItem_WeaponDisplay(On.Terraria.DataStructures.PlayerDrawLayers.orig_DrawPlayer_27_HeldItem orig, ref PlayerDrawSet drawinfo)
@@ -233,6 +245,7 @@ namespace CoolerItemVisualEffect
                 flag2 = false;
             }
             bool flagMelee = true;
+            //ConfigurationSwoosh instance = ConfigurationSwoosh.instance;//configurationSwooshes[drawPlayer.whoAmI]
             if ((heldItem.type == ItemID.Zenith || heldItem.type == ModContent.ItemType<Weapons.FirstFractal_CIVE>()) && drawPlayer.itemAnimation > 0 && instance.allowZenith && instance.CoolerSwooshActive) goto mylabel;// || heldItem.type == ItemID.Terragrim || heldItem.type == ItemID.Arkhalis
             flagMelee = drawPlayer.HeldItem.damage > 0 && drawPlayer.HeldItem.useStyle == ItemUseStyleID.Swing && drawPlayer.itemAnimation > 0 && drawPlayer.HeldItem.DamageType == DamageClass.Melee && !drawPlayer.HeldItem.noUseGraphic && instance.CoolerSwooshActive;
             if (instance.ToolsNoUseNewSwooshEffect)
@@ -287,7 +300,8 @@ namespace CoolerItemVisualEffect
                 var hsl = Main.rgbToHsl(newColor);
                 try
                 {
-                    DrawSwoosh(drawPlayer, newColor, hsl.Z < instance.IsLighterDecider, airFactor, out var rectangle);
+                    DrawSwoosh(drawPlayer, newColor, hsl.Z < instance.IsLighterDecider, airFactor, out var rectangle);//, configurationSwoosh
+                    //Main.NewText(drawPlayer.name + "  " + configurationSwoosh.CoolerSwooshActive);
                     //Main.NewText("!!!");
                 }
                 catch
@@ -779,10 +793,11 @@ namespace CoolerItemVisualEffect
         //        }
         //    }
         //}
-        public static void DrawSwoosh(Player drawPlayer, Color newColor, bool alphaBlend, float checkAirFactor, out Rectangle bodyRec)
+        public static void DrawSwoosh(Player drawPlayer, Color newColor, bool alphaBlend, float checkAirFactor, out Rectangle bodyRec)//, ConfigurationSwoosh configurationSwoosh
         {
             //Main.NewText(checkAirFactor);
             bodyRec = default;
+            //Main.NewText("DrawSwoosh");
             if (ShaderSwooshEX == null) return;
             if (ItemEffect == null) return;
             if (DistortEffect == null) return;
@@ -804,7 +819,7 @@ namespace CoolerItemVisualEffect
 
 
 
-
+            //Main.NewText(drawPlayer.whoAmI);
             //var fac = 1 - (cValue - 1) * (1 - factor) * (1 - factor) - (2 - cValue) * (1 - factor);//丢到另一个插值函数里了，可以自己画一下图像，这个插值效果比上面那个线性插值好//((float)Math.Sqrt(factor) + factor) * .5f;//(cValue - 1) * factor * factor + (2 - cValue) * factor
             //fac *= 3;
             //fac %= 1;
@@ -813,7 +828,7 @@ namespace CoolerItemVisualEffect
             var drawCen = drawPlayer.gravDir == -1 ? new Vector2(drawPlayer.Center.X, (2 * (Main.screenPosition + new Vector2(960, 560)) - drawPlayer.Center - new Vector2(0, 96)).Y) : drawPlayer.Center;//2 * (Main.screenPosition + new Vector2(960, 560)) - drawPlayer.Center - new Vector2(0, 96)
                                                                                                                                                                                                           //var fac = (float)Math.Sqrt(factor);
                                                                                                                                                                                                           //var theta = (fac * -1.125f + (1 - fac) * 0.1125f) * Pi;
-
+            //Main.NewText(modPlayer.kValue + drawPlayer.name);
             float rotVel = instance.swooshActionStyle == SwooshAction.两次普通斩击一次高速旋转 && modPlayer.swingCount % 3 == 2 ? instance.rotationVelocity : 1;
             var theta = (1.2375f * fac * rotVel - 1.125f) * MathHelper.Pi;//线性插值后乘上一个系数，这里的起始角度和终止角度是试出来的（
             CustomVertexInfo[] c = new CustomVertexInfo[6];//顶点数组，绘制完整的物品需要两个三角形(六个顶点，两组重合
@@ -850,6 +865,10 @@ namespace CoolerItemVisualEffect
             //然后如果你将矩阵作用在(a,b,c)上就是(a, b, c, a * x + b * y + c * z + w),说实话我不是很能理解这个的意义
 
             RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
+            //var rasterizerState = new RasterizerState();
+            //rasterizerState.CullMode = CullMode.None;
+            //rasterizerState.FillMode = FillMode.WireFrame;
+            //Main.graphics.GraphicsDevice.RasterizerState = rasterizerState;
 
             //var w = itemTex.Width;
             //var h = itemTex.Height;
@@ -923,7 +942,7 @@ namespace CoolerItemVisualEffect
                 }
                 var _f = 6 * f / (3 * f + 1);//f;// 
                 _f = MathHelper.Clamp(_f, 0, 1);
-                //_f = ConfigurationSwoosh.instance.distortFactor != 0 ? _f : _f * _f;
+                //_f = instance.instance.distortFactor != 0 ? _f : _f * _f;
                 realColor.A = (byte)(_f * 255);//.MultiplyRGBA(new Color(1,1,1,_f))
                 bars.Add(new CustomVertexInfo(drawCen + newVec, realColor, new Vector3(1 - f, 1, alphaLight)));//(3 * f - 4) / (4 * f - 3)//快乐连顶点
                 realColor.A = 0;//.MultiplyRGBA(new Color(1, 1, 1, 0))
@@ -959,7 +978,7 @@ namespace CoolerItemVisualEffect
 
 
                 //RenderTarget2D render = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
-                bool useRender = instance.distortFactor != 0;
+                bool useRender = instance.distortFactor != 0 && new Terraria.Graphics.Light.LightMode[] { Terraria.Graphics.Light.LightMode.White, Terraria.Graphics.Light.LightMode.Color }.Contains(Lighting.Mode);
                 var gd = Main.graphics.GraphicsDevice;
                 var sb = Main.spriteBatch;
                 var passCount = 0;
@@ -1032,18 +1051,24 @@ namespace CoolerItemVisualEffect
                     //sp.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
                     //sp.Draw(render, Vector2.Zero, Color.White);
                     #endregion
+
+                    sb.End();
+                    sb.Begin(SpriteSortMode.BackToFront,BlendState.AlphaBlend);
+
+                    sb.End();
+                    sb.Begin();
+
                     //先在自己的render上画这个弹幕
                     sb.End();
                     gd.SetRenderTarget(Instance.Render);
                     gd.Clear(Color.Transparent);
                     sb.Begin(SpriteSortMode.Immediate, alphaBlend ? BlendState.NonPremultiplied : BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);//Main.DefaultSamplerState//Main.GameViewMatrix.TransformationMatrix
-                    ShaderSwooshEX.Parameters["uTransform"].SetValue(model * projection);
+                    ShaderSwooshEX.Parameters["uTransform"].SetValue(model * projection);// * Main.GameViewMatrix.TransformationMatrix
                     ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
                     ShaderSwooshEX.Parameters["uTime"].SetValue(0);//-(float)Main.time * 0.06f
                     ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);//-(float)Main.time * 0.06f
                     ShaderSwooshEX.Parameters["airFactor"].SetValue(checkAirFactor);
                     ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
-
                     Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + instance.ImageIndex);//字面意义，base那个是不会随时间动的，ani那个会动//BaseTex//_7
                     Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
                     Main.graphics.GraphicsDevice.Textures[2] = itemTex;
@@ -1099,7 +1124,7 @@ namespace CoolerItemVisualEffect
                 Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
                 Main.graphics.GraphicsDevice.Textures[2] = itemTex;
                 if (instance.swooshColorType == SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = modPlayer.colorBar.tex;
-                //if (ConfigurationSwoosh.instance.swooshColorType == SwooshColorType.函数生成热度图) 
+                //if (instance.instance.swooshColorType == SwooshColorType.函数生成热度图) 
                 //{
                 //    var colorBar = new Texture2D(Main.graphics.GraphicsDevice,300,60);
                 //    colorBar.SetData<Color>();
@@ -1113,18 +1138,21 @@ namespace CoolerItemVisualEffect
                 Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
 
                 //var passCount = 0;
-                //if (ConfigurationSwoosh.instance.swooshColorType == SwooshColorType.武器贴图对角线) passCount++;
+                //if (instance.instance.swooshColorType == SwooshColorType.武器贴图对角线) passCount++;
                 //if (alphaBlend) passCount += 2;
+
+                //Main.graphics.GraphicsDevice.RasterizerState = rasterizerState;
+
                 ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
                 Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList.ToArray(), 0, triangleList.Count / 3);
                 Main.graphics.GraphicsDevice.RasterizerState = originalState;
                 //ShaderSwooshEX.Parameters["uTransform"].SetValue(model * projection);
-                //ShaderSwooshEX.Parameters["uLighter"].SetValue(ConfigurationSwoosh.instance.luminosityFactor);
+                //ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.instance.luminosityFactor);
                 //ShaderSwooshEX.Parameters["uTime"].SetValue(0);//-(float)Main.time * 0.06f
                 //Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_7");//字面意义，base那个是不会随时间动的，ani那个会动//BaseTex
                 //Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
                 //Main.graphics.GraphicsDevice.Textures[2] = itemTex;
-                ////if (ConfigurationSwoosh.instance.swooshColorType == SwooshColorType.函数生成热度图) 
+                ////if (instance.instance.swooshColorType == SwooshColorType.函数生成热度图) 
                 ////{
                 ////    var colorBar = new Texture2D(Main.graphics.GraphicsDevice,300,60);
                 ////    colorBar.SetData<Color>();
@@ -1138,7 +1166,7 @@ namespace CoolerItemVisualEffect
                 //Main.graphics.GraphicsDevice.SamplerStates[3] = SamplerState.AnisotropicClamp;
 
                 //var passCount = 0;
-                //if (ConfigurationSwoosh.instance.swooshColorType == SwooshColorType.武器贴图对角线) passCount++;
+                //if (instance.instance.swooshColorType == SwooshColorType.武器贴图对角线) passCount++;
                 ////if (alphaBlend) passCount += 2;
                 //ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
                 //Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList.ToArray(), 0, triangleList.Count / 3);

@@ -9,12 +9,16 @@ namespace CoolerItemVisualEffect
         {
             BasicStats,
             Hitbox,
-            rotationDirect
+            rotationDirect,
+            //Configs
         }
 
         internal static void HandlePacket(BinaryReader reader, int whoAmI)
         {
             MessageType msgType = (MessageType)reader.ReadByte();
+            Main.NewText(msgType.ToString(),Color.Cyan);
+            Main.NewText(msgType.ToString(),Color.Red);
+
             if (Main.netMode == NetmodeID.Server)
             {
                 switch (msgType)
@@ -80,6 +84,13 @@ namespace CoolerItemVisualEffect
                             packet.Send(-1, whoAmI);
                             return;
                         }
+                    //case MessageType.Configs:
+                    //    {
+                    //        int who = reader.ReadInt32();
+                    //        ConfigurationSwoosh.SetData(reader, who);
+                    //        CoolerItemVisualEffect.configurationSwooshes[who].SendData(whoAmI);
+                    //        return;
+                    //    }
                 }
                 CoolerItemVisualEffect.Instance.Logger.Debug($"Unknown Message type: {msgType}, Please contact the mod developers");
                 return;
@@ -128,6 +139,11 @@ namespace CoolerItemVisualEffect
 
                             return;
                         }
+                    //case MessageType.Configs:
+                    //    {
+                    //        ConfigurationSwoosh.SetData(reader, reader.ReadInt32());
+                    //        return;
+                    //    }
                 }
                 CoolerItemVisualEffect.Instance.Logger.Debug($"Unknown Message type: {msgType}, Please contact the mod developers");
                 return;

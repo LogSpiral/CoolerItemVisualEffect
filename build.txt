@@ -5,6 +5,5 @@ hideResources = false
 hideCode = false
 includeSource = true
 includePDB = true
-side = client
 homepage = https://space.bilibili.com/259264134
 buildIgnore = *.csproj, *.sln, obj\*, bin\*, *.suo, *.user, .git\*, .vs\*, Libraries\*

@@ -29,6 +29,7 @@ namespace CoolerItemVisualEffect
         public (Texture2D tex, int type) colorBar;
 
         public float direct;
+        //public ConfigurationSwooshData configurationSwoosh;
         Player player => Player;
         public float factorGeter
         {
@@ -82,6 +83,9 @@ namespace CoolerItemVisualEffect
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
         {
             HitboxPosition = Vector2.Zero;//重置
+            //Main.spriteBatch.DrawString(FontAssets.MouseText.Value, CoolerItemVisualEffect.NetCounter.ToString(), drawInfo.drawPlayer.Center + new Vector2(0, -64) - Main.screenPosition, Color.White);
+            //Utils.DrawLine(Main.spriteBatch,)
+            Main.spriteBatch.DrawString(FontAssets.MouseText.Value, CoolerItemVisualEffect.NetCounter.ToString(), drawInfo.drawPlayer.Center + new Vector2(0, 64) - Main.screenPosition, Color.White);
             //这个写法可以让绘制的东西在人物旋转后保持原来与人物的相对位置(试做的武器显示)
             if (ConfigurationPreInstall.instance.useWeaponDisplay)
             {

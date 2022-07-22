@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.IO;
 using Terraria.ModLoader.Config;
 
 namespace CoolerItemVisualEffect
@@ -11,11 +12,13 @@ namespace CoolerItemVisualEffect
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.47")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.48")]
         [DrawTicks]
+        [Range((byte)0, (byte)9)]
         public PreInstallSwoosh preInstallSwoosh { get; set; }
         public override void OnChanged()
         {
             var cs = ConfigurationSwoosh.instance;
             if (cs == null) return;
+            if (preInstallSwoosh == PreInstallSwoosh.自定义UserDefined) return;
             cs.CoolerSwooshActive = true;
             cs.ToolsNoUseNewSwooshEffect = false;
             cs.IsLighterDecider = 0.2f;
@@ -104,8 +107,9 @@ namespace CoolerItemVisualEffect
                         break;
                     }
             }
+            //if (Main.netMode == NetmodeID.MultiplayerClient) ConfigurationSwoosh.instance.SendData();
         }
-        public enum PreInstallSwoosh
+        public enum PreInstallSwoosh : byte
         {
             普通Normal,
             飓风Hurricane,
@@ -116,7 +120,8 @@ namespace CoolerItemVisualEffect
             光滑Smooth,
             黑白Grey,
             反相InverseHue,
-            彩虹Rainbow
+            彩虹Rainbow,
+            自定义UserDefined
         }
 
         [DefaultValue(true)]
@@ -153,6 +158,98 @@ namespace CoolerItemVisualEffect
     [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.Label")]
     public class ConfigurationSwoosh : ModConfig
     {
+        //public override void OnLoaded()
+        //{
+        //    switch (Main.netMode) 
+        //    {
+        //        case NetmodeID.SinglePlayer: 
+        //            {
+        //                for (int n = 0; n < 256; n++) CoolerItemVisualEffect.configurationSwooshes[n] = this;
+        //                break;
+        //            }
+        //        case NetmodeID.MultiplayerClient: 
+        //            {
+        //                CoolerItemVisualEffect.configurationSwooshes[Main.myPlayer] = this;
+        //                SendData();
+        //                break;
+        //            }
+        //    }
+        //}
+        //public void SendData(int whoami = -1) //ModPacket packet
+        //{
+        //    Main.NewText("丫的你快给我发射数据");
+        //    ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
+        //    packet.Write((byte)HandleNetwork.MessageType.Configs);
+        //    packet.Write(Main.myPlayer);
+        //    packet.Write(CoolerSwooshActive);
+        //    packet.Write(ToolsNoUseNewSwooshEffect);
+        //    packet.Write(IsLighterDecider);
+        //    packet.Write((byte)swooshColorType);
+        //    packet.Write((byte)swooshSampler);
+        //    packet.Write((byte)swooshFactorStyle);
+        //    packet.Write((byte)swooshActionStyle);
+        //    packet.Write(swooshSize);
+        //    packet.Write(hueOffsetRange);
+
+        //    packet.Write(hueOffsetValue);
+        //    packet.Write(saturationScalar);
+        //    packet.Write(luminosityRange);
+        //    packet.Write(luminosityFactor);
+        //    packet.Write(rotationVelocity);
+        //    packet.Write(distortFactor);
+        //    packet.Write(ItemAdditive);
+        //    packet.Write(ItemHighLight);
+        //    packet.Write(Shake);
+        //    packet.Write(ImageIndex);
+        //    packet.Write(checkAir);
+        //    packet.Write(gather);
+        //    packet.Write(allowZenith);
+        //    packet.Write(glowLight);
+        //    packet.Send(-1, whoami);
+        //    if(whoami != -1)
+        //    Main.NewText("由 "+Main.player[whoami]+"发射数据");
+        //    else Main.NewText("发射数据!");
+        //}
+        //public static void SetData(BinaryReader reader, int whoami)
+        //{
+        //    if (whoami < 0 || whoami > 255) throw new System.Exception("我抄，超范围辣");
+        //    var config = CoolerItemVisualEffect.configurationSwooshes[whoami];
+        //    config.CoolerSwooshActive = reader.ReadBoolean();
+        //    config.ToolsNoUseNewSwooshEffect = reader.ReadBoolean();
+        //    config.IsLighterDecider = reader.ReadSingle();
+        //    config.swooshColorType = (SwooshColorType)reader.ReadByte();
+        //    config.swooshSampler = (SwooshSamplerState)reader.ReadByte();
+        //    config.swooshFactorStyle = (SwooshFactorStyle)reader.ReadByte();
+        //    config.swooshActionStyle = (SwooshAction)reader.ReadByte();
+        //    config.swooshSize = reader.ReadSingle();
+        //    config.hueOffsetRange = reader.ReadSingle();
+        //    config.hueOffsetValue = reader.ReadSingle();
+        //    config.saturationScalar = reader.ReadSingle();
+        //    config.luminosityRange = reader.ReadSingle();
+        //    config.luminosityFactor = reader.ReadSingle();
+        //    config.rotationVelocity = reader.ReadSingle();
+        //    config.distortFactor = reader.ReadSingle();
+        //    config.ItemAdditive = reader.ReadBoolean();
+        //    config.ItemHighLight = reader.ReadBoolean();
+        //    config.Shake = reader.ReadSingle();
+        //    config.ImageIndex = reader.ReadSingle();
+        //    config.checkAir = reader.ReadBoolean();
+        //    config.gather = reader.ReadBoolean();
+        //    config.allowZenith = reader.ReadBoolean();
+        //    config.glowLight = reader.ReadSingle();
+        //    Main.NewText("向 " + Main.player[whoami] + "设置数据");
+
+
+        //}
+        public override void OnChanged()
+        {
+            ConfigurationPreInstall.instance.preInstallSwoosh = ConfigurationPreInstall.PreInstallSwoosh.自定义UserDefined;
+            //if (Main.netMode == NetmodeID.MultiplayerClient) 
+            //{
+            //    SendData();
+            //    Main.NewText("我不到啊");
+            //}
+        }
         public override ConfigScope Mode => ConfigScope.ClientSide;
         public static ConfigurationSwoosh instance => ModContent.GetInstance<ConfigurationSwoosh>();
 
@@ -368,6 +465,115 @@ namespace CoolerItemVisualEffect
             色调处理与对角线混合
         }
     }
+    //public struct ConfigurationSwooshData
+    //{
+    //    public static ConfigurationSwooshData localConfig => ConfigurationSwoosh.instance;
+    //    public bool CoolerSwooshActive;
+
+    //    public bool ToolsNoUseNewSwooshEffect;
+
+    //    public float IsLighterDecider;
+
+    //    public ConfigurationSwoosh.SwooshColorType swooshColorType;
+
+    //    public ConfigurationSwoosh.SwooshSamplerState swooshSampler;
+
+    //    public ConfigurationSwoosh.SwooshFactorStyle swooshFactorStyle;
+
+    //    public ConfigurationSwoosh.SwooshAction swooshActionStyle;
+
+    //    public float swooshSize;
+
+    //    public float hueOffsetRange;
+
+    //    public float hueOffsetValue;
+
+    //    public float saturationScalar;
+
+    //    public float luminosityRange;
+
+    //    public float luminosityFactor;
+
+    //    public float rotationVelocity;
+
+    //    public float distortFactor;
+
+    //    public bool ItemAdditive;
+
+    //    public bool ItemHighLight;
+
+    //    public float Shake;
+
+    //    public float ImageIndex;
+
+    //    public bool checkAir;
+
+    //    public bool gather;
+
+    //    public bool allowZenith;
+
+    //    public float glowLight;
+    //    public static implicit operator ConfigurationSwooshData(ConfigurationSwoosh c)
+    //    {
+    //        return new ConfigurationSwooshData
+    //        {
+    //            CoolerSwooshActive = c.CoolerSwooshActive,
+    //            ToolsNoUseNewSwooshEffect = c.ToolsNoUseNewSwooshEffect,
+    //            IsLighterDecider = c.IsLighterDecider,
+    //            swooshColorType = c.swooshColorType,
+    //            swooshSampler = c.swooshSampler,
+    //            swooshFactorStyle = c.swooshFactorStyle,
+    //            swooshActionStyle = c.swooshActionStyle,
+    //            swooshSize = c.swooshSize,
+    //            hueOffsetRange = c.hueOffsetRange,
+    //            hueOffsetValue = c.hueOffsetValue,
+    //            saturationScalar = c.saturationScalar,
+    //            luminosityRange = c.luminosityRange,
+    //            luminosityFactor = c.luminosityFactor,
+    //            rotationVelocity = c.rotationVelocity,
+    //            distortFactor = c.distortFactor,
+    //            ItemAdditive = c.ItemAdditive,
+    //            ItemHighLight = c.ItemHighLight,
+    //            Shake = c.Shake,
+    //            ImageIndex = c.ImageIndex,
+    //            checkAir = c.checkAir,
+    //            gather = c.gather,
+    //            allowZenith = c.allowZenith,
+    //            glowLight = c.glowLight
+    //        };
+    //    }
+    //    public void SendData() //ModPacket packet
+    //    {
+    //        ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
+    //        packet.Write((byte)HandleNetwork.MessageType.Configs);
+    //        packet.Write(Main.myPlayer);
+    //        packet.Write(CoolerSwooshActive);
+    //        packet.Write(ToolsNoUseNewSwooshEffect);
+    //        packet.Write(IsLighterDecider);
+    //        packet.Write((byte)swooshColorType);
+    //        packet.Write((byte)swooshSampler);
+    //        packet.Write((byte)swooshFactorStyle);
+    //        packet.Write((byte)swooshActionStyle);
+    //        packet.Write(swooshSize);
+    //        packet.Write(hueOffsetRange);
+
+    //        packet.Write(hueOffsetValue);
+    //        packet.Write(saturationScalar);
+    //        packet.Write(luminosityRange);
+    //        packet.Write(luminosityFactor);
+    //        packet.Write(rotationVelocity);
+    //        packet.Write(distortFactor);
+    //        packet.Write(ItemAdditive);
+    //        packet.Write(ItemHighLight);
+    //        packet.Write(Shake);
+    //        packet.Write(ImageIndex);
+    //        packet.Write(checkAir);
+    //        packet.Write(gather);
+    //        packet.Write(allowZenith);
+    //        packet.Write(glowLight);
+    //        packet.Send(-1, -1);
+    //    }
+    //}
     //[Label("$Mods.CoolerItemVisualEffect.Config.Label")]
     //public class Configuration : ModConfig
     //{

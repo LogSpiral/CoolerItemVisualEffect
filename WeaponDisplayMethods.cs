@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace CoolerItemVisualEffect
 {
-    internal static class WeaponDisplayMethods
+
+    public static class WeaponDisplayMethods
     {
         //public static Vector2 Projectile(this Vector3 vec, float height)
         //{
