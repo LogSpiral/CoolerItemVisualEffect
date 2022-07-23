@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Terraria;
 
 namespace CoolerItemVisualEffect
 {
@@ -9,13 +10,20 @@ namespace CoolerItemVisualEffect
         {
             BasicStats,
             Hitbox,
-            rotationDirect
+            rotationDirect,
+            Configs,
+            EnterWorld
         }
 
         internal static void HandlePacket(BinaryReader reader, int whoAmI)
         {
             MessageType msgType = (MessageType)reader.ReadByte();
-            
+            if (MessageType.EnterWorld == msgType) 
+            {
+                var who = reader.ReadByte();
+                ConfigurationSwoosh.SetData(reader, who);
+                return;
+            }
             if (Main.netMode == NetmodeID.Server)
             {
                 switch (msgType)
@@ -25,6 +33,7 @@ namespace CoolerItemVisualEffect
                             bool negativeDir = reader.ReadBoolean();
                             float rotationForShadow = reader.ReadSingle();
                             float rotationForShadowNext = reader.ReadSingle();
+                            int swingCount = reader.ReadInt32();
                             float kValue = reader.ReadSingle();
                             float kValueNext = reader.ReadSingle();
                             bool UseSlash = reader.ReadBoolean();
@@ -32,6 +41,7 @@ namespace CoolerItemVisualEffect
                             modPlayer.negativeDir = negativeDir;
                             modPlayer.rotationForShadow = rotationForShadow;
                             modPlayer.rotationForShadowNext = rotationForShadowNext;
+                            modPlayer.swingCount = swingCount;
                             modPlayer.kValue = kValue;
                             modPlayer.kValueNext = kValueNext;
                             modPlayer.UseSlash = UseSlash;
@@ -81,13 +91,31 @@ namespace CoolerItemVisualEffect
                             packet.Send(-1, whoAmI);
                             return;
                         }
+                    case MessageType.Configs:
+                        {
+                            //var who = reader.ReadInt32();
+                            //ConfigurationSwoosh.SetData(reader, who);
+                            //Main.player[who].GetModPlayer<WeaponDisplayPlayer>().ConfigurationSwoosh.SendData(whoAmI, who);
+
+                            ConfigurationSwoosh.SetData(reader, whoAmI);
+                            Main.player[whoAmI].GetModPlayer<WeaponDisplayPlayer>().ConfigurationSwoosh.SendData((byte)whoAmI, whoAmI);
+                            return;
+                        }
+                    //case MessageType.EnterWorld: 
+                    //    {
+
+                    //        ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
+                    //        packet.Write((byte)MessageType.EnterWorld);
+                    //        packet.Send(-1, whoAmI);
+                    //        return;
+                    //    }
                 }
                 CoolerItemVisualEffect.Instance.Logger.Debug($"Unknown Message type: {msgType}, Please contact the mod developers");
                 return;
             }
             else
             {
-                Main.NewText(msgType);
+                //Main.NewText(msgType);
                 switch (msgType)
                 {
                     case MessageType.BasicStats:
@@ -95,6 +123,8 @@ namespace CoolerItemVisualEffect
                             bool negativeDir = reader.ReadBoolean();
                             float rotationForShadow = reader.ReadSingle();
                             float rotationForShadowNext = reader.ReadSingle();
+                            int swingCount = reader.ReadInt32();
+
                             float kValue = reader.ReadSingle();
                             float kValueNext = reader.ReadSingle();
                             bool UseSlash = reader.ReadBoolean();
@@ -104,6 +134,7 @@ namespace CoolerItemVisualEffect
                             modPlayer.negativeDir = negativeDir;
                             modPlayer.rotationForShadow = rotationForShadow;
                             modPlayer.rotationForShadowNext = rotationForShadowNext;
+                            modPlayer.swingCount = swingCount;
                             modPlayer.kValue = kValue;
                             modPlayer.kValueNext = kValueNext;
                             modPlayer.UseSlash = UseSlash;
@@ -130,6 +161,17 @@ namespace CoolerItemVisualEffect
 
                             return;
                         }
+                    case MessageType.Configs:
+                        {
+                            var who = reader.ReadByte();
+                            ConfigurationSwoosh.SetData(reader, who);
+                            return;
+                        }
+                    //case MessageType.EnterWorld: 
+                    //    {
+                    //        ConfigurationSwoosh.instance.SendData();
+                    //        return;
+                    //    }
                 }
                 CoolerItemVisualEffect.Instance.Logger.Debug($"Unknown Message type: {msgType}, Please contact the mod developers");
                 return;

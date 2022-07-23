@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.IO;
 using Terraria.ModLoader.Config;
 
 namespace CoolerItemVisualEffect
@@ -14,6 +15,7 @@ namespace CoolerItemVisualEffect
         public PreInstallSwoosh preInstallSwoosh { get; set; }
         public override void OnChanged()
         {
+            if (preInstallSwoosh == PreInstallSwoosh.自定义UserDefined) return;
             var cs = ConfigurationSwoosh.instance;
             if (cs == null) return;
             cs.CoolerSwooshActive = true;
@@ -104,6 +106,7 @@ namespace CoolerItemVisualEffect
                         break;
                     }
             }
+            if (Main.netMode == NetmodeID.MultiplayerClient) ConfigurationSwoosh.instance.SendData();
         }
         public enum PreInstallSwoosh
         {
@@ -116,7 +119,8 @@ namespace CoolerItemVisualEffect
             光滑Smooth,
             黑白Grey,
             反相InverseHue,
-            彩虹Rainbow
+            彩虹Rainbow,
+            自定义UserDefined
         }
 
         [DefaultValue(true)]
@@ -153,6 +157,82 @@ namespace CoolerItemVisualEffect
     [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.Label")]
     public class ConfigurationSwoosh : ModConfig
     {
+        public void SendData(byte? whoami = null, int ignoreCilent = -1, int toCilent = -1, bool enter = false) //ModPacket packet, int? playerIndex = null
+        {
+            ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
+            packet.Write((byte)(enter ? HandleNetwork.MessageType.EnterWorld : HandleNetwork.MessageType.Configs));
+            //packet.Write(playerIndex ?? Main.myPlayer);
+            if (whoami != null) packet.Write(whoami.Value);
+            packet.Write(CoolerSwooshActive);
+            packet.Write(ToolsNoUseNewSwooshEffect);
+            packet.Write(IsLighterDecider);
+            packet.Write((byte)swooshColorType);
+            packet.Write((byte)swooshSampler);
+            packet.Write((byte)swooshFactorStyle);
+            packet.Write((byte)swooshActionStyle);
+            packet.Write(swooshSize);
+            packet.Write(hueOffsetRange);
+            packet.Write(hueOffsetValue);
+            packet.Write(saturationScalar);
+            packet.Write(luminosityRange);
+            packet.Write(luminosityFactor);
+            packet.Write(rotationVelocity);
+            packet.Write(distortFactor);
+            packet.Write(ItemAdditive);
+            packet.Write(ItemHighLight);
+            packet.Write(Shake);
+            packet.Write(ImageIndex);
+            packet.Write(checkAir);
+            packet.Write(gather);
+            packet.Write(allowZenith);
+            packet.Write(glowLight);
+            //packet.Write
+            packet.Send(toCilent, ignoreCilent);
+            //if (whoami != -1)
+            //    Main.NewText("由 " + Main.player[whoami] + "发射数据");
+            //else Main.NewText("发射数据!");
+        }
+        public static void SetData(BinaryReader reader, int whoami)
+        {
+            if (whoami < 0 || whoami > 255) throw new System.Exception("我抄，超范围辣");
+            var config = Main.player[whoami].GetModPlayer<WeaponDisplayPlayer>().ConfigurationSwoosh;
+            //if (config == null) Main.player[whoami].GetModPlayer<WeaponDisplayPlayer>().configurationSwoosh = new ConfigurationSwoosh();
+            config.CoolerSwooshActive = reader.ReadBoolean();
+            config.ToolsNoUseNewSwooshEffect = reader.ReadBoolean();
+            config.IsLighterDecider = reader.ReadSingle();
+            config.swooshColorType = (SwooshColorType)reader.ReadByte();
+            config.swooshSampler = (SwooshSamplerState)reader.ReadByte();
+            config.swooshFactorStyle = (SwooshFactorStyle)reader.ReadByte();
+            config.swooshActionStyle = (SwooshAction)reader.ReadByte();
+            config.swooshSize = reader.ReadSingle();
+            config.hueOffsetRange = reader.ReadSingle();
+            config.hueOffsetValue = reader.ReadSingle();
+            config.saturationScalar = reader.ReadSingle();
+            config.luminosityRange = reader.ReadSingle();
+            config.luminosityFactor = reader.ReadSingle();
+            config.rotationVelocity = reader.ReadSingle();
+            config.distortFactor = reader.ReadSingle();
+            config.ItemAdditive = reader.ReadBoolean();
+            config.ItemHighLight = reader.ReadBoolean();
+            config.Shake = reader.ReadSingle();
+            config.ImageIndex = reader.ReadSingle();
+            config.checkAir = reader.ReadBoolean();
+            config.gather = reader.ReadBoolean();
+            config.allowZenith = reader.ReadBoolean();
+            config.glowLight = reader.ReadSingle();
+            //Main.NewText("向 " + Main.player[whoami] + "设置数据");
+
+
+        }
+        public override void OnChanged()
+        {
+            ConfigurationPreInstall.instance.preInstallSwoosh = ConfigurationPreInstall.PreInstallSwoosh.自定义UserDefined;
+            if (Main.netMode == NetmodeID.MultiplayerClient) SendData();
+        }
+        public override void OnLoaded()
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient) SendData();
+        }
         public override ConfigScope Mode => ConfigScope.ClientSide;
         public static ConfigurationSwoosh instance => ModContent.GetInstance<ConfigurationSwoosh>();
 

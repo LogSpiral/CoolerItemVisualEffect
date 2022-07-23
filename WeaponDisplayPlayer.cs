@@ -22,14 +22,60 @@ namespace CoolerItemVisualEffect
         //        kValue = Main.rand.NextFloat(1, 2);
         //    }
         //}
+        public override void OnEnterWorld(Player player)
+        {
+            //if (player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
+            //    player.GetModPlayer<WeaponDisplayPlayer>().ConfigurationSwoosh.SendData();
+            //testState = player.whoAmI;
+            //testState++;
+            //foreach (var p in Main.player) 
+            //{
+            //    if (p != null && p.active) p.GetModPlayer<WeaponDisplayPlayer>().testState++;
+            //}
+            //var flag = player.GetModPlayer<WeaponDisplayPlayer>().configurationSwoosh == null;
+            //if (flag) testState = 1;
+            //player.GetModPlayer<WeaponDisplayPlayer>().testState = 1;
+            //if (Main.netMode == NetmodeID.MultiplayerClient) 
+            //{
+            //    player.GetModPlayer<WeaponDisplayPlayer>().ConfigurationSwoosh.SendData();
+            //    ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
+            //    packet.Write((byte)HandleNetwork.MessageType.EnterWorld);
+            //    packet.Send(-1, -1);
+            //}
+
+        }
+        public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
+        {
+            player.GetModPlayer<WeaponDisplayPlayer>().ConfigurationSwoosh.SendData((byte)Player.whoAmI, fromWho, toWho);//, true
+            //testState++;
+            //Main.NewText("同步辣!!!!");
+            //base.SyncPlayer(toWho, fromWho, newPlayer);
+        }
         public float kValueNext;
         public float rotationForShadowNext;
-
+        public int testState;
         public int swingCount;
         public (Texture2D tex, int type) colorBar;
 
         public float direct;
-        public ConfigurationSwoosh configurationSwoosh;
+        ConfigurationSwoosh configurationSwoosh;
+        ////public ConfigurationSwoosh ConfigurationSwoosh
+        ////{
+        ////    get => configurationSwoosh ??= (Main.myPlayer == player.whoAmI ? instance : new ConfigurationSwoosh());//ConfigurationSwoosh.instance
+        ////    set => configurationSwoosh = value;
+        ////}
+        public ConfigurationSwoosh ConfigurationSwoosh
+        {
+            get
+            {
+                if (configurationSwoosh == null)
+                {
+                    configurationSwoosh = Main.myPlayer == player.whoAmI ? instance : new ConfigurationSwoosh();
+                }
+                return configurationSwoosh;
+            }
+            set => configurationSwoosh = value;
+        }
         Player player => Player;
         public float factorGeter
         {
@@ -55,6 +101,59 @@ namespace CoolerItemVisualEffect
                 Main.screenPosition += Main.rand.NextVector2Unit() * (float)Math.Pow(factorGeter, 2) * 16 * instance.Shake * (swingCount % 3 == 2 ? 3 : 1);
             }
             base.ModifyScreenPosition();
+        }
+        public override void ResetEffects()
+        {
+
+            if (Player.HeldItem.type == ItemID.Zenith || Player.HeldItem.type == ModContent.ItemType<Weapons.FirstFractal_CIVE>()) 
+            {
+                if (ConfigurationSwoosh.instance.allowZenith && ConfigurationSwoosh.instance.CoolerSwooshActive)
+                {
+                    Player.HeldItem.noUseGraphic = false;
+                    Player.HeldItem.useStyle = 1;
+                    Player.HeldItem.channel = false;
+                }
+                else 
+                {
+                    Player.HeldItem.noUseGraphic = true;
+                    Player.HeldItem.useStyle = 5;
+                    Player.HeldItem.channel = true;
+                }
+
+                //Main.NewText(player.HeldItem.noUseGraphic);
+            }
+            //Main.NewText(player.HeldItem.noUseGraphic);
+            //Main.NewText((Player.itemAnimation, Player.itemAnimationMax), Color.Red);
+            if (player.itemAnimation == player.itemAnimationMax) 
+            {
+                var flag = player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && player.HeldItem.DamageType == DamageClass.Melee && !player.HeldItem.noUseGraphic && ConfigurationSwoosh.instance.CoolerSwooshActive;
+                flag |= (player.HeldItem.type == ItemID.Zenith || player.HeldItem.type == ModContent.ItemType<Weapons.FirstFractal_CIVE>()) && ConfigurationSwoosh.instance.allowZenith && ConfigurationSwoosh.instance.CoolerSwooshActive;
+                if (Main.myPlayer == player.whoAmI && flag) // 
+                {
+                    CoolerItemVisualEffect.ChangeShooshStyle(player);
+                }
+            }
+            if (player.itemAnimation > 0 && UseSlash) 
+            {
+                player.itemRotation = direct - MathHelper.ToRadians(90f); // 别问为啥-90°，问re去
+                player.SetCompositeArmFront(enabled: true, Player.CompositeArmStretchAmount.Full, player.itemRotation);
+            }
+            //Main.NewText((testState, Player.whoAmI, Player.name));
+            //if (testState == 1)
+            //{
+            //    foreach (var p in Main.player)
+            //    {
+            //        if (p != null && p.active) p.GetModPlayer<WeaponDisplayPlayer>().testState = 2;
+            //    }
+            //}
+            //if (testState == 2)
+            //{
+            //    //Main.NewText(testState);
+            //    testState = 0;
+            //    ConfigurationSwoosh.SendData();
+            //}
+            //if (Main.GameUpdateCount % 4 == 0 && player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
+            //    configurationSwoosh.SendData();
         }
         private static Vector2 DrawPlayer_Head_GetSpecialDrawPosition(ref PlayerDrawSet drawinfo, Vector2 helmetOffset, Vector2 hatOffset)
         {
@@ -83,6 +182,7 @@ namespace CoolerItemVisualEffect
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
         {
             HitboxPosition = Vector2.Zero;//重置
+            //Main.spriteBatch.DrawString(FontAssets.MouseText.Value, testState.ToString(), Player.Center - new Vector2(0, 64) - Main.screenPosition, Color.Red);
             //这个写法可以让绘制的东西在人物旋转后保持原来与人物的相对位置(试做的武器显示)
             if (ConfigurationPreInstall.instance.useWeaponDisplay)
             {

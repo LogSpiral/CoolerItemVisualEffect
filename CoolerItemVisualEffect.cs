@@ -213,10 +213,10 @@ namespace CoolerItemVisualEffect
                 packet.Write(modPlayer.negativeDir);
                 packet.Write(modPlayer.rotationForShadow);
                 packet.Write(modPlayer.rotationForShadowNext);
+                packet.Write(modPlayer.swingCount);
                 packet.Write(modPlayer.kValue);
                 packet.Write(modPlayer.kValueNext);
                 packet.Write(modPlayer.UseSlash);
-
                 packet.Send(-1, -1); // 发包到服务器上 再由服务器转发到其他客户端
                 NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, player.whoAmI); // 同步direction
             }
@@ -225,6 +225,7 @@ namespace CoolerItemVisualEffect
         {
             var drawPlayer = drawinfo.drawPlayer;
             var modPlayer = drawPlayer.GetModPlayer<WeaponDisplayPlayer>();
+            var instance = (Main.netMode == NetmodeID.SinglePlayer || drawPlayer.whoAmI == Main.myPlayer) ? ConfigurationSwoosh.instance : modPlayer.ConfigurationSwoosh;
             Item heldItem = drawinfo.heldItem;
             bool flag = drawPlayer.itemAnimation > 0 && heldItem.useStyle != ItemUseStyleID.None;
             bool flag2 = heldItem.holdStyle != 0 && !drawPlayer.pulley;
@@ -233,7 +234,12 @@ namespace CoolerItemVisualEffect
                 flag2 = false;
             }
             bool flagMelee = true;
-            if ((heldItem.type == ItemID.Zenith || heldItem.type == ModContent.ItemType<Weapons.FirstFractal_CIVE>()) && drawPlayer.itemAnimation > 0 && instance.allowZenith && instance.CoolerSwooshActive) goto mylabel;// || heldItem.type == ItemID.Terragrim || heldItem.type == ItemID.Arkhalis
+            //Main.NewText((drawPlayer.itemAnimation, drawPlayer.itemAnimationMax),Color.Red);
+
+            if ((heldItem.type == ItemID.Zenith || heldItem.type == ModContent.ItemType<Weapons.FirstFractal_CIVE>()) && drawPlayer.itemAnimation > 0 && instance.allowZenith && instance.CoolerSwooshActive) 
+            {
+                goto mylabel;
+            }// || heldItem.type == ItemID.Terragrim || heldItem.type == ItemID.Arkhalis
             flagMelee = drawPlayer.HeldItem.damage > 0 && drawPlayer.HeldItem.useStyle == ItemUseStyleID.Swing && drawPlayer.itemAnimation > 0 && drawPlayer.HeldItem.DamageType == DamageClass.Melee && !drawPlayer.HeldItem.noUseGraphic && instance.CoolerSwooshActive;
             if (instance.ToolsNoUseNewSwooshEffect)
             {
@@ -287,7 +293,7 @@ namespace CoolerItemVisualEffect
                 var hsl = Main.rgbToHsl(newColor);
                 try
                 {
-                    DrawSwoosh(drawPlayer, newColor, hsl.Z < instance.IsLighterDecider, airFactor, out var rectangle);
+                    DrawSwoosh(drawPlayer, newColor, hsl.Z < instance.IsLighterDecider, airFactor, instance, out var rectangle);
                     //Main.NewText("!!!");
                 }
                 catch
@@ -779,7 +785,7 @@ namespace CoolerItemVisualEffect
         //        }
         //    }
         //}
-        public static void DrawSwoosh(Player drawPlayer, Color newColor, bool alphaBlend, float checkAirFactor, out Rectangle bodyRec)
+        public static void DrawSwoosh(Player drawPlayer, Color newColor, bool alphaBlend, float checkAirFactor, ConfigurationSwoosh instance, out Rectangle bodyRec)
         {
             //Main.NewText(checkAirFactor);
             bodyRec = default;
@@ -801,7 +807,6 @@ namespace CoolerItemVisualEffect
                                                                            //}
             var fac = modPlayer.factorGeter;
             fac = modPlayer.negativeDir ? 1 - fac : fac;//每次挥动都会改变方向，所以插值函数方向也会一起变（原本是从1到0，反过来就是0到1(虽然说一般都是0到1
-
 
 
 
@@ -1230,7 +1235,7 @@ namespace CoolerItemVisualEffect
                 packet.Write(modPlayer.direct);
                 packet.WritePackedVector2(modPlayer.HitboxPosition);
                 packet.Send(-1, -1); // 发包到服务器上 再由服务器转发到其他客户端
-                NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, drawPlayer.whoAmI); // 同步direction
+                //NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, drawPlayer.whoAmI); // 同步direction
             }
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
