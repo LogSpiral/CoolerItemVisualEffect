@@ -115,6 +115,8 @@ namespace CoolerItemVisualEffect
             var cs = ConfigurationSwoosh.instance;
             if (cs == null) return;
             SetCSValue(cs);
+            ConfigurationSwoosh.Save(cs);
+
             if (Main.netMode == NetmodeID.MultiplayerClient) ConfigurationSwoosh.instance.SendData();
         }
         public enum PreInstallSwoosh
@@ -167,6 +169,15 @@ namespace CoolerItemVisualEffect
     [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.Label")]
     public class ConfigurationSwoosh : ModConfig
     {
+        public static void Save(ModConfig config)
+        {
+            var ModConfigPath = Path.Combine(Main.SavePath, "ModConfigs");
+            Directory.CreateDirectory(ModConfigPath);
+            string filename = config.Mod.Name + "_" + config.Name + ".json";
+            string path = Path.Combine(ModConfigPath, filename);
+            string json = JsonConvert.SerializeObject(config, ConfigManager.serializerSettings);
+            File.WriteAllText(path, json);
+        }
         public void SendData(int? whoami = null, int ignoreCilent = -1, int toCilent = -1, bool enter = false) //ModPacket packet, int? playerIndex = null
         {
             ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
@@ -268,8 +279,11 @@ namespace CoolerItemVisualEffect
         }
         public override void OnChanged()
         {
-            if (!EqualValue(ConfigurationPreInstall.instance.SetCSValue(new ConfigurationSwoosh())))
+            if (!EqualValue(ConfigurationPreInstall.instance.SetCSValue(new ConfigurationSwoosh()))) 
+            {
                 ConfigurationPreInstall.instance.preInstallSwoosh = ConfigurationPreInstall.PreInstallSwoosh.自定义UserDefined;
+                Save(ConfigurationPreInstall.instance);
+            }
             //MagicConfigCounter++;
             if (Main.netMode == NetmodeID.MultiplayerClient) SendData();
         }

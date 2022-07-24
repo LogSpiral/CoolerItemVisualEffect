@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.ModLoader.Config;
 
 namespace CoolerItemVisualEffect
 {
@@ -16,6 +19,7 @@ namespace CoolerItemVisualEffect
         //{
         //    spriteBatch.Draw(TextureAssets.MagicPixel.Value, (start + end) / 2f - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, (end - start).ToRotation(), new Vector2(0.5f, 0.5f), new Vector2((end - start).Length(), width), 0, 0);
         //}
+
         public static float Lerp(this float t, float from, float to, bool clamp = false)
         {
             if (clamp) t = MathHelper.Clamp(t, 0, 1);

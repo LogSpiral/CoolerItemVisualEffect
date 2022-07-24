@@ -1763,12 +1763,12 @@ namespace CoolerItemVisualEffect
     //        Main.spriteBatch.DrawString(FontAssets.MouseText.Value, ConfigurationSwoosh.MagicConfigCounter.ToString(), new Vector2(240, 240), Main.DiscoColor);
     //    }
     //}
-    public class MyModMenu : ModMenu
-    {
-        public override void PostDrawLogo(SpriteBatch spriteBatch, Vector2 logoDrawCenter, float logoRotation, float logoScale, Color drawColor)
-        {
-            base.PostDrawLogo(spriteBatch, logoDrawCenter, logoRotation, logoScale, drawColor);
-            Main.spriteBatch.DrawString(FontAssets.MouseText.Value, ConfigurationPreInstall.instance.preInstallSwoosh.ToString(), new Vector2(240, 240), Main.DiscoColor);
-        }
-    }
+    //public class MyModMenu : ModMenu
+    //{
+    //    public override void PostDrawLogo(SpriteBatch spriteBatch, Vector2 logoDrawCenter, float logoRotation, float logoScale, Color drawColor)
+    //    {
+    //        base.PostDrawLogo(spriteBatch, logoDrawCenter, logoRotation, logoScale, drawColor);
+    //        Main.spriteBatch.DrawString(FontAssets.MouseText.Value, ConfigurationPreInstall.instance.preInstallSwoosh.ToString(), new Vector2(240, 240), Main.DiscoColor);
+    //    }
+    //}
 }
