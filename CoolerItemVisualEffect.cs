@@ -236,7 +236,7 @@ namespace CoolerItemVisualEffect
             bool flagMelee = true;
             //Main.NewText((drawPlayer.itemAnimation, drawPlayer.itemAnimationMax),Color.Red);
 
-            if ((heldItem.type == ItemID.Zenith || heldItem.type == ModContent.ItemType<Weapons.FirstFractal_CIVE>()) && drawPlayer.itemAnimation > 0 && instance.allowZenith && instance.CoolerSwooshActive) 
+            if ((heldItem.type == ItemID.Zenith || heldItem.type == ModContent.ItemType<Weapons.FirstFractal_CIVE>()) && drawPlayer.itemAnimation > 0 && instance.allowZenith && instance.CoolerSwooshActive)
             {
                 goto mylabel;
             }// || heldItem.type == ItemID.Terragrim || heldItem.type == ItemID.Arkhalis
@@ -245,9 +245,9 @@ namespace CoolerItemVisualEffect
             {
                 flagMelee = flagMelee && drawPlayer.HeldItem.axe == 0 && drawPlayer.HeldItem.hammer == 0 && drawPlayer.HeldItem.pick == 0;
             }
-            bool shouldNotDrawItem = drawinfo.shadow != 0f || drawPlayer.frozen || !(flag || flag2) || heldItem.type <= ItemID.None || drawPlayer.dead || heldItem.noUseGraphic || drawPlayer.JustDroppedAnItem ||
+            bool shouldNotDrawItem = drawPlayer.frozen || !(flag || flag2) || heldItem.type <= ItemID.None || drawPlayer.dead || heldItem.noUseGraphic || drawPlayer.JustDroppedAnItem ||
                 drawPlayer.wet && heldItem.noWet || drawPlayer.happyFunTorchTime && drawPlayer.inventory[drawPlayer.selectedItem].createTile == TileID.Torches && drawPlayer.itemAnimation == 0 ||
-                !flagMelee;
+                !flagMelee;//drawinfo.shadow != 0f || 
             modPlayer.UseSlash = flagMelee;
             if (shouldNotDrawItem || !modPlayer.UseSlash)
             {
@@ -259,7 +259,7 @@ namespace CoolerItemVisualEffect
                 if (shouldNotDrawItem) return;
             }
         mylabel:
-            if (flagMelee)
+            if (drawinfo.shadow == 0f && flagMelee)
             {
                 modPlayer.UseSlash = true;
                 var itemTex = TextureAssets.Item[drawPlayer.HeldItem.type].Value;
@@ -1049,7 +1049,7 @@ namespace CoolerItemVisualEffect
                     ShaderSwooshEX.Parameters["airFactor"].SetValue(checkAirFactor);
                     ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
 
-                    Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + instance.ImageIndex);//字面意义，base那个是不会随时间动的，ani那个会动//BaseTex//_7
+                    Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + (int)MathHelper.Clamp(instance.ImageIndex, 0, 7));//字面意义，base那个是不会随时间动的，ani那个会动//BaseTex//_7
                     Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
                     Main.graphics.GraphicsDevice.Textures[2] = itemTex;
                     if (instance.swooshColorType == SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = modPlayer.colorBar.tex;
@@ -1065,89 +1065,135 @@ namespace CoolerItemVisualEffect
                     ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
                     Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList.ToArray(), 0, triangleList.Count / 3);
                     Main.graphics.GraphicsDevice.RasterizerState = originalState;
-                    sb.End();
-                    //然后在随便一个render里绘制屏幕，并把上面那个带弹幕的render传进shader里对屏幕进行处理
-                    //原版自带的screenTargetSwap就是一个可以使用的render，（原版用来连续上滤镜）
+                    for (int n = 0; n < instance.maxCount; n++)
+                    {
+                        sb.End();
+                        //然后在随便一个render里绘制屏幕，并把上面那个带弹幕的render传进shader里对屏幕进行处理
+                        //原版自带的screenTargetSwap就是一个可以使用的render，（原版用来连续上滤镜）
 
-                    gd.SetRenderTarget(Main.screenTargetSwap);//将画布设置为这个
-                    gd.Clear(Color.Transparent);//清空
-                    sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-                    DistortEffect.CurrentTechnique.Passes[0].Apply();//ApplyPass
-                    DistortEffect.Parameters["tex0"].SetValue(Instance.Render);//render可以当成贴图使用或者绘制。（前提是当前gd.SetRenderTarget的不是这个render，否则会报错）
-                    DistortEffect.Parameters["offset"].SetValue((u + v) * -0.002f * (1 - 2 * Math.Abs(0.5f - fac)) * instance.distortFactor);//设置参数时间
-                    DistortEffect.Parameters["invAlpha"].SetValue(0);
-                    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);//绘制原先屏幕内容
-                    //pixelshader里处理
-                    sb.End();
+                        gd.SetRenderTarget(Main.screenTargetSwap);//将画布设置为这个
+                        gd.Clear(Color.Transparent);//清空
+                        sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                        DistortEffect.CurrentTechnique.Passes[0].Apply();//ApplyPass
+                        DistortEffect.Parameters["tex0"].SetValue(Instance.Render);//render可以当成贴图使用或者绘制。（前提是当前gd.SetRenderTarget的不是这个render，否则会报错）
+                        DistortEffect.Parameters["offset"].SetValue((u + v) * -0.002f * (1 - 2 * Math.Abs(0.5f - fac)) * instance.distortFactor);//设置参数时间
+                        DistortEffect.Parameters["invAlpha"].SetValue(0);
+                        sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);//绘制原先屏幕内容
+                                                                              //pixelshader里处理
+                        sb.End();
 
-                    //最后在screenTarget上把刚刚的结果画上
-                    gd.SetRenderTarget(Main.screenTarget);
-                    gd.Clear(Color.Transparent);
-                    sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-                    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                        //最后在screenTarget上把刚刚的结果画上
+                        gd.SetRenderTarget(Main.screenTarget);
+                        gd.Clear(Color.Transparent);
+                        sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                        sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                        //sb.End();
+
+                        //Main.spriteBatch.Begin(SpriteSortMode.Immediate, alphaBlend ? BlendState.NonPremultiplied : BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
+                        //Main.instance.GraphicsDevice.BlendState = BlendState.Additive;
+                        sb.Draw(Instance.Render, Vector2.Zero, new Color(1f, 1f, 1f, 0));//
+                        //Main.instance.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+                    }
                     //sb.End();
+                    //Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                    //DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+                    //DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
+                    //DistortEffect.Parameters["position"].SetValue(new Vector2(0, 3));
+                    //DistortEffect.Parameters["tier2"].SetValue(0.2f);
+                    //for (int n = 0; n < 3; n++)
+                    //{
+                    //    gd.SetRenderTarget(Main.screenTargetSwap);
+                    //    gd.Clear(Color.Transparent);
+                    //    DistortEffect.CurrentTechnique.Passes[7].Apply();
+                    //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
 
-                    //Main.spriteBatch.Begin(SpriteSortMode.Immediate, alphaBlend ? BlendState.NonPremultiplied : BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
-                    //sb.Draw(render, Vector2.Zero, Color.White);
+
+
+                    //    gd.SetRenderTarget(Main.screenTarget);
+                    //    gd.Clear(Color.Transparent);
+                    //    DistortEffect.CurrentTechnique.Passes[6].Apply();
+                    //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                    //}
+                    //DistortEffect.Parameters["position"].SetValue(new Vector2(0, 3));
+                    //DistortEffect.Parameters["ImageSize"].SetValue((u + v) * -0.002f * (1 - 2 * Math.Abs(0.5f - fac)) * instance.distortFactor);
+                    //for (int n = 0; n < 2; n++)
+                    //{
+                    //    gd.SetRenderTarget(Main.screenTargetSwap);
+                    //    gd.Clear(Color.Transparent);
+                    //    DistortEffect.CurrentTechnique.Passes[5].Apply();
+                    //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+
+                    //    gd.SetRenderTarget(Main.screenTarget);
+                    //    gd.Clear(Color.Transparent);
+                    //    DistortEffect.CurrentTechnique.Passes[4].Apply();
+                    //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                    //}
+                    //sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                    //sb.Draw(Instance.Render, Vector2.Zero, Color.White);
+
                 }
-                sb.End();
-                sb.Begin(SpriteSortMode.Immediate, alphaBlend ? BlendState.NonPremultiplied : BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);//Main.DefaultSamplerState//Main.GameViewMatrix.TransformationMatrix
-                ShaderSwooshEX.Parameters["uTransform"].SetValue(model * projection);
-                ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
-                ShaderSwooshEX.Parameters["uTime"].SetValue(0);//-(float)Main.time * 0.06f
-                ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);
-                ShaderSwooshEX.Parameters["airFactor"].SetValue(checkAirFactor);
-                ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
+                else
+                {
+                    sb.End();
+                    sb.Begin(SpriteSortMode.Immediate, alphaBlend ? BlendState.NonPremultiplied : BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);//Main.DefaultSamplerState//Main.GameViewMatrix.TransformationMatrix
+                    ShaderSwooshEX.Parameters["uTransform"].SetValue(model * projection);
+                    ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
+                    ShaderSwooshEX.Parameters["uTime"].SetValue(0);//-(float)Main.time * 0.06f
+                    ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);
+                    ShaderSwooshEX.Parameters["airFactor"].SetValue(checkAirFactor);
+                    ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
 
 
-                Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + instance.ImageIndex);//字面意义，base那个是不会随时间动的，ani那个会动//BaseTex//_7
-                Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
-                Main.graphics.GraphicsDevice.Textures[2] = itemTex;
-                if (instance.swooshColorType == SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = modPlayer.colorBar.tex;
-                //if (ConfigurationSwoosh.instance.swooshColorType == SwooshColorType.函数生成热度图) 
-                //{
-                //    var colorBar = new Texture2D(Main.graphics.GraphicsDevice,300,60);
-                //    colorBar.SetData<Color>();
-                //    Main.graphics.GraphicsDevice.Textures[3] = colorBar;
-                //}
+                    Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + (int)MathHelper.Clamp(instance.ImageIndex, 0, 7));//字面意义，base那个是不会随时间动的，ani那个会动//BaseTex//_7
+                    Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
+                    Main.graphics.GraphicsDevice.Textures[2] = itemTex;
+                    if (instance.swooshColorType == SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = modPlayer.colorBar.tex;
+                    //if (ConfigurationSwoosh.instance.swooshColorType == SwooshColorType.函数生成热度图) 
+                    //{
+                    //    var colorBar = new Texture2D(Main.graphics.GraphicsDevice,300,60);
+                    //    colorBar.SetData<Color>();
+                    //    Main.graphics.GraphicsDevice.Textures[3] = colorBar;
+                    //}
 
 
-                Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
-                Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
-                Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
-                Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
+                    Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
+                    Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
+                    Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
+                    Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
 
-                //var passCount = 0;
-                //if (ConfigurationSwoosh.instance.swooshColorType == SwooshColorType.武器贴图对角线) passCount++;
-                //if (alphaBlend) passCount += 2;
-                ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
-                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList.ToArray(), 0, triangleList.Count / 3);
-                Main.graphics.GraphicsDevice.RasterizerState = originalState;
-                //ShaderSwooshEX.Parameters["uTransform"].SetValue(model * projection);
-                //ShaderSwooshEX.Parameters["uLighter"].SetValue(ConfigurationSwoosh.instance.luminosityFactor);
-                //ShaderSwooshEX.Parameters["uTime"].SetValue(0);//-(float)Main.time * 0.06f
-                //Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_7");//字面意义，base那个是不会随时间动的，ani那个会动//BaseTex
-                //Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
-                //Main.graphics.GraphicsDevice.Textures[2] = itemTex;
-                ////if (ConfigurationSwoosh.instance.swooshColorType == SwooshColorType.函数生成热度图) 
-                ////{
-                ////    var colorBar = new Texture2D(Main.graphics.GraphicsDevice,300,60);
-                ////    colorBar.SetData<Color>();
-                ////    Main.graphics.GraphicsDevice.Textures[3] = colorBar;
-                ////}
+                    //var passCount = 0;
+                    //if (ConfigurationSwoosh.instance.swooshColorType == SwooshColorType.武器贴图对角线) passCount++;
+                    //if (alphaBlend) passCount += 2;
+                    ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+                    Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList.ToArray(), 0, triangleList.Count / 3);
+                    Main.graphics.GraphicsDevice.RasterizerState = originalState;
+                    //ShaderSwooshEX.Parameters["uTransform"].SetValue(model * projection);
+                    //ShaderSwooshEX.Parameters["uLighter"].SetValue(ConfigurationSwoosh.instance.luminosityFactor);
+                    //ShaderSwooshEX.Parameters["uTime"].SetValue(0);//-(float)Main.time * 0.06f
+                    //Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_7");//字面意义，base那个是不会随时间动的，ani那个会动//BaseTex
+                    //Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
+                    //Main.graphics.GraphicsDevice.Textures[2] = itemTex;
+                    ////if (ConfigurationSwoosh.instance.swooshColorType == SwooshColorType.函数生成热度图) 
+                    ////{
+                    ////    var colorBar = new Texture2D(Main.graphics.GraphicsDevice,300,60);
+                    ////    colorBar.SetData<Color>();
+                    ////    Main.graphics.GraphicsDevice.Textures[3] = colorBar;
+                    ////}
 
 
-                //Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.AnisotropicClamp;
-                //Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.AnisotropicClamp;
-                //Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.AnisotropicClamp;
-                //Main.graphics.GraphicsDevice.SamplerStates[3] = SamplerState.AnisotropicClamp;
+                    //Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.AnisotropicClamp;
+                    //Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.AnisotropicClamp;
+                    //Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.AnisotropicClamp;
+                    //Main.graphics.GraphicsDevice.SamplerStates[3] = SamplerState.AnisotropicClamp;
 
-                //var passCount = 0;
-                //if (ConfigurationSwoosh.instance.swooshColorType == SwooshColorType.武器贴图对角线) passCount++;
-                ////if (alphaBlend) passCount += 2;
-                //ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
-                //Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList.ToArray(), 0, triangleList.Count / 3);
-                //Main.graphics.GraphicsDevice.RasterizerState = originalState;
+                    //var passCount = 0;
+                    //if (ConfigurationSwoosh.instance.swooshColorType == SwooshColorType.武器贴图对角线) passCount++;
+                    ////if (alphaBlend) passCount += 2;
+                    //ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+                    //Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList.ToArray(), 0, triangleList.Count / 3);
+                    //Main.graphics.GraphicsDevice.RasterizerState = originalState;
+                }
+
             }
 
             //var color = Main.hslToRgb(0.33f, 0.75f, 0.75f);

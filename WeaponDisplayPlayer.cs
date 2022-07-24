@@ -46,7 +46,8 @@ namespace CoolerItemVisualEffect
         }
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
         {
-            player.GetModPlayer<WeaponDisplayPlayer>().ConfigurationSwoosh.SendData((byte)Player.whoAmI, fromWho, toWho);//, true
+            player.GetModPlayer<WeaponDisplayPlayer>().ConfigurationSwoosh.SendData(Player.whoAmI, fromWho, toWho, true);//(byte)
+
             //testState++;
             //Main.NewText("同步辣!!!!");
             //base.SyncPlayer(toWho, fromWho, newPlayer);
@@ -102,10 +103,14 @@ namespace CoolerItemVisualEffect
             }
             base.ModifyScreenPosition();
         }
-        public override void ResetEffects()
+        public override void PreUpdate()
         {
 
-            if (Player.HeldItem.type == ItemID.Zenith || Player.HeldItem.type == ModContent.ItemType<Weapons.FirstFractal_CIVE>()) 
+        }
+        public override void PostUpdate()
+        {
+            //base.PostUpdate();
+            if (Player.HeldItem.type == ItemID.Zenith || Player.HeldItem.type == ModContent.ItemType<Weapons.FirstFractal_CIVE>())
             {
                 if (ConfigurationSwoosh.instance.allowZenith && ConfigurationSwoosh.instance.CoolerSwooshActive)
                 {
@@ -113,7 +118,7 @@ namespace CoolerItemVisualEffect
                     Player.HeldItem.useStyle = 1;
                     Player.HeldItem.channel = false;
                 }
-                else 
+                else
                 {
                     Player.HeldItem.noUseGraphic = true;
                     Player.HeldItem.useStyle = 5;
@@ -124,7 +129,7 @@ namespace CoolerItemVisualEffect
             }
             //Main.NewText(player.HeldItem.noUseGraphic);
             //Main.NewText((Player.itemAnimation, Player.itemAnimationMax), Color.Red);
-            if (player.itemAnimation == player.itemAnimationMax) 
+            if (player.itemAnimation == player.itemAnimationMax)
             {
                 var flag = player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && player.HeldItem.DamageType == DamageClass.Melee && !player.HeldItem.noUseGraphic && ConfigurationSwoosh.instance.CoolerSwooshActive;
                 flag |= (player.HeldItem.type == ItemID.Zenith || player.HeldItem.type == ModContent.ItemType<Weapons.FirstFractal_CIVE>()) && ConfigurationSwoosh.instance.allowZenith && ConfigurationSwoosh.instance.CoolerSwooshActive;
@@ -133,11 +138,18 @@ namespace CoolerItemVisualEffect
                     CoolerItemVisualEffect.ChangeShooshStyle(player);
                 }
             }
-            if (player.itemAnimation > 0 && UseSlash) 
+            if (player.itemAnimation > 0 && UseSlash)
             {
                 player.itemRotation = direct - MathHelper.ToRadians(90f); // 别问为啥-90°，问re去
+                //Main.NewText("!!!!!");
                 player.SetCompositeArmFront(enabled: true, Player.CompositeArmStretchAmount.Full, player.itemRotation);
             }
+        }
+        public override void ResetEffects()
+        {
+
+
+
             //Main.NewText((testState, Player.whoAmI, Player.name));
             //if (testState == 1)
             //{
@@ -182,7 +194,7 @@ namespace CoolerItemVisualEffect
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
         {
             HitboxPosition = Vector2.Zero;//重置
-            //Main.spriteBatch.DrawString(FontAssets.MouseText.Value, testState.ToString(), Player.Center - new Vector2(0, 64) - Main.screenPosition, Color.Red);
+            //Main.spriteBatch.DrawString(FontAssets.MouseText.Value, ConfigurationSwoosh.MagicConfigCounter.ToString(), Player.Center - new Vector2(0, 64) - Main.screenPosition, Color.Red);
             //这个写法可以让绘制的东西在人物旋转后保持原来与人物的相对位置(试做的武器显示)
             if (ConfigurationPreInstall.instance.useWeaponDisplay)
             {
@@ -297,7 +309,7 @@ namespace CoolerItemVisualEffect
             if (holditem.glowMask >= 0)
             {
                 Texture2D glow = TextureAssets.GlowMask[holditem.glowMask].Value;
-                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White, rot, origin, ConfigurationPreInstall.instance.WeaponScale * holditem.scale, drawInfo.playerEffect, 0);
+                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, ConfigurationPreInstall.instance.WeaponScale * holditem.scale, drawInfo.playerEffect, 0);
                 //switch (CoolerItemVisualEffect.Config.DyeUsed)
                 //{
                 //    case DyeSlot.None:
@@ -320,7 +332,7 @@ namespace CoolerItemVisualEffect
             if (holditem.ModItem != null && ModContent.HasAsset(holditem.ModItem.Texture + "_Glow"))
             {
                 Texture2D glow = ModContent.Request<Texture2D>(holditem.ModItem.Texture + "_Glow").Value;
-                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White, rot, origin, ConfigurationPreInstall.instance.WeaponScale * holditem.scale, drawInfo.playerEffect, 0);
+                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, ConfigurationPreInstall.instance.WeaponScale * holditem.scale, drawInfo.playerEffect, 0);
                 drawInfo.DrawDataCache.Add(itemglow);
             }
         }

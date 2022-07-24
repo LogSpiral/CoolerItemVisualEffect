@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System.ComponentModel;
 using System.IO;
 using Terraria.ModLoader.Config;
@@ -146,6 +147,7 @@ namespace CoolerItemVisualEffect
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigurationServer.HitboxTooltip")]
         public bool UseHitbox;
 
+
         [DefaultValue(true)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.49")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.50")]
@@ -157,7 +159,7 @@ namespace CoolerItemVisualEffect
     [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.Label")]
     public class ConfigurationSwoosh : ModConfig
     {
-        public void SendData(byte? whoami = null, int ignoreCilent = -1, int toCilent = -1, bool enter = false) //ModPacket packet, int? playerIndex = null
+        public void SendData(int? whoami = null, int ignoreCilent = -1, int toCilent = -1, bool enter = false) //ModPacket packet, int? playerIndex = null
         {
             ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
             packet.Write((byte)(enter ? HandleNetwork.MessageType.EnterWorld : HandleNetwork.MessageType.Configs));
@@ -186,6 +188,8 @@ namespace CoolerItemVisualEffect
             packet.Write(gather);
             packet.Write(allowZenith);
             packet.Write(glowLight);
+            packet.Write((byte)maxCount);
+
             //packet.Write
             packet.Send(toCilent, ignoreCilent);
             //if (whoami != -1)
@@ -220,18 +224,21 @@ namespace CoolerItemVisualEffect
             config.gather = reader.ReadBoolean();
             config.allowZenith = reader.ReadBoolean();
             config.glowLight = reader.ReadSingle();
+            config.maxCount = reader.ReadByte();
             //Main.NewText("向 " + Main.player[whoami] + "设置数据");
 
-
         }
+        [JsonIgnore]
+        public static int MagicConfigCounter;
         public override void OnChanged()
         {
             ConfigurationPreInstall.instance.preInstallSwoosh = ConfigurationPreInstall.PreInstallSwoosh.自定义UserDefined;
+            MagicConfigCounter++;
             if (Main.netMode == NetmodeID.MultiplayerClient) SendData();
         }
         public override void OnLoaded()
         {
-            if (Main.netMode == NetmodeID.MultiplayerClient) SendData();
+            //if (Main.netMode == NetmodeID.MultiplayerClient) SendData();
         }
         public override ConfigScope Mode => ConfigScope.ClientSide;
         public static ConfigurationSwoosh instance => ModContent.GetInstance<ConfigurationSwoosh>();
@@ -421,6 +428,13 @@ namespace CoolerItemVisualEffect
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.46")]
         [BackgroundColor(127, 127, 127, 127)]
         public float glowLight { get; set; }//
+
+        [DefaultValue(1)]
+        [Range(1, 10)]
+        [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.51")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.52")]
+        [BackgroundColor(102, 153, 204, 127)]
+        public int maxCount { get; set; }//
 
         public enum SwooshSamplerState
         {

@@ -20,7 +20,7 @@ namespace CoolerItemVisualEffect
             MessageType msgType = (MessageType)reader.ReadByte();
             if (MessageType.EnterWorld == msgType) 
             {
-                var who = reader.ReadByte();
+                var who = reader.ReadInt32();
                 ConfigurationSwoosh.SetData(reader, who);
                 return;
             }
@@ -51,6 +51,7 @@ namespace CoolerItemVisualEffect
                             packet.Write(negativeDir);
                             packet.Write(rotationForShadow);
                             packet.Write(rotationForShadowNext);
+                            packet.Write(swingCount);
                             packet.Write(kValue);
                             packet.Write(kValueNext);
                             packet.Write(UseSlash);
@@ -98,7 +99,7 @@ namespace CoolerItemVisualEffect
                             //Main.player[who].GetModPlayer<WeaponDisplayPlayer>().ConfigurationSwoosh.SendData(whoAmI, who);
 
                             ConfigurationSwoosh.SetData(reader, whoAmI);
-                            Main.player[whoAmI].GetModPlayer<WeaponDisplayPlayer>().ConfigurationSwoosh.SendData((byte)whoAmI, whoAmI);
+                            Main.player[whoAmI].GetModPlayer<WeaponDisplayPlayer>().ConfigurationSwoosh.SendData(whoAmI, whoAmI);
                             return;
                         }
                     //case MessageType.EnterWorld: 
@@ -163,7 +164,7 @@ namespace CoolerItemVisualEffect
                         }
                     case MessageType.Configs:
                         {
-                            var who = reader.ReadByte();
+                            var who = reader.ReadInt32();
                             ConfigurationSwoosh.SetData(reader, who);
                             return;
                         }
