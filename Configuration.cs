@@ -14,11 +14,8 @@ namespace CoolerItemVisualEffect
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.48")]
         [DrawTicks]
         public PreInstallSwoosh preInstallSwoosh { get; set; }
-        public override void OnChanged()
+        public ConfigurationSwoosh SetCSValue(ConfigurationSwoosh cs)
         {
-            if (preInstallSwoosh == PreInstallSwoosh.自定义UserDefined) return;
-            var cs = ConfigurationSwoosh.instance;
-            if (cs == null) return;
             cs.CoolerSwooshActive = true;
             cs.ToolsNoUseNewSwooshEffect = false;
             cs.IsLighterDecider = 0.2f;
@@ -42,6 +39,7 @@ namespace CoolerItemVisualEffect
             cs.gather = true;
             cs.allowZenith = true;
             cs.glowLight = 0f;
+            cs.maxCount = 1;
             switch (preInstallSwoosh)
             {
                 //case PreInstallSwoosh.普通Normal: 
@@ -54,6 +52,7 @@ namespace CoolerItemVisualEffect
                         cs.distortFactor = 1f;
                         cs.swooshSize = 1.5f;
                         cs.swooshActionStyle = ConfigurationSwoosh.SwooshAction.两次普通斩击一次高速旋转;
+                        cs.maxCount = 3;
                         break;
                     }
                 case PreInstallSwoosh.巨大Huge:
@@ -68,6 +67,7 @@ namespace CoolerItemVisualEffect
                         cs.Shake = 1f;
                         cs.swooshFactorStyle = ConfigurationSwoosh.SwooshFactorStyle.系数中间插值;
                         cs.swooshActionStyle = ConfigurationSwoosh.SwooshAction.两次普通斩击一次高速旋转;
+                        cs.maxCount = 5;
                         break;
                     }
                 case PreInstallSwoosh.明亮Bright:
@@ -107,6 +107,14 @@ namespace CoolerItemVisualEffect
                         break;
                     }
             }
+            return cs;
+        }
+        public override void OnChanged()
+        {
+            if (preInstallSwoosh == PreInstallSwoosh.自定义UserDefined) return;
+            var cs = ConfigurationSwoosh.instance;
+            if (cs == null) return;
+            SetCSValue(cs);
             if (Main.netMode == NetmodeID.MultiplayerClient) ConfigurationSwoosh.instance.SendData();
         }
         public enum PreInstallSwoosh
@@ -228,12 +236,41 @@ namespace CoolerItemVisualEffect
             //Main.NewText("向 " + Main.player[whoami] + "设置数据");
 
         }
-        [JsonIgnore]
-        public static int MagicConfigCounter;
+        //[JsonIgnore]
+        //public static int MagicConfigCounter;
+        bool EqualValue(ConfigurationSwoosh config)
+        {
+            return
+                CoolerSwooshActive == config.CoolerSwooshActive &&
+                ToolsNoUseNewSwooshEffect == config.ToolsNoUseNewSwooshEffect &&
+                IsLighterDecider == config.IsLighterDecider &&
+                swooshColorType == config.swooshColorType &&
+                swooshSampler == config.swooshSampler &&
+                swooshFactorStyle == config.swooshFactorStyle &&
+                swooshActionStyle == config.swooshActionStyle &&
+                swooshSize == config.swooshSize &&
+                hueOffsetRange == config.hueOffsetRange &&
+                hueOffsetValue == config.hueOffsetValue &&
+                saturationScalar == config.saturationScalar &&
+                luminosityRange == config.luminosityRange &&
+                luminosityFactor == config.luminosityFactor &&
+                rotationVelocity == config.rotationVelocity &&
+                distortFactor == config.distortFactor &&
+                ItemAdditive == config.ItemAdditive &&
+                ItemHighLight == config.ItemHighLight &&
+                Shake == config.Shake &&
+                ImageIndex == config.ImageIndex &&
+                checkAir == config.checkAir &&
+                gather == config.gather &&
+                allowZenith == config.allowZenith &&
+                glowLight == config.glowLight &&
+                maxCount == config.maxCount;
+        }
         public override void OnChanged()
         {
-            ConfigurationPreInstall.instance.preInstallSwoosh = ConfigurationPreInstall.PreInstallSwoosh.自定义UserDefined;
-            MagicConfigCounter++;
+            if (!EqualValue(ConfigurationPreInstall.instance.SetCSValue(new ConfigurationSwoosh())))
+                ConfigurationPreInstall.instance.preInstallSwoosh = ConfigurationPreInstall.PreInstallSwoosh.自定义UserDefined;
+            //MagicConfigCounter++;
             if (Main.netMode == NetmodeID.MultiplayerClient) SendData();
         }
         public override void OnLoaded()

@@ -54,7 +54,7 @@ namespace CoolerItemVisualEffect
         }
         public float kValueNext;
         public float rotationForShadowNext;
-        public int testState;
+        //public int testState;
         public int swingCount;
         public (Texture2D tex, int type) colorBar;
 
@@ -129,7 +129,7 @@ namespace CoolerItemVisualEffect
             }
             //Main.NewText(player.HeldItem.noUseGraphic);
             //Main.NewText((Player.itemAnimation, Player.itemAnimationMax), Color.Red);
-            if (player.itemAnimation == player.itemAnimationMax)
+            if (player.itemAnimation == player.itemAnimationMax && player.itemAnimation > 0)
             {
                 var flag = player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && player.HeldItem.DamageType == DamageClass.Melee && !player.HeldItem.noUseGraphic && ConfigurationSwoosh.instance.CoolerSwooshActive;
                 flag |= (player.HeldItem.type == ItemID.Zenith || player.HeldItem.type == ModContent.ItemType<Weapons.FirstFractal_CIVE>()) && ConfigurationSwoosh.instance.allowZenith && ConfigurationSwoosh.instance.CoolerSwooshActive;
