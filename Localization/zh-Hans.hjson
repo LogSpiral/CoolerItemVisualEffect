@@ -4,9 +4,16 @@ Mods:{
 			旧日支配者:旧日支配者
 			真旧日支配者:真▪旧日支配者
 			FirstFractal_CIVE:最初分形
+			WitheredWoodSword:朽木之刃
+			LivingWoodSword:灵木之刃
+			SereStoneSword:枯石之刃
+			MossStoneSword:苔石之刃
+			RustySteelBlade:锈钢之刃
+			RefinesSteelBlade:精钢之刃
 		}
 		ItemTooltip:{
 			旧日支配者:"这股力量还未完全苏醒"
+			FirstFractal_CIVE:否定，忘却，尘封......终有一天其将破土而出。
 		}
 		StrangeTitle:
 		{
@@ -21,7 +28,7 @@ Mods:{
 			8:泰拉瑞亚:无垠星空与时间洪流
 			9:泰拉瑞亚:你打算在这幻界逗留多久呢?
 			10:泰拉瑞亚:阿汪居然塞私货，太可恶了！！
-			11:幻世边境:第一回 风暴城辉光重现，赤康邦暗流涌动。
+			11:幻世边境:第一回 风暴城辉光重现，赤天县暗流涌动。
 			12:幻世边境:第二回 星之河孤帆渺渺，时之风独旅茫茫。
 			13:幻世边境:第三回 虚幻界醉生梦死，现实境山重水复。
 			14:幻世边境:第四回 无间狱暮雾蒙蒙，人间世长夜漫漫。

@@ -12,13 +12,15 @@ namespace CoolerItemVisualEffect
             Hitbox,
             rotationDirect,
             Configs,
-            EnterWorld
+            EnterWorld,
+            PureFractal,
+            FinalFractalPlayer
         }
 
         internal static void HandlePacket(BinaryReader reader, int whoAmI)
         {
             MessageType msgType = (MessageType)reader.ReadByte();
-            if (MessageType.EnterWorld == msgType) 
+            if (MessageType.EnterWorld == msgType)
             {
                 var who = reader.ReadInt32();
                 ConfigurationSwoosh.SetData(reader, who);
@@ -37,7 +39,7 @@ namespace CoolerItemVisualEffect
                             float kValue = reader.ReadSingle();
                             float kValueNext = reader.ReadSingle();
                             bool UseSlash = reader.ReadBoolean();
-                            WeaponDisplayPlayer modPlayer = Main.player[whoAmI].GetModPlayer<WeaponDisplayPlayer>();
+                            CoolerItemVisualEffectPlayer modPlayer = Main.player[whoAmI].GetModPlayer<CoolerItemVisualEffectPlayer>();
                             modPlayer.negativeDir = negativeDir;
                             modPlayer.rotationForShadow = rotationForShadow;
                             modPlayer.rotationForShadowNext = rotationForShadowNext;
@@ -62,7 +64,7 @@ namespace CoolerItemVisualEffect
                     case MessageType.Hitbox:
                         {
                             var HitboxPosition = reader.ReadPackedVector2();
-                            WeaponDisplayPlayer modPlayer = Main.player[whoAmI].GetModPlayer<WeaponDisplayPlayer>();
+                            CoolerItemVisualEffectPlayer modPlayer = Main.player[whoAmI].GetModPlayer<CoolerItemVisualEffectPlayer>();
                             modPlayer.HitboxPosition = HitboxPosition;
 
                             ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
@@ -78,7 +80,7 @@ namespace CoolerItemVisualEffect
                             float direct = reader.ReadSingle();
                             var HitboxPosition = reader.ReadPackedVector2();
 
-                            WeaponDisplayPlayer modPlayer = Main.player[whoAmI].GetModPlayer<WeaponDisplayPlayer>();
+                            CoolerItemVisualEffectPlayer modPlayer = Main.player[whoAmI].GetModPlayer<CoolerItemVisualEffectPlayer>();
                             modPlayer.direct = direct;
                             modPlayer.HitboxPosition = HitboxPosition;
 
@@ -99,17 +101,52 @@ namespace CoolerItemVisualEffect
                             //Main.player[who].GetModPlayer<WeaponDisplayPlayer>().ConfigurationSwoosh.SendData(whoAmI, who);
 
                             ConfigurationSwoosh.SetData(reader, whoAmI);
-                            Main.player[whoAmI].GetModPlayer<WeaponDisplayPlayer>().ConfigurationSwoosh.SendData(whoAmI, whoAmI);
+                            Main.player[whoAmI].GetModPlayer<CoolerItemVisualEffectPlayer>().ConfigurationSwoosh.SendData(whoAmI, whoAmI);
                             return;
                         }
-                    //case MessageType.EnterWorld: 
-                    //    {
+                    case MessageType.PureFractal:
+                        {
+                            var who = reader.ReadInt16();
+                            var frame = reader.ReadByte();
+                            Main.projectile[who].frame = frame;
+                            ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
+                            packet.Write(who);
+                            packet.Write(frame);
+                            packet.Send(-1, whoAmI);
+                            return;
+                        }
+                    case MessageType.FinalFractalPlayer:
+                        {
+                            FinalFractal.FinalFractalPlayer finalFractalPlayer = Main.player[whoAmI].GetModPlayer<FinalFractal.FinalFractalPlayer>();
+                            var holdingFinalFractal = reader.ReadBoolean();
+                            var usingFinalFractal = reader.ReadInt32();
+                            var usedFinalFractal = reader.ReadBoolean();
+                            var waitingFinalFractal = reader.ReadInt32();
+                            var finalFractalTier = reader.ReadInt32();
+                            finalFractalPlayer.holdingFinalFractal = holdingFinalFractal; 
+                            finalFractalPlayer.usingFinalFractal = usingFinalFractal;
+                            finalFractalPlayer.usedFinalFractal = usedFinalFractal;
+                            finalFractalPlayer.waitingFinalFractal = waitingFinalFractal; 
+                            finalFractalPlayer.finalFractalTier = finalFractalTier;
+                            ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
+                            packet.Write((byte)MessageType.FinalFractalPlayer);
+                            packet.Write((byte)whoAmI);
+                            packet.Write(holdingFinalFractal);
+                            packet.Write(usingFinalFractal);
+                            packet.Write(usedFinalFractal);
+                            packet.Write(waitingFinalFractal);
+                            packet.Write(finalFractalTier);
+                            packet.Send(-1, whoAmI);
+                            return;
+                        }
+                        //case MessageType.EnterWorld: 
+                        //    {
 
-                    //        ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
-                    //        packet.Write((byte)MessageType.EnterWorld);
-                    //        packet.Send(-1, whoAmI);
-                    //        return;
-                    //    }
+                        //        ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
+                        //        packet.Write((byte)MessageType.EnterWorld);
+                        //        packet.Send(-1, whoAmI);
+                        //        return;
+                        //    }
                 }
                 CoolerItemVisualEffect.Instance.Logger.Debug($"Unknown Message type: {msgType}, Please contact the mod developers");
                 return;
@@ -131,7 +168,7 @@ namespace CoolerItemVisualEffect
                             bool UseSlash = reader.ReadBoolean();
                             int playerIndex = reader.ReadByte();
 
-                            WeaponDisplayPlayer modPlayer = Main.player[playerIndex].GetModPlayer<WeaponDisplayPlayer>();
+                            CoolerItemVisualEffectPlayer modPlayer = Main.player[playerIndex].GetModPlayer<CoolerItemVisualEffectPlayer>();
                             modPlayer.negativeDir = negativeDir;
                             modPlayer.rotationForShadow = rotationForShadow;
                             modPlayer.rotationForShadowNext = rotationForShadowNext;
@@ -146,7 +183,7 @@ namespace CoolerItemVisualEffect
                             var HitboxPosition = reader.ReadPackedVector2();
                             int playerIndex = reader.ReadByte();
 
-                            WeaponDisplayPlayer modPlayer = Main.player[playerIndex].GetModPlayer<WeaponDisplayPlayer>();
+                            CoolerItemVisualEffectPlayer modPlayer = Main.player[playerIndex].GetModPlayer<CoolerItemVisualEffectPlayer>();
                             modPlayer.HitboxPosition = HitboxPosition;
                             return;
                         }
@@ -156,7 +193,7 @@ namespace CoolerItemVisualEffect
                             var HitboxPosition = reader.ReadPackedVector2();
 
                             int playerIndex = reader.ReadByte();
-                            WeaponDisplayPlayer modPlayer = Main.player[playerIndex].GetModPlayer<WeaponDisplayPlayer>();
+                            CoolerItemVisualEffectPlayer modPlayer = Main.player[playerIndex].GetModPlayer<CoolerItemVisualEffectPlayer>();
                             modPlayer.direct = direct;
                             modPlayer.HitboxPosition = HitboxPosition;
 
@@ -168,11 +205,26 @@ namespace CoolerItemVisualEffect
                             ConfigurationSwoosh.SetData(reader, who);
                             return;
                         }
-                    //case MessageType.EnterWorld: 
-                    //    {
-                    //        ConfigurationSwoosh.instance.SendData();
-                    //        return;
-                    //    }
+                    case MessageType.PureFractal:
+                        {
+                            Main.projectile[reader.ReadInt16()].frame = reader.ReadByte();
+                            return;
+                        }
+                    case MessageType.FinalFractalPlayer:
+                        {
+                            var finalFractalPlayer = Main.player[reader.ReadByte()].GetModPlayer<FinalFractal.FinalFractalPlayer>();
+                            finalFractalPlayer.holdingFinalFractal = reader.ReadBoolean();
+                            finalFractalPlayer.usingFinalFractal = reader.ReadInt32();
+                            finalFractalPlayer.usedFinalFractal = reader.ReadBoolean();
+                            finalFractalPlayer.waitingFinalFractal = reader.ReadInt32();
+                            finalFractalPlayer.finalFractalTier = reader.ReadInt32();
+                            return;
+                        }
+                        //case MessageType.EnterWorld: 
+                        //    {
+                        //        ConfigurationSwoosh.instance.SendData();
+                        //        return;
+                        //    }
                 }
                 CoolerItemVisualEffect.Instance.Logger.Debug($"Unknown Message type: {msgType}, Please contact the mod developers");
                 return;

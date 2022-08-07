@@ -116,7 +116,7 @@ namespace CoolerItemVisualEffect
             if (cs == null) return;
             SetCSValue(cs);
             ConfigurationSwoosh.Save(cs);
-
+            CoolerItemVisualEffect.ChangeAllPureHeatMap();
             if (Main.netMode == NetmodeID.MultiplayerClient) ConfigurationSwoosh.instance.SendData();
         }
         public enum PreInstallSwoosh
@@ -218,7 +218,7 @@ namespace CoolerItemVisualEffect
         public static void SetData(BinaryReader reader, int whoami)
         {
             if (whoami < 0 || whoami > 255) throw new System.Exception("我抄，超范围辣");
-            var config = Main.player[whoami].GetModPlayer<WeaponDisplayPlayer>().ConfigurationSwoosh;
+            var config = Main.player[whoami].GetModPlayer<CoolerItemVisualEffectPlayer>().ConfigurationSwoosh;
             //if (config == null) Main.player[whoami].GetModPlayer<WeaponDisplayPlayer>().configurationSwoosh = new ConfigurationSwoosh();
             config.CoolerSwooshActive = reader.ReadBoolean();
             config.ToolsNoUseNewSwooshEffect = reader.ReadBoolean();
@@ -284,6 +284,7 @@ namespace CoolerItemVisualEffect
                 ConfigurationPreInstall.instance.preInstallSwoosh = ConfigurationPreInstall.PreInstallSwoosh.自定义UserDefined;
                 Save(ConfigurationPreInstall.instance);
             }
+            CoolerItemVisualEffect.ChangeAllPureHeatMap();
             //MagicConfigCounter++;
             if (Main.netMode == NetmodeID.MultiplayerClient) SendData();
         }

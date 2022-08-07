@@ -8,7 +8,7 @@ using static CoolerItemVisualEffect.ConfigurationSwoosh;
 
 namespace CoolerItemVisualEffect
 {
-    public class WeaponDisplayPlayer : ModPlayer
+    public class CoolerItemVisualEffectPlayer : ModPlayer
     {
         public List<Vector2> itemOldPositions = new();
         public float kValue;
@@ -46,7 +46,7 @@ namespace CoolerItemVisualEffect
         }
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
         {
-            player.GetModPlayer<WeaponDisplayPlayer>().ConfigurationSwoosh.SendData(Player.whoAmI, fromWho, toWho, true);//(byte)
+            player.GetModPlayer<CoolerItemVisualEffectPlayer>().ConfigurationSwoosh.SendData(Player.whoAmI, fromWho, toWho, true);//(byte)
 
             //testState++;
             //Main.NewText("同步辣!!!!");
@@ -105,12 +105,20 @@ namespace CoolerItemVisualEffect
         }
         public override void PreUpdate()
         {
-
+            //bool hasItem = false;
+            //foreach (var item in player.inventory) 
+            //{
+            //    if (item.type == 2333) 
+            //    {
+            //        hasItem = true;
+            //        break;
+            //    }
+            //}
         }
         public override void PostUpdate()
         {
             //base.PostUpdate();
-            if (Player.HeldItem.type == ItemID.Zenith || Player.HeldItem.type == ModContent.ItemType<Weapons.FirstFractal_CIVE>())
+            if (Player.HeldItem.type == ItemID.Zenith || Player.HeldItem.type == ModContent.ItemType<Weapons.FirstFractal_CIVE>() || Player.HeldItem.type == ModContent.ItemType<Weapons.PureFractal>())
             {
                 if (ConfigurationSwoosh.instance.allowZenith && ConfigurationSwoosh.instance.CoolerSwooshActive)
                 {
@@ -132,7 +140,7 @@ namespace CoolerItemVisualEffect
             if (player.itemAnimation == player.itemAnimationMax && player.itemAnimation > 0)
             {
                 var flag = player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && player.HeldItem.DamageType == DamageClass.Melee && !player.HeldItem.noUseGraphic && ConfigurationSwoosh.instance.CoolerSwooshActive;
-                flag |= (player.HeldItem.type == ItemID.Zenith || player.HeldItem.type == ModContent.ItemType<Weapons.FirstFractal_CIVE>()) && ConfigurationSwoosh.instance.allowZenith && ConfigurationSwoosh.instance.CoolerSwooshActive;
+                flag |= (player.HeldItem.type == ItemID.Zenith || player.HeldItem.type == ModContent.ItemType<Weapons.FirstFractal_CIVE>() || player.HeldItem.type == ModContent.ItemType<Weapons.PureFractal>()) && ConfigurationSwoosh.instance.allowZenith && ConfigurationSwoosh.instance.CoolerSwooshActive;
                 if (Main.myPlayer == player.whoAmI && flag) // 
                 {
                     CoolerItemVisualEffect.ChangeShooshStyle(player);
@@ -193,8 +201,23 @@ namespace CoolerItemVisualEffect
 
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
         {
+
+            //foreach (var projectile in Main.projectile) 
+            //{
+            //    if (projectile.type == ProjectileID.FinalFractal && projectile.active) 
+            //    {
+            //        for (int n = 0; n < projectile.oldPos.Length; n++)
+            //        {
+            //            float factor = 1 - n / (projectile.oldPos.Length - 1f);
+            //            factor *= .5f;
+            //            Main.spriteBatch.DrawLine(projectile.oldPos[n], (projectile.oldRot[n] - MathHelper.PiOver2).ToRotationVector2() * 64 , Color.Cyan * factor, 4, true, -Main.screenPosition);
+            //            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, projectile.oldPos[n] - Main.screenPosition, new Rectangle(0, 0, 1, 1), Color.Red * factor, 0, new Vector2(.5f), 8f, 0, 0);
+            //        }
+            //    }
+            //}
+
             HitboxPosition = Vector2.Zero;//重置
-            //Main.spriteBatch.DrawString(FontAssets.MouseText.Value, ConfigurationSwoosh.MagicConfigCounter.ToString(), Player.Center - new Vector2(0, 64) - Main.screenPosition, Color.Red);
+            Main.spriteBatch.DrawString(FontAssets.MouseText.Value, player.isFirstFractalAfterImage.ToString(), Player.Center - new Vector2(0, 64) - Main.screenPosition, Color.Red);
             //这个写法可以让绘制的东西在人物旋转后保持原来与人物的相对位置(试做的武器显示)
             if (ConfigurationPreInstall.instance.useWeaponDisplay)
             {

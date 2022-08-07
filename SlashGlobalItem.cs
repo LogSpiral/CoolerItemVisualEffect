@@ -157,7 +157,7 @@ namespace CoolerItemVisualEffect
 
         public override void UseItemHitbox(Item item, Player player, ref Rectangle hitbox, ref bool noHitbox)
         {
-            var modPlayer = player.GetModPlayer<WeaponDisplayPlayer>();
+            var modPlayer = player.GetModPlayer<CoolerItemVisualEffectPlayer>();
             if (!ConfigurationPreInstall.instance.UseHitbox)
                 return;
 

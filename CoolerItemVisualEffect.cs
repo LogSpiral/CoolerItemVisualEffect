@@ -17,6 +17,7 @@ using Terraria.UI;
 using static Terraria.GameContent.Skies.CreditsRoll.Segments.PlayerSegment;
 using static CoolerItemVisualEffect.ConfigurationSwoosh;
 using Terraria.Localization;
+using Terraria.Graphics.Renderers;
 
 namespace CoolerItemVisualEffect
 {
@@ -30,16 +31,209 @@ namespace CoolerItemVisualEffect
         //internal static bool UseItemTexForSwoosh = false;
 
         internal static CoolerItemVisualEffect Instance;
-
+        public static int ModTime => CoolerSystem.ModTime;
+        public static void ChangeAllPureHeatMap()
+        {
+            Main.RunOnMainThread(() =>
+            {
+                for (int n = 0; n < 26; n++)
+                {
+                    //ChangePureHeatMap(n);
+                    if (instance == null) return;
+                    var itemTex = GetPureFractalProjTexs(n);
+                    if (itemTex == null) return;
+                    if (Main.graphics.GraphicsDevice == null) return;
+                    var w = itemTex.Width;
+                    var he = itemTex.Height;
+                    var cs = new Color[w * he];
+                    itemTex.GetData(cs);
+                    Vector4 vcolor = default;
+                    float count = 0;
+                    for (int i = 0; i < cs.Length; i++)
+                    {
+                        if (cs[i] != default && (i - w < 0 || cs[i - w] != default) && (i - 1 < 0 || cs[i - 1] != default) && (i + w >= cs.Length || cs[i + w] != default) && (i + 1 >= cs.Length || cs[i + 1] != default))
+                        {
+                            var weight = (float)((i + 1) % w * (he - i / w)) / w / he;
+                            vcolor += cs[i].ToVector4() * weight;
+                            count += weight;
+                        }
+                    }
+                    vcolor /= count;
+                    var newColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
+                    var hsl = Main.rgbToHsl(newColor);
+                    var colors = new Color[300];
+                    for (int i = 0; i < 300; i++)
+                    {
+                        var f = i / 299f;//分割成25次惹，f从1/25f到1//1 - 
+                        f = f * f;// *f
+                        float h = (hsl.X + instance.hueOffsetValue + instance.hueOffsetRange * (2 * f - 1)) % 1;
+                        float s = MathHelper.Clamp(hsl.Y * instance.saturationScalar, 0, 1);
+                        float l = MathHelper.Clamp(f > 0.5f ? hsl.Z * (2 - f * 2) + (f * 2 - 1) * Math.Max(hsl.Z, 0.5f + instance.luminosityRange) : f * 2 * hsl.Z + (1 - f * 2) * Math.Min(hsl.Z, 0.5f - instance.luminosityRange), 0, 1);
+                        colors[i] = Main.hslToRgb(h, s, l);
+                    }
+                    if (PureFractalHeatMaps[n] == null) PureFractalHeatMaps[n] = new Texture2D(Main.graphics.GraphicsDevice, 300, 1);
+                    PureFractalHeatMaps[n].SetData(colors);
+                }
+            });
+        }
+        public static void ChangePureHeatMap(int n)
+        {
+            Main.RunOnMainThread(() =>
+            {
+                if (instance == null) return;
+                var itemTex = GetPureFractalProjTexs(n);
+                if (itemTex == null) return;
+                if (Main.graphics.GraphicsDevice == null) return;
+                var w = itemTex.Width;
+                var he = itemTex.Height;
+                var cs = new Color[w * he];
+                itemTex.GetData(cs);
+                Vector4 vcolor = default;
+                float count = 0;
+                for (int i = 0; i < cs.Length; i++)
+                {
+                    if (cs[i] != default && (i - w < 0 || cs[i - w] != default) && (i - 1 < 0 || cs[i - 1] != default) && (i + w >= cs.Length || cs[i + w] != default) && (i + 1 >= cs.Length || cs[i + 1] != default))
+                    {
+                        var weight = (float)((i + 1) % w * (he - i / w)) / w / he;
+                        vcolor += cs[i].ToVector4() * weight;
+                        count += weight;
+                    }
+                }
+                vcolor /= count;
+                var newColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
+                var hsl = Main.rgbToHsl(newColor);
+                var colors = new Color[300];
+                for (int i = 0; i < 300; i++)
+                {
+                    var f = i / 299f;//分割成25次惹，f从1/25f到1//1 - 
+                    f = f * f;// *f
+                    float h = (hsl.X + instance.hueOffsetValue + instance.hueOffsetRange * (2 * f - 1)) % 1;
+                    float s = MathHelper.Clamp(hsl.Y * instance.saturationScalar, 0, 1);
+                    float l = MathHelper.Clamp(f > 0.5f ? hsl.Z * (2 - f * 2) + (f * 2 - 1) * Math.Max(hsl.Z, 0.5f + instance.luminosityRange) : f * 2 * hsl.Z + (1 - f * 2) * Math.Min(hsl.Z, 0.5f - instance.luminosityRange), 0, 1);
+                    colors[i] = Main.hslToRgb(h, s, l);
+                }
+                if (PureFractalHeatMaps[n] == null) PureFractalHeatMaps[n] = new Texture2D(Main.graphics.GraphicsDevice, 300, 1);
+                PureFractalHeatMaps[n].SetData(colors);
+            }
+            );
+        }
         public override void Load()
         {
             Instance = this;
             On.Terraria.DataStructures.PlayerDrawLayers.DrawPlayer_27_HeldItem += PlayerDrawLayers_DrawPlayer_27_HeldItem_WeaponDisplay;
+            //On.Terraria.DataStructures.PlayerDrawLayers.drplayer
             Main.OnResolutionChanged += Main_OnResolutionChanged;
+            On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayerInternal += LegacyPlayerRenderer_DrawPlayerInternal;
             //On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayerInternal += LegacyPlayerRenderer_DrawPlayerInternal_WD;
             //On.Terraria.GameContent.Skies.CreditsRoll.Segments.PlayerSegment.Draw += PlayerSegment_Draw_WD;
             //CreateRender();
+
         }
+        static void DrawSwooshWithPlayer(Player drawPlayer)
+        {
+            var modPlayer = drawPlayer.GetModPlayer<CoolerItemVisualEffectPlayer>();
+            if (modPlayer.UseSlash)
+            {
+                if (!TextureAssets.Item[drawPlayer.HeldItem.type].IsLoaded) TextureAssets.Item[drawPlayer.HeldItem.type] = Main.Assets.Request<Texture2D>("Images/Item_" + drawPlayer.HeldItem.type, ReLogic.Content.AssetRequestMode.AsyncLoad);
+                var itemTex = TextureAssets.Item[drawPlayer.HeldItem.type].Value;
+                var w = itemTex.Width;
+                var h = itemTex.Height;
+                var cs = new Color[w * h];
+                itemTex.GetData(cs);
+                Vector4 vcolor = default;
+                float count = 0;
+                float airFactor = 1;
+                Color target = default;
+
+                for (int n = 0; n < cs.Length; n++)
+                {
+                    if (cs[n] != default && (n - w < 0 || cs[n - w] != default) && (n - 1 < 0 || cs[n - 1] != default) && (n + w >= cs.Length || cs[n + w] != default) && (n + 1 >= cs.Length || cs[n + 1] != default))
+                    {
+                        var weight = (float)((n + 1) % w * (h - n / w)) / w / h;
+                        vcolor += cs[n].ToVector4() * weight;
+                        count += weight;
+                    }
+                    Vector2 coord = new Vector2(n % w, n / w);
+                    coord /= new Vector2(w, h);
+                    if (instance.checkAir && Math.Abs(1 - coord.X - coord.Y) * 0.7071067811f < 0.05f && cs[n] != default && target == default)
+                    {
+                        target = cs[n];
+                        airFactor = coord.X;
+                    }
+                }
+                vcolor /= count;
+                var newColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
+                var hsl = Main.rgbToHsl(newColor);
+                try
+                {
+                    DrawSwoosh(drawPlayer, newColor, hsl.Z < instance.IsLighterDecider, airFactor, instance, out var rectangle);
+                    //Main.NewText("!!!");
+                }
+                catch
+                {
+
+                }
+            }
+        }
+        private void LegacyPlayerRenderer_DrawPlayerInternal(On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.orig_DrawPlayerInternal orig, Terraria.Graphics.Renderers.LegacyPlayerRenderer self, Terraria.Graphics.Camera camera, Player drawPlayer, Vector2 position, float rotation, Vector2 rotationOrigin, float shadow, float alpha, float scale, bool headOnly)
+        {
+            orig.Invoke(self, camera, drawPlayer, position, rotation, rotationOrigin, shadow, alpha, scale, headOnly);
+            //if (drawPlayer.ShouldNotDraw)
+            //    return;
+
+            //PlayerDrawSet drawinfo = default(PlayerDrawSet);
+
+            //var _drawData = (List<DrawData>)typeof(LegacyPlayerRenderer).GetField("_drawData", BindingFlags.Instance | BindingFlags.NonPublic).GetValue((LegacyPlayerRenderer)Main.PlayerRenderer);
+            //_drawData.Clear();
+            //var _dust = (List<int>)typeof(LegacyPlayerRenderer).GetField("_dust", BindingFlags.Instance | BindingFlags.NonPublic).GetValue((LegacyPlayerRenderer)Main.PlayerRenderer);
+            //_dust.Clear();
+            //var _gore = (List<int>)typeof(LegacyPlayerRenderer).GetField("_gore", BindingFlags.Instance | BindingFlags.NonPublic).GetValue((LegacyPlayerRenderer)Main.PlayerRenderer);
+
+            //_gore.Clear();
+
+            //if (headOnly)
+            //{
+            //    drawinfo.HeadOnlySetup(drawPlayer, _drawData, _dust, _gore, position.X, position.Y, alpha, scale);
+            //}
+            //else
+            //{
+            //    drawinfo.BoringSetup(drawPlayer, _drawData, _dust, _gore, position, shadow, rotation, rotationOrigin);
+            //}
+
+            //PlayerLoader.ModifyDrawInfo(ref drawinfo);
+
+
+            //foreach (var layer in PlayerDrawLayerLoader.GetDrawLayers(drawinfo))
+            //{
+            //    if (!headOnly || layer.IsHeadLayer)
+            //    {
+            //        layer.DrawWithTransformationAndChildren(ref drawinfo);
+            //    }
+            //}
+
+            //PlayerDrawLayers.DrawPlayer_MakeIntoFirstFractalAfterImage(ref drawinfo);
+
+            //PlayerDrawLayers.DrawPlayer_TransformDrawData(ref drawinfo);
+
+            //if (scale != 1f) 
+            //{
+            //    PlayerDrawLayers.DrawPlayer_ScaleDrawData(ref drawinfo, scale);
+            //}
+
+            // PlayerDrawLayers.DrawPlayer_RenderAllLayers(ref drawinfo);
+            //if (!drawinfo.drawPlayer.mount.Active || drawinfo.drawPlayer.mount.Type != 11)
+            //    return;
+
+            //for (int i = 0; i < 1000; i++)
+            //{
+            //    if (Main.projectile[i].active && Main.projectile[i].owner == drawinfo.drawPlayer.whoAmI && Main.projectile[i].type == 591)
+            //        Main.instance.DrawProj(i);
+            //}
+            if (!drawPlayer.isFirstFractalAfterImage && shadow == 0f)
+                DrawSwooshWithPlayer(drawPlayer);
+
+        }
+
         public Item _FirstInventoryItem;
         //private void PlayerSegment_Draw_WD(On.Terraria.GameContent.Skies.CreditsRoll.Segments.PlayerSegment.orig_Draw orig, Segments.PlayerSegment self, ref CreditsRollInfo info)
         //{
@@ -132,29 +326,134 @@ namespace CoolerItemVisualEffect
         {
             Instance = null;
         }
+        public static Texture2D GetPureFractalProjTexs(int index)
+        {
+            if (Main.netMode == NetmodeID.Server) return CoolerItemVisualEffectMethods.GetTexture("FinalFractal");
+            if (index > 21)
+                return index switch
+                {
+                    22 => CoolerItemVisualEffectMethods.GetTexture("Tizona"),
+                    23 => CoolerItemVisualEffectMethods.GetTexture("TrueTerraBlade"),
+                    24 => CoolerItemVisualEffectMethods.GetTexture("PureFractal"),
+                    25 => CoolerItemVisualEffectMethods.GetTexture("FinalFractal"),
+                    _ => null,
+                };
+            int type = 0;
+            switch (index)
+            {
+                case 0:
+                    type = ItemID.CopperShortsword;
+                    break;
+                case 1:
+                    type = ItemID.Starfury;
+                    break;
+                case 2:
+                    type = ItemID.EnchantedSword;
+                    break;
+                case 3:
+                    type = ItemID.BeeKeeper;
+                    break;
+                case 4:
+                    type = ItemID.LightsBane;
+                    break;
+                case 5:
+                    type = ItemID.BloodButcherer;
+                    break;
+                case 6:
+                    type = ItemID.Muramasa;
+                    break;
+                case 7:
+                    type = ItemID.BladeofGrass;
+                    break;
+                case 8:
+                    type = ItemID.FieryGreatsword;
+                    break;
+                case 9:
+                    type = ItemID.NightsEdge;
+                    break;
+                case 10:
+                    type = ItemID.Excalibur;
+                    break;
+                case 11:
+                    type = ItemID.TrueNightsEdge;
+                    break;
+                case 12:
+                    type = ItemID.TrueExcalibur;
+                    break;
+                case 13:
+                    type = ItemID.TerraBlade;
+                    break;
+                case 14:
+                    type = ItemID.Seedler;
+                    break;
+                case 15:
+                    type = ItemID.TheHorsemansBlade;
+                    break;
+                case 16:
+                    type = ItemID.InfluxWaver;
+                    break;
+                case 17:
+                    type = ItemID.StarWrath;
+                    break;
+                case 18:
+                    type = ItemID.Meowmere;
+                    break;
+                case 19:
+                    type = ItemID.Zenith;
+                    break;
+                case 20:
+                    type = ItemID.Terragrim;
+                    break;
+                case 21:
+                    type = ItemID.Arkhalis;
+                    break;
+            }
+            if (TextureAssets.Item == null)
+            {
+                testString = "ArrayNull";
+                return CoolerItemVisualEffectMethods.GetTexture("FinalFractal");
+            }
+            if (TextureAssets.Item[type] == null)
+            {
+                testString = "ValueNull";
+                return CoolerItemVisualEffectMethods.GetTexture("FinalFractal");
+            }
+            if (!TextureAssets.Item[type].IsLoaded) TextureAssets.Item[type] = Main.Assets.Request<Texture2D>("Images/Item_" + type, ReLogic.Content.AssetRequestMode.AsyncLoad);
+            return TextureAssets.Item[type].Value;
+        }
+        public static Texture2D GetPureFractalHeatMaps(int index)
+        {
+            if (PureFractalHeatMaps[index] == null) ChangePureHeatMap(index);
+            return PureFractalHeatMaps[index];
+        }
 
+        public static Texture2D[] PureFractalHeatMaps = new Texture2D[26];
         public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
             HandleNetwork.HandlePacket(reader, whoAmI);
             base.HandlePacket(reader, whoAmI);
         }
-
+        public static string testString = "YEEE";
         internal static Effect ItemEffect => itemEffect ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/ItemGlowEffect").Value;
-        internal static Effect ColorfulEffect => colorfulEffect ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/ShaderSwooshEffect").Value;
+        internal static Effect ShaderSwooshEffect => shaderSwooshEffect ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/ShaderSwooshEffect").Value;
         internal static Effect ShaderSwooshEX => shaderSwooshEX ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/ShaderSwooshEffectEX").Value;
         internal static Effect DistortEffect => distortEffect ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/DistortEffect").Value;
+        internal static Effect FinalFractalTailEffect => finalFractalTailEffect ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/FinalFractalTailEffect").Value;
+        internal static Effect ColorfulEffect => colorfulEffect ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/ColorfulEffect").Value;
+
 
         internal static Effect shaderSwooshEX;
         internal static Effect itemEffect;
-        internal static Effect colorfulEffect;
+        internal static Effect shaderSwooshEffect;
         internal static Effect distortEffect;
-
+        internal static Effect finalFractalTailEffect;
+        internal static Effect colorfulEffect;
         public static void ChangeShooshStyle(Player player)
         {
             var vec = Main.MouseWorld - player.Center;
             vec.Y *= player.gravDir;
             player.direction = Math.Sign(vec.X);
-            var modPlayer = player.GetModPlayer<WeaponDisplayPlayer>();
+            var modPlayer = player.GetModPlayer<CoolerItemVisualEffectPlayer>();
             modPlayer.negativeDir ^= true;
 
 
@@ -204,7 +503,7 @@ namespace CoolerItemVisualEffect
 
             //}
             if (!ConfigurationPreInstall.instance.DontChangeMyTitle)
-                Main.instance.Window.Title = Language.GetTextValue("Mods.CoolerItemVisualEffect.StrangeTitle." + Main.rand.Next(15));//"幻世边境：完了泰拉成替身了";//"{$Mods.CoolerItemVisualEffect.StrangeTitle." + Main.rand.Next(15)+"}"
+                Main.instance.Window.Title = Language.GetTextValue("Mods.CoolerItemVisualEffect.StrangeTitle." + Main.rand.Next(11));//"幻世边境：完了泰拉成替身了";//"{$Mods.CoolerItemVisualEffect.StrangeTitle." + Main.rand.Next(15)+"}"//15
 
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
@@ -224,7 +523,7 @@ namespace CoolerItemVisualEffect
         private void PlayerDrawLayers_DrawPlayer_27_HeldItem_WeaponDisplay(On.Terraria.DataStructures.PlayerDrawLayers.orig_DrawPlayer_27_HeldItem orig, ref PlayerDrawSet drawinfo)
         {
             var drawPlayer = drawinfo.drawPlayer;
-            var modPlayer = drawPlayer.GetModPlayer<WeaponDisplayPlayer>();
+            var modPlayer = drawPlayer.GetModPlayer<CoolerItemVisualEffectPlayer>();
             var instance = (Main.netMode == NetmodeID.SinglePlayer || drawPlayer.whoAmI == Main.myPlayer) ? ConfigurationSwoosh.instance : modPlayer.ConfigurationSwoosh;
             Item heldItem = drawinfo.heldItem;
             bool flag = drawPlayer.itemAnimation > 0 && heldItem.useStyle != ItemUseStyleID.None;
@@ -236,9 +535,13 @@ namespace CoolerItemVisualEffect
             bool flagMelee = true;
             //Main.NewText((drawPlayer.itemAnimation, drawPlayer.itemAnimationMax),Color.Red);
 
-            if ((heldItem.type == ItemID.Zenith || heldItem.type == ModContent.ItemType<Weapons.FirstFractal_CIVE>()) && drawPlayer.itemAnimation > 0 && instance.allowZenith && instance.CoolerSwooshActive)
+            if ((heldItem.type == ItemID.Zenith || heldItem.type == ModContent.ItemType<Weapons.FirstFractal_CIVE>() || heldItem.type == ModContent.ItemType<Weapons.PureFractal>()) && drawPlayer.itemAnimation > 0 && instance.allowZenith && instance.CoolerSwooshActive)
             {
-                goto mylabel;
+                if (!drawPlayer.isFirstFractalAfterImage)
+                {
+                    goto mylabel;
+
+                }
             }// || heldItem.type == ItemID.Terragrim || heldItem.type == ItemID.Arkhalis
             flagMelee = drawPlayer.HeldItem.damage > 0 && drawPlayer.HeldItem.useStyle == ItemUseStyleID.Swing && drawPlayer.itemAnimation > 0 && drawPlayer.HeldItem.DamageType == DamageClass.Melee && !drawPlayer.HeldItem.noUseGraphic && instance.CoolerSwooshActive;
             if (instance.ToolsNoUseNewSwooshEffect)
@@ -251,7 +554,7 @@ namespace CoolerItemVisualEffect
             modPlayer.UseSlash = flagMelee;
             if (shouldNotDrawItem || !modPlayer.UseSlash)
             {
-                if (!flagMelee)
+                if (!flagMelee || drawPlayer.isFirstFractalAfterImage)// || drawPlayer.isFirstFractalAfterImage
                     orig.Invoke(ref drawinfo);
                 //// 如果只开启碰撞箱，显示原版挥剑效果，但是仍然要运行斩击代码来获取碰撞箱。所以不return
                 //if (!ConfigGameplay.UseHitbox || shouldNotDrawItem)
@@ -262,44 +565,44 @@ namespace CoolerItemVisualEffect
             if (drawinfo.shadow == 0f && flagMelee)
             {
                 modPlayer.UseSlash = true;
-                var itemTex = TextureAssets.Item[drawPlayer.HeldItem.type].Value;
-                var w = itemTex.Width;
-                var h = itemTex.Height;
-                var cs = new Color[w * h];
-                itemTex.GetData(cs);
-                Vector4 vcolor = default;
-                float count = 0;
-                float airFactor = 1;
-                Color target = default;
+                //var itemTex = TextureAssets.Item[drawPlayer.HeldItem.type].Value;
+                //var w = itemTex.Width;
+                //var h = itemTex.Height;
+                //var cs = new Color[w * h];
+                //itemTex.GetData(cs);
+                //Vector4 vcolor = default;
+                //float count = 0;
+                //float airFactor = 1;
+                //Color target = default;
 
-                for (int n = 0; n < cs.Length; n++)
-                {
-                    if (cs[n] != default && (n - w < 0 || cs[n - w] != default) && (n - 1 < 0 || cs[n - 1] != default) && (n + w >= cs.Length || cs[n + w] != default) && (n + 1 >= cs.Length || cs[n + 1] != default))
-                    {
-                        var weight = (float)((n + 1) % w * (h - n / w)) / w / h;
-                        vcolor += cs[n].ToVector4() * weight;
-                        count += weight;
-                    }
-                    Vector2 coord = new Vector2(n % w, n / w);
-                    coord /= new Vector2(w, h);
-                    if (instance.checkAir && Math.Abs(1 - coord.X - coord.Y) * 0.7071067811f < 0.05f && cs[n] != default && target == default)
-                    {
-                        target = cs[n];
-                        airFactor = coord.X;
-                    }
-                }
-                vcolor /= count;
-                var newColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
-                var hsl = Main.rgbToHsl(newColor);
-                try
-                {
-                    DrawSwoosh(drawPlayer, newColor, hsl.Z < instance.IsLighterDecider, airFactor, instance, out var rectangle);
-                    //Main.NewText("!!!");
-                }
-                catch
-                {
+                //for (int n = 0; n < cs.Length; n++)
+                //{
+                //    if (cs[n] != default && (n - w < 0 || cs[n - w] != default) && (n - 1 < 0 || cs[n - 1] != default) && (n + w >= cs.Length || cs[n + w] != default) && (n + 1 >= cs.Length || cs[n + 1] != default))
+                //    {
+                //        var weight = (float)((n + 1) % w * (h - n / w)) / w / h;
+                //        vcolor += cs[n].ToVector4() * weight;
+                //        count += weight;
+                //    }
+                //    Vector2 coord = new Vector2(n % w, n / w);
+                //    coord /= new Vector2(w, h);
+                //    if (instance.checkAir && Math.Abs(1 - coord.X - coord.Y) * 0.7071067811f < 0.05f && cs[n] != default && target == default)
+                //    {
+                //        target = cs[n];
+                //        airFactor = coord.X;
+                //    }
+                //}
+                //vcolor /= count;
+                //var newColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
+                //var hsl = Main.rgbToHsl(newColor);
+                //try
+                //{
+                //    DrawSwoosh(drawPlayer, newColor, hsl.Z < instance.IsLighterDecider, airFactor, instance, out var rectangle);
+                //    //Main.NewText("!!!");
+                //}
+                //catch
+                //{
 
-                }
+                //}
             }
             //var itemTex = TextureAssets.Item[drawPlayer.HeldItem.type].Value;
             //var w = itemTex.Width;
@@ -795,16 +1098,16 @@ namespace CoolerItemVisualEffect
             if (Main.GameViewMatrix == null) return;
             //Main.NewText("!!!!");
             var trans = Main.GameViewMatrix != null ? Main.GameViewMatrix.TransformationMatrix : Matrix.Identity;
-            var modPlayer = drawPlayer.GetModPlayer<WeaponDisplayPlayer>();//modplayer类
-                                                                           //if (drawPlayer.itemAnimation == drawPlayer.itemAnimationMax - 1 && !Main.gamePaused)
-                                                                           //{
-                                                                           //    var vec = Main.MouseWorld - drawPlayer.Center;
-                                                                           //    vec.Y *= drawPlayer.gravDir;
-                                                                           //    drawPlayer.direction = Math.Sign(vec.X);
-                                                                           //    modPlayer.negativeDir ^= true;
-                                                                           //    modPlayer.rotationForShadow = vec.ToRotation() + Main.rand.NextFloat(-MathHelper.Pi / 6, MathHelper.Pi / 6);
-                                                                           //    modPlayer.kValue = Main.rand.NextFloat(1, 2);
-                                                                           //}
+            var modPlayer = drawPlayer.GetModPlayer<CoolerItemVisualEffectPlayer>();//modplayer类
+                                                                                    //if (drawPlayer.itemAnimation == drawPlayer.itemAnimationMax - 1 && !Main.gamePaused)
+                                                                                    //{
+                                                                                    //    var vec = Main.MouseWorld - drawPlayer.Center;
+                                                                                    //    vec.Y *= drawPlayer.gravDir;
+                                                                                    //    drawPlayer.direction = Math.Sign(vec.X);
+                                                                                    //    modPlayer.negativeDir ^= true;
+                                                                                    //    modPlayer.rotationForShadow = vec.ToRotation() + Main.rand.NextFloat(-MathHelper.Pi / 6, MathHelper.Pi / 6);
+                                                                                    //    modPlayer.kValue = Main.rand.NextFloat(1, 2);
+                                                                                    //}
             var fac = modPlayer.factorGeter;
             fac = modPlayer.negativeDir ? 1 - fac : fac;//每次挥动都会改变方向，所以插值函数方向也会一起变（原本是从1到0，反过来就是0到1(虽然说一般都是0到1
 
@@ -818,6 +1121,7 @@ namespace CoolerItemVisualEffect
             var drawCen = drawPlayer.gravDir == -1 ? new Vector2(drawPlayer.Center.X, (2 * (Main.screenPosition + new Vector2(960, 560)) - drawPlayer.Center - new Vector2(0, 96)).Y) : drawPlayer.Center;//2 * (Main.screenPosition + new Vector2(960, 560)) - drawPlayer.Center - new Vector2(0, 96)
                                                                                                                                                                                                           //var fac = (float)Math.Sqrt(factor);
                                                                                                                                                                                                           //var theta = (fac * -1.125f + (1 - fac) * 0.1125f) * Pi;
+
 
             float rotVel = instance.swooshActionStyle == SwooshAction.两次普通斩击一次高速旋转 && modPlayer.swingCount % 3 == 2 ? instance.rotationVelocity : 1;
             var theta = (1.2375f * fac * rotVel - 1.125f) * MathHelper.Pi;//线性插值后乘上一个系数，这里的起始角度和终止角度是试出来的（
@@ -926,7 +1230,7 @@ namespace CoolerItemVisualEffect
                     realColor = Main.hslToRgb(h, s, l);
                     //Main.NewText((h, s, l, realColor), realColor);
                 }
-                var _f = 6 * f / (3 * f + 1);//f;// 
+                var _f = f * f; ;//f;// 6 * f / (3 * f + 1)
                 _f = MathHelper.Clamp(_f, 0, 1);
                 //_f = ConfigurationSwoosh.instance.distortFactor != 0 ? _f : _f * _f;
                 realColor.A = (byte)(_f * 255);//.MultiplyRGBA(new Color(1,1,1,_f))
@@ -964,7 +1268,7 @@ namespace CoolerItemVisualEffect
 
 
                 //RenderTarget2D render = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
-                bool useRender = instance.distortFactor != 0 && Lighting.Mode != Terraria.Graphics.Light.LightMode.Retro && Lighting.Mode != Terraria.Graphics.Light.LightMode.Trippy;
+                bool useRender = instance.distortFactor != 0 && Lighting.Mode != Terraria.Graphics.Light.LightMode.Retro && Lighting.Mode != Terraria.Graphics.Light.LightMode.Trippy && Main.WaveQuality != 0;
                 var gd = Main.graphics.GraphicsDevice;
                 var sb = Main.spriteBatch;
                 var passCount = 0;
@@ -1755,6 +2059,14 @@ namespace CoolerItemVisualEffect
         //}
         #endregion
 
+    }
+    public class CoolerSystem : ModSystem
+    {
+        public static int ModTime;
+        public override void UpdateUI(GameTime gameTime)
+        {
+            ModTime++;
+        }
     }
     //public class MyModSystem : ModSystem
     //{

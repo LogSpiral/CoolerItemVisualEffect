@@ -4,6 +4,12 @@ Mods:{
 			旧日支配者:Great Old Ones
 			真旧日支配者:True Great Old Ones
 			FirstFractal_CIVE:First Fractal
+			WitheredWoodSword:WitheredWoodSword
+			LivingWoodSword:Living Wood Sword
+			SereStoneSword:Sere Stone Sword
+			MossStoneSword:Moss Stone Sword
+			RustySteelBlade:Rusty Steel Blade
+			RefinesSteelBlade:Refines Steel Blade
 		}
 		ItemTooltip:{
 			旧日支配者:"This power has not fully awakened"
@@ -21,7 +27,7 @@ Mods:{
 			8:Terraria:The boundless universe and the long river of time.
 			9:Terraria:How long are you going to stay in this Illusion world?
 			10:Terraria:How could you do That,阿汪,you change the title of Terraria by terrible code.
-			11:VirtualDream:The first part 风暴城辉光重现，赤康邦暗流涌动。
+			11:VirtualDream:The first part 风暴城辉光重现，赤天县暗流涌动。
 			12:VirtualDream:The second part 星之河孤帆渺渺，时之风独旅茫茫。
 			13:VirtualDream:The third part 虚幻界醉生梦死，现实境山重水复。
 			14:VirtualDream:The fourth part 无间狱暮雾蒙蒙，人间世长夜漫漫。

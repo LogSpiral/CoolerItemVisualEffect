@@ -16,3 +16,13 @@ Staff：
 [c/9966cc:阿汪(向内延伸的对数螺线)]
 Programmer：
 [c/9966cc:阿汪(LogarithmicSpiralThatExtendsInward)]
+
+特别感谢：
+SpecialThanks：
+[c/00FFE5:逆风而行的信鸽(Genesis)]
+武器显示和碰撞修改等由这位大哥制作
+WeaponDisplay And HitBox Modify Made By Him. 
+
+[c/00FF46:Cyril]
+我在他的示例下大概学会了联机同步
+I've Learned How To SyncData Through His Example.
