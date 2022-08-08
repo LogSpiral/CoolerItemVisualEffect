@@ -15,25 +15,27 @@ using static CoolerItemVisualEffect.CoolerItemVisualEffect;
 using static CoolerItemVisualEffect.ConfigurationSwoosh;
 using Terraria.GameContent;
 using CoolerItemVisualEffect;
+using System.IO;
 
 namespace CoolerItemVisualEffect.Weapons
 {
     public class PureFractal : ModItem
     {
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("纯粹分形");
-            Tooltip.SetDefault("远古纯粹的自然魔法洗礼之后的天顶之锋，展露吧，你最初的锋芒。");
+        //public override void SetStaticDefaults()
+        //{
+        //    DisplayName.SetDefault("纯粹分形");
+        //    Tooltip.SetDefault("远古纯粹的自然魔法洗礼之后的天顶之锋，展露吧，你最初的锋芒。");
 
-        }
+        //}
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             var time = ((float)Math.Sin(ModTime / 60f * MathHelper.TwoPi) + 1) * .5f;
             Color color;
             if (time < 0.5f) color = Color.Lerp(Color.Cyan, Color.Green, time * 2f);
             else color = Color.Lerp(Color.Green, Color.Yellow, time * 2f - 1);
-            tooltips.Add(new TooltipLine(Mod, "PureSuggestion", "这甚至还不是它们的最终形态") { OverrideColor = color });
+            tooltips.Add(new TooltipLine(Mod, "PureSuggestion", Language.GetTextValue("Mods.CoolerItemVisualEffect.FinalFractalTip.0")) { OverrideColor = color });//"这甚至还不是它们的最终形态"
         }
+
         Item item => Item;
         public Texture2D tex => TextureAssets.Item[item.type].Value;
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
@@ -92,7 +94,7 @@ namespace CoolerItemVisualEffect.Weapons
         //{
         //	return new Color(255, 255, 255, (int)lightColor.A - item.alpha);
         //}
-        private bool GetZenithTarget(Vector2 searchCenter, float maxDistance, out int npcTargetIndex)
+        public static bool GetZenithTarget(Vector2 searchCenter, float maxDistance, Player player, out int npcTargetIndex)
         {
             npcTargetIndex = 0;
             int? num = null;
@@ -100,7 +102,7 @@ namespace CoolerItemVisualEffect.Weapons
             for (int i = 0; i < 200; i++)
             {
                 NPC npc = Main.npc[i];
-                if (npc.CanBeChasedBy(this, false))
+                if (npc.CanBeChasedBy(player, false))
                 {
                     float num3 = Vector2.Distance(searchCenter, npc.Center);
                     if (num2 > num3)
@@ -128,7 +130,7 @@ namespace CoolerItemVisualEffect.Weapons
             if (num166 == 1 || num166 == 2)
             {
                 int num168;
-                bool zenithTarget = GetZenithTarget(Main.MouseWorld, 400f, out num168);
+                bool zenithTarget = GetZenithTarget(Main.MouseWorld, 400f, player, out num168);
                 if (zenithTarget)
                 {
                     value7 = Main.npc[num168].Center - player.MountedCenter;
@@ -148,6 +150,8 @@ namespace CoolerItemVisualEffect.Weapons
             //if(player.ownedProjectileCounts[type] < 1)
             var proj = Projectile.NewProjectileDirect(source, player.Center, velocity_, type, damage, knockback, player.whoAmI, ai5);
             proj.frame = Main.rand.Next(26);
+            proj.netUpdate = true;
+            proj.netUpdate2 = true;
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
                 ModPacket packet = Instance.GetPacket();
@@ -165,6 +169,14 @@ namespace CoolerItemVisualEffect.Weapons
     }
     public class PureFractalProj : ModProjectile
     {
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.Write((byte)projectile.frame);
+        }
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            projectile.frame = reader.ReadByte();
+        }
         Projectile projectile => Projectile;
         public override void PostAI()
         {
@@ -486,7 +498,7 @@ namespace CoolerItemVisualEffect.Weapons
                     gd.SetRenderTarget(Instance.Render);
                     gd.Clear(Color.Transparent);
                     sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
-                    ShaderSwooshEX.Parameters["uTransform"].SetValue( model * trans * projection);
+                    ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
                     ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
                     ShaderSwooshEX.Parameters["uTime"].SetValue(0); ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);
                     ShaderSwooshEX.Parameters["airFactor"].SetValue(airFactor);

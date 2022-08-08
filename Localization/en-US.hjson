@@ -8,11 +8,24 @@ Mods:{
 			LivingWoodSword:Living Wood Sword
 			SereStoneSword:Sere Stone Sword
 			MossStoneSword:Moss Stone Sword
-			RustySteelBlade:Rusty Steel Blade
-			RefinesSteelBlade:Refines Steel Blade
+			RustySteelBlade:Rusty Steel Blade(WIP)
+			RefinedSteelBlade:Refines Steel Blade(WIP)
+			PureFractal:Pure Fractal
+			FirstZenith:First Zenith
+			FinalFractal:Final Fractal
 		}
 		ItemTooltip:{
 			旧日支配者:"This power has not fully awakened"
+			FirstFractal_CIVE:Denied，forgotten，faded......It will return finally。
+			PureFractal:The Edge of Zenith Which Upgraded by the Ancient and Pure NaturalMagic.Show it, Your first Power.
+			FinalFractal:Part of it includes itself, which we called Fractal. Infinite blades rotating as hurricane, they are part of it as well.
+		}
+		FinalFractalTip:
+		{
+			0:This Even not the final state of them.
+			1:「The Ultra Fractal Of The First And The Final」
+			2:「Dimension Cut Of Fractal」
+			3:Zenith「FinalFractal」
 		}
 		StrangeTitle:
 		{

@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 using System.ComponentModel;
 using System.IO;
@@ -157,6 +158,13 @@ namespace CoolerItemVisualEffect
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigurationServer.HitboxTooltip")]
         public bool UseHitbox;
 
+        [Range(1, 20)]
+        [Increment(1)]
+        [DefaultValue(4)]
+        [Label("$Mods.WeaponDisplay.ConfigurationServer.AttackablesName")]
+        [Tooltip("$Mods.WeaponDisplay.ConfigurationServer.AttackablesTooltip")]
+        [Slider]
+        public int ItemAttackCD;
 
         [DefaultValue(true)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.49")]

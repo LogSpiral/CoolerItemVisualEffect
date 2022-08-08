@@ -10,6 +10,7 @@ using static Terraria.ModLoader.ModContent;
 using CoolerItemVisualEffect.Weapons;
 using Terraria.GameContent;
 using System.IO;
+using Terraria.Localization;
 
 namespace CoolerItemVisualEffect.FinalFractal
 {
@@ -21,6 +22,7 @@ namespace CoolerItemVisualEffect.FinalFractal
         public bool usedFinalFractal = false;
         public int waitingFinalFractal = 0;
         public int finalFractalTier = 0;
+        public int firstTierCounter;
         public override void ResetEffects()
         {
 
@@ -39,20 +41,31 @@ namespace CoolerItemVisualEffect.FinalFractal
     }
     public class FinalFractal : ModItem
     {
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("最终分形");
-            Tooltip.SetDefault("它的一部分包含着它，这就是分形。无数的刀刃回旋着，它们是它的一部分。");
-        }
+        //public override void SetStaticDefaults()
+        //{
+        //    DisplayName.SetDefault("最终分形");
+        //    Tooltip.SetDefault("它的一部分包含着它，这就是分形。无数的刀刃回旋着，它们是它的一部分。");
+        //}
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            tooltips.Add(new TooltipLine(Mod, "PureSuggestion", "「最初与最后的究极分形」") { OverrideColor = Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffect.ModTime) / 2 + 0.5f) });
-            tooltips.Add(new TooltipLine(Mod, "PureSuggestion", "「分形次元斩」") { OverrideColor = Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * (CoolerItemVisualEffect.ModTime + 40)) / 2 + 0.5f) });
-            tooltips.Add(new TooltipLine(Mod, "PureSuggestion", "天顶「FinalFractal」") { OverrideColor = Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * (CoolerItemVisualEffect.ModTime + 80)) / 2 + 0.5f) });
+            for (int n = 1; n < 4; n++) 
+            {
+                tooltips.Add(new TooltipLine(Mod, "PureSuggestion", Language.GetTextValue("Mods.CoolerItemVisualEffect.FinalFractalTip." + n)) { OverrideColor = Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * (CoolerItemVisualEffect.ModTime + 40 * n)) / 2 + 0.5f) });
+
+            }
+
+
+            //tooltips.Add(new TooltipLine(Mod, "PureSuggestion", "「最初与最后的究极分形」") { OverrideColor = Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffect.ModTime) / 2 + 0.5f) });
+            //tooltips.Add(new TooltipLine(Mod, "PureSuggestion", "「分形次元斩」") { OverrideColor = Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * (CoolerItemVisualEffect.ModTime + 40)) / 2 + 0.5f) });
+            //tooltips.Add(new TooltipLine(Mod, "PureSuggestion", "天顶「FinalFractal」") { OverrideColor = Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * (CoolerItemVisualEffect.ModTime + 80)) / 2 + 0.5f) });
 
         }
         Item item => Item;
-        public override void AddRecipes() => CreateRecipe().AddIngredient<PureFractal>().QuickAddIngredient(4144, 3368).AddTile(TileID.LunarCraftingStation).Register();
+        public override void AddRecipes() 
+        {
+            CreateRecipe().AddIngredient<PureFractal>().QuickAddIngredient(4144, 3368).AddTile(TileID.LunarCraftingStation).Register();
+            CreateRecipe().AddIngredient<FirstZenith>().QuickAddIngredient(4144, 3368).AddTile(TileID.LunarCraftingStation).Register();
+        }
 
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
@@ -345,7 +358,7 @@ namespace CoolerItemVisualEffect.FinalFractal
         public override void AI()
         {
             projectile.damage = Player.GetWeaponDamage(Player.HeldItem);
-            if (Player.HeldItem.type != ModContent.ItemType<FinalFractal>()) projectile.Kill();
+            if (Player.HeldItem.type != ItemType<FinalFractal>()) projectile.Kill();
             FinalFractalPlayer illusionBoundPlayer = Player.GetModPlayer<FinalFractalPlayer>();
             int utime = (int)CoolerItemVisualEffect.ModTime;
             int num = Player.name == "FFT" ? 1 : 3;

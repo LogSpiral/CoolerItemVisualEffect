@@ -18,6 +18,7 @@ using static Terraria.GameContent.Skies.CreditsRoll.Segments.PlayerSegment;
 using static CoolerItemVisualEffect.ConfigurationSwoosh;
 using Terraria.Localization;
 using Terraria.Graphics.Renderers;
+using MonoMod.Cil;
 
 namespace CoolerItemVisualEffect
 {
@@ -29,6 +30,17 @@ namespace CoolerItemVisualEffect
         //internal static bool ToolsNoUse = false;
         //internal static float IsLighterDecider = 0.6f;
         //internal static bool UseItemTexForSwoosh = false;
+
+        private void Player_ItemCheck_MeleeHitNPCs(ILContext il)
+        {
+            var c = new ILCursor(il);
+            while (c.TryGotoNext(MoveType.After, i => i.MatchLdcR8(0.33)))
+            {
+                c.EmitDelegate<Func<double, double>>((_) => {
+                    return 1.0 / ConfigurationPreInstall.instance.ItemAttackCD;
+                });
+            }
+        }
 
         internal static CoolerItemVisualEffect Instance;
         public static int ModTime => CoolerSystem.ModTime;
@@ -123,6 +135,7 @@ namespace CoolerItemVisualEffect
             On.Terraria.DataStructures.PlayerDrawLayers.DrawPlayer_27_HeldItem += PlayerDrawLayers_DrawPlayer_27_HeldItem_WeaponDisplay;
             //On.Terraria.DataStructures.PlayerDrawLayers.drplayer
             Main.OnResolutionChanged += Main_OnResolutionChanged;
+            IL.Terraria.Player.ItemCheck_MeleeHitNPCs += Player_ItemCheck_MeleeHitNPCs;
             On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayerInternal += LegacyPlayerRenderer_DrawPlayerInternal;
             //On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayerInternal += LegacyPlayerRenderer_DrawPlayerInternal_WD;
             //On.Terraria.GameContent.Skies.CreditsRoll.Segments.PlayerSegment.Draw += PlayerSegment_Draw_WD;
@@ -175,7 +188,7 @@ namespace CoolerItemVisualEffect
                 }
             }
         }
-        private void LegacyPlayerRenderer_DrawPlayerInternal(On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.orig_DrawPlayerInternal orig, Terraria.Graphics.Renderers.LegacyPlayerRenderer self, Terraria.Graphics.Camera camera, Player drawPlayer, Vector2 position, float rotation, Vector2 rotationOrigin, float shadow, float alpha, float scale, bool headOnly)
+        private void LegacyPlayerRenderer_DrawPlayerInternal(On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.orig_DrawPlayerInternal orig, LegacyPlayerRenderer self, Terraria.Graphics.Camera camera, Player drawPlayer, Vector2 position, float rotation, Vector2 rotationOrigin, float shadow, float alpha, float scale, bool headOnly)
         {
             orig.Invoke(self, camera, drawPlayer, position, rotation, rotationOrigin, shadow, alpha, scale, headOnly);
             //if (drawPlayer.ShouldNotDraw)
@@ -457,7 +470,7 @@ namespace CoolerItemVisualEffect
             modPlayer.negativeDir ^= true;
 
 
-            if (ConfigurationSwoosh.instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值)
+            if (instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值)
             {
                 modPlayer.rotationForShadow = modPlayer.rotationForShadowNext;
                 modPlayer.rotationForShadowNext = vec.ToRotation() + Main.rand.NextFloat(-MathHelper.Pi / 6, MathHelper.Pi / 6);
@@ -470,7 +483,7 @@ namespace CoolerItemVisualEffect
 
             modPlayer.swingCount++;
 
-            if (ConfigurationSwoosh.instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值)
+            if (instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值)
             {
                 modPlayer.kValue = modPlayer.kValueNext;
                 modPlayer.kValueNext = Main.rand.NextFloat(1, 2);
@@ -535,7 +548,7 @@ namespace CoolerItemVisualEffect
             bool flagMelee = true;
             //Main.NewText((drawPlayer.itemAnimation, drawPlayer.itemAnimationMax),Color.Red);
 
-            if ((heldItem.type == ItemID.Zenith || heldItem.type == ModContent.ItemType<Weapons.FirstFractal_CIVE>() || heldItem.type == ModContent.ItemType<Weapons.PureFractal>()) && drawPlayer.itemAnimation > 0 && instance.allowZenith && instance.CoolerSwooshActive)
+            if (heldItem.type.SpecialCheck() && drawPlayer.itemAnimation > 0 && instance.allowZenith && instance.CoolerSwooshActive)
             {
                 if (!drawPlayer.isFirstFractalAfterImage)
                 {
@@ -1118,17 +1131,16 @@ namespace CoolerItemVisualEffect
             //fac %= 1;
             //Main.NewText(new Vector2(fac,factor));
 
-            var drawCen = drawPlayer.gravDir == -1 ? new Vector2(drawPlayer.Center.X, (2 * (Main.screenPosition + new Vector2(960, 560)) - drawPlayer.Center - new Vector2(0, 96)).Y) : drawPlayer.Center;//2 * (Main.screenPosition + new Vector2(960, 560)) - drawPlayer.Center - new Vector2(0, 96)
-                                                                                                                                                                                                          //var fac = (float)Math.Sqrt(factor);
-                                                                                                                                                                                                          //var theta = (fac * -1.125f + (1 - fac) * 0.1125f) * Pi;
-
-
+            //var drawCen = drawPlayer.gravDir == -1 ? new Vector2(drawPlayer.Center.X, (2 * (Main.screenPosition + new Vector2(960, 560)) - drawPlayer.Center - new Vector2(0, 96)).Y) : drawPlayer.Center;//2 * (Main.screenPosition + new Vector2(960, 560)) - drawPlayer.Center - new Vector2(0, 96)
+            //var fac = (float)Math.Sqrt(factor);
+            //var theta = (fac * -1.125f + (1 - fac) * 0.1125f) * Pi;、   adaw、
+            var drawCen = drawPlayer.Center;
             float rotVel = instance.swooshActionStyle == SwooshAction.两次普通斩击一次高速旋转 && modPlayer.swingCount % 3 == 2 ? instance.rotationVelocity : 1;
             var theta = (1.2375f * fac * rotVel - 1.125f) * MathHelper.Pi;//线性插值后乘上一个系数，这里的起始角度和终止角度是试出来的（
             CustomVertexInfo[] c = new CustomVertexInfo[6];//顶点数组，绘制完整的物品需要两个三角形(六个顶点，两组重合
             var itemTex = TextureAssets.Item[drawPlayer.HeldItem.type].Value;//获取物品贴图
             float xScaler = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.kValue, modPlayer.kValueNext, fac) : modPlayer.kValue;//获取x轴方向缩放系数
-            float scaler = itemTex.Size().Length() * drawPlayer.GetAdjustedItemScale(drawPlayer.HeldItem) / xScaler * 0.5f * trans.M11 * instance.swooshSize * checkAirFactor;//对椭圆进行位似变换(你直接说坐标乘上一个系数不就好了吗，屑阿汪
+            float scaler = itemTex.Size().Length() * drawPlayer.GetAdjustedItemScale(drawPlayer.HeldItem) / xScaler * 0.5f * instance.swooshSize * checkAirFactor;//对椭圆进行位似变换(你直接说坐标乘上一个系数不就好了吗，屑阿汪// * modPlayer.ScalerOfSword / 15f
             var cos = (float)Math.Cos(theta) * scaler;
             var sin = (float)Math.Sin(theta) * scaler;//这里(cos,sin)对应的位置就是我们希望贴图右上角所在的位置，而(0,0)对应的位置是贴图左下角所在的位置
             var rotator = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.rotationForShadow, modPlayer.rotationForShadowNext, fac) : modPlayer.rotationForShadow;
@@ -1346,7 +1358,7 @@ namespace CoolerItemVisualEffect
                     gd.SetRenderTarget(Instance.Render);
                     gd.Clear(Color.Transparent);
                     sb.Begin(SpriteSortMode.Immediate, alphaBlend ? BlendState.NonPremultiplied : BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);//Main.DefaultSamplerState//Main.GameViewMatrix.TransformationMatrix
-                    ShaderSwooshEX.Parameters["uTransform"].SetValue(model * projection);
+                    ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
                     ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
                     ShaderSwooshEX.Parameters["uTime"].SetValue(0);//-(float)Main.time * 0.06f
                     ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);//-(float)Main.time * 0.06f
@@ -1440,7 +1452,7 @@ namespace CoolerItemVisualEffect
                 {
                     sb.End();
                     sb.Begin(SpriteSortMode.Immediate, alphaBlend ? BlendState.NonPremultiplied : BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);//Main.DefaultSamplerState//Main.GameViewMatrix.TransformationMatrix
-                    ShaderSwooshEX.Parameters["uTransform"].SetValue(model * projection);
+                    ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
                     ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
                     ShaderSwooshEX.Parameters["uTime"].SetValue(0);//-(float)Main.time * 0.06f
                     ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);
@@ -1515,7 +1527,7 @@ namespace CoolerItemVisualEffect
             //Main.spriteBatch.DrawLine(u + v + drawPlayer.Center, drawPlayer.Center, Color.Red);
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, instance.ItemAdditive ? BlendState.Additive : BlendState.AlphaBlend, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
-            itemEffect.Parameters["uTransform"].SetValue(model * projection);
+            itemEffect.Parameters["uTransform"].SetValue(model * trans * projection);
             //将变换矩阵作用在正交投影矩阵上，具体结果以及意义我下次再想想
             //半年前就问过零群各位大佬，他们都说没必要搞懂，tr图像变换矩阵而已。
             itemEffect.Parameters["uTime"].SetValue((float)Main.time / 60 % 1);//传入时间偏移量
@@ -1577,7 +1589,7 @@ namespace CoolerItemVisualEffect
             //bodyRec.Y = 112 + 56 * (int)(Math.Abs(new Vector2(-vel.Y, vel.X).ToRotation()) / MathHelper.Pi * 3);
             //drawPlayer.bodyFrame.Y = 112 + 56 * (int)(Math.Abs(new Vector2(-vel.Y, vel.X).ToRotation()) / MathHelper.Pi * 3);
             modPlayer.direct = (u + v).ToRotation();
-            modPlayer.HitboxPosition = (u + v) / Main.GameViewMatrix.TransformationMatrix.M11;
+            modPlayer.HitboxPosition = u + v;
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
                 ModPacket packet = Instance.GetPacket();

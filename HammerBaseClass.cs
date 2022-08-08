@@ -68,7 +68,7 @@ namespace CoolerItemVisualEffect
                 if (Charged)
                 {
                     projectile.damage = (int)(Player.GetWeaponDamage(Player.HeldItem) * (3 * factor * factor));
-                    SoundEngine.PlaySound(Terraria.ID.SoundID.Item71);
+                    SoundEngine.PlaySound(SoundID.Item71);
                 }
             }
             projectile.ai[1]++;
@@ -88,7 +88,7 @@ namespace CoolerItemVisualEffect
                 return false;
             }
             float point = 0f;
-            return targetHitbox.Intersects(Terraria.Utils.CenteredRectangle((CollidingCenter - DrawOrigin).RotatedBy(Rotation) + projCenter, CollidingSize)) || Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), projCenter, (CollidingCenter - DrawOrigin).RotatedBy(Rotation) + projCenter, 8, ref point);
+            return targetHitbox.Intersects(Utils.CenteredRectangle((CollidingCenter - DrawOrigin).RotatedBy(Rotation) + projCenter, CollidingSize)) || Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), projCenter, (CollidingCenter - DrawOrigin).RotatedBy(Rotation) + projCenter, 8, ref point);
             //float point = 0f;
             //Vector2 vec = Pos - player.Center;
             //vec.Normalize();
@@ -192,7 +192,7 @@ namespace CoolerItemVisualEffect
             {
                 var f = i / 44f;
                 //var newVec = (endAngle.AngleLerp(startAngle, f) - MathHelper.PiOver4).ToRotationVector2() * scaler;
-                var newVec = (f.Lerp(endAngle + (Player.direction == -1 ? MathHelper.TwoPi : 0), startAngle) - MathHelper.PiOver4).ToRotationVector2() * scaler;
+                var newVec = (f.Lerp(endAngle + (Player.direction == -1 ? MathHelper.TwoPi : 0), startAngle + (Player.direction == -1 && Player.gravDir == -1 ? MathHelper.TwoPi * 2 : 0)) - MathHelper.PiOver4).ToRotationVector2() * scaler;// + (Player.direction == -1 ? MathHelper.TwoPi : 0)
                 //Main.spriteBatch.DrawLine(drawCen, drawCen + newVec, Color.Red, 1, drawOffset: -Main.screenPosition);
                 var _f = 6 * f / (3 * f + 1);
                 _f = MathHelper.Clamp(_f, 0, 1);
@@ -243,9 +243,10 @@ namespace CoolerItemVisualEffect
             var trans = Main.GameViewMatrix != null ? Main.GameViewMatrix.TransformationMatrix : Matrix.Identity;
             var _center = projCenter;// - (new Vector2(0, projTex.Size().Y / FrameMax.Y) - DrawOrigin).RotatedBy(Rotation)
 
-            var drawCen = Player.gravDir == -1 ? new Vector2(_center.X, (2 * (Main.screenPosition + new Vector2(960, 560)) - _center - new Vector2(0, 96)).Y) : _center;
+            //var drawCen = Player.gravDir == -1 ? new Vector2(_center.X, (2 * (Main.screenPosition + new Vector2(960, 560)) - _center - new Vector2(0, 96)).Y) : _center;
+            var drawCen = _center;
             float xScaler = 1f;
-            float scaler = (projTex.Size() / new Vector2(FrameMax.X, FrameMax.Y)).Length() * Player.GetAdjustedItemScale(Player.HeldItem) / xScaler * trans.M11 - (new Vector2(0, projTex.Size().Y / FrameMax.Y) - DrawOrigin).Length();//(CollidingCenter - DrawOrigin).Length() * 1.414f
+            float scaler = (projTex.Size() / new Vector2(FrameMax.X, FrameMax.Y)).Length() * Player.GetAdjustedItemScale(Player.HeldItem) / xScaler - (new Vector2(0, projTex.Size().Y / FrameMax.Y) - DrawOrigin).Length();//(CollidingCenter - DrawOrigin).Length() * 1.414f
             //Main.NewText(-(new Vector2(0, projTex.Size().Y / FrameMax.Y) - DrawOrigin).Length());
             var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
             var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
@@ -265,7 +266,8 @@ namespace CoolerItemVisualEffect
             VertexInfomation(ref additive, ref indexOfGreyTex, ref endAngle, ref useHeatMap);
             RenderInfomation(ref useBloom, ref useDistort, ref useMask);
             int[] whenSkip = new int[0];
-            CustomVertexInfo[] bars = CreateVertexs(drawCen, scaler, Rotation, endAngle, additive ? 0.6f : Lighting.GetColor((projCenter / 16).ToPoint().X, (projCenter / 16).ToPoint().Y).R / 255f * .6f, ref whenSkip);
+            endAngle = Player.gravDir == -1 ? MathHelper.PiOver2 - endAngle : endAngle;
+            CustomVertexInfo[] bars = CreateVertexs(drawCen, scaler,Player.gravDir == -1 ? MathHelper.PiOver2 - Rotation: Rotation, endAngle, additive ? 0.6f : Lighting.GetColor((projCenter / 16).ToPoint().X, (projCenter / 16).ToPoint().Y).R / 255f * .6f, ref whenSkip);
             if (bars.Length < 2) goto mylable;
             SamplerState sampler = SamplerState.LinearClamp;
             CustomVertexInfo[] triangleList = new CustomVertexInfo[(bars.Length - 2) * 3];//
@@ -338,7 +340,7 @@ namespace CoolerItemVisualEffect
                 gd.SetRenderTarget(render);
                 gd.Clear(Color.Transparent);
                 sb.Begin(SpriteSortMode.Immediate, additive ? BlendState.Additive : BlendState.NonPremultiplied, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);//Main.DefaultSamplerState//Main.GameViewMatrix.TransformationMatrix
-                CoolerItemVisualEffect.ShaderSwooshEX.Parameters["uTransform"].SetValue(model * projection);
+                CoolerItemVisualEffect.ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
                 CoolerItemVisualEffect.ShaderSwooshEX.Parameters["uLighter"].SetValue(0);
                 CoolerItemVisualEffect.ShaderSwooshEX.Parameters["uTime"].SetValue(0);//-(float)Main.time * 0.06f
                 CoolerItemVisualEffect.ShaderSwooshEX.Parameters["checkAir"].SetValue(true);
@@ -468,7 +470,7 @@ namespace CoolerItemVisualEffect
             {
                 sb.End();
                 sb.Begin(SpriteSortMode.Immediate, additive ? BlendState.Additive : BlendState.NonPremultiplied, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);//Main.DefaultSamplerState//Main.GameViewMatrix.TransformationMatrix
-                CoolerItemVisualEffect.ShaderSwooshEX.Parameters["uTransform"].SetValue(model * projection);
+                CoolerItemVisualEffect.ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
                 CoolerItemVisualEffect.ShaderSwooshEX.Parameters["uLighter"].SetValue(0);
                 CoolerItemVisualEffect.ShaderSwooshEX.Parameters["uTime"].SetValue(0);//-(float)Main.time * 0.06f
                 CoolerItemVisualEffect.ShaderSwooshEX.Parameters["checkAir"].SetValue(true);

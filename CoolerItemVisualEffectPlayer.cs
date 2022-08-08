@@ -60,6 +60,8 @@ namespace CoolerItemVisualEffect
 
         public float direct;
         ConfigurationSwoosh configurationSwoosh;
+        public int scaler;
+
         ////public ConfigurationSwoosh ConfigurationSwoosh
         ////{
         ////    get => configurationSwoosh ??= (Main.myPlayer == player.whoAmI ? instance : new ConfigurationSwoosh());//ConfigurationSwoosh.instance
@@ -118,19 +120,22 @@ namespace CoolerItemVisualEffect
         public override void PostUpdate()
         {
             //base.PostUpdate();
-            if (Player.HeldItem.type == ItemID.Zenith || Player.HeldItem.type == ModContent.ItemType<Weapons.FirstFractal_CIVE>() || Player.HeldItem.type == ModContent.ItemType<Weapons.PureFractal>())
+            if (Player.HeldItem.type.SpecialCheck())
             {
-                if (ConfigurationSwoosh.instance.allowZenith && ConfigurationSwoosh.instance.CoolerSwooshActive)
+                if (instance.allowZenith && instance.CoolerSwooshActive)
                 {
                     Player.HeldItem.noUseGraphic = false;
                     Player.HeldItem.useStyle = 1;
                     Player.HeldItem.channel = false;
+                    Player.HeldItem.noMelee = false;
                 }
                 else
                 {
                     Player.HeldItem.noUseGraphic = true;
                     Player.HeldItem.useStyle = 5;
                     Player.HeldItem.channel = true;
+                    Player.HeldItem.noMelee = true;
+
                 }
 
                 //Main.NewText(player.HeldItem.noUseGraphic);
@@ -139,8 +144,8 @@ namespace CoolerItemVisualEffect
             //Main.NewText((Player.itemAnimation, Player.itemAnimationMax), Color.Red);
             if (player.itemAnimation == player.itemAnimationMax && player.itemAnimation > 0)
             {
-                var flag = player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && player.HeldItem.DamageType == DamageClass.Melee && !player.HeldItem.noUseGraphic && ConfigurationSwoosh.instance.CoolerSwooshActive;
-                flag |= (player.HeldItem.type == ItemID.Zenith || player.HeldItem.type == ModContent.ItemType<Weapons.FirstFractal_CIVE>() || player.HeldItem.type == ModContent.ItemType<Weapons.PureFractal>()) && ConfigurationSwoosh.instance.allowZenith && ConfigurationSwoosh.instance.CoolerSwooshActive;
+                var flag = player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && player.HeldItem.DamageType == DamageClass.Melee && !player.HeldItem.noUseGraphic && instance.CoolerSwooshActive;
+                flag |= player.HeldItem.type.SpecialCheck() && instance.allowZenith && instance.CoolerSwooshActive;
                 if (Main.myPlayer == player.whoAmI && flag) // 
                 {
                     CoolerItemVisualEffect.ChangeShooshStyle(player);
@@ -153,11 +158,40 @@ namespace CoolerItemVisualEffect
                 player.SetCompositeArmFront(enabled: true, Player.CompositeArmStretchAmount.Full, player.itemRotation);
             }
         }
+        //public int ScalerOfSword
+        //{
+        //    get
+        //    {
+        //        if (scaler > 15) 
+        //        {
+        //            return scaler - 16;
+        //        }
+        //        return scaler;
+        //    }
+        //}
         public override void ResetEffects()
         {
 
 
+            //if (player.controlUseItem || (player.controlUseTile && player.altFunctionUse == 2) || (scaler > 0 && scaler < 15))
+            //{
+            //    scaler++;
+            //}
+            //else if (scaler > 15)
+            //{
+            //    scaler--;
+            //}
+            //if (scaler == 15)
+            //{
+            //    scaler = 31;
+            //}
+            //if (scaler == 16)
+            //{
+            //    scaler = 0;
+            //}
 
+
+            //scaler = (int)MathHelper.Clamp(scaler, 0, 31);
             //Main.NewText((testState, Player.whoAmI, Player.name));
             //if (testState == 1)
             //{
@@ -217,7 +251,7 @@ namespace CoolerItemVisualEffect
             //}
 
             HitboxPosition = Vector2.Zero;//重置
-            Main.spriteBatch.DrawString(FontAssets.MouseText.Value, player.isFirstFractalAfterImage.ToString(), Player.Center - new Vector2(0, 64) - Main.screenPosition, Color.Red);
+            //Main.spriteBatch.DrawString(FontAssets.MouseText.Value, player.isFirstFractalAfterImage.ToString(), Player.Center - new Vector2(0, 64) - Main.screenPosition, Color.Red);
             //这个写法可以让绘制的东西在人物旋转后保持原来与人物的相对位置(试做的武器显示)
             if (ConfigurationPreInstall.instance.useWeaponDisplay)
             {

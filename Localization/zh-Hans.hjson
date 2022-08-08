@@ -9,11 +9,23 @@ Mods:{
 			SereStoneSword:枯石之刃
 			MossStoneSword:苔石之刃
 			RustySteelBlade:锈钢之刃
-			RefinesSteelBlade:精钢之刃
+			RefinedSteelBlade:精钢之刃
+			PureFractal:纯粹分形
+			FirstZenith:初源峰巅
+			FinalFractal:最终分形
 		}
 		ItemTooltip:{
 			旧日支配者:"这股力量还未完全苏醒"
 			FirstFractal_CIVE:否定，忘却，尘封......终有一天其将破土而出。
+			PureFractal:远古纯粹的自然魔法洗礼之后的天顶之锋，展露吧，你最初的锋芒。
+			FinalFractal:它的一部分包含着它，这就是分形。无数的刀刃回旋着，它们是它的一部分。
+		}
+		FinalFractalTip:
+		{
+			0:这甚至还不是它们的最终形态
+			1:「最初与最后的究极分形」
+			2:「分形次元斩」
+			3:天顶「FinalFractal」
 		}
 		StrangeTitle:
 		{
