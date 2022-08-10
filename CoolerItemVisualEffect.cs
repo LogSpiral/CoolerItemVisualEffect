@@ -61,6 +61,9 @@ namespace CoolerItemVisualEffect
                     var cs = new Color[w * he];
                     itemTex.GetData(cs);
                     Vector4 vcolor = default;
+                    var airFactor = 1f;
+                    Color target = default;
+
                     float count = 0;
                     for (int i = 0; i < cs.Length; i++)
                     {
@@ -70,9 +73,18 @@ namespace CoolerItemVisualEffect
                             vcolor += cs[i].ToVector4() * weight;
                             count += weight;
                         }
+                        Vector2 coord = new Vector2(n % w, n / w);
+                        coord /= new Vector2(w, he);
+                        if (instance.checkAir && Math.Abs(1 - coord.X - coord.Y) * 0.7071067811f < 0.05f && cs[i] != default && target == default)
+                        {
+                            target = cs[i];
+                            airFactor = coord.X;
+                        }
                     }
                     vcolor /= count;
                     var newColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
+                    PureFractalColors[n] = newColor;
+                    PureFractalAirFactorss[n] = airFactor;
                     var hsl = Main.rgbToHsl(newColor);
                     var colors = new Color[300];
                     for (int i = 0; i < 300; i++)
