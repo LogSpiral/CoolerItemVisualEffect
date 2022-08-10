@@ -103,6 +103,8 @@ namespace CoolerItemVisualEffect
                 itemTex.GetData(cs);
                 Vector4 vcolor = default;
                 float count = 0;
+                var airFactor = 1f;
+                Color target = default;
                 for (int i = 0; i < cs.Length; i++)
                 {
                     if (cs[i] != default && (i - w < 0 || cs[i - w] != default) && (i - 1 < 0 || cs[i - 1] != default) && (i + w >= cs.Length || cs[i + w] != default) && (i + 1 >= cs.Length || cs[i + 1] != default))
@@ -111,9 +113,19 @@ namespace CoolerItemVisualEffect
                         vcolor += cs[i].ToVector4() * weight;
                         count += weight;
                     }
+                    Vector2 coord = new Vector2(n % w, n / w);
+                    coord /= new Vector2(w, he);
+                    if (instance.checkAir && Math.Abs(1 - coord.X - coord.Y) * 0.7071067811f < 0.05f && cs[n] != default && target == default)
+                    {
+                        target = cs[n];
+                        airFactor = coord.X;
+                    }
                 }
                 vcolor /= count;
                 var newColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
+                PureFractalColors[n] = newColor;
+                PureFractalAirFactorss[n] = airFactor;
+
                 var hsl = Main.rgbToHsl(newColor);
                 var colors = new Color[300];
                 for (int i = 0; i < 300; i++)
@@ -150,6 +162,7 @@ namespace CoolerItemVisualEffect
         {
             orig(self);
         }
+        public static Texture2D emptyTex;
 
         private void FilterManager_EndCapture_CoolerSwoosh(On.Terraria.Graphics.Effects.FilterManager.orig_EndCapture orig, Terraria.Graphics.Effects.FilterManager self, RenderTarget2D finalTexture, RenderTarget2D screenTarget1, RenderTarget2D screenTarget2, Color clearColor)
         {
@@ -202,6 +215,7 @@ namespace CoolerItemVisualEffect
                         player.wingFrame = 2;
                         player.PlayerFrame();
                         player.socialIgnoreLight = true;
+                        player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, projectile.oldRot[0] - MathHelper.PiOver2);
                         try
                         {
                             Main.PlayerRenderer.DrawPlayer(Main.Camera, player, player.position, 0f, player.fullRotationOrigin);
@@ -350,23 +364,61 @@ namespace CoolerItemVisualEffect
 
 
                 Main.graphics.GraphicsDevice.RasterizerState = originalState;
+                //for (int n = 0; n < instance.maxCount; n++)
+                //{
+                //    //sb.End();
+                //    gd.SetRenderTarget(Main.screenTargetSwap);
+                //    gd.Clear(Color.Transparent);
+                //    sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                //    DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
+                //    DistortEffect.Parameters["offset"].SetValue(new Vector2(0.707f, 0.707f) * -0.09f * instance.distortFactor);
+                //    DistortEffect.Parameters["invAlpha"].SetValue(0);
+                //    DistortEffect.CurrentTechnique.Passes[0].Apply();
+                //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+                //    sb.End();
+                //    gd.SetRenderTarget(Main.screenTarget);
+                //    gd.Clear(Color.Transparent);
+                //    sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                //    sb.Draw(Instance.Render, Vector2.Zero, new Color(1f, 1f, 1f, 0));
+                //    sb.End();
+                //}
                 for (int n = 0; n < instance.maxCount; n++)
                 {
-                    //sb.End();
+
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                    DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+                    DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
+
+
+                    DistortEffect.Parameters["position"].SetValue(new Vector2(0, 4));
+                    DistortEffect.Parameters["tier2"].SetValue(1f);
                     gd.SetRenderTarget(Main.screenTargetSwap);
                     gd.Clear(Color.Transparent);
-                    sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-                    DistortEffect.CurrentTechnique.Passes[0].Apply();
-                    DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
-                    DistortEffect.Parameters["offset"].SetValue(new Vector2(0.707f, 0.707f) * -0.09f * instance.distortFactor);
-                    DistortEffect.Parameters["invAlpha"].SetValue(0);
+                    DistortEffect.CurrentTechnique.Passes[7].Apply();
                     sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-                    sb.End();
+
+
+
                     gd.SetRenderTarget(Main.screenTarget);
                     gd.Clear(Color.Transparent);
-                    sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                    DistortEffect.CurrentTechnique.Passes[6].Apply();
                     sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-                    sb.Draw(Instance.Render, Vector2.Zero, new Color(1f, 1f, 1f, 0));
+
+                    DistortEffect.Parameters["position"].SetValue(new Vector2(0, 9));
+                    DistortEffect.Parameters["ImageSize"].SetValue(new Vector2(0.707f) * -0.008f * instance.distortFactor);
+                    gd.SetRenderTarget(Main.screenTargetSwap);
+                    gd.Clear(Color.Transparent);
+                    DistortEffect.CurrentTechnique.Passes[5].Apply();
+                    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+
+                    gd.SetRenderTarget(Main.screenTarget);
+                    gd.Clear(Color.Transparent);
+                    DistortEffect.CurrentTechnique.Passes[4].Apply();
+                    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                    sb.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                    sb.Draw(Instance.Render, Vector2.Zero, Color.White);
                     sb.End();
                 }
                 if (firstZeniths.Count > 0)
@@ -501,7 +553,6 @@ namespace CoolerItemVisualEffect
 
         }
 
-        public Item _FirstInventoryItem;
         //private void PlayerSegment_Draw_WD(On.Terraria.GameContent.Skies.CreditsRoll.Segments.PlayerSegment.orig_Draw orig, Segments.PlayerSegment self, ref CreditsRollInfo info)
         //{
         //    var _targetTime = (int)self.GetType().GetField("_targetTime", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(self);
@@ -695,6 +746,9 @@ namespace CoolerItemVisualEffect
         }
 
         public static Texture2D[] PureFractalHeatMaps = new Texture2D[26];
+        public static Color[] PureFractalColors = new Color[26];
+        public static float[] PureFractalAirFactorss = new float[26];
+
         public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
             HandleNetwork.HandlePacket(reader, whoAmI);
@@ -901,461 +955,6 @@ namespace CoolerItemVisualEffect
             //    DrawSwoosh(drawPlayer, newColor);
             //}
         }
-        //{
-        //    if (drawinfo.drawPlayer.JustDroppedAnItem)
-        //    {
-        //        return;
-        //    }
-
-        //    if (drawinfo.drawPlayer.heldProj >= 0 && drawinfo.shadow == 0f && !drawinfo.heldProjOverHand)
-        //    {
-        //        drawinfo.projectileDrawPosition = drawinfo.DrawDataCache.Count;
-        //    }
-
-        //    Item heldItem = drawinfo.heldItem;
-        //    int num = heldItem.type;
-        //    if (num == 8 && drawinfo.drawPlayer.UsingBiomeTorches)
-        //    {
-        //        num = drawinfo.drawPlayer.BiomeTorchHoldStyle(num);
-        //    }
-
-        //    float adjustedItemScale = drawinfo.drawPlayer.GetAdjustedItemScale(heldItem);
-        //    Main.instance.LoadItem(num);
-        //    Texture2D value = TextureAssets.Item[num].Value;
-        //    Vector2 position = new Vector2((int)(drawinfo.ItemLocation.X - Main.screenPosition.X), (int)(drawinfo.ItemLocation.Y - Main.screenPosition.Y));
-        //    Rectangle? sourceRect = new Rectangle(0, 0, value.Width, value.Height);
-        //    if (num == 75)
-        //    {
-        //        sourceRect = value.Frame(1, 8);
-        //    }
-
-        //    if (ItemID.Sets.IsFood[num])
-        //    {
-        //        sourceRect = value.Frame(1, 3, 0, 1);
-        //    }
-
-        //    drawinfo.itemColor = Lighting.GetColor((int)((double)drawinfo.Position.X + (double)drawinfo.drawPlayer.width * 0.5) / 16, (int)(((double)drawinfo.Position.Y + (double)drawinfo.drawPlayer.height * 0.5) / 16.0));
-        //    if (num == 678)
-        //    {
-        //        drawinfo.itemColor = Color.White;
-        //    }
-
-        //    if (drawinfo.drawPlayer.shroomiteStealth && heldItem.DamageType == DamageClass.Ranged)
-        //    {
-        //        float num2 = drawinfo.drawPlayer.stealth;
-        //        if ((double)num2 < 0.03)
-        //        {
-        //            num2 = 0.03f;
-        //        }
-
-        //        float num3 = (1f + num2 * 10f) / 11f;
-        //        drawinfo.itemColor = new Color((byte)((float)(int)drawinfo.itemColor.R * num2), (byte)((float)(int)drawinfo.itemColor.G * num2), (byte)((float)(int)drawinfo.itemColor.B * num3), (byte)((float)(int)drawinfo.itemColor.A * num2));
-        //    }
-
-        //    if (drawinfo.drawPlayer.setVortex && heldItem.DamageType == DamageClass.Ranged)
-        //    {
-        //        float num4 = drawinfo.drawPlayer.stealth;
-        //        if ((double)num4 < 0.03)
-        //        {
-        //            num4 = 0.03f;
-        //        }
-
-        //        _ = (1f + num4 * 10f) / 11f;
-        //        drawinfo.itemColor = drawinfo.itemColor.MultiplyRGBA(new Color(Vector4.Lerp(Vector4.One, new Vector4(0f, 0.12f, 0.16f, 0f), 1f - num4)));
-        //    }
-
-        //    bool flag = drawinfo.drawPlayer.itemAnimation > 0 && heldItem.useStyle != 0;
-        //    bool flag2 = heldItem.holdStyle != 0 && !drawinfo.drawPlayer.pulley;
-        //    if (!drawinfo.drawPlayer.CanVisuallyHoldItem(heldItem))
-        //    {
-        //        flag2 = false;
-        //    }
-
-        //    if (drawinfo.shadow != 0f || drawinfo.drawPlayer.frozen || !(flag || flag2) || num <= 0 || drawinfo.drawPlayer.dead || heldItem.noUseGraphic || (drawinfo.drawPlayer.wet && heldItem.noWet) || (drawinfo.drawPlayer.happyFunTorchTime && drawinfo.drawPlayer.inventory[drawinfo.drawPlayer.selectedItem].createTile == 4 && drawinfo.drawPlayer.itemAnimation == 0))
-        //    {
-        //        return;
-        //    }
-
-        //    _ = drawinfo.drawPlayer.name;
-        //    Color color = new Color(250, 250, 250, heldItem.alpha);
-        //    Vector2 vector = Vector2.Zero;
-        //    switch (num)
-        //    {
-        //        case 5094:
-        //        case 5095:
-        //            vector = new Vector2(4f, -4f) * drawinfo.drawPlayer.Directions;
-        //            break;
-        //        case 5096:
-        //        case 5097:
-        //            vector = new Vector2(6f, -6f) * drawinfo.drawPlayer.Directions;
-        //            break;
-        //    }
-
-        //    if (num == 3823)
-        //    {
-        //        vector = new Vector2(7 * drawinfo.drawPlayer.direction, -7f * drawinfo.drawPlayer.gravDir);
-        //    }
-
-        //    if (num == 3827)
-        //    {
-        //        vector = new Vector2(13 * drawinfo.drawPlayer.direction, -13f * drawinfo.drawPlayer.gravDir);
-        //        color = heldItem.GetAlpha(drawinfo.itemColor);
-        //        color = Color.Lerp(color, Color.White, 0.6f);
-        //        color.A = 66;
-        //    }
-
-        //    Vector2 origin = new Vector2((float)sourceRect.Value.Width * 0.5f - (float)sourceRect.Value.Width * 0.5f * (float)drawinfo.drawPlayer.direction, sourceRect.Value.Height);
-        //    if (heldItem.useStyle == 9 && drawinfo.drawPlayer.itemAnimation > 0)
-        //    {
-        //        Vector2 value2 = new Vector2(0.5f, 0.4f);
-        //        if (heldItem.type == 5009 || heldItem.type == 5042)
-        //        {
-        //            value2 = new Vector2(0.26f, 0.5f);
-        //            if (drawinfo.drawPlayer.direction == -1)
-        //            {
-        //                value2.X = 1f - value2.X;
-        //            }
-        //        }
-
-        //        origin = sourceRect.Value.Size() * value2;
-        //    }
-
-        //    if (drawinfo.drawPlayer.gravDir == -1f)
-        //    {
-        //        origin.Y = (float)sourceRect.Value.Height - origin.Y;
-        //    }
-
-        //    origin += vector;
-        //    float num5 = drawinfo.drawPlayer.itemRotation;
-        //    if (heldItem.useStyle == 8)
-        //    {
-        //        ref float x = ref position.X;
-        //        float num6 = x;
-        //        _ = drawinfo.drawPlayer.direction;
-        //        x = num6 - 0f;
-        //        num5 -= MathF.PI / 2f * (float)drawinfo.drawPlayer.direction;
-        //        origin.Y = 2f;
-        //        origin.X += 2 * drawinfo.drawPlayer.direction;
-        //    }
-
-        //    if (num == 425 || num == 507)
-        //    {
-        //        if (drawinfo.drawPlayer.gravDir == 1f)
-        //        {
-        //            if (drawinfo.drawPlayer.direction == 1)
-        //            {
-        //                drawinfo.itemEffect = SpriteEffects.FlipVertically;
-        //            }
-        //            else
-        //            {
-        //                drawinfo.itemEffect = (SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically);
-        //            }
-        //        }
-        //        else if (drawinfo.drawPlayer.direction == 1)
-        //        {
-        //            drawinfo.itemEffect = SpriteEffects.None;
-        //        }
-        //        else
-        //        {
-        //            drawinfo.itemEffect = SpriteEffects.FlipHorizontally;
-        //        }
-        //    }
-
-        //    if ((num == 946 || num == 4707) && num5 != 0f)
-        //    {
-        //        position.Y -= 22f * drawinfo.drawPlayer.gravDir;
-        //        num5 = -1.57f * (float)(-drawinfo.drawPlayer.direction) * drawinfo.drawPlayer.gravDir;
-        //    }
-
-        //    ItemSlot.GetItemLight(ref drawinfo.itemColor, heldItem);
-        //    DrawData item;
-        //    switch (num)
-        //    {
-        //        case 3476:
-        //            {
-        //                Texture2D value5 = TextureAssets.Extra[64].Value;
-        //                Rectangle rectangle2 = value5.Frame(1, 9, 0, drawinfo.drawPlayer.miscCounter % 54 / 6);
-        //                Vector2 value6 = new Vector2(rectangle2.Width / 2 * drawinfo.drawPlayer.direction, 0f);
-        //                Vector2 origin3 = rectangle2.Size() / 2f;
-        //                item = new DrawData(value5, (drawinfo.ItemLocation - Main.screenPosition + value6).Floor(), rectangle2, heldItem.GetAlpha(drawinfo.itemColor).MultiplyRGBA(new Color(new Vector4(0.5f, 0.5f, 0.5f, 0.8f))), drawinfo.drawPlayer.itemRotation, origin3, adjustedItemScale, drawinfo.itemEffect, 0);
-        //                drawinfo.DrawDataCache.Add(item);
-        //                value5 = TextureAssets.GlowMask[195].Value;
-        //                item = new DrawData(value5, (drawinfo.ItemLocation - Main.screenPosition + value6).Floor(), rectangle2, new Color(250, 250, 250, heldItem.alpha) * 0.5f, drawinfo.drawPlayer.itemRotation, origin3, adjustedItemScale, drawinfo.itemEffect, 0);
-        //                drawinfo.DrawDataCache.Add(item);
-        //                return;
-        //            }
-        //        case 4049:
-        //            {
-        //                Texture2D value3 = TextureAssets.Extra[92].Value;
-        //                Rectangle rectangle = value3.Frame(1, 4, 0, drawinfo.drawPlayer.miscCounter % 20 / 5);
-        //                Vector2 value4 = new Vector2(rectangle.Width / 2 * drawinfo.drawPlayer.direction, 0f);
-        //                value4 += new Vector2(-10 * drawinfo.drawPlayer.direction, 8f * drawinfo.drawPlayer.gravDir);
-        //                Vector2 origin2 = rectangle.Size() / 2f;
-        //                item = new DrawData(value3, (drawinfo.ItemLocation - Main.screenPosition + value4).Floor(), rectangle, heldItem.GetAlpha(drawinfo.itemColor), drawinfo.drawPlayer.itemRotation, origin2, adjustedItemScale, drawinfo.itemEffect, 0);
-        //                drawinfo.DrawDataCache.Add(item);
-        //                return;
-        //            }
-        //        case 3779:
-        //            {
-        //                Texture2D texture2D = value;
-        //                Rectangle rectangle3 = texture2D.Frame();
-        //                Vector2 value7 = new Vector2(rectangle3.Width / 2 * drawinfo.drawPlayer.direction, 0f);
-        //                Vector2 origin4 = rectangle3.Size() / 2f;
-        //                float num7 = ((float)drawinfo.drawPlayer.miscCounter / 75f * (MathF.PI * 2f)).ToRotationVector2().X * 1f + 0f;
-        //                Color color2 = new Color(120, 40, 222, 0) * (num7 / 2f * 0.3f + 0.85f) * 0.5f;
-        //                num7 = 2f;
-        //                for (float num8 = 0f; num8 < 4f; num8 += 1f)
-        //                {
-        //                    item = new DrawData(TextureAssets.GlowMask[218].Value, (drawinfo.ItemLocation - Main.screenPosition + value7).Floor() + (num8 * (MathF.PI / 2f)).ToRotationVector2() * num7, rectangle3, color2, drawinfo.drawPlayer.itemRotation, origin4, adjustedItemScale, drawinfo.itemEffect, 0);
-        //                    drawinfo.DrawDataCache.Add(item);
-        //                }
-
-        //                item = new DrawData(texture2D, (drawinfo.ItemLocation - Main.screenPosition + value7).Floor(), rectangle3, heldItem.GetAlpha(drawinfo.itemColor).MultiplyRGBA(new Color(new Vector4(0.5f, 0.5f, 0.5f, 0.8f))), drawinfo.drawPlayer.itemRotation, origin4, adjustedItemScale, drawinfo.itemEffect, 0);
-        //                drawinfo.DrawDataCache.Add(item);
-        //                return;
-        //            }
-        //    }
-
-        //    if (heldItem.useStyle == 5)
-        //    {
-        //        if (Item.staff[num])
-        //        {
-        //            float num9 = drawinfo.drawPlayer.itemRotation + 0.785f * (float)drawinfo.drawPlayer.direction;
-        //            float num10 = 0f;
-        //            float num11 = 0f;
-        //            Vector2 origin5 = new Vector2(0f, value.Height);
-        //            if (num == 3210)
-        //            {
-        //                num10 = 8 * -drawinfo.drawPlayer.direction;
-        //                num11 = 2 * (int)drawinfo.drawPlayer.gravDir;
-        //            }
-
-        //            if (num == 3870)
-        //            {
-        //                Vector2 vector2 = (drawinfo.drawPlayer.itemRotation + MathF.PI / 4f * (float)drawinfo.drawPlayer.direction).ToRotationVector2() * new Vector2((float)(-drawinfo.drawPlayer.direction) * 1.5f, drawinfo.drawPlayer.gravDir) * 3f;
-        //                num10 = (int)vector2.X;
-        //                num11 = (int)vector2.Y;
-        //            }
-
-        //            if (num == 3787)
-        //            {
-        //                num11 = (int)((float)(8 * (int)drawinfo.drawPlayer.gravDir) * (float)Math.Cos(num9));
-        //            }
-
-        //            if (num == 3209)
-        //            {
-        //                Vector2 vector3 = (new Vector2(-8f, 0f) * drawinfo.drawPlayer.Directions).RotatedBy(drawinfo.drawPlayer.itemRotation);
-        //                num10 = vector3.X;
-        //                num11 = vector3.Y;
-        //            }
-
-        //            if (drawinfo.drawPlayer.gravDir == -1f)
-        //            {
-        //                if (drawinfo.drawPlayer.direction == -1)
-        //                {
-        //                    num9 += 1.57f;
-        //                    origin5 = new Vector2(value.Width, 0f);
-        //                    num10 -= (float)value.Width;
-        //                }
-        //                else
-        //                {
-        //                    num9 -= 1.57f;
-        //                    origin5 = Vector2.Zero;
-        //                }
-        //            }
-        //            else if (drawinfo.drawPlayer.direction == -1)
-        //            {
-        //                origin5 = new Vector2(value.Width, value.Height);
-        //                num10 -= (float)value.Width;
-        //            }
-
-        //            ItemLoader.HoldoutOrigin(drawinfo.drawPlayer, ref origin5);
-        //            item = new DrawData(value, new Vector2((int)(drawinfo.ItemLocation.X - Main.screenPosition.X + origin5.X + num10), (int)(drawinfo.ItemLocation.Y - Main.screenPosition.Y + num11)), sourceRect, heldItem.GetAlpha(drawinfo.itemColor), num9, origin5, adjustedItemScale, drawinfo.itemEffect, 0);
-        //            drawinfo.DrawDataCache.Add(item);
-        //            if (num == 3870)
-        //            {
-        //                item = new DrawData(TextureAssets.GlowMask[238].Value, new Vector2((int)(drawinfo.ItemLocation.X - Main.screenPosition.X + origin5.X + num10), (int)(drawinfo.ItemLocation.Y - Main.screenPosition.Y + num11)), sourceRect, new Color(255, 255, 255, 127), num9, origin5, adjustedItemScale, drawinfo.itemEffect, 0);
-        //                drawinfo.DrawDataCache.Add(item);
-        //            }
-
-        //            return;
-        //        }
-
-        //        if (num == 5118)
-        //        {
-        //            float rotation = drawinfo.drawPlayer.itemRotation + 1.57f * (float)drawinfo.drawPlayer.direction;
-        //            Vector2 vector4 = new Vector2((float)value.Width * 0.5f, (float)value.Height * 0.5f);
-        //            Vector2 origin6 = new Vector2((float)value.Width * 0.5f, value.Height);
-        //            Vector2 spinningpoint = new Vector2(10f, 4f) * drawinfo.drawPlayer.Directions;
-        //            spinningpoint = spinningpoint.RotatedBy(drawinfo.drawPlayer.itemRotation);
-        //            item = new DrawData(value, new Vector2((int)(drawinfo.ItemLocation.X - Main.screenPosition.X + vector4.X + spinningpoint.X), (int)(drawinfo.ItemLocation.Y - Main.screenPosition.Y + vector4.Y + spinningpoint.Y)), sourceRect, heldItem.GetAlpha(drawinfo.itemColor), rotation, origin6, adjustedItemScale, drawinfo.itemEffect, 0);
-        //            drawinfo.DrawDataCache.Add(item);
-        //            return;
-        //        }
-
-        //        int num12 = 10;
-        //        Vector2 vector5 = new Vector2(value.Width / 2, value.Height / 2);
-        //        Vector2 vector6 = Main.DrawPlayerItemPos(drawinfo.drawPlayer.gravDir, num);
-        //        num12 = (int)vector6.X;
-        //        vector5.Y = vector6.Y;
-        //        Vector2 origin7 = new Vector2(-num12, value.Height / 2);
-        //        if (drawinfo.drawPlayer.direction == -1)
-        //        {
-        //            origin7 = new Vector2(value.Width + num12, value.Height / 2);
-        //        }
-
-        //        item = new DrawData(value, new Vector2((int)(drawinfo.ItemLocation.X - Main.screenPosition.X + vector5.X), (int)(drawinfo.ItemLocation.Y - Main.screenPosition.Y + vector5.Y)), sourceRect, heldItem.GetAlpha(drawinfo.itemColor), drawinfo.drawPlayer.itemRotation, origin7, adjustedItemScale, drawinfo.itemEffect, 0);
-        //        drawinfo.DrawDataCache.Add(item);
-        //        if (heldItem.color != default(Color))
-        //        {
-        //            item = new DrawData(value, new Vector2((int)(drawinfo.ItemLocation.X - Main.screenPosition.X + vector5.X), (int)(drawinfo.ItemLocation.Y - Main.screenPosition.Y + vector5.Y)), sourceRect, heldItem.GetColor(drawinfo.itemColor), drawinfo.drawPlayer.itemRotation, origin7, adjustedItemScale, drawinfo.itemEffect, 0);
-        //            drawinfo.DrawDataCache.Add(item);
-        //        }
-
-        //        if (heldItem.glowMask != -1)
-        //        {
-        //            item = new DrawData(TextureAssets.GlowMask[heldItem.glowMask].Value, new Vector2((int)(drawinfo.ItemLocation.X - Main.screenPosition.X + vector5.X), (int)(drawinfo.ItemLocation.Y - Main.screenPosition.Y + vector5.Y)), sourceRect, new Color(250, 250, 250, heldItem.alpha), drawinfo.drawPlayer.itemRotation, origin7, adjustedItemScale, drawinfo.itemEffect, 0);
-        //            drawinfo.DrawDataCache.Add(item);
-        //        }
-
-        //        if (num == 3788)
-        //        {
-        //            float num13 = ((float)drawinfo.drawPlayer.miscCounter / 75f * (MathF.PI * 2f)).ToRotationVector2().X * 1f + 0f;
-        //            Color color3 = new Color(80, 40, 252, 0) * (num13 / 2f * 0.3f + 0.85f) * 0.5f;
-        //            for (float num14 = 0f; num14 < 4f; num14 += 1f)
-        //            {
-        //                item = new DrawData(TextureAssets.GlowMask[220].Value, new Vector2((int)(drawinfo.ItemLocation.X - Main.screenPosition.X + vector5.X), (int)(drawinfo.ItemLocation.Y - Main.screenPosition.Y + vector5.Y)) + (num14 * (MathF.PI / 2f) + drawinfo.drawPlayer.itemRotation).ToRotationVector2() * num13, null, color3, drawinfo.drawPlayer.itemRotation, origin7, adjustedItemScale, drawinfo.itemEffect, 0);
-        //                drawinfo.DrawDataCache.Add(item);
-        //            }
-        //        }
-
-        //        return;
-        //    }
-        //    var drawPlayer = drawinfo.drawPlayer;
-        //    var flagMelee = drawinfo.drawPlayer.HeldItem.damage > 0 && drawinfo.drawPlayer.HeldItem.useStyle == ItemUseStyleID.Swing && drawinfo.drawPlayer.itemAnimation > 0 && drawinfo.drawPlayer.HeldItem.DamageType == DamageClass.Melee && !drawinfo.drawPlayer.HeldItem.noUseGraphic;// && counter == 0
-
-        //    if (drawinfo.drawPlayer.gravDir == -1f)
-        //    {
-        //        if (!flagMelee)
-        //        {
-        //            drawPlayer.HeldItem.useTurn = drawPlayer.HeldItem.shoot == 0;
-        //            item = new DrawData(value, position, sourceRect, heldItem.GetAlpha(drawinfo.itemColor), num5, origin, adjustedItemScale, drawinfo.itemEffect, 0);
-        //            drawinfo.DrawDataCache.Add(item);
-        //            if (heldItem.color != default(Color))
-        //            {
-        //                item = new DrawData(value, position, sourceRect, heldItem.GetColor(drawinfo.itemColor), num5, origin, adjustedItemScale, drawinfo.itemEffect, 0);
-        //                drawinfo.DrawDataCache.Add(item);
-        //            }
-
-        //            if (heldItem.glowMask != -1)
-        //            {
-        //                item = new DrawData(TextureAssets.GlowMask[heldItem.glowMask].Value, position, sourceRect, new Color(250, 250, 250, heldItem.alpha), num5, origin, adjustedItemScale, drawinfo.itemEffect, 0);
-        //                drawinfo.DrawDataCache.Add(item);
-        //            }
-        //        }
-        //        return;
-        //    }
-        //    if (!flagMelee)
-        //    {
-        //        drawPlayer.HeldItem.useTurn = drawPlayer.HeldItem.shoot == 0;
-        //        item = new DrawData(value, position, sourceRect, heldItem.GetAlpha(drawinfo.itemColor), num5, origin, adjustedItemScale, drawinfo.itemEffect, 0);
-        //        drawinfo.DrawDataCache.Add(item);
-        //        if (heldItem.color != default(Color))
-        //        {
-        //            item = new DrawData(value, position, sourceRect, heldItem.GetColor(drawinfo.itemColor), num5, origin, adjustedItemScale, drawinfo.itemEffect, 0);
-        //            drawinfo.DrawDataCache.Add(item);
-        //        }
-
-        //        if (heldItem.glowMask != -1)
-        //        {
-        //            item = new DrawData(TextureAssets.GlowMask[heldItem.glowMask].Value, position, sourceRect, color, num5, origin, adjustedItemScale, drawinfo.itemEffect, 0);
-        //            drawinfo.DrawDataCache.Add(item);
-        //        }
-
-
-        //        if (!heldItem.flame || drawinfo.shadow != 0f)
-        //        {
-        //            return;
-        //        }
-
-        //        try
-        //        {
-        //            Main.instance.LoadItemFlames(num);
-        //            if (TextureAssets.ItemFlame[num].IsLoaded)
-        //            {
-        //                if (num == 3823)
-        //                {
-        //                    return;
-        //                }
-        //                Color color4 = new Color(100, 100, 100, 0);
-        //                int num15 = 7;
-        //                float num16 = 1f;
-        //                switch (num)
-        //                {
-        //                    case 3045:
-        //                        color4 = new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB, 0);
-        //                        break;
-        //                    case 4952:
-        //                        num15 = 3;
-        //                        num16 = 0.6f;
-        //                        color4 = new Color(50, 50, 50, 0);
-        //                        break;
-        //                }
-
-        //                for (int i = 0; i < num15; i++)
-        //                {
-        //                    float num17 = drawinfo.drawPlayer.itemFlamePos[i].X * adjustedItemScale * num16;
-        //                    float num18 = drawinfo.drawPlayer.itemFlamePos[i].Y * adjustedItemScale * num16;
-        //                    item = new DrawData(TextureAssets.ItemFlame[num].Value, new Vector2((int)(position.X + num17), (int)(position.Y + num18)), sourceRect, color4, num5, origin, adjustedItemScale, drawinfo.itemEffect, 0);
-        //                    drawinfo.DrawDataCache.Add(item);
-        //                }
-        //            }
-        //        }
-        //        catch
-        //        {
-        //        }
-        //    }
-        //    else 
-        //    {
-        //        var itemTex = TextureAssets.Item[drawPlayer.HeldItem.type].Value;
-        //        var w = itemTex.Width;
-        //        var h = itemTex.Height;
-        //        var cs = new Color[w * h];
-        //        itemTex.GetData(cs);
-        //        Vector4 vcolor = default;
-        //        float count = 0;
-        //        float airFactor = 1;
-        //        Color target = default;
-        //        for (int n = 0; n < cs.Length; n++)
-        //        {
-        //            if (cs[n] != default && (n - w < 0 || cs[n - w] != default) && (n - 1 < 0 || cs[n - 1] != default) && (n + w >= cs.Length || cs[n + w] != default) && (n + 1 >= cs.Length || cs[n + 1] != default))
-        //            {
-        //                var weight = (float)((n + 1) % w * (h - n / w)) / w / h;
-        //                vcolor += cs[n].ToVector4() * weight;
-        //                count += weight;
-        //            }
-        //            Vector2 coord = new Vector2(n % w, n / w);
-        //            coord /= new Vector2(w, h);
-        //            if (ConfigurationSwoosh.instance.checkAir && Math.Abs(1 - coord.X - coord.Y) * 0.7071067811f < 0.05f && cs[n] != default && target == default)
-        //            {
-        //                target = cs[n];
-        //                airFactor = coord.X;
-        //            }
-        //        }
-        //        vcolor /= count;
-        //        var newColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
-        //        var hsl = Main.rgbToHsl(newColor);
-        //        try
-        //        {
-        //            DrawSwoosh(drawPlayer, newColor, hsl.Z < ConfigurationSwoosh.instance.IsLighterDecider, airFactor, out var rectangle);
-        //            Main.NewText("!!!");
-        //        }
-        //        catch (Exception ex)
-        //        {
-
-        //        }
-        //    }
-        //}
         public static void DrawSwoosh(Player drawPlayer, Color newColor, bool alphaBlend, float checkAirFactor, ConfigurationSwoosh instance, out Rectangle bodyRec)
         {
             //Main.NewText(checkAirFactor);
@@ -1668,117 +1267,118 @@ namespace CoolerItemVisualEffect
                     //}
                     #endregion
 
-                    sb.End();
-                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-                    CoolerItemVisualEffect.DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-                    CoolerItemVisualEffect.DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
 
-
-                    CoolerItemVisualEffect.DistortEffect.Parameters["position"].SetValue(new Vector2(0, 5));
-                    CoolerItemVisualEffect.DistortEffect.Parameters["tier2"].SetValue(0.4f);
-                    for (int n = 0; n < 3; n++)
+                    for (int n = 0; n < instance.maxCount; n++)
                     {
+                        sb.End();  
+                        Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                        DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+                        DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
+
+
+                        DistortEffect.Parameters["position"].SetValue(new Vector2(0, 6));
+                        DistortEffect.Parameters["tier2"].SetValue(0.4f);
                         gd.SetRenderTarget(Main.screenTargetSwap);
                         gd.Clear(Color.Transparent);
-                        CoolerItemVisualEffect.DistortEffect.CurrentTechnique.Passes[7].Apply();
+                        DistortEffect.CurrentTechnique.Passes[7].Apply();
                         sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
 
 
 
-                        gd.SetRenderTarget(Main.screenTarget);
+                        gd.SetRenderTarget(Main.screenTarget); 
                         gd.Clear(Color.Transparent);
-                        CoolerItemVisualEffect.DistortEffect.CurrentTechnique.Passes[6].Apply();
+                        DistortEffect.CurrentTechnique.Passes[6].Apply();
                         sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-                    }
 
-                    CoolerItemVisualEffect.DistortEffect.Parameters["position"].SetValue(new Vector2(0, 5));
-                    CoolerItemVisualEffect.DistortEffect.Parameters["ImageSize"].SetValue((u + v) * -0.0002f * (1 - 2 * Math.Abs(0.5f - fac)) * instance.distortFactor);
-                    for (int n = 0; n < 2; n++)
-                    {
+                        DistortEffect.Parameters["position"].SetValue(new Vector2(0, 9));
+                        DistortEffect.Parameters["ImageSize"].SetValue((u + v) * -0.0004f * (1 - 2 * Math.Abs(0.5f - fac)) * instance.distortFactor);
                         gd.SetRenderTarget(Main.screenTargetSwap);
                         gd.Clear(Color.Transparent);
-                        CoolerItemVisualEffect.DistortEffect.CurrentTechnique.Passes[5].Apply();
+                        DistortEffect.CurrentTechnique.Passes[5].Apply();
                         sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
 
                         gd.SetRenderTarget(Main.screenTarget);
                         gd.Clear(Color.Transparent);
-                        CoolerItemVisualEffect.DistortEffect.CurrentTechnique.Passes[4].Apply();
+                        DistortEffect.CurrentTechnique.Passes[4].Apply();
                         sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                        #region 乱糟糟注释
+                        //Main.spriteBatch.End();
+                        //Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+
+                        ////Main.NewText(CoolerItemVisualEffect.DistortEffect.CurrentTechnique.Passes.Count);
+
+                        ////CoolerItemVisualEffect.DistortEffect.Parameters["offset"].SetValue(Rotation.ToRotationVector2() * -0.002f * useDistort);//* (1 - 2 * Math.Abs(0.5f - useDistort))
+                        ////CoolerItemVisualEffect.DistortEffect.Parameters["invAlpha"].SetValue(0);
+
+
+                        //CoolerItemVisualEffect.DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+                        //CoolerItemVisualEffect.DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
+                        //CoolerItemVisualEffect.DistortEffect.Parameters["position"].SetValue(new Vector2(0, 7));
+                        //CoolerItemVisualEffect.DistortEffect.Parameters["tier2"].SetValue(0.4f);
+                        //for (int n = 0; n < 3; n++)
+                        //{
+                        //    gd.SetRenderTarget(Main.screenTargetSwap);
+                        //    gd.Clear(Color.Transparent);
+                        //    CoolerItemVisualEffect.DistortEffect.CurrentTechnique.Passes[7].Apply();
+                        //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+
+
+
+                        //    gd.SetRenderTarget(Main.screenTarget);
+                        //    gd.Clear(Color.Transparent);
+                        //    CoolerItemVisualEffect.DistortEffect.CurrentTechnique.Passes[6].Apply();
+                        //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                        //}
+                        //sb.End();
+                        //Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                        //DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+                        //DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
+                        //DistortEffect.Parameters["position"].SetValue(new Vector2(0, 3));
+                        //DistortEffect.Parameters["tier2"].SetValue(0.2f);
+                        //for (int n = 0; n < 3; n++)
+                        //{
+                        //    gd.SetRenderTarget(Main.screenTargetSwap);
+                        //    gd.Clear(Color.Transparent);
+                        //    DistortEffect.CurrentTechnique.Passes[7].Apply();
+                        //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+
+
+
+                        //    gd.SetRenderTarget(Main.screenTarget);
+                        //    gd.Clear(Color.Transparent);
+                        //    DistortEffect.CurrentTechnique.Passes[6].Apply();
+                        //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                        //}
+                        //DistortEffect.Parameters["position"].SetValue(new Vector2(0, 3));
+                        //DistortEffect.Parameters["ImageSize"].SetValue((u + v) * -0.002f * (1 - 2 * Math.Abs(0.5f - fac)) * instance.distortFactor);
+                        //for (int n = 0; n < 2; n++)
+                        //{
+                        //    gd.SetRenderTarget(Main.screenTargetSwap);
+                        //    gd.Clear(Color.Transparent);
+                        //    DistortEffect.CurrentTechnique.Passes[5].Apply();
+                        //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+
+                        //    gd.SetRenderTarget(Main.screenTarget);
+                        //    gd.Clear(Color.Transparent);
+                        //    DistortEffect.CurrentTechnique.Passes[4].Apply();
+                        //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                        //}
+                        //sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                        //sb.Draw(Instance.Render, Vector2.Zero, Color.White);
+                        #endregion
+                        sb.End();
+                        Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                        sb.Draw(Instance.Render, Vector2.Zero, Color.White);
                     }
-                    #region 乱糟糟注释
-                    //Main.spriteBatch.End();
-                    //Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-
-                    ////Main.NewText(CoolerItemVisualEffect.DistortEffect.CurrentTechnique.Passes.Count);
-
-                    ////CoolerItemVisualEffect.DistortEffect.Parameters["offset"].SetValue(Rotation.ToRotationVector2() * -0.002f * useDistort);//* (1 - 2 * Math.Abs(0.5f - useDistort))
-                    ////CoolerItemVisualEffect.DistortEffect.Parameters["invAlpha"].SetValue(0);
 
 
-                    //CoolerItemVisualEffect.DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-                    //CoolerItemVisualEffect.DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
-                    //CoolerItemVisualEffect.DistortEffect.Parameters["position"].SetValue(new Vector2(0, 7));
-                    //CoolerItemVisualEffect.DistortEffect.Parameters["tier2"].SetValue(0.4f);
-                    //for (int n = 0; n < 3; n++)
-                    //{
-                    //    gd.SetRenderTarget(Main.screenTargetSwap);
-                    //    gd.Clear(Color.Transparent);
-                    //    CoolerItemVisualEffect.DistortEffect.CurrentTechnique.Passes[7].Apply();
-                    //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-
-
-
-                    //    gd.SetRenderTarget(Main.screenTarget);
-                    //    gd.Clear(Color.Transparent);
-                    //    CoolerItemVisualEffect.DistortEffect.CurrentTechnique.Passes[6].Apply();
-                    //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-                    //}
-                    //sb.End();
-                    //Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-                    //DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-                    //DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
-                    //DistortEffect.Parameters["position"].SetValue(new Vector2(0, 3));
-                    //DistortEffect.Parameters["tier2"].SetValue(0.2f);
-                    //for (int n = 0; n < 3; n++)
-                    //{
-                    //    gd.SetRenderTarget(Main.screenTargetSwap);
-                    //    gd.Clear(Color.Transparent);
-                    //    DistortEffect.CurrentTechnique.Passes[7].Apply();
-                    //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-
-
-
-                    //    gd.SetRenderTarget(Main.screenTarget);
-                    //    gd.Clear(Color.Transparent);
-                    //    DistortEffect.CurrentTechnique.Passes[6].Apply();
-                    //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-                    //}
-                    //DistortEffect.Parameters["position"].SetValue(new Vector2(0, 3));
-                    //DistortEffect.Parameters["ImageSize"].SetValue((u + v) * -0.002f * (1 - 2 * Math.Abs(0.5f - fac)) * instance.distortFactor);
-                    //for (int n = 0; n < 2; n++)
-                    //{
-                    //    gd.SetRenderTarget(Main.screenTargetSwap);
-                    //    gd.Clear(Color.Transparent);
-                    //    DistortEffect.CurrentTechnique.Passes[5].Apply();
-                    //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-
-                    //    gd.SetRenderTarget(Main.screenTarget);
-                    //    gd.Clear(Color.Transparent);
-                    //    DistortEffect.CurrentTechnique.Passes[4].Apply();
-                    //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-                    //}
-                    //sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-                    //sb.Draw(Instance.Render, Vector2.Zero, Color.White);
-                    #endregion
-                    sb.End();
-                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
 
                 }
                 else
                 {
                     sb.End();
                     sb.Begin(SpriteSortMode.Immediate, alphaBlend ? BlendState.NonPremultiplied : BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);//Main.DefaultSamplerState//Main.GameViewMatrix.TransformationMatrix
-                    ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
+                    ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);//
                     ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
                     ShaderSwooshEX.Parameters["uTime"].SetValue(0);//-(float)Main.time * 0.06f
                     ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);
@@ -1864,7 +1464,7 @@ namespace CoolerItemVisualEffect
             Main.graphics.GraphicsDevice.Textures[0] = itemTex;//传入物品贴图
             Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("Style_12");//传入因时间而x纹理坐标发生偏移的灰度图，这里其实并不明显，你可以参考我mod里的无间之钟在黑暗环境下的效果
             Main.graphics.GraphicsDevice.Textures[2] = GetWeaponDisplayImage("Style_18");//传入固定叠加的灰度图
-            var tex = new Texture2D(Main.graphics.GraphicsDevice, 1, 1);
+            var tex = emptyTex ??= new Texture2D(Main.graphics.GraphicsDevice, 1, 1);
             tex.SetData(new Color[] { Color.Transparent });
             Main.graphics.GraphicsDevice.Textures[3] = tex;
             var g = drawPlayer.HeldItem.glowMask;

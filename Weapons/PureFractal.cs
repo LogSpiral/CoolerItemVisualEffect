@@ -172,49 +172,18 @@ namespace CoolerItemVisualEffect.Weapons
         public override void SendExtraAI(BinaryWriter writer)
         {
             writer.Write((byte)projectile.frame);
-            writer.Write(newColor.PackedValue);
-            writer.Write(airFactor);
+            //writer.Write(newColor.PackedValue);
+            //writer.Write(airFactor);
         }
         public override void ReceiveExtraAI(BinaryReader reader)
         {
             projectile.frame = reader.ReadByte();
-            newColor.PackedValue = reader.ReadUInt32();
-            airFactor = reader.ReadSingle();
-        }
-        public override void OnSpawn(IEntitySource source)
-        {
-            Texture2D currentTex = GetPureFractalProjTexs(projectile.frame);
-            var w = currentTex.Width;
-            var _h = currentTex.Height;
-            var cs = new Color[w * _h];
-            currentTex.GetData(cs);
-            Vector4 vcolor = default;
-            float count = 0;
-            airFactor = 1;
-            Color target = default;
-            for (int n = 0; n < cs.Length; n++)
-            {
-                if (cs[n] != default && (n - w < 0 || cs[n - w] != default) && (n - 1 < 0 || cs[n - 1] != default) && (n + w >= cs.Length || cs[n + w] != default) && (n + 1 >= cs.Length || cs[n + 1] != default))
-                {
-                    var weight = (float)((n + 1) % w * (_h - n / w)) / w / _h;
-                    vcolor += cs[n].ToVector4() * weight;
-                    count += weight;
-                }
-                Vector2 coord = new Vector2(n % w, n / w);
-                coord /= new Vector2(w, _h);
-                if (instance.checkAir && Math.Abs(1 - coord.X - coord.Y) * 0.7071067811f < 0.05f && cs[n] != default && target == default)
-                {
-                    target = cs[n];
-                    airFactor = coord.X;
-                }
-            }
-            vcolor /= count;
-            newColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
-            base.OnSpawn(source);
+            //newColor.PackedValue = reader.ReadUInt32();
+            //airFactor = reader.ReadSingle();
         }
         Projectile projectile => Projectile;
-        Color newColor;
-        float airFactor = 1;
+        Color newColor => CoolerItemVisualEffect.PureFractalColors[Projectile.frame];
+        float airFactor => CoolerItemVisualEffect.PureFractalAirFactorss[Projectile.frame];
         public override void PostAI()
         {
             Vector2 value1 = Main.player[projectile.owner].position - Main.player[projectile.owner].oldPosition;

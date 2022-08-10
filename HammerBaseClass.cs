@@ -438,7 +438,6 @@ namespace CoolerItemVisualEffect
                     gd.SetRenderTarget(Main.screenTargetSwap);
                     gd.Clear(Color.Transparent);
                     Main.graphics.GraphicsDevice.Textures[1] = useMask.fillTex;
-                    CoolerItemVisualEffect.DistortEffect.CurrentTechnique.Passes[1].Apply();
                     CoolerItemVisualEffect.DistortEffect.Parameters["tex0"].SetValue(render);
                     CoolerItemVisualEffect.DistortEffect.Parameters["invAlpha"].SetValue(useMask.tier1);
                     CoolerItemVisualEffect.DistortEffect.Parameters["lightAsAlpha"].SetValue(useMask.lightAsAlpha);
@@ -447,6 +446,7 @@ namespace CoolerItemVisualEffect
                     CoolerItemVisualEffect.DistortEffect.Parameters["maskGlowColor"].SetValue(useMask.glowColor.ToVector4());
                     CoolerItemVisualEffect.DistortEffect.Parameters["maskBoundColor"].SetValue(useMask.boundColor.ToVector4());
                     CoolerItemVisualEffect.DistortEffect.Parameters["ImageSize"].SetValue(useMask.texSize);
+                    CoolerItemVisualEffect.DistortEffect.CurrentTechnique.Passes[1].Apply();
                     sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
                     gd.SetRenderTarget(Main.screenTarget);
                     gd.Clear(Color.Transparent);
