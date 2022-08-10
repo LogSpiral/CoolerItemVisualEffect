@@ -101,7 +101,7 @@ namespace CoolerItemVisualEffect
         {
             if (player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && player.itemAnimation > 0 && player.HeldItem.DamageType == DamageClass.Melee && !player.HeldItem.noUseGraphic && instance.CoolerSwooshActive && !Main.gamePaused && (!instance.ToolsNoUseNewSwooshEffect || player.HeldItem.axe == 0 && player.HeldItem.hammer == 0 && player.HeldItem.pick == 0) || player.HeldItem.type == ItemID.Zenith && player.itemAnimation > 0 && instance.allowZenith)
             {
-                Main.screenPosition += Main.rand.NextVector2Unit() * (float)Math.Pow(factorGeter, 2) * 16 * instance.Shake * (swingCount % 3 == 2 ? 3 : 1);
+                Main.screenPosition += Main.rand.NextVector2Unit() * (float)Math.Pow(factorGeter, 4) * 24 * instance.Shake * (swingCount % 3 == 2 ? 3 : 1);
             }
             base.ModifyScreenPosition();
         }

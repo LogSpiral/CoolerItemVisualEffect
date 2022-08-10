@@ -161,8 +161,8 @@ namespace CoolerItemVisualEffect
         [Range(1, 20)]
         [Increment(1)]
         [DefaultValue(4)]
-        [Label("$Mods.WeaponDisplay.ConfigurationServer.AttackablesName")]
-        [Tooltip("$Mods.WeaponDisplay.ConfigurationServer.AttackablesTooltip")]
+        [Label("$Mods.CoolerItemVisualEffect.ConfigurationServer.AttackablesName")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.ConfigurationServer.AttackablesTooltip")]
         [Slider]
         public int ItemAttackCD;
 
@@ -457,7 +457,7 @@ namespace CoolerItemVisualEffect
 
         [Increment(1f)]
         [DefaultValue(7f)]
-        [Range(0, 7f)]
+        [Range(0, 8f)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.37")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.38")]
         [BackgroundColor(255, 127, 255, 127)]

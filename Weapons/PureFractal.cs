@@ -172,12 +172,49 @@ namespace CoolerItemVisualEffect.Weapons
         public override void SendExtraAI(BinaryWriter writer)
         {
             writer.Write((byte)projectile.frame);
+            writer.Write(newColor.PackedValue);
+            writer.Write(airFactor);
         }
         public override void ReceiveExtraAI(BinaryReader reader)
         {
             projectile.frame = reader.ReadByte();
+            newColor.PackedValue = reader.ReadUInt32();
+            airFactor = reader.ReadSingle();
+        }
+        public override void OnSpawn(IEntitySource source)
+        {
+            Texture2D currentTex = GetPureFractalProjTexs(projectile.frame);
+            var w = currentTex.Width;
+            var _h = currentTex.Height;
+            var cs = new Color[w * _h];
+            currentTex.GetData(cs);
+            Vector4 vcolor = default;
+            float count = 0;
+            airFactor = 1;
+            Color target = default;
+            for (int n = 0; n < cs.Length; n++)
+            {
+                if (cs[n] != default && (n - w < 0 || cs[n - w] != default) && (n - 1 < 0 || cs[n - 1] != default) && (n + w >= cs.Length || cs[n + w] != default) && (n + 1 >= cs.Length || cs[n + 1] != default))
+                {
+                    var weight = (float)((n + 1) % w * (_h - n / w)) / w / _h;
+                    vcolor += cs[n].ToVector4() * weight;
+                    count += weight;
+                }
+                Vector2 coord = new Vector2(n % w, n / w);
+                coord /= new Vector2(w, _h);
+                if (instance.checkAir && Math.Abs(1 - coord.X - coord.Y) * 0.7071067811f < 0.05f && cs[n] != default && target == default)
+                {
+                    target = cs[n];
+                    airFactor = coord.X;
+                }
+            }
+            vcolor /= count;
+            newColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
+            base.OnSpawn(source);
         }
         Projectile projectile => Projectile;
+        Color newColor;
+        float airFactor = 1;
         public override void PostAI()
         {
             Vector2 value1 = Main.player[projectile.owner].position - Main.player[projectile.owner].oldPosition;
@@ -239,36 +276,12 @@ namespace CoolerItemVisualEffect.Weapons
             }
             projectile.Opacity = Utils.GetLerpValue(0f, 5f, projectile.localAI[0], true) * Utils.GetLerpValue(120f, 115f, projectile.localAI[0], true);//修改透明度
         }
-        public override bool PreDraw(ref Color lightColor)
+        //public override bool PreDraw(ref Color lightColor)
+        public void Draw()
         {
             int max = 60;
             Texture2D currentTex = GetPureFractalProjTexs(projectile.frame);
-            var w = currentTex.Width;
-            var _h = currentTex.Height;
-            var cs = new Color[w * _h];
-            currentTex.GetData(cs);
-            Vector4 vcolor = default;
-            float count = 0;
-            float airFactor = 1;
-            Color target = default;
-            for (int n = 0; n < cs.Length; n++)
-            {
-                if (cs[n] != default && (n - w < 0 || cs[n - w] != default) && (n - 1 < 0 || cs[n - 1] != default) && (n + w >= cs.Length || cs[n + w] != default) && (n + 1 >= cs.Length || cs[n + 1] != default))
-                {
-                    var weight = (float)((n + 1) % w * (_h - n / w)) / w / _h;
-                    vcolor += cs[n].ToVector4() * weight;
-                    count += weight;
-                }
-                Vector2 coord = new Vector2(n % w, n / w);
-                coord /= new Vector2(w, _h);
-                if (instance.checkAir && Math.Abs(1 - coord.X - coord.Y) * 0.7071067811f < 0.05f && cs[n] != default && target == default)
-                {
-                    target = cs[n];
-                    airFactor = coord.X;
-                }
-            }
-            vcolor /= count;
-            var newColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
+            //Main.spriteBatch.DrawLine(projectile.Center - Main.screenPosition, projectile.velocity, newColor, 16, true);
             var hsl = Main.rgbToHsl(newColor);
             for (int n = 0; n < Projectile.oldPos.Length; n++)
             {
@@ -312,9 +325,9 @@ namespace CoolerItemVisualEffect.Weapons
             }
 
             #region 快乐顶点绘制_1(在原来的基础上叠加，亮瞎了)
-            if (ShaderSwooshEX == null) return false;
-            if (DistortEffect == null) return false;
-            if (Main.GameViewMatrix == null) return false;
+            if (ShaderSwooshEX == null) return;//false
+            if (DistortEffect == null) return;
+            if (Main.GameViewMatrix == null) return;
             //var drawPlayer = Main.player[Projectile.owner];
             var trans = Main.GameViewMatrix != null ? Main.GameViewMatrix.TransformationMatrix : Matrix.Identity;
             //var modPlayer = drawPlayer.GetModPlayer<CoolerItemVisualEffectPlayer>(); var fac = modPlayer.factorGeter;
@@ -440,11 +453,11 @@ namespace CoolerItemVisualEffect.Weapons
             //}
             #endregion
             #region 快乐顶点绘制_2(现在才进入正题)
-            float _scaler = new Vector2(w, _h).Length() * airFactor;
+            float _scaler = currentTex.Size().Length() * airFactor;
             var bars = new List<CustomVertexInfo>();
             var realColor = newColor;
             var multiValue = 1 - projectile.localAI[0] / 120f;
-
+            multiValue = 4 * multiValue / (3 * multiValue + 1);
             for (int i = 0; i < max; i++)
             {
                 //if (i >= 15) break;
@@ -480,9 +493,9 @@ namespace CoolerItemVisualEffect.Weapons
                     _triangleList.Add(bars[i + 2]);
                     _triangleList.Add(bars[i + 3]);
                 }
-                bool useRender = instance.distortFactor != 0 && Lighting.Mode != Terraria.Graphics.Light.LightMode.Retro && Lighting.Mode != Terraria.Graphics.Light.LightMode.Trippy && Main.WaveQuality != 0;
-                var gd = Main.graphics.GraphicsDevice;
-                var sb = Main.spriteBatch;
+                //bool useRender = instance.distortFactor != 0 && CoolerItemVisualEffect.CanUseRender;
+                //var gd = Main.graphics.GraphicsDevice;
+                //var sb = Main.spriteBatch;
                 var passCount = 0;
                 switch (instance.swooshColorType)
                 {
@@ -490,107 +503,125 @@ namespace CoolerItemVisualEffect.Weapons
                     case SwooshColorType.武器贴图对角线: passCount = 1; break;
                     case SwooshColorType.色调处理与对角线混合: passCount = 3; break;
                 }
-                if (useRender)
-                {
-                    #region MyRegion
-                    #endregion
-                    sb.End();
-                    gd.SetRenderTarget(Instance.Render);
-                    gd.Clear(Color.Transparent);
-                    sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
-                    ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
-                    ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
-                    ShaderSwooshEX.Parameters["uTime"].SetValue(0); ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);
-                    ShaderSwooshEX.Parameters["airFactor"].SetValue(airFactor);
-                    ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
-                    Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + (int)MathHelper.Clamp(instance.ImageIndex, 0, 7));
-                    Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
-                    Main.graphics.GraphicsDevice.Textures[2] = currentTex;
-                    if (instance.swooshColorType == SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = GetPureFractalHeatMaps(Projectile.frame);
-                    Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
-                    Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
-                    Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
-                    Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
-                    ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
-                    Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, _triangleList.ToArray(), 0, _triangleList.Count / 3);
-                    Main.graphics.GraphicsDevice.RasterizerState = originalState;
-                    for (int n = 0; n < instance.maxCount; n++)
-                    {
-                        sb.End();
-                        gd.SetRenderTarget(Main.screenTargetSwap);
-                        gd.Clear(Color.Transparent);
-                        sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-                        DistortEffect.CurrentTechnique.Passes[0].Apply();
-                        DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
-                        DistortEffect.Parameters["offset"].SetValue((projectile.oldRot[0] - MathHelper.PiOver2).ToRotationVector2() * -0.01f * instance.distortFactor);
-                        DistortEffect.Parameters["invAlpha"].SetValue(0);
-                        sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-                        sb.End();
-                        gd.SetRenderTarget(Main.screenTarget);
-                        gd.Clear(Color.Transparent);
-                        sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-                        sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-                        sb.Draw(Instance.Render, Vector2.Zero, new Color(1f, 1f, 1f, 0));
+                //if (false)//useRender
+                //{
+                //    #region MyRegion
+                //    #endregion
+                //    sb.End();
+                //    gd.SetRenderTarget(Instance.Render);
+                //    gd.Clear(Color.Transparent);
+                //    sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+                //    ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
+                //    ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
+                //    ShaderSwooshEX.Parameters["uTime"].SetValue(0); ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);
+                //    ShaderSwooshEX.Parameters["airFactor"].SetValue(airFactor);
+                //    ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
+                //    Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + (int)MathHelper.Clamp(instance.ImageIndex, 0, 7));
+                //    Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
+                //    Main.graphics.GraphicsDevice.Textures[2] = currentTex;
+                //    if (instance.swooshColorType == SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = GetPureFractalHeatMaps(Projectile.frame);
+                //    Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
+                //    Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
+                //    Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
+                //    Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
+                //    ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+                //    Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, _triangleList.ToArray(), 0, _triangleList.Count / 3);
+                //    Main.graphics.GraphicsDevice.RasterizerState = originalState;
+                //    for (int n = 0; n < instance.maxCount; n++)
+                //    {
+                //        sb.End();
+                //        gd.SetRenderTarget(Main.screenTargetSwap);
+                //        gd.Clear(Color.Transparent);
+                //        sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                //        DistortEffect.CurrentTechnique.Passes[0].Apply();
+                //        DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
+                //        DistortEffect.Parameters["offset"].SetValue((projectile.oldRot[0] - MathHelper.PiOver2).ToRotationVector2() * -0.01f * instance.distortFactor);
+                //        DistortEffect.Parameters["invAlpha"].SetValue(0);
+                //        sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+                //        sb.End();
+                //        gd.SetRenderTarget(Main.screenTarget);
+                //        gd.Clear(Color.Transparent);
+                //        sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                //        sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                //        sb.Draw(Instance.Render, Vector2.Zero, new Color(1f, 1f, 1f, 0));
 
-                        //sb.End();
-                        //Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-                        //DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-                        //DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
-                        //DistortEffect.Parameters["position"].SetValue(new Vector2(0, 3));
-                        //DistortEffect.Parameters["tier2"].SetValue(0.2f);
-                        //for (int i = 0; i < 1; i++)
-                        //{
-                        //    gd.SetRenderTarget(Main.screenTargetSwap);
-                        //    gd.Clear(Color.Transparent);
-                        //    DistortEffect.CurrentTechnique.Passes[7].Apply();
-                        //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+                //        //sb.End();
+                //        //Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                //        //DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+                //        //DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
+                //        //DistortEffect.Parameters["position"].SetValue(new Vector2(0, 3));
+                //        //DistortEffect.Parameters["tier2"].SetValue(0.2f);
+                //        //for (int i = 0; i < 1; i++)
+                //        //{
+                //        //    gd.SetRenderTarget(Main.screenTargetSwap);
+                //        //    gd.Clear(Color.Transparent);
+                //        //    DistortEffect.CurrentTechnique.Passes[7].Apply();
+                //        //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
 
 
 
-                        //    gd.SetRenderTarget(Main.screenTarget);
-                        //    gd.Clear(Color.Transparent);
-                        //    DistortEffect.CurrentTechnique.Passes[6].Apply();
-                        //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-                        //}
-                        //DistortEffect.Parameters["position"].SetValue(new Vector2(0, 3));
-                        //DistortEffect.Parameters["ImageSize"].SetValue(Vector2.Normalize(projectile.velocity) * -0.002f * instance.distortFactor);
-                        //for (int i = 0; i < 1; i++)
-                        //{
-                        //    gd.SetRenderTarget(Main.screenTargetSwap);
-                        //    gd.Clear(Color.Transparent);
-                        //    DistortEffect.CurrentTechnique.Passes[5].Apply();
-                        //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+                //        //    gd.SetRenderTarget(Main.screenTarget);
+                //        //    gd.Clear(Color.Transparent);
+                //        //    DistortEffect.CurrentTechnique.Passes[6].Apply();
+                //        //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                //        //}
+                //        //DistortEffect.Parameters["position"].SetValue(new Vector2(0, 3));
+                //        //DistortEffect.Parameters["ImageSize"].SetValue(Vector2.Normalize(projectile.velocity) * -0.002f * instance.distortFactor);
+                //        //for (int i = 0; i < 1; i++)
+                //        //{
+                //        //    gd.SetRenderTarget(Main.screenTargetSwap);
+                //        //    gd.Clear(Color.Transparent);
+                //        //    DistortEffect.CurrentTechnique.Passes[5].Apply();
+                //        //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
 
-                        //    gd.SetRenderTarget(Main.screenTarget);
-                        //    gd.Clear(Color.Transparent);
-                        //    DistortEffect.CurrentTechnique.Passes[4].Apply();
-                        //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-                        //}
-                        //sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-                        //sb.Draw(Instance.Render, Vector2.Zero, Color.White);
-                    }
-                }
-                else
-                {
-                    sb.End();
-                    sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
-                    ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
-                    ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
-                    ShaderSwooshEX.Parameters["uTime"].SetValue(0); ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);
-                    ShaderSwooshEX.Parameters["airFactor"].SetValue(airFactor);
-                    ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
-                    Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + (int)MathHelper.Clamp(instance.ImageIndex, 0, 7));
-                    Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
-                    Main.graphics.GraphicsDevice.Textures[2] = currentTex;
-                    if (instance.swooshColorType == SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = GetPureFractalHeatMaps(Projectile.frame);
-                    Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
-                    Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
-                    Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
-                    Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
-                    ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
-                    Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, _triangleList.ToArray(), 0, _triangleList.Count / 3);
-                    Main.graphics.GraphicsDevice.RasterizerState = originalState;
-                }
+                //        //    gd.SetRenderTarget(Main.screenTarget);
+                //        //    gd.Clear(Color.Transparent);
+                //        //    DistortEffect.CurrentTechnique.Passes[4].Apply();
+                //        //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                //        //}
+                //        //sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                //        //sb.Draw(Instance.Render, Vector2.Zero, Color.White);
+                //    }
+                //}
+                //else
+                //{
+                //    sb.End();
+                //    sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
+                //    ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
+                //    ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
+                //    ShaderSwooshEX.Parameters["uTime"].SetValue(0); ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);
+                //    ShaderSwooshEX.Parameters["airFactor"].SetValue(airFactor);
+                //    ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
+                //    Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + (int)MathHelper.Clamp(instance.ImageIndex, 0, 7));
+                //    Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
+                //    Main.graphics.GraphicsDevice.Textures[2] = currentTex;
+                //    if (instance.swooshColorType == SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = GetPureFractalHeatMaps(Projectile.frame);
+                //    Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
+                //    Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
+                //    Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
+                //    Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
+                //    ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+                //    Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, _triangleList.ToArray(), 0, _triangleList.Count / 3);
+                //    Main.graphics.GraphicsDevice.RasterizerState = originalState;
+                //}
+                //sb.End();
+                //sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
+                ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
+                ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
+                ShaderSwooshEX.Parameters["uTime"].SetValue(0); ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);
+                ShaderSwooshEX.Parameters["airFactor"].SetValue(airFactor);
+                ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
+                Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + (int)MathHelper.Clamp(instance.ImageIndex, 0, 8));
+                Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex_2");
+                Main.graphics.GraphicsDevice.Textures[2] = currentTex;
+                if (instance.swooshColorType == SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = GetPureFractalHeatMaps(Projectile.frame);
+                Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
+                Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
+                Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
+                Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
+                ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, _triangleList.ToArray(), 0, _triangleList.Count / 3);
+                Main.graphics.GraphicsDevice.RasterizerState = originalState;
             }
             #endregion
 
@@ -601,17 +632,42 @@ namespace CoolerItemVisualEffect.Weapons
             //    _fac *= _fac * _fac;
             //    Main.spriteBatch.Draw(currentTex, projectile.oldPos[n] - Main.screenPosition, null, (n == 0 ? Color.White : newColor) * _fac, projectile.oldRot[n] - MathHelper.PiOver4, currentTex.Size() * new Vector2(0, 1), 1f, 0, 0);
             //}
-            var spEffect = projectile.ai[0] * projectile.velocity.X > 0 ? 0 : SpriteEffects.FlipHorizontally;
 
             // Main.spriteBatch.DrawString(FontAssets.MouseText.Value, multiValue.ToString(), projectile.Center - Main.screenPosition, Color.Red);
             //Main.NewText(multiValue);
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
+            //Main.spriteBatch.End();
+            //Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
+            //for (int n = 15; n < max; n += 15)
+            //{
+            //    var _fac = 1 - (float)n / max;
+            //    //_fac *= _fac * _fac;
+            //    var _color = newColor * _fac;
+            //    _color.A = 0;
+            //    Main.spriteBatch.Draw(currentTex, projectile.oldPos[n - 1] - Main.screenPosition, null, _color * multiValue, projectile.oldRot[n - 1] - MathHelper.PiOver4 + (spEffect == 0 ? 0 : MathHelper.PiOver2), currentTex.Size() * new Vector2(spEffect == 0 ? 0 : 1, 1), instance.swooshSize, spEffect, 0);
+            //    DrawPrettyStarSparkle(projectile, 0, projectile.oldPos[n - 1] + (projectile.oldRot[n - 1] - MathHelper.PiOver2).ToRotationVector2() * _scaler * instance.swooshSize - Main.screenPosition, Color.White, _color, Main.spriteBatch);
+
+            //}
+            //Main.spriteBatch.Draw(currentTex, projectile.oldPos[0] - Main.screenPosition, null, Color.White * multiValue, projectile.oldRot[0] - MathHelper.PiOver4 + (spEffect == 0 ? 0 : MathHelper.PiOver2), currentTex.Size() * new Vector2(spEffect == 0 ? 0 : 1, 1), instance.swooshSize, spEffect, 0);
+            //DrawPrettyStarSparkle(projectile, 0, projectile.oldPos[0] + (projectile.oldRot[0] - MathHelper.PiOver2).ToRotationVector2() * _scaler * instance.swooshSize - Main.screenPosition, Color.White, newColor, Main.spriteBatch);
+            return;// false
+        }
+        public override bool PreDraw(ref Color lightColor)
+        {
+            var max = 0;
+            Texture2D currentTex = GetPureFractalProjTexs(projectile.frame);
+            float _scaler = currentTex.Size().Length();
+            var multiValue = 1 - projectile.localAI[0] / 120f;
+            var spEffect = projectile.ai[0] * projectile.velocity.X > 0 ? 0 : SpriteEffects.FlipHorizontally;
+
+            for (int n = 0; n < Projectile.oldPos.Length; n++)
+            {
+                if (projectile.oldPos[n] == default) { max = n; break; }
+            }
             for (int n = 15; n < max; n += 15)
             {
                 var _fac = 1 - (float)n / max;
                 //_fac *= _fac * _fac;
-                var _color = newColor * _fac;
+                var _color = newColor * _fac;//newColor 
                 _color.A = 0;
                 Main.spriteBatch.Draw(currentTex, projectile.oldPos[n - 1] - Main.screenPosition, null, _color * multiValue, projectile.oldRot[n - 1] - MathHelper.PiOver4 + (spEffect == 0 ? 0 : MathHelper.PiOver2), currentTex.Size() * new Vector2(spEffect == 0 ? 0 : 1, 1), instance.swooshSize, spEffect, 0);
                 DrawPrettyStarSparkle(projectile, 0, projectile.oldPos[n - 1] + (projectile.oldRot[n - 1] - MathHelper.PiOver2).ToRotationVector2() * _scaler * instance.swooshSize - Main.screenPosition, Color.White, _color, Main.spriteBatch);

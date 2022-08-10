@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Terraria.GameContent;
 using Terraria.ModLoader.Config;
 using static CoolerItemVisualEffect.CoolerItemVisualEffect;
+using static Terraria.Utils;
 namespace CoolerItemVisualEffect
 {
     /// <summary>
@@ -919,6 +920,120 @@ namespace CoolerItemVisualEffect
     }
     public static class CoolerItemVisualEffectMethods
     {
+
+        public static void DrawPrettyStarSparkle(this Projectile projectile, SpriteBatch spriteBatch, SpriteEffects dir, Vector2 drawpos, Color drawColor, Color shineColor)
+        {
+            Texture2D value = CoolerItemVisualEffectMethods.GetTexture("FinalFractalLight");
+            Color color = shineColor * projectile.Opacity * 0.5f;
+            color.A = 0;
+            Vector2 origin = value.Size() / 2f;
+            Color color2 = drawColor * 0.5f;
+            float num = GetLerpValue(15f, 30f, projectile.localAI[0], true) * GetLerpValue(45f, 30f, projectile.localAI[0], true);
+            Vector2 vector = new Vector2(0.5f, 5f) * num;
+            Vector2 vector2 = new Vector2(0.5f, 2f) * num;
+            color *= num;
+            color2 *= num;
+            spriteBatch.Draw(value, drawpos, null, color, 1.57079637f, origin, vector, dir, 0);
+            spriteBatch.Draw(value, drawpos, null, color, 0f, origin, vector2, dir, 0);
+            spriteBatch.Draw(value, drawpos, null, color2, 1.57079637f, origin, vector * 0.6f, dir, 0);
+            spriteBatch.Draw(value, drawpos, null, color2, 0f, origin, vector2 * 0.6f, dir, 0);
+        }
+        public static void DrawProjWithStarryTrail(this Projectile projectile, SpriteBatch spriteBatch, float drawColor, Color projectileColor, SpriteEffects dir)
+        {
+            //GameTime gameTime = new GameTime();
+            Color color = new Color(255, 255, 255, (int)projectileColor.A - projectile.alpha);
+            Vector2 vector = projectile.velocity;
+            Color value = Color.Blue * 0.1f;
+            Vector2 spinningpoint = new Vector2(0f, -4f);
+            float num = 0f;
+            float t = vector.Length();
+            float scale = GetLerpValue(3f, 5f, t, true);
+            bool flag = true;
+            vector = projectile.position - projectile.oldPos[1];
+            float num2 = vector.Length();
+            if (num2 == 0f)
+            {
+                vector = Vector2.UnitY;
+            }
+            else
+            {
+                vector *= 5f / num2;
+            }
+            Vector2 origin = new Vector2(projectile.ai[0], projectile.ai[1]);
+            Vector2 center = Main.player[projectile.owner].Center;
+            float num3 = GetLerpValue(0f, 120f, Vector2.Distance(origin, center), true);
+            float num4 = 90f;
+            num4 = 60f;
+            flag = false;
+            float num5 = GetLerpValue(num4, num4 * 0.8333333f, projectile.localAI[0], true);
+            float lerpValue = GetLerpValue(0f, 120f, Vector2.Distance(projectile.Center, center), true);
+            num3 *= lerpValue;
+            num5 *= GetLerpValue(0f, 15f, projectile.localAI[0], true);
+            value = Color.HotPink * 0.15f * (num5 * num3);
+            value = Main.hslToRgb(drawColor, 1f, 0.5f) * 0.15f * (num5 * num3);
+            spinningpoint = new Vector2(0f, -2f);
+            float num6 = GetLerpValue(num4, num4 * 0.6666667f, projectile.localAI[0], true);
+            num6 *= GetLerpValue(0f, 20f, projectile.localAI[0], true);
+            num = -0.3f * (1f - num6);
+            num += -1f * GetLerpValue(15f, 0f, projectile.localAI[0], true);
+            num *= num3;
+            scale = num5 * num3;
+            Vector2 value2 = projectile.Center + vector;
+            Texture2D value3 = TextureAssets.Projectile[projectile.type].Value;
+            //new Microsoft.Xna.Framework.Rectangle(0, 0, value3.Width, value3.Height).Size() /= 2f;
+            Texture2D value4 = CoolerItemVisualEffectMethods.GetTexture("FinalFractalTail");
+            Rectangle rectangle = Utils.Frame(value4, 1, 1, 0, 0, 0, 0);
+            Vector2 origin2 = new Vector2((float)rectangle.Width / 2f, 10f);
+            //Microsoft.Xna.Framework.Color.Cyan * 0.5f * scale;
+            Vector2 value5 = new Vector2(0f, projectile.gfxOffY);
+            float num7 = (float)Main.time / 60f;
+            Vector2 value6 = value2 + vector * 0.5f;
+            Color value7 = Color.White * 0.5f * scale;
+            value7.A = 0;
+            Color color2 = value * scale;
+            color2.A = 0;
+            Color color3 = value * scale;
+            color3.A = 0;
+            Color color4 = value * scale;
+            color4.A = 0;
+            float num8 = vector.ToRotation();
+            spriteBatch.Draw(value4, value6 - Main.screenPosition + value5 + spinningpoint.RotatedBy((double)(6.28318548f * num7), default(Vector2)), new Microsoft.Xna.Framework.Rectangle?(rectangle), color2, projectile.velocity.ToRotation() + 1.57079637f, origin2, 1.5f + num, SpriteEffects.None, 0);
+            spriteBatch.Draw(value4, value6 - Main.screenPosition + value5 + spinningpoint.RotatedBy((double)(6.28318548f * num7 + 2.09439516f), default(Vector2)), new Microsoft.Xna.Framework.Rectangle?(rectangle), color3, projectile.velocity.ToRotation() + 1.57079637f, origin2, 1.1f + num, SpriteEffects.None, 0);
+            spriteBatch.Draw(value4, value6 - Main.screenPosition + value5 + spinningpoint.RotatedBy((double)(6.28318548f * num7 + 4.18879032f), default(Vector2)), new Microsoft.Xna.Framework.Rectangle?(rectangle), color4, projectile.velocity.ToRotation() + 1.57079637f, origin2, 1.3f + num, SpriteEffects.None, 0);
+            Vector2 value8 = value2 - vector * 0.5f;
+            for (float num9 = 0f; num9 < 1f; num9 += 0.5f)
+            {
+                float num10 = num7 % 0.5f / 0.5f;
+                num10 = (num10 + num9) % 1f;
+                float num11 = num10 * 2f;
+                if (num11 > 1f)
+                {
+                    num11 = 2f - num11;
+                }
+                spriteBatch.Draw(value4, value8 - Main.screenPosition + value5, new Microsoft.Xna.Framework.Rectangle?(rectangle), Color.White * num11 * .5f * projectile.Opacity, projectile.velocity.ToRotation() + 1.57079637f, origin2, 0.3f + num10 * 0.5f, SpriteEffects.None, 0);
+            }
+            if (flag)
+            {
+                float rotation = projectile.rotation + projectile.localAI[1];
+                //float num12 = (float)Main.time / 240f;
+                //float globalTimeWrappedHourly = (float)(gameTime.TotalGameTime.TotalSeconds % 3600.0);
+                /*float num13 = (float)(gameTime.TotalGameTime.TotalSeconds % 3600.0);
+                num13 %= 5f;
+                num13 /= 2.5f;
+                if (num13 >= 1f)
+                {
+                    num13 = 2f - num13;
+                }
+                num13 = num13 * 0.5f + 0.5f;*/
+                Vector2 position = projectile.Center - Main.screenPosition;
+                //Main.instance.LoadItem(75);
+                Texture2D value9 = CoolerItemVisualEffectMethods.GetTexture("FinalFractalTail2");
+                Rectangle rectangle2 = Utils.Frame(value9, 1, 8, 0, 0, 0, 0);
+                Vector2 origin3 = rectangle2.Size() / 2f;
+                spriteBatch.Draw(value9, position, new Microsoft.Xna.Framework.Rectangle?(rectangle2), color, rotation, origin3, projectile.scale, SpriteEffects.None, 0);
+            }
+        }
+
         //public static Vector2 Projectile(this Vector3 vec, float height)
         //{
         //    return height / (height - vec.Z) * new Vector2(vec.X, vec.Y);
@@ -933,7 +1048,7 @@ namespace CoolerItemVisualEffect
             Vector2 origin = hammerProj.DrawOrigin;
             float rotation = hammerProj.Rotation;
             var flip = hammerProj.flip;
-            if (hammerProj.Player.gravDir == -1) 
+            if (hammerProj.Player.gravDir == -1)
             {
                 rotation = MathHelper.PiOver2 - rotation;
                 if (flip == 0) flip = SpriteEffects.FlipHorizontally;

@@ -48,7 +48,7 @@ namespace CoolerItemVisualEffect.FinalFractal
         //}
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            for (int n = 1; n < 4; n++) 
+            for (int n = 1; n < 4; n++)
             {
                 tooltips.Add(new TooltipLine(Mod, "PureSuggestion", Language.GetTextValue("Mods.CoolerItemVisualEffect.FinalFractalTip." + n)) { OverrideColor = Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * (CoolerItemVisualEffect.ModTime + 40 * n)) / 2 + 0.5f) });
 
@@ -61,10 +61,90 @@ namespace CoolerItemVisualEffect.FinalFractal
 
         }
         Item item => Item;
-        public override void AddRecipes() 
+        public override void AddRecipes()
         {
             CreateRecipe().AddIngredient<PureFractal>().QuickAddIngredient(4144, 3368).AddTile(TileID.LunarCraftingStation).Register();
             CreateRecipe().AddIngredient<FirstZenith>().QuickAddIngredient(4144, 3368).AddTile(TileID.LunarCraftingStation).Register();
+            //var recipe = CreateRecipe();
+            //recipe.QuickAddIngredient(
+            //ItemID.TerraBlade,
+            //ItemID.Meowmere,
+            //ItemID.StarWrath,
+            //ItemID.InfluxWaver,
+            //ItemID.TheHorsemansBlade,
+            //ItemID.Seedler,
+            //ItemID.EnchantedSword,
+            //ItemID.BeeKeeper,
+            //ItemID.Starfury,
+            //ItemID.CopperShortsword, 
+            //3258, 
+            //3823, 
+            //676, 
+            //3106, 
+            //671, 
+            //1928, 
+            //3827, 
+            //4923,
+            //ItemID.WoodenSword,
+            //ItemID.BorealWoodSword,
+            //ItemID.PalmWoodSword,
+            //ItemID.RichMahoganySword,
+            //ItemID.ShadewoodSword,
+            //ItemID.PearlwoodSword,
+            //ItemID.CactusSword);
+            //for (int n = 0; n < 6; n++)
+            //    recipe.AddIngredient(3764 + n);//六种晶光刃
+            //recipe.AddIngredient(ItemID.OrangePhasesaber);
+            //recipe.AddIngredient(ItemID.BoneSword);
+            //recipe.AddIngredient(ItemID.AntlionClaw);
+            //recipe.AddIngredient(ItemID.BeamSword);
+            //recipe.AddIngredient(ItemID.PurpleClubberfish);
+            //recipe.AddIngredient(ItemID.Bladetongue);
+            //recipe.AddIngredient(ItemID.StoneBlock, 500);
+            //recipe.AddIngredient(ItemID.EbonstoneBlock, 500);
+            //recipe.AddIngredient(ItemID.CrimstoneBlock, 500);
+            //recipe.AddIngredient(ItemID.PearlstoneBlock, 500);
+            //recipe.AddIngredient(ItemID.Sandstone, 500);
+            //recipe.AddIngredient(ItemID.CorruptSandstone, 500);
+            //recipe.AddIngredient(ItemID.CrimsonSandstone, 500);
+            //recipe.AddIngredient(ItemID.HallowSandstone, 500);
+            //recipe.AddIngredient(ItemID.Marble, 500);
+            //recipe.AddIngredient(ItemID.Granite, 500);
+            //recipe.AddIngredient(ItemID.Obsidian, 50);
+            //recipe.AddTile(TileID.HeavyWorkBench);
+            //recipe.QuickAddIngredient(
+            //ItemID.CopperBroadsword,
+            //ItemID.TinBroadsword,
+            //ItemID.IronBroadsword,
+            //ItemID.LeadBroadsword,
+            //ItemID.SilverBroadsword,
+            //ItemID.TungstenBroadsword,
+            //ItemID.GoldBroadsword,
+            //ItemID.PlatinumBroadsword,
+            //ItemID.Gladius,
+            //ItemID.Katana,
+            //ItemID.DyeTradersScimitar,
+            //ItemID.FalconBlade,
+            //ItemID.CobaltSword,
+            //ItemID.PalladiumSword,
+            //ItemID.MythrilSword,
+            //ItemID.OrichalcumSword,
+            //ItemID.BreakerBlade,
+            //ItemID.Cutlass,
+            //ItemID.AdamantiteSword,
+            //ItemID.TitaniumSword,
+            //ItemID.ChlorophyteSaber,
+            //ItemID.ChlorophyteClaymore);
+            //recipe.AddIngredient(ItemID.BrokenHeroSword, 5);
+            //recipe.AddIngredient(ItemID.Mushroom, 50);
+            //recipe.AddIngredient(ItemID.GlowingMushroom, 50);
+            //recipe.AddIngredient(ItemID.Acorn, 50);
+            //recipe.AddIngredient(ItemID.BambooBlock, 15);
+            //recipe.AddTile(TileID.LivingLoom);
+            //recipe.AddTile(TileID.MythrilAnvil);
+            //recipe.AddIngredient<FirstFractal_CIVE>();
+            //recipe.AddTile(TileID.LunarCraftingStation);
+            //recipe.Register();
         }
 
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)

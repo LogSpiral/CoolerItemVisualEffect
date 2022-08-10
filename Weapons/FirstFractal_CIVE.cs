@@ -172,7 +172,7 @@ namespace CoolerItemVisualEffect.Weapons
             Item.channel = true;
             Item.noMelee = true;
             Item.useAnimation = 40;
-            Item.useTime = Item.useAnimation / 10;
+            Item.useTime = Item.useAnimation / 10;// 
             Item.shootSpeed = 16f;
             Item.damage = 500;
             Item.knockBack = 6.5f;
@@ -277,7 +277,7 @@ namespace CoolerItemVisualEffect.Weapons
             target.immune[projectile.owner] = 0;
         }
         Projectile projectile => Projectile;
-        Player drawPlayer;
+        public Player drawPlayer;
         public override void SetDefaults()
         {
             projectile.width = 32;
@@ -288,14 +288,14 @@ namespace CoolerItemVisualEffect.Weapons
             projectile.DamageType = DamageClass.Melee;
             projectile.tileCollide = false;
             projectile.ignoreWater = true;
-            projectile.extraUpdates = 1;
+            projectile.extraUpdates = 3;
             projectile.usesLocalNPCImmunity = true;
             projectile.manualDirectionChange = true;
             projectile.penetrate = -1;
             //ProjectileID.Sets.TrailingMode[projectile.type] = 0;
-            //ProjectileID.Sets.TrailCacheLength[projectile.type] = 30;
+            ProjectileID.Sets.TrailCacheLength[projectile.type] = 30;
         }
-        private float drawColor => projectile.ai[1];
+        public float drawColor => projectile.ai[1];
         public override void OnSpawn(IEntitySource source)
         {
             projectile.frame = Main.rand.Next(15);
@@ -312,204 +312,300 @@ namespace CoolerItemVisualEffect.Weapons
             projectile.localAI[0]++;
             if (projectile.localAI[0] >= num)
             {
-                projectile.Kill();
-                return;
-            }
-            projectile.velocity = projectile.velocity.RotatedBy((double)projectile.ai[0], default(Vector2));
-            projectile.Opacity = GetLerpValue(0f, 12f, projectile.localAI[0], true) * GetLerpValue(num, num - 12f, projectile.localAI[0], true);
-            projectile.direction = ((projectile.velocity.X > 0f) ? 1 : -1);
-            projectile.spriteDirection = projectile.direction;
-            projectile.rotation = 0.7853982f * projectile.spriteDirection + projectile.velocity.ToRotation();
-            if (projectile.spriteDirection == -1)
-            {
-                projectile.rotation += 3.14159274f;
-            }
-            if (projectile.localAI[0] > 7f)
-            {
-                int num4 = 5;
-                //projectile.Center -= new Vector2((float)num4);
-                if (Main.rand.NextBool(15))
+                //projectile.Kill();
+                //return;
+                projectile.position -= projectile.velocity;
+                projectile.Opacity = 0;
+                if (projectile.localAI[0] >= 90)
                 {
-                    Dust dust = Dust.NewDustPerfect(projectile.Center, MyDustId.CyanBubble, null, 100, Color.Lerp(Main.hslToRgb(drawColor, 1f, 0.5f), Color.White, Main.rand.NextFloat() * 0.3f), 1f);
-                    dust.scale = 0.7f;
-                    dust.noGravity = true;
-                    dust.velocity *= 0.5f;
-                    dust.velocity += projectile.velocity * 2f;
+                    projectile.Kill();
+                    return;
                 }
-            }
-        }
-        public override bool PreDraw(ref Color lightColor)
-        {
-            SpriteBatch spriteBatch = Main.spriteBatch;
-            SpriteEffects spriteEffects = SpriteEffects.None;
-            if (projectile.spriteDirection == -1)
-            {
-                spriteEffects = SpriteEffects.FlipHorizontally;
-            }
-            Vector2 vector71 = projectile.position + new Vector2((float)projectile.width, (float)projectile.height) / 2f + Vector2.UnitY * projectile.gfxOffY - Main.screenPosition;
-            Texture2D texture2D4 = TextureAssets.Projectile[projectile.type].Value;
-            Rectangle rectangle29 = Utils.Frame(texture2D4, 15, 1, 0, projectile.frame, 0, 0);
-            Color color84 = Color.White;
-            Vector2 origin21 = rectangle29.Size() / 2f;
-            DrawProjWithStarryTrail(spriteBatch, Color.White, spriteEffects);
-            color84 = Color.White * projectile.Opacity * 0.9f;
-            color84.A /= 2;
-            rectangle29 = texture2D4.Frame(15, 1, projectile.frame, 0, 0, 0);
-            origin21 = rectangle29.Size() / 2f;
-            DrawPrettyStarSparkle(spriteBatch, spriteEffects, vector71, color84, Main.hslToRgb(drawColor, 1f, 0.5f));
-            spriteBatch.Draw(texture2D4, vector71, new Microsoft.Xna.Framework.Rectangle?(rectangle29), color84, projectile.rotation, origin21, projectile.scale, spriteEffects, 0);
-            //Main.PlayerRenderer.DrawPlayer(Main.Camera,)
-
-            #region 绘制Player
-            if (drawPlayer == null) drawPlayer = new Player();
-            Player player = drawPlayer;
-            if (player == null) { Main.NewText("我抄怎么又是null"); return false; }
-            player.CopyVisuals(Main.player[projectile.owner]);
-            player.isFirstFractalAfterImage = true;
-            player.firstFractalAfterImageOpacity = projectile.Opacity * 1f;
-            player.ResetEffects();
-            player.ResetVisibleAccessories();
-            player.UpdateDyes();
-            player.DisplayDollUpdate();
-            player.UpdateSocialShadow();
-            player.itemAnimationMax = 60;
-            player.itemAnimation = (int)projectile.localAI[0];
-            player.itemRotation = projectile.velocity.ToRotation();
-            //player.heldProj = projectile.whoAmI;
-            player.Center = projectile.Center - projectile.velocity.SafeNormalize(Vector2.Zero) * 42f;
-            player.direction = ((projectile.velocity.X > 0f) ? 1 : (-1));
-            player.itemRotation = (float)Math.Atan2(projectile.velocity.Y * (float)player.direction, projectile.velocity.X * (float)player.direction);
-            player.velocity.Y = 0.01f;
-            player.wingFrame = 2;
-            player.PlayerFrame();
-            player.socialIgnoreLight = true;
-            try
-            {
-                Main.PlayerRenderer.DrawPlayer(Main.Camera, player, player.position, 0f, player.fullRotationOrigin);
-                //Main.PlayerRenderer.DrawPlayer(Main.Camera, new Player(), projectile.Center, 0f, new Vector2(20, 28));
-            }
-            catch (Exception ex)
-            {
-                Main.NewText(ex);
-                return false;
-            }
-            //Main.PlayerRenderer.DrawPlayer(Main.Camera, Main.player[projectile.owner], projectile.Center, 0f, new Vector2(20, 28));
-            #endregion
-
-            return false;
-        }
-        private void DrawPrettyStarSparkle(SpriteBatch spriteBatch, SpriteEffects dir, Vector2 drawpos, Color drawColor, Color shineColor)
-        {
-            Texture2D value = CoolerItemVisualEffectMethods.GetTexture("FinalFractalLight");
-            Color color = shineColor * projectile.Opacity * 0.5f;
-            color.A = 0;
-            Vector2 origin = value.Size() / 2f;
-            Color color2 = drawColor * 0.5f;
-            float num = GetLerpValue(15f, 30f, projectile.localAI[0], true) * GetLerpValue(45f, 30f, projectile.localAI[0], true);
-            Vector2 vector = new Vector2(0.5f, 5f) * num;
-            Vector2 vector2 = new Vector2(0.5f, 2f) * num;
-            color *= num;
-            color2 *= num;
-            spriteBatch.Draw(value, drawpos, null, color, 1.57079637f, origin, vector, dir, 0);
-            spriteBatch.Draw(value, drawpos, null, color, 0f, origin, vector2, dir, 0);
-            spriteBatch.Draw(value, drawpos, null, color2, 1.57079637f, origin, vector * 0.6f, dir, 0);
-            spriteBatch.Draw(value, drawpos, null, color2, 0f, origin, vector2 * 0.6f, dir, 0);
-        }
-        private void DrawProjWithStarryTrail(SpriteBatch spriteBatch, Color projectileColor, SpriteEffects dir)
-        {
-            //GameTime gameTime = new GameTime();
-            Color color = new Color(255, 255, 255, (int)projectileColor.A - projectile.alpha);
-            Vector2 vector = projectile.velocity;
-            Color value = Color.Blue * 0.1f;
-            Vector2 spinningpoint = new Vector2(0f, -4f);
-            float num = 0f;
-            float t = vector.Length();
-            float scale = GetLerpValue(3f, 5f, t, true);
-            bool flag = true;
-            vector = projectile.position - projectile.oldPos[1];
-            float num2 = vector.Length();
-            if (num2 == 0f)
-            {
-                vector = Vector2.UnitY;
             }
             else
             {
-                vector *= 5f / num2;
-            }
-            Vector2 origin = new Vector2(projectile.ai[0], projectile.ai[1]);
-            Vector2 center = Main.player[projectile.owner].Center;
-            float num3 = GetLerpValue(0f, 120f, Vector2.Distance(origin, center), true);
-            float num4 = 90f;
-            num4 = 60f;
-            flag = false;
-            float num5 = GetLerpValue(num4, num4 * 0.8333333f, projectile.localAI[0], true);
-            float lerpValue = GetLerpValue(0f, 120f, Vector2.Distance(projectile.Center, center), true);
-            num3 *= lerpValue;
-            num5 *= GetLerpValue(0f, 15f, projectile.localAI[0], true);
-            value = Color.HotPink * 0.15f * (num5 * num3);
-            value = Main.hslToRgb(drawColor, 1f, 0.5f) * 0.15f * (num5 * num3);
-            spinningpoint = new Vector2(0f, -2f);
-            float num6 = GetLerpValue(num4, num4 * 0.6666667f, projectile.localAI[0], true);
-            num6 *= GetLerpValue(0f, 20f, projectile.localAI[0], true);
-            num = -0.3f * (1f - num6);
-            num += -1f * GetLerpValue(15f, 0f, projectile.localAI[0], true);
-            num *= num3;
-            scale = num5 * num3;
-            Vector2 value2 = projectile.Center + vector;
-            Texture2D value3 = TextureAssets.Projectile[projectile.type].Value;
-            //new Microsoft.Xna.Framework.Rectangle(0, 0, value3.Width, value3.Height).Size() /= 2f;
-            Texture2D value4 = CoolerItemVisualEffectMethods.GetTexture("FinalFractalTail");
-            Rectangle rectangle = Utils.Frame(value4, 1, 1, 0, 0, 0, 0);
-            Vector2 origin2 = new Vector2((float)rectangle.Width / 2f, 10f);
-            //Microsoft.Xna.Framework.Color.Cyan * 0.5f * scale;
-            Vector2 value5 = new Vector2(0f, projectile.gfxOffY);
-            float num7 = (float)Main.time / 60f;
-            Vector2 value6 = value2 + vector * 0.5f;
-            Color value7 = Color.White * 0.5f * scale;
-            value7.A = 0;
-            Color color2 = value * scale;
-            color2.A = 0;
-            Color color3 = value * scale;
-            color3.A = 0;
-            Color color4 = value * scale;
-            color4.A = 0;
-            float num8 = vector.ToRotation();
-            spriteBatch.Draw(value4, value6 - Main.screenPosition + value5 + spinningpoint.RotatedBy((double)(6.28318548f * num7), default(Vector2)), new Microsoft.Xna.Framework.Rectangle?(rectangle), color2, projectile.velocity.ToRotation() + 1.57079637f, origin2, 1.5f + num, SpriteEffects.None, 0);
-            spriteBatch.Draw(value4, value6 - Main.screenPosition + value5 + spinningpoint.RotatedBy((double)(6.28318548f * num7 + 2.09439516f), default(Vector2)), new Microsoft.Xna.Framework.Rectangle?(rectangle), color3, projectile.velocity.ToRotation() + 1.57079637f, origin2, 1.1f + num, SpriteEffects.None, 0);
-            spriteBatch.Draw(value4, value6 - Main.screenPosition + value5 + spinningpoint.RotatedBy((double)(6.28318548f * num7 + 4.18879032f), default(Vector2)), new Microsoft.Xna.Framework.Rectangle?(rectangle), color4, projectile.velocity.ToRotation() + 1.57079637f, origin2, 1.3f + num, SpriteEffects.None, 0);
-            Vector2 value8 = value2 - vector * 0.5f;
-            for (float num9 = 0f; num9 < 1f; num9 += 0.5f)
-            {
-                float num10 = num7 % 0.5f / 0.5f;
-                num10 = (num10 + num9) % 1f;
-                float num11 = num10 * 2f;
-                if (num11 > 1f)
+                projectile.velocity = projectile.velocity.RotatedBy((double)projectile.ai[0], default(Vector2));
+                projectile.Opacity = GetLerpValue(0f, 12f, projectile.localAI[0], true) * GetLerpValue(num, num - 12f, projectile.localAI[0], true);
+                projectile.direction = ((projectile.velocity.X > 0f) ? 1 : -1);
+                projectile.spriteDirection = projectile.direction;
+                projectile.rotation = 0.7853982f * projectile.spriteDirection + projectile.velocity.ToRotation();
+                if (projectile.spriteDirection == -1)
                 {
-                    num11 = 2f - num11;
+                    projectile.rotation += 3.14159274f;
                 }
-                spriteBatch.Draw(value4, value8 - Main.screenPosition + value5, new Microsoft.Xna.Framework.Rectangle?(rectangle), Color.White * num11, projectile.velocity.ToRotation() + 1.57079637f, origin2, 0.3f + num10 * 0.5f, SpriteEffects.None, 0);
-            }
-            if (flag)
-            {
-                float rotation = projectile.rotation + projectile.localAI[1];
-                //float num12 = (float)Main.time / 240f;
-                //float globalTimeWrappedHourly = (float)(gameTime.TotalGameTime.TotalSeconds % 3600.0);
-                /*float num13 = (float)(gameTime.TotalGameTime.TotalSeconds % 3600.0);
-                num13 %= 5f;
-                num13 /= 2.5f;
-                if (num13 >= 1f)
+                if (projectile.localAI[0] > 7f)
                 {
-                    num13 = 2f - num13;
+                    int num4 = 5;
+                    //projectile.Center -= new Vector2((float)num4);
+                    if (Main.rand.NextBool(15))
+                    {
+                        Dust dust = Dust.NewDustPerfect(projectile.Center, MyDustId.CyanBubble, null, 100, Color.Lerp(Main.hslToRgb(drawColor, 1f, 0.5f), Color.White, Main.rand.NextFloat() * 0.3f), 1f);
+                        dust.scale = 0.7f;
+                        dust.noGravity = true;
+                        dust.velocity *= 0.5f;
+                        dust.velocity += projectile.velocity * 2f;
+                    }
                 }
-                num13 = num13 * 0.5f + 0.5f;*/
-                Vector2 position = projectile.Center - Main.screenPosition;
-                //Main.instance.LoadItem(75);
-                Texture2D value9 = CoolerItemVisualEffectMethods.GetTexture("FinalFractalTail2");
-                Rectangle rectangle2 = Utils.Frame(value9, 1, 8, 0, 0, 0, 0);
-                Vector2 origin3 = rectangle2.Size() / 2f;
-                spriteBatch.Draw(value9, position, new Microsoft.Xna.Framework.Rectangle?(rectangle2), color, rotation, origin3, projectile.scale, SpriteEffects.None, 0);
             }
+            for (int n = 29; n > 0; n--)
+            {
+                projectile.oldPos[n] = projectile.oldPos[n - 1];
+                projectile.oldRot[n] = projectile.oldRot[n - 1];
+            }
+            projectile.oldPos[0] = projectile.Center - projectile.velocity.SafeNormalize(Vector2.Zero) * 42f;
+            projectile.oldRot[0] = projectile.velocity.ToRotation() + projectile.ai[0] * (projectile.localAI[0] / 60).Lerp(-180, 90, true);
         }
+        //public override bool PreDraw(ref Color lightColor)
+        //{
+        //    SpriteBatch spriteBatch = Main.spriteBatch;
+        //    #region 绘制Player
+        //    if (drawPlayer == null) drawPlayer = new Player();
+        //    Player player = drawPlayer;
+        //    if (player == null) { Main.NewText("我抄怎么又是null"); return false; }
+        //    player.CopyVisuals(Main.player[projectile.owner]);
+        //    player.isFirstFractalAfterImage = true;
+        //    player.firstFractalAfterImageOpacity = projectile.Opacity;
+        //    player.ResetEffects();
+        //    player.ResetVisibleAccessories();
+        //    player.UpdateDyes();
+        //    player.DisplayDollUpdate();
+        //    player.UpdateSocialShadow();
+        //    player.itemAnimationMax = 60;
+        //    player.itemAnimation = (int)projectile.localAI[0];
+        //    player.itemRotation = projectile.velocity.ToRotation();
+        //    //player.heldProj = projectile.whoAmI;
+        //    player.Center = projectile.Center - projectile.velocity.SafeNormalize(Vector2.Zero) * 42f;
+        //    player.direction = ((projectile.velocity.X > 0f) ? 1 : (-1));
+        //    player.itemRotation = (float)Math.Atan2(projectile.velocity.Y * (float)player.direction, projectile.velocity.X * (float)player.direction);
+        //    player.velocity.Y = 0.01f;
+        //    player.wingFrame = 2;
+        //    player.PlayerFrame();
+        //    player.socialIgnoreLight = true;
+        //    try
+        //    {
+        //        Main.PlayerRenderer.DrawPlayer(Main.Camera, player, player.position, 0f, player.fullRotationOrigin);
+        //        //Main.PlayerRenderer.DrawPlayer(Main.Camera, new Player(), projectile.Center, 0f, new Vector2(20, 28));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Main.NewText(ex);
+        //        return false;
+        //    }
+        //    //Main.PlayerRenderer.DrawPlayer(Main.Camera, Main.player[projectile.owner], projectile.Center, 0f, new Vector2(20, 28));
+        //    #endregion
+        //    //SpriteEffects spriteEffects = SpriteEffects.None;
+        //    //if (projectile.spriteDirection == -1)
+        //    //{
+        //    //    spriteEffects = SpriteEffects.FlipHorizontally;
+        //    //}
+        //    SpriteEffects spriteEffects = projectile.ai[0] > 0 ? 0 : SpriteEffects.FlipHorizontally;
+        //    Vector2 vector71 = projectile.position + new Vector2((float)projectile.width, (float)projectile.height) / 2f + Vector2.UnitY * projectile.gfxOffY - Main.screenPosition;
+        //    Texture2D texture2D4 = TextureAssets.Projectile[projectile.type].Value;
+        //    Rectangle rectangle29 = Utils.Frame(texture2D4, 15, 1, 0, projectile.frame, 0, 0);
+        //    DrawProjWithStarryTrail(spriteBatch, Color.White, spriteEffects);
+        //    var color84 = Color.White * projectile.Opacity * 0.9f;
+        //    color84.A /= 2;
+        //    rectangle29 = texture2D4.Frame(15, 1, projectile.frame, 0, 0, 0);
+        //    DrawPrettyStarSparkle(spriteBatch, spriteEffects, vector71, color84, Main.hslToRgb(drawColor, 1f, 0.5f));
+        //    //Main.PlayerRenderer.DrawPlayer(Main.Camera,)
+
+        //    if (!Main.gamePaused)
+        //    {
+        //        for (int n = 29; n > 0; n--)
+        //        {
+        //            projectile.oldPos[n] = projectile.oldPos[n - 1];
+        //            projectile.oldRot[n] = projectile.oldRot[n - 1];
+        //        }
+        //        projectile.oldPos[0] = player.Center;
+        //        projectile.oldRot[0] = projectile.velocity.ToRotation() + projectile.ai[0] * (projectile.localAI[0] / 60).Lerp(-180, 90, true);
+        //    }
+        //    if (CoolerItemVisualEffect.DistortEffect == null || CoolerItemVisualEffect.ShaderSwooshEX == null) return false;
+        //    var max = 0;
+        //    for (int n = 0; n < Projectile.oldPos.Length; n++)
+        //    {
+        //        if (projectile.oldPos[n] == default) { max = n; break; }
+        //    }
+        //    if (max < 2) return false;
+
+        //    float _scaler = 98f;
+        //    var bars = new List<CustomVertexInfo>();
+        //    var realColor = new Color(151, 145, 186);
+        //    var hsl = new Vector3(0.691667f, 0.229166f, 0.65f);
+        //    var multiValue = 1 - projectile.localAI[0] / 90f;
+        //    var instance = Main.netMode == NetmodeID.MultiplayerClient ? Main.player[projectile.owner].GetModPlayer<CoolerItemVisualEffectPlayer>().ConfigurationSwoosh : ConfigurationSwoosh.instance;
+        //    bars.Add(new CustomVertexInfo(player.Center + projectile.oldRot[0].ToRotationVector2() * _scaler * instance.swooshSize, default, new Vector3(1, 1, 0.6f)));
+        //    bars.Add(new CustomVertexInfo(player.Center, default, new Vector3(0, 0, 0.6f)));
+        //    for (int i = 0; i < max; i++)
+        //    {
+        //        var f = i / (max - 1f);
+        //        f = 1 - f;
+        //        var alphaLight = 0.6f;
+        //        if (instance.swooshColorType == ConfigurationSwoosh.SwooshColorType.加权平均_饱和与色调处理 || instance.swooshColorType == ConfigurationSwoosh.SwooshColorType.色调处理与对角线混合)
+        //        {
+        //            float h = (hsl.X + instance.hueOffsetValue + instance.hueOffsetRange * (2 * f - 1)) % 1;
+        //            float s = MathHelper.Clamp(hsl.Y * instance.saturationScalar, 0, 1);
+        //            float l = MathHelper.Clamp(f > 0.5f ? hsl.Z * (2 - f * 2) + (f * 2 - 1) * Math.Max(hsl.Z, 0.5f + instance.luminosityRange) : f * 2 * hsl.Z + (1 - f * 2) * Math.Min(hsl.Z, 0.5f - instance.luminosityRange), 0, 1);
+        //            realColor = Main.hslToRgb(h, s, l);
+        //        }
+        //        var _f = 6 * f / (3 * f + 1);//6 * f / (3 * f + 1) /(float)Math.Pow(f,instance.maxCount)
+        //        _f = MathHelper.Clamp(_f, 0, 1);
+        //        realColor.A = (byte)(_f * 255);
+        //        bars.Add(new CustomVertexInfo(projectile.oldPos[i] + projectile.oldRot[i].ToRotationVector2() * _scaler * instance.swooshSize, realColor * multiValue, new Vector3(1 - f, 1, alphaLight)));
+        //        realColor.A = 0;
+        //        bars.Add(new CustomVertexInfo(projectile.oldPos[i], realColor * multiValue, new Vector3(0, 0, alphaLight)));
+        //    }
+        //    List<CustomVertexInfo> _triangleList = new List<CustomVertexInfo>();
+        //    if (bars.Count > 2)
+        //    {
+        //        SamplerState sampler;
+        //        switch (instance.swooshSampler)
+        //        {
+        //            default:
+        //            case ConfigurationSwoosh.SwooshSamplerState.各向异性: sampler = SamplerState.AnisotropicClamp; break;
+        //            case ConfigurationSwoosh.SwooshSamplerState.线性: sampler = SamplerState.LinearClamp; break;
+        //            case ConfigurationSwoosh.SwooshSamplerState.点: sampler = SamplerState.PointClamp; break;
+        //        }
+        //        RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
+        //        var trans = Main.GameViewMatrix != null ? Main.GameViewMatrix.TransformationMatrix : Matrix.Identity;
+        //        var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
+        //        var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
+        //        for (int i = 0; i < bars.Count - 2; i += 2)
+        //        {
+        //            _triangleList.Add(bars[i]);
+        //            _triangleList.Add(bars[i + 2]);
+        //            _triangleList.Add(bars[i + 1]);
+        //            _triangleList.Add(bars[i + 1]);
+        //            _triangleList.Add(bars[i + 2]);
+        //            _triangleList.Add(bars[i + 3]);
+        //        }
+        //        bool useRender = instance.distortFactor != 0 && CoolerItemVisualEffect.CanUseRender;
+        //        var gd = Main.graphics.GraphicsDevice;
+        //        var sb = Main.spriteBatch;
+        //        var passCount = 0;
+        //        switch (instance.swooshColorType)
+        //        {
+        //            case ConfigurationSwoosh.SwooshColorType.函数生成热度图: passCount = 2; break;
+        //            case ConfigurationSwoosh.SwooshColorType.武器贴图对角线: passCount = 1; break;
+        //            case ConfigurationSwoosh.SwooshColorType.色调处理与对角线混合: passCount = 3; break;
+        //        }
+        //        if (useRender)
+        //        {
+        //            #region MyRegion
+        //            #endregion
+        //            sb.End();
+        //            gd.SetRenderTarget(CoolerItemVisualEffect.Instance.Render);
+        //            gd.Clear(Color.Transparent);
+        //            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+        //            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
+        //            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
+        //            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["uTime"].SetValue(0);
+        //            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);
+        //            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["airFactor"].SetValue(1);
+        //            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
+        //            Main.graphics.GraphicsDevice.Textures[0] = CoolerItemVisualEffect.GetWeaponDisplayImage("BaseTex_" + (int)MathHelper.Clamp(instance.ImageIndex, 0, 7));
+        //            Main.graphics.GraphicsDevice.Textures[1] = CoolerItemVisualEffect.GetWeaponDisplayImage("AniTex");
+        //            Main.graphics.GraphicsDevice.Textures[2] = ModContent.Request<Texture2D>("CoolerItemVisualEffect/Weapons/FirstZenithProj_5").Value;
+        //            if (instance.swooshColorType == ConfigurationSwoosh.SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = CoolerItemVisualEffect.GetPureFractalHeatMaps(25);
+        //            Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
+        //            Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
+        //            Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
+        //            Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
+        //            CoolerItemVisualEffect.ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+        //            Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, _triangleList.ToArray(), 0, _triangleList.Count / 3);
+        //            Main.graphics.GraphicsDevice.RasterizerState = originalState;
+        //            for (int n = 0; n < instance.maxCount; n++)
+        //            {
+        //                sb.End();
+        //                gd.SetRenderTarget(Main.screenTargetSwap);
+        //                gd.Clear(Color.Transparent);
+        //                sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+        //                CoolerItemVisualEffect.DistortEffect.CurrentTechnique.Passes[0].Apply();
+        //                CoolerItemVisualEffect.DistortEffect.Parameters["tex0"].SetValue(CoolerItemVisualEffect.Instance.Render);
+        //                CoolerItemVisualEffect.DistortEffect.Parameters["offset"].SetValue((projectile.oldRot[0] - MathHelper.PiOver2).ToRotationVector2() * -0.01f * instance.distortFactor);
+        //                CoolerItemVisualEffect.DistortEffect.Parameters["invAlpha"].SetValue(0);
+        //                sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+        //                sb.End();
+        //                gd.SetRenderTarget(Main.screenTarget);
+        //                gd.Clear(Color.Transparent);
+        //                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+        //                sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+        //                sb.Draw(CoolerItemVisualEffect.Instance.Render, Vector2.Zero, new Color(1f, 1f, 1f, 0));
+
+        //                //sb.End();
+        //                //Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+        //                //DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+        //                //DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
+        //                //DistortEffect.Parameters["position"].SetValue(new Vector2(0, 3));
+        //                //DistortEffect.Parameters["tier2"].SetValue(0.2f);
+        //                //for (int i = 0; i < 1; i++)
+        //                //{
+        //                //    gd.SetRenderTarget(Main.screenTargetSwap);
+        //                //    gd.Clear(Color.Transparent);
+        //                //    DistortEffect.CurrentTechnique.Passes[7].Apply();
+        //                //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+
+
+
+        //                //    gd.SetRenderTarget(Main.screenTarget);
+        //                //    gd.Clear(Color.Transparent);
+        //                //    DistortEffect.CurrentTechnique.Passes[6].Apply();
+        //                //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+        //                //}
+        //                //DistortEffect.Parameters["position"].SetValue(new Vector2(0, 3));
+        //                //DistortEffect.Parameters["ImageSize"].SetValue(Vector2.Normalize(projectile.velocity) * -0.002f * instance.distortFactor);
+        //                //for (int i = 0; i < 1; i++)
+        //                //{
+        //                //    gd.SetRenderTarget(Main.screenTargetSwap);
+        //                //    gd.Clear(Color.Transparent);
+        //                //    DistortEffect.CurrentTechnique.Passes[5].Apply();
+        //                //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+
+        //                //    gd.SetRenderTarget(Main.screenTarget);
+        //                //    gd.Clear(Color.Transparent);
+        //                //    DistortEffect.CurrentTechnique.Passes[4].Apply();
+        //                //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+        //                //}
+        //                //sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+        //                //sb.Draw(Instance.Render, Vector2.Zero, Color.White);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            sb.End();
+        //            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
+        //            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
+        //            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
+        //            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["uTime"].SetValue(0);
+        //            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);
+        //            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["airFactor"].SetValue(1);
+        //            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
+        //            Main.graphics.GraphicsDevice.Textures[0] = CoolerItemVisualEffect.GetWeaponDisplayImage("BaseTex_" + (int)MathHelper.Clamp(instance.ImageIndex, 0, 7));
+        //            Main.graphics.GraphicsDevice.Textures[1] = CoolerItemVisualEffect.GetWeaponDisplayImage("AniTex");
+        //            Main.graphics.GraphicsDevice.Textures[2] = ModContent.Request<Texture2D>("CoolerItemVisualEffect/Weapons/FirstZenithProj_5").Value;
+        //            if (instance.swooshColorType == ConfigurationSwoosh.SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = CoolerItemVisualEffect.GetPureFractalHeatMaps(25);
+        //            Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
+        //            Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
+        //            Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
+        //            Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
+        //            CoolerItemVisualEffect.ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+        //            Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, _triangleList.ToArray(), 0, _triangleList.Count / 3);
+        //            Main.graphics.GraphicsDevice.RasterizerState = originalState;
+        //        }
+        //    }
+        //    var origin = texture2D4.Size() / new Vector2(15, 1);
+        //    origin *= spriteEffects == 0 ? new Vector2(0.1f, 0.9f) : new Vector2(0.9f, 0.9f);
+        //    var rot = projectile.oldRot[0] + MathHelper.PiOver4;
+        //    //Main.NewText((projectile.ai[0], projectile.velocity.X));
+        //    rot += projectile.ai[0] < 0 ? MathHelper.Pi / 2 : 0;
+        //    //rot += projectile.ai[0] < 0 ? MathHelper.PiOver4 : MathHelper.PiOver4 * 3;
+        //    spriteBatch.Draw(texture2D4, player.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(rectangle29), color84, rot, origin, instance.swooshSize, spriteEffects, 0);
+        //    //spriteBatch.Draw(texture2D4, new Vector2(256, 256), color84);
+
+        //    //Main.spriteBatch.DrawLine(player.Center - Main.screenPosition, projectile.velocity.RotatedBy(projectile.ai[0] * (projectile.localAI[0] / 60).Lerp(-180, 90, true)) * 8, Color.Yellow, 4, true);
+        //    return false;
+        //}
+        public override bool PreDraw(ref Color lightColor) => false;
+
     }
     public class WitheredWoodSword : ModItem
     {
@@ -1152,7 +1248,7 @@ namespace CoolerItemVisualEffect.Weapons
                 projectile.Kill();
             }
         }
-        public override Color VertexColor(float time) => Color.Lerp(Color.DarkGray, UpgradeValue(Color.Gray, Color.Green), time);
+        public override Color VertexColor(float time) => Color.Lerp(Color.DarkGray, UpgradeValue(Color.Brown, Color.Gray), time);
         public override T UpgradeValue<T>(T normal, T extra, T defaultValue = default)
         {
             var type = sourceItem.type;
