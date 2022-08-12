@@ -148,7 +148,7 @@ namespace CoolerItemVisualEffect
         public override bool AppliesToEntity(Item item, bool lateInstantiation)
         {
             bool useSlashEffect = item.useStyle == ItemUseStyleID.Swing && item.DamageType == DamageClass.Melee;
-            if (ConfigurationSwoosh.instance.ToolsNoUseNewSwooshEffect)
+            if (ConfigurationSwoosh_Advanced.ConfigSwooshInstance.ToolsNoUseNewSwooshEffect)
             {
                 useSlashEffect = useSlashEffect && item.axe == 0 && item.hammer == 0 && item.pick == 0;
             }
@@ -158,7 +158,7 @@ namespace CoolerItemVisualEffect
         public override void UseItemHitbox(Item item, Player player, ref Rectangle hitbox, ref bool noHitbox)
         {
             var modPlayer = player.GetModPlayer<CoolerItemVisualEffectPlayer>();
-            if (!ConfigurationPreInstall.instance.UseHitbox)
+            if (!ConfigurationNormal.instance.UseHitbox)
                 return;
 
             Vector2 hitboxpos = modPlayer.HitboxPosition;

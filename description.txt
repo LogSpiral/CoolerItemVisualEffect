@@ -6,8 +6,12 @@ The display of the hand-held weapon is realized. Because modded weapons are impl
 实现了更炫酷的挥砍效果（修改了武器的碰撞箱）。
 Implemented more cool slashing effects(The hitbox of the weapon is modified).
 [i:3456][i:3457][i:3458][i:3459][i:3456][i:3457][i:3458][i:3459]
-加入了未实现的武器——第一分形。
+加入了未实现的武器——最初分形。
 With a unrealized weapon called the FirstFractal.
+以及好几把炫酷的武器。
+And many CooooolWeapons
+我下次找时间会修改魔法、远程、召唤之类武器的使用效果(也许是几个月后，最近我忙于别的很多事情
+I may modify Visual Effect of magic,ranged,summon weapons Next Time.(May be some months later,as I'm busy with many other things
 
 [i:3456][i:3457][i:3458][i:3459][i:3456][i:3457][i:3458][i:3459]
 制作人员：

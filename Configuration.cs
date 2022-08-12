@@ -7,7 +7,7 @@ using Terraria.ModLoader.Config;
 namespace CoolerItemVisualEffect
 {
     [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.Label_2")]
-    public class ConfigurationPreInstall : ModConfig
+    public class ConfigurationNormal : ModConfig
     {
         public override ConfigScope Mode => ConfigScope.ClientSide;
         [DefaultValue(PreInstallSwoosh.普通Normal)]
@@ -15,21 +15,21 @@ namespace CoolerItemVisualEffect
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.48")]
         [DrawTicks]
         public PreInstallSwoosh preInstallSwoosh { get; set; }
-        public ConfigurationSwoosh SetCSValue(ConfigurationSwoosh cs)
+        public ConfigurationSwoosh_Advanced SetCSValue(ConfigurationSwoosh_Advanced cs)
         {
-            cs.CoolerSwooshActive = true;
+            cs.CoolerSwooshQuality = ConfigurationSwoosh_Advanced.QualityType.中medium;
             cs.ToolsNoUseNewSwooshEffect = false;
             cs.IsLighterDecider = 0.2f;
-            cs.swooshColorType = ConfigurationSwoosh.SwooshColorType.色调处理与对角线混合;
-            cs.swooshSampler = ConfigurationSwoosh.SwooshSamplerState.线性;
-            cs.swooshFactorStyle = ConfigurationSwoosh.SwooshFactorStyle.每次开始时决定系数;
-            cs.swooshActionStyle = ConfigurationSwoosh.SwooshAction.向后倾一定角度后重击;
+            cs.swooshColorType = ConfigurationSwoosh_Advanced.SwooshColorType.色调处理与对角线混合;
+            cs.swooshSampler = ConfigurationSwoosh_Advanced.SwooshSamplerState.线性;
+            cs.swooshFactorStyle = ConfigurationSwoosh_Advanced.SwooshFactorStyle.每次开始时决定系数;
+            cs.swooshActionStyle = ConfigurationSwoosh_Advanced.SwooshAction.向后倾一定角度后重击;
             cs.swooshSize = 1f;
             cs.hueOffsetRange = 0.2f;
             cs.hueOffsetValue = 0f;
             cs.saturationScalar = 5f;
             cs.luminosityRange = 0.2f;
-            cs.luminosityFactor = 0f;
+            cs.luminosityFactor = 0.2f;
             cs.rotationVelocity = 3f;
             cs.distortFactor = 0.25f;
             cs.ItemAdditive = false;
@@ -49,11 +49,13 @@ namespace CoolerItemVisualEffect
                 //	}
                 case PreInstallSwoosh.飓风Hurricane:
                     {
+                        cs.CoolerSwooshQuality = ConfigurationSwoosh_Advanced.QualityType.高high;
                         cs.Shake = 0.3f;
                         cs.distortFactor = 1f;
                         cs.swooshSize = 1.5f;
-                        cs.swooshActionStyle = ConfigurationSwoosh.SwooshAction.两次普通斩击一次高速旋转;
+                        cs.swooshActionStyle = ConfigurationSwoosh_Advanced.SwooshAction.两次普通斩击一次高速旋转;
                         cs.maxCount = 3;
+                        cs.luminosityFactor = 0.4f;
                         break;
                     }
                 case PreInstallSwoosh.巨大Huge:
@@ -63,47 +65,51 @@ namespace CoolerItemVisualEffect
                     }
                 case PreInstallSwoosh.夸张Exaggerate:
                     {
+                        cs.CoolerSwooshQuality = ConfigurationSwoosh_Advanced.QualityType.高high;
                         cs.swooshSize = 3f;
                         cs.distortFactor = 1f;
                         cs.Shake = 1f;
-                        cs.swooshFactorStyle = ConfigurationSwoosh.SwooshFactorStyle.系数中间插值;
-                        cs.swooshActionStyle = ConfigurationSwoosh.SwooshAction.两次普通斩击一次高速旋转;
+                        cs.swooshFactorStyle = ConfigurationSwoosh_Advanced.SwooshFactorStyle.系数中间插值;
+                        cs.swooshActionStyle = ConfigurationSwoosh_Advanced.SwooshAction.两次普通斩击一次高速旋转;
                         cs.maxCount = 5;
+                        cs.luminosityFactor = 1f;
                         break;
                     }
                 case PreInstallSwoosh.明亮Bright:
                     {
+                        cs.CoolerSwooshQuality = ConfigurationSwoosh_Advanced.QualityType.高high;
                         cs.IsLighterDecider = 0;
+                        cs.luminosityFactor = 0.6f;
                         cs.ItemAdditive = true;
                         cs.glowLight = 1;
                         break;
                     }
                 case PreInstallSwoosh.怪异Strange:
                     {
-                        cs.swooshColorType = ConfigurationSwoosh.SwooshColorType.函数生成热度图;
+                        cs.swooshColorType = ConfigurationSwoosh_Advanced.SwooshColorType.函数生成热度图;
                         break;
                     }
                 case PreInstallSwoosh.光滑Smooth:
                     {
-                        cs.swooshColorType = ConfigurationSwoosh.SwooshColorType.加权平均_饱和与色调处理;
+                        cs.swooshColorType = ConfigurationSwoosh_Advanced.SwooshColorType.加权平均_饱和与色调处理;
                         cs.ImageIndex = 0f;
                         break;
                     }
                 case PreInstallSwoosh.黑白Grey:
                     {
-                        cs.swooshColorType = ConfigurationSwoosh.SwooshColorType.加权平均_饱和与色调处理;
+                        cs.swooshColorType = ConfigurationSwoosh_Advanced.SwooshColorType.加权平均_饱和与色调处理;
                         cs.saturationScalar = 0;
                         break;
                     }
                 case PreInstallSwoosh.反相InverseHue:
                     {
-                        cs.swooshColorType = ConfigurationSwoosh.SwooshColorType.加权平均_饱和与色调处理;
+                        cs.swooshColorType = ConfigurationSwoosh_Advanced.SwooshColorType.加权平均_饱和与色调处理;
                         cs.hueOffsetValue = 0.5f;
                         break;
                     }
                 case PreInstallSwoosh.彩虹Rainbow:
                     {
-                        cs.swooshColorType = ConfigurationSwoosh.SwooshColorType.加权平均_饱和与色调处理;
+                        cs.swooshColorType = ConfigurationSwoosh_Advanced.SwooshColorType.加权平均_饱和与色调处理;
                         cs.hueOffsetRange = 1f;
                         break;
                     }
@@ -113,12 +119,12 @@ namespace CoolerItemVisualEffect
         public override void OnChanged()
         {
             if (preInstallSwoosh == PreInstallSwoosh.自定义UserDefined) return;
-            var cs = ConfigurationSwoosh.instance;
+            var cs = ConfigurationSwoosh_Advanced.ConfigSwooshInstance;
             if (cs == null) return;
             SetCSValue(cs);
-            ConfigurationSwoosh.Save(cs);
+            ConfigurationSwoosh_Advanced.Save(cs);
             CoolerItemVisualEffect.ChangeAllPureHeatMap();
-            if (Main.netMode == NetmodeID.MultiplayerClient) ConfigurationSwoosh.instance.SendData();
+            if (Main.netMode == NetmodeID.MultiplayerClient) ConfigurationSwoosh_Advanced.ConfigSwooshInstance.SendData();
         }
         public enum PreInstallSwoosh
         {
@@ -158,24 +164,24 @@ namespace CoolerItemVisualEffect
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigurationServer.HitboxTooltip")]
         public bool UseHitbox;
 
-        [Range(1, 20)]
-        [Increment(1)]
-        [DefaultValue(4)]
-        [Label("$Mods.CoolerItemVisualEffect.ConfigurationServer.AttackablesName")]
-        [Tooltip("$Mods.CoolerItemVisualEffect.ConfigurationServer.AttackablesTooltip")]
-        [Slider]
-        public int ItemAttackCD;
+        //[Range(1, 20)]
+        //[Increment(1)]
+        //[DefaultValue(4)]
+        //[Label("$Mods.CoolerItemVisualEffect.ConfigurationServer.AttackablesName")]
+        //[Tooltip("$Mods.CoolerItemVisualEffect.ConfigurationServer.AttackablesTooltip")]
+        //[Slider]
+        //public int ItemAttackCD;
 
         [DefaultValue(true)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.49")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.50")]
         public bool DontChangeMyTitle;
-        public static ConfigurationPreInstall instance => ModContent.GetInstance<ConfigurationPreInstall>();
+        public static ConfigurationNormal instance => ModContent.GetInstance<ConfigurationNormal>();
 
     }
 
     [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.Label")]
-    public class ConfigurationSwoosh : ModConfig
+    public class ConfigurationSwoosh_Advanced : ModConfig
     {
         public static void Save(ModConfig config)
         {
@@ -192,7 +198,7 @@ namespace CoolerItemVisualEffect
             packet.Write((byte)(enter ? HandleNetwork.MessageType.EnterWorld : HandleNetwork.MessageType.Configs));
             //packet.Write(playerIndex ?? Main.myPlayer);
             if (whoami != null) packet.Write(whoami.Value);
-            packet.Write(CoolerSwooshActive);
+            packet.Write((byte)CoolerSwooshQuality);
             packet.Write(ToolsNoUseNewSwooshEffect);
             packet.Write(IsLighterDecider);
             packet.Write((byte)swooshColorType);
@@ -228,7 +234,7 @@ namespace CoolerItemVisualEffect
             if (whoami < 0 || whoami > 255) throw new System.Exception("我抄，超范围辣");
             var config = Main.player[whoami].GetModPlayer<CoolerItemVisualEffectPlayer>().ConfigurationSwoosh;
             //if (config == null) Main.player[whoami].GetModPlayer<WeaponDisplayPlayer>().configurationSwoosh = new ConfigurationSwoosh();
-            config.CoolerSwooshActive = reader.ReadBoolean();
+            config.CoolerSwooshQuality = (QualityType)reader.ReadByte();
             config.ToolsNoUseNewSwooshEffect = reader.ReadBoolean();
             config.IsLighterDecider = reader.ReadSingle();
             config.swooshColorType = (SwooshColorType)reader.ReadByte();
@@ -257,7 +263,7 @@ namespace CoolerItemVisualEffect
         }
         //[JsonIgnore]
         //public static int MagicConfigCounter;
-        bool EqualValue(ConfigurationSwoosh config)
+        bool EqualValue(ConfigurationSwoosh_Advanced config)
         {
             return
                 CoolerSwooshActive == config.CoolerSwooshActive &&
@@ -287,10 +293,10 @@ namespace CoolerItemVisualEffect
         }
         public override void OnChanged()
         {
-            if (!EqualValue(ConfigurationPreInstall.instance.SetCSValue(new ConfigurationSwoosh()))) 
+            if (!EqualValue(ConfigurationNormal.instance.SetCSValue(new ConfigurationSwoosh_Advanced()))) 
             {
-                ConfigurationPreInstall.instance.preInstallSwoosh = ConfigurationPreInstall.PreInstallSwoosh.自定义UserDefined;
-                Save(ConfigurationPreInstall.instance);
+                ConfigurationNormal.instance.preInstallSwoosh = ConfigurationNormal.PreInstallSwoosh.自定义UserDefined;
+                Save(ConfigurationNormal.instance);
             }
             CoolerItemVisualEffect.ChangeAllPureHeatMap();
             //MagicConfigCounter++;
@@ -301,18 +307,22 @@ namespace CoolerItemVisualEffect
             //if (Main.netMode == NetmodeID.MultiplayerClient) SendData();
         }
         public override ConfigScope Mode => ConfigScope.ClientSide;
-        public static ConfigurationSwoosh instance => ModContent.GetInstance<ConfigurationSwoosh>();
+        public static ConfigurationSwoosh_Advanced ConfigSwooshInstance => ModContent.GetInstance<ConfigurationSwoosh_Advanced>();
 
         //[DefaultValue(true)]
         //[Label("更帅的拔刀")]
         //[Tooltip("你厌倦了原版近战的挥动方式了吗？")]
         //[BackgroundColor(0, 0, 255, 127)]
         //public bool CoolerSwooshActive;
-        [DefaultValue(true)]
+        [DrawTicks]
+        [DefaultValue(QualityType.中medium)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.1")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.2")]
         [BackgroundColor(0, 0, 255, 127)]
-        public bool CoolerSwooshActive { get; set; }
+        public QualityType CoolerSwooshQuality { get; set; }
+
+        [JsonIgnore]
+        public bool CoolerSwooshActive => (byte)CoolerSwooshQuality > 0;
 
         [DefaultValue(false)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.3")]
@@ -496,30 +506,38 @@ namespace CoolerItemVisualEffect
         [BackgroundColor(102, 153, 204, 127)]
         public int maxCount { get; set; }//
 
-        public enum SwooshSamplerState
+
+        public enum SwooshSamplerState : byte
         {
             各向异性,
             线性,
             点,
         }
-        public enum SwooshAction
+        public enum SwooshAction : byte
         {
             正常挥砍,
             向后倾一定角度后重击,
             两次普通斩击一次高速旋转
         }
-        public enum SwooshFactorStyle
+        public enum SwooshFactorStyle : byte
         {
             每次开始时决定系数,
             系数中间插值
         }
-        public enum SwooshColorType
+        public enum SwooshColorType : byte
         {
             加权平均,
             加权平均_饱和与色调处理,
             函数生成热度图,
             武器贴图对角线,
             色调处理与对角线混合
+        }
+        public enum QualityType : byte
+        {
+            关off,
+            低low,
+            中medium,
+            高high
         }
     }
     //[Label("$Mods.CoolerItemVisualEffect.Config.Label")]

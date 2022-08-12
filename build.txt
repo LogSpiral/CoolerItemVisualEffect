@@ -1,6 +1,6 @@
 displayName = CoolerItemVisualEffect(更酷的物品视觉效果)
 author = 阿汪(向内延伸的对数螺线)
-version = 0.1.4
+version = 0.1.7
 hideResources = false
 hideCode = false
 includeSource = true

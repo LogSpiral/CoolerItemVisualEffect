@@ -48,11 +48,14 @@ Mods:{
 		ConfigSwoosh:
 		{
 		    Label:Slashing Visual Settings
-			1:More Cool Slashing Effects
+			1:More Cool Slashing Effects's Quality Setting
 			2:
 			'''
 			"Are You Tired With The Vanilla Melee Swing Style?"
 			If You Want To Affect The Actual Attack Effect, Please Go To The Gameplay Settings To Open The Hitbox
+			The Quality Over Low Need LightingMode Is Color Or White, And The Water Quality Isn't Off.
+			Medium: Active Distort And Draw More Times.
+			High:Active Bloom Glow Light Effect.
 			'''
 			3:Cancel The Effect Of The New Slashing Effect On Tools
 			4:
@@ -106,11 +109,11 @@ Mods:{
 			23:The Offset Value Of Original Luminosity
 			24:Interpolation Similar To HSL
 			25:Coefficient Of Luminosity
-			26:I'm So Sorry That I'm Not Good At Describing How It Affects Luminosity (So Just Try It
+			26:Strength Of Bloom Glow Light, Need "High" Quality
 			27:Coefficient Of Rotation Speed
 			28:Applies Only Tail-Wagging
 			29:Coefficient Of Distortion
-			30:It's So Weird That I'm Ready To Think About It By Brain
+			30:It's So Weird That I'm Ready To Think About It By Brain, Need "Medium" Quality
 			31:Weapon And Weapon Swing Effects Are Translucent And Highlighted 
 			32:
 			'''

@@ -606,6 +606,57 @@ namespace CoolerItemVisualEffect.Weapons
         //}
         public override bool PreDraw(ref Color lightColor) => false;
 
+        public void DrawOthers() 
+        {
+            if (drawPlayer == null) drawPlayer = new Player();
+            Player player = drawPlayer;
+            if (player == null) { }
+            player.CopyVisuals(Main.player[projectile.owner]);
+            player.isFirstFractalAfterImage = true;
+            player.firstFractalAfterImageOpacity = projectile.Opacity;
+            player.ResetEffects();
+            player.ResetVisibleAccessories();
+            player.UpdateDyes();
+            player.DisplayDollUpdate();
+            player.UpdateSocialShadow();
+            player.itemAnimationMax = 60;
+            player.itemAnimation = (int)projectile.localAI[0];
+            player.itemRotation = projectile.velocity.ToRotation();
+            player.Center = projectile.oldPos[0];
+            player.direction = ((projectile.velocity.X > 0f) ? 1 : (-1));
+            player.itemRotation = (float)Math.Atan2(projectile.velocity.Y * (float)player.direction, projectile.velocity.X * (float)player.direction);
+            player.velocity.Y = 0.01f;
+            player.wingFrame = 2;
+            player.PlayerFrame();
+            player.socialIgnoreLight = true;
+            player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, projectile.oldRot[0] - MathHelper.PiOver2);
+            try
+            {
+                Main.PlayerRenderer.DrawPlayer(Main.Camera, player, player.position, 0f, player.fullRotationOrigin);
+            }
+            catch
+            {
+            }
+            SpriteEffects spriteEffects = projectile.ai[0] > 0 ? 0 : SpriteEffects.FlipHorizontally;
+            Vector2 vector71 = projectile.position + new Vector2((float)projectile.width, (float)projectile.height) / 2f + Vector2.UnitY * projectile.gfxOffY - Main.screenPosition;
+            projectile.DrawProjWithStarryTrail(Main.spriteBatch, drawColor, Color.White, spriteEffects);
+            var color84 = Color.White * projectile.Opacity * 0.9f;
+            color84.A /= 2;
+            projectile.DrawPrettyStarSparkle(Main.spriteBatch, spriteEffects, vector71, color84, Main.hslToRgb(drawColor, 1f, 0.5f));
+        }
+        public void DrawSword() 
+        {
+            SpriteEffects spriteEffects = projectile.ai[0] > 0 ? 0 : SpriteEffects.FlipHorizontally;
+            Texture2D texture2D4 = TextureAssets.Projectile[projectile.type].Value;
+            var color84 = Color.White * projectile.Opacity * 0.9f;
+            color84.A /= 2;
+            var rectangle29 = texture2D4.Frame(15, 1, projectile.frame, 0, 0, 0);
+            var origin = texture2D4.Size() / new Vector2(15, 1);
+            origin *= spriteEffects == 0 ? new Vector2(0.1f, 0.9f) : new Vector2(0.9f, 0.9f);
+            var rot = projectile.oldRot[0] + MathHelper.PiOver4;
+            rot += projectile.ai[0] < 0 ? MathHelper.Pi / 2 : 0;
+            Main.spriteBatch.Draw(texture2D4, projectile.oldPos[0] - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(rectangle29), color84, rot, origin, ConfigurationSwoosh_Advanced.ConfigSwooshInstance.swooshSize, spriteEffects, 0);
+        }
     }
     public class WitheredWoodSword : ModItem
     {

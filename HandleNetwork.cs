@@ -23,7 +23,7 @@ namespace CoolerItemVisualEffect
             if (MessageType.EnterWorld == msgType)
             {
                 var who = reader.ReadInt32();
-                ConfigurationSwoosh.SetData(reader, who);
+                ConfigurationSwoosh_Advanced.SetData(reader, who);
                 return;
             }
             if (Main.netMode == NetmodeID.Server)
@@ -100,7 +100,7 @@ namespace CoolerItemVisualEffect
                             //ConfigurationSwoosh.SetData(reader, who);
                             //Main.player[who].GetModPlayer<WeaponDisplayPlayer>().ConfigurationSwoosh.SendData(whoAmI, who);
 
-                            ConfigurationSwoosh.SetData(reader, whoAmI);
+                            ConfigurationSwoosh_Advanced.SetData(reader, whoAmI);
                             Main.player[whoAmI].GetModPlayer<CoolerItemVisualEffectPlayer>().ConfigurationSwoosh.SendData(whoAmI, whoAmI);
                             return;
                         }
@@ -202,7 +202,7 @@ namespace CoolerItemVisualEffect
                     case MessageType.Configs:
                         {
                             var who = reader.ReadInt32();
-                            ConfigurationSwoosh.SetData(reader, who);
+                            ConfigurationSwoosh_Advanced.SetData(reader, who);
                             return;
                         }
                     case MessageType.PureFractal:

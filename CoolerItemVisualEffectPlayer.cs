@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Terraria.GameContent;
 using Terraria.ModLoader;
-using static CoolerItemVisualEffect.ConfigurationSwoosh;
+using static CoolerItemVisualEffect.ConfigurationSwoosh_Advanced;
 
 namespace CoolerItemVisualEffect
 {
@@ -59,7 +59,7 @@ namespace CoolerItemVisualEffect
         public (Texture2D tex, int type) colorBar;
 
         public float direct;
-        ConfigurationSwoosh configurationSwoosh;
+        ConfigurationSwoosh_Advanced configurationSwoosh;
         public int scaler;
 
         ////public ConfigurationSwoosh ConfigurationSwoosh
@@ -67,13 +67,13 @@ namespace CoolerItemVisualEffect
         ////    get => configurationSwoosh ??= (Main.myPlayer == player.whoAmI ? instance : new ConfigurationSwoosh());//ConfigurationSwoosh.instance
         ////    set => configurationSwoosh = value;
         ////}
-        public ConfigurationSwoosh ConfigurationSwoosh
+        public ConfigurationSwoosh_Advanced ConfigurationSwoosh
         {
             get
             {
                 if (configurationSwoosh == null)
                 {
-                    configurationSwoosh = Main.myPlayer == player.whoAmI ? instance : new ConfigurationSwoosh();
+                    configurationSwoosh = Main.myPlayer == player.whoAmI ? ConfigSwooshInstance : new ConfigurationSwoosh_Advanced();
                 }
                 return configurationSwoosh;
             }
@@ -87,7 +87,7 @@ namespace CoolerItemVisualEffect
                 var factor = (float)player.itemAnimation / (player.itemAnimationMax - 1);//物品挥动程度的插值，这里应该是从1到0
                 const float cValue = 3f;
                 float fac;
-                switch (instance.swooshActionStyle)
+                switch (ConfigSwooshInstance.swooshActionStyle)
                 {
                     default:
                     case SwooshAction.正常挥砍: fac = ((float)Math.Sqrt(factor) + factor) * .5f; break;
@@ -99,9 +99,13 @@ namespace CoolerItemVisualEffect
         }
         public override void ModifyScreenPosition()
         {
-            if (player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && player.itemAnimation > 0 && player.HeldItem.DamageType == DamageClass.Melee && !player.HeldItem.noUseGraphic && instance.CoolerSwooshActive && !Main.gamePaused && (!instance.ToolsNoUseNewSwooshEffect || player.HeldItem.axe == 0 && player.HeldItem.hammer == 0 && player.HeldItem.pick == 0) || player.HeldItem.type == ItemID.Zenith && player.itemAnimation > 0 && instance.allowZenith)
+            //player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && player.itemAnimation > 0 && player.HeldItem.DamageType == DamageClass.Melee && !player.HeldItem.noUseGraphic && ConfigSwooshInstance.CoolerSwooshActive && !Main.gamePaused && (!ConfigSwooshInstance.ToolsNoUseNewSwooshEffect || player.HeldItem.axe == 0 && player.HeldItem.hammer == 0 && player.HeldItem.pick == 0) || player.HeldItem.type == ItemID.Zenith && player.itemAnimation > 0 && ConfigSwooshInstance.allowZenith
+            if (UseSlash)
             {
-                Main.screenPosition += Main.rand.NextVector2Unit() * (float)Math.Pow(factorGeter, 4) * 24 * instance.Shake * (swingCount % 3 == 2 ? 3 : 1);
+                var fac = factorGeter;
+                fac *= 4 * (1 - fac);
+                fac = MathHelper.Clamp(2 * fac - 1, 0, 1);
+                Main.screenPosition += Main.rand.NextVector2Unit() * fac * 24 * ConfigSwooshInstance.Shake * (swingCount % 3 == 2 ? 3 : 1);
             }
             base.ModifyScreenPosition();
         }
@@ -122,7 +126,7 @@ namespace CoolerItemVisualEffect
             //base.PostUpdate();
             if (Player.HeldItem.type.SpecialCheck())
             {
-                if (instance.allowZenith && instance.CoolerSwooshActive)
+                if (ConfigSwooshInstance.allowZenith && ConfigSwooshInstance.CoolerSwooshActive)
                 {
                     Player.HeldItem.noUseGraphic = false;
                     Player.HeldItem.useStyle = 1;
@@ -144,8 +148,8 @@ namespace CoolerItemVisualEffect
             //Main.NewText((Player.itemAnimation, Player.itemAnimationMax), Color.Red);
             if (player.itemAnimation == player.itemAnimationMax && player.itemAnimation > 0)
             {
-                var flag = player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && player.HeldItem.DamageType == DamageClass.Melee && !player.HeldItem.noUseGraphic && instance.CoolerSwooshActive;
-                flag |= player.HeldItem.type.SpecialCheck() && instance.allowZenith && instance.CoolerSwooshActive;
+                var flag = player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && player.HeldItem.DamageType == DamageClass.Melee && !player.HeldItem.noUseGraphic && ConfigSwooshInstance.CoolerSwooshActive;
+                flag |= player.HeldItem.type.SpecialCheck() && ConfigSwooshInstance.allowZenith && ConfigSwooshInstance.CoolerSwooshActive;
                 if (Main.myPlayer == player.whoAmI && flag) // 
                 {
                     CoolerItemVisualEffect.ChangeShooshStyle(player);
@@ -253,9 +257,9 @@ namespace CoolerItemVisualEffect
             HitboxPosition = Vector2.Zero;//重置
             //Main.spriteBatch.DrawString(FontAssets.MouseText.Value, player.isFirstFractalAfterImage.ToString(), Player.Center - new Vector2(0, 64) - Main.screenPosition, Color.Red);
             //这个写法可以让绘制的东西在人物旋转后保持原来与人物的相对位置(试做的武器显示)
-            if (ConfigurationPreInstall.instance.useWeaponDisplay)
+            if (ConfigurationNormal.instance.useWeaponDisplay)
             {
-                if (Main.gameMenu && ConfigurationPreInstall.instance.firstWeaponDisplay)//
+                if (Main.gameMenu && ConfigurationNormal.instance.firstWeaponDisplay)//
                 {
                     Item firstweapon = null;
                     //Main.NewText(WeaponDisplay.Instance._FirstInventoryItem == null);
@@ -344,7 +348,7 @@ namespace CoolerItemVisualEffect
             {//动态武器
                 rectangle = Main.itemAnimations[holditem.type].GetFrame(texture, -1);
             }
-            DrawData item = new DrawData(texture, value5, new Rectangle?(rectangle), drawInfo.colorArmorBody, rot, origin, ConfigurationPreInstall.instance.WeaponScale * holditem.scale, drawInfo.playerEffect, 0);
+            DrawData item = new DrawData(texture, value5, new Rectangle?(rectangle), drawInfo.colorArmorBody, rot, origin, ConfigurationNormal.instance.WeaponScale * holditem.scale, drawInfo.playerEffect, 0);
             //switch (CoolerItemVisualEffect.Config.DyeUsed)
             //{
             //    case DyeSlot.None:
@@ -366,7 +370,7 @@ namespace CoolerItemVisualEffect
             if (holditem.glowMask >= 0)
             {
                 Texture2D glow = TextureAssets.GlowMask[holditem.glowMask].Value;
-                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, ConfigurationPreInstall.instance.WeaponScale * holditem.scale, drawInfo.playerEffect, 0);
+                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, ConfigurationNormal.instance.WeaponScale * holditem.scale, drawInfo.playerEffect, 0);
                 //switch (CoolerItemVisualEffect.Config.DyeUsed)
                 //{
                 //    case DyeSlot.None:
@@ -389,7 +393,7 @@ namespace CoolerItemVisualEffect
             if (holditem.ModItem != null && ModContent.HasAsset(holditem.ModItem.Texture + "_Glow"))
             {
                 Texture2D glow = ModContent.Request<Texture2D>(holditem.ModItem.Texture + "_Glow").Value;
-                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, ConfigurationPreInstall.instance.WeaponScale * holditem.scale, drawInfo.playerEffect, 0);
+                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, ConfigurationNormal.instance.WeaponScale * holditem.scale, drawInfo.playerEffect, 0);
                 drawInfo.DrawDataCache.Add(itemglow);
             }
         }
