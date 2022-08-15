@@ -166,7 +166,7 @@ namespace CoolerItemVisualEffect.Weapons
             Item.width = 58;
             Item.height = 64;
             Item.noUseGraphic = true;
-            Item.UseSound = SoundID.Item1;
+            Item.UseSound = SoundID.Item71;
             Item.autoReuse = true;
             Item.DamageType = DamageClass.Melee;
             Item.channel = true;

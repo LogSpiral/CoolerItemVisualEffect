@@ -158,7 +158,7 @@ namespace CoolerItemVisualEffect
         public override void UseItemHitbox(Item item, Player player, ref Rectangle hitbox, ref bool noHitbox)
         {
             var modPlayer = player.GetModPlayer<CoolerItemVisualEffectPlayer>();
-            if (!ConfigurationNormal.instance.UseHitbox)
+            if (!ConfigurationNormal.instance.UseHitbox || !player.GetModPlayer<CoolerItemVisualEffectPlayer>().UseSlash)
                 return;
 
             Vector2 hitboxpos = modPlayer.HitboxPosition;

@@ -51,9 +51,8 @@ namespace CoolerItemVisualEffect.Weapons
             item.useStyle = ItemUseStyleID.Swing;
             item.width = 56;
             item.height = 56;
-            item.UseSound = SoundID.Item1;
+            item.UseSound = SoundID.Item169;
             item.autoReuse = true;
-            item.DamageType = DamageClass.Melee;
             item.DamageType = DamageClass.Melee;
             item.shoot = ProjectileType<PureFractalProj>();
             item.useAnimation = 30;

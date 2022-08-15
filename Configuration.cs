@@ -517,7 +517,11 @@ namespace CoolerItemVisualEffect
         {
             正常挥砍,
             向后倾一定角度后重击,
-            两次普通斩击一次高速旋转
+            两次普通斩击一次高速旋转,
+            向后倾一定角度后重击_旧,
+            向后倾一定角度后重击_失败,
+
+            //摇摆重击
         }
         public enum SwooshFactorStyle : byte
         {

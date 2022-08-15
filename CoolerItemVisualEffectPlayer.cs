@@ -2,12 +2,14 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.GameContent;
 using Terraria.ModLoader;
 using static CoolerItemVisualEffect.ConfigurationSwoosh_Advanced;
 
 namespace CoolerItemVisualEffect
 {
+
     public class CoolerItemVisualEffectPlayer : ModPlayer
     {
         public List<Vector2> itemOldPositions = new();
@@ -24,6 +26,8 @@ namespace CoolerItemVisualEffect
         //}
         public override void OnEnterWorld(Player player)
         {
+
+            //Main.instance.Window.Title = "泰拉瑞亚：东方太阳，正在升起";
             //if (player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
             //    player.GetModPlayer<WeaponDisplayPlayer>().ConfigurationSwoosh.SendData();
             //testState = player.whoAmI;
@@ -87,16 +91,80 @@ namespace CoolerItemVisualEffect
                 var factor = (float)player.itemAnimation / (player.itemAnimationMax - 1);//物品挥动程度的插值，这里应该是从1到0
                 const float cValue = 3f;
                 float fac;
+                //int speed = 0;
+                //int type = 0;
+                //for (int n = 1; n < Main.maxItemTypes; n++) 
+                //{
+                //    var item = new Item();
+                //    item.SetDefaults(n);
+                //    if (item.useStyle == 1 && item.useAnimation > speed && item.DamageType == DamageClass.Melee && item.noUseGraphic == false) { speed = item.useAnimation; type = n; }
+                //}
+                //var _item = new Item();
+                //_item.SetDefaults(type);
+                //Main.NewText((speed, _item.Name, _item.type));
+                //Main.NewText(player.itemAnimationMax);
                 switch (ConfigSwooshInstance.swooshActionStyle)
                 {
                     default:
                     case SwooshAction.正常挥砍: fac = ((float)Math.Sqrt(factor) + factor) * .5f; break;
                     case SwooshAction.两次普通斩击一次高速旋转:
-                    case SwooshAction.向后倾一定角度后重击: fac = 1 - (cValue - 1) * (1 - factor) * (1 - factor) - (2 - cValue) * (1 - factor); break;
+                    case SwooshAction.向后倾一定角度后重击:
+                        {
+                            if (player.itemAnimationMax > 18)
+                            {
+                                factor = player.itemAnimation <= 9 ? (player.itemAnimation / 18f) : (((player.itemAnimation - 9f) / (player.itemAnimationMax - 9f) + 1f) / 2f);
+                                fac = 1 - (cValue - 1) * (1 - factor) * (1 - factor) - (2 - cValue) * (1 - factor);
+                            }
+                            else
+                            {
+                                float n = player.itemAnimationMax / 6f;
+                                if (n < 1) n = 1;
+                                fac = 1 - (n - 1) * (1 - factor) * (1 - factor) - (2 - n) * (1 - factor);
+                            }
+                        }
+                        break;
+                    case SwooshAction.向后倾一定角度后重击_旧: fac = 1 - (cValue - 1) * (1 - factor) * (1 - factor) - (2 - cValue) * (1 - factor); break;
+                    case SwooshAction.向后倾一定角度后重击_失败:
+                        {
+                            float n = player.itemAnimationMax / 5f;
+                            if (n < 1) n = 1;
+                            fac = 1 - (n - 1) * (1 - factor) * (1 - factor) - (2 - n) * (1 - factor);
+                            if (n > 3) fac = MathHelper.Clamp(fac, 0, 1);
+                        }
+                        break;
+                        //case SwooshAction.摇摆重击: //失败品
+                        //    if (player.itemAnimationMax != lastAnimationMax)
+                        //    {
+                        //        lastAnimationMax = player.itemAnimationMax;
+                        //        const float k = 15f;
+                        //        var m = lastAnimationMax * 3;
+                        //        var n = (m + k) * .5f;
+                        //        try
+                        //        {
+                        //            a = 1 / (m * n * k);
+                        //            b = -(m + n + k) * a;
+                        //            c = (3 - (float)(Math.Pow(k, 3) + Math.Pow(m, 3) + Math.Pow(n, 3)) * a - (float)(Math.Pow(k, 2) + Math.Pow(m, 2) + Math.Pow(n, 2)) * b) / (k + m + n);
+                        //        }
+                        //        catch { }
+                        //    }
+                        //    var t = (lastAnimationMax * 3 - 30) / 60f;
+                        //    t = MathHelper.Clamp(t, 0, 1);
+                        //    factor *= lastAnimationMax * 3;//m*x
+                        //    factor = (float)(a * Math.Pow(factor, 3) + b * Math.Pow(factor, 2) + c * factor);//q(x) = f(m*x)
+                        //    fac = 4 * factor / (3 * factor + 1);
+                        //    fac = MathHelper.Lerp(factor, fac, t);
+                        //    break;
                 }
                 return fac;
             }
         }
+        //AnimationMax决定着函数的形状♂
+        //但是显然，我们需要把这些复杂的东西在变化的时候存着。
+        //public int lastAnimationMax;
+        ////给三次函数f用的几个系数
+        //public float a;
+        //public float b;
+        //public float c;
         public override void ModifyScreenPosition()
         {
             //player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && player.itemAnimation > 0 && player.HeldItem.DamageType == DamageClass.Melee && !player.HeldItem.noUseGraphic && ConfigSwooshInstance.CoolerSwooshActive && !Main.gamePaused && (!ConfigSwooshInstance.ToolsNoUseNewSwooshEffect || player.HeldItem.axe == 0 && player.HeldItem.hammer == 0 && player.HeldItem.pick == 0) || player.HeldItem.type == ItemID.Zenith && player.itemAnimation > 0 && ConfigSwooshInstance.allowZenith
@@ -148,12 +216,26 @@ namespace CoolerItemVisualEffect
             //Main.NewText((Player.itemAnimation, Player.itemAnimationMax), Color.Red);
             if (player.itemAnimation == player.itemAnimationMax && player.itemAnimation > 0)
             {
-                var flag = player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && player.HeldItem.DamageType == DamageClass.Melee && !player.HeldItem.noUseGraphic && ConfigSwooshInstance.CoolerSwooshActive;
-                flag |= player.HeldItem.type.SpecialCheck() && ConfigSwooshInstance.allowZenith && ConfigSwooshInstance.CoolerSwooshActive;
-                if (Main.myPlayer == player.whoAmI && flag) // 
+                var flag = player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && player.HeldItem.DamageType == DamageClass.Melee && !player.HeldItem.noUseGraphic;
+                flag |= player.HeldItem.type.SpecialCheck() && ConfigSwooshInstance.allowZenith;
+                if (flag)
                 {
-                    CoolerItemVisualEffect.ChangeShooshStyle(player);
+                    if (ConfigurationSwoosh.CoolerSwooshActive) // 
+                    {
+                        if (player.itemAnimationMax > 9)
+                            ItemID.Sets.SkipsInitialUseSound[player.HeldItem.type] = true;
+                        if (Main.myPlayer == player.whoAmI)
+                            CoolerItemVisualEffect.ChangeShooshStyle(player);
+                    }
+                    else
+                    {
+                        ItemID.Sets.SkipsInitialUseSound[player.HeldItem.type] = false;
+                    }
                 }
+            }
+            if (player.itemAnimation == 9 && ItemID.Sets.SkipsInitialUseSound[player.HeldItem.type]) 
+            {
+                SoundEngine.PlaySound(player.HeldItem.UseSound, player.Center);
             }
             if (player.itemAnimation > 0 && UseSlash)
             {
