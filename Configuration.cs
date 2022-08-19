@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
+using System;
 using System.ComponentModel;
 using System.IO;
 using Terraria.ModLoader.Config;
@@ -17,9 +18,9 @@ namespace CoolerItemVisualEffect
         public PreInstallSwoosh preInstallSwoosh { get; set; }
         public ConfigurationSwoosh_Advanced SetCSValue(ConfigurationSwoosh_Advanced cs)
         {
-            cs.CoolerSwooshQuality = ConfigurationSwoosh_Advanced.QualityType.中medium;
-            cs.ToolsNoUseNewSwooshEffect = false;
-            cs.IsLighterDecider = 0.2f;
+            cs.coolerSwooshQuality = ConfigurationSwoosh_Advanced.QualityType.中medium;
+            cs.toolsNoUseNewSwooshEffect = false;
+            cs.isLighterDecider = 0.2f;
             cs.swooshColorType = ConfigurationSwoosh_Advanced.SwooshColorType.色调处理与对角线混合;
             cs.swooshSampler = ConfigurationSwoosh_Advanced.SwooshSamplerState.线性;
             cs.swooshFactorStyle = ConfigurationSwoosh_Advanced.SwooshFactorStyle.每次开始时决定系数;
@@ -32,15 +33,21 @@ namespace CoolerItemVisualEffect
             cs.luminosityFactor = 0.2f;
             cs.rotationVelocity = 3f;
             cs.distortFactor = 0.25f;
-            cs.ItemAdditive = false;
-            cs.ItemHighLight = true;
-            cs.Shake = 0f;
-            cs.ImageIndex = 7f;
+            cs.itemAdditive = false;
+            cs.itemHighLight = true;
+            cs.shake = 0f;
+            cs.imageIndex = 7f;
             cs.checkAir = true;
             cs.gather = true;
             cs.allowZenith = true;
             cs.glowLight = 0f;
             cs.maxCount = 1;
+            cs.directOfHeatMap = MathHelper.Pi;
+            cs.swooshTimeLeft = 30;
+            cs.onlyChangeSizeOfSwoosh = false;
+            cs.fadeStyle = ConfigurationSwoosh_Advanced.SwooshFadeStyle.全部Both;
+            cs.growStyle = ConfigurationSwoosh_Advanced.SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest;
+            cs.animateIndex = 3;
             switch (preInstallSwoosh)
             {
                 //case PreInstallSwoosh.普通Normal: 
@@ -49,8 +56,8 @@ namespace CoolerItemVisualEffect
                 //	}
                 case PreInstallSwoosh.飓风Hurricane:
                     {
-                        cs.CoolerSwooshQuality = ConfigurationSwoosh_Advanced.QualityType.高high;
-                        cs.Shake = 0.3f;
+                        cs.coolerSwooshQuality = ConfigurationSwoosh_Advanced.QualityType.高high;
+                        cs.shake = 0.3f;
                         cs.distortFactor = 1f;
                         cs.swooshSize = 1.5f;
                         cs.swooshActionStyle = ConfigurationSwoosh_Advanced.SwooshAction.两次普通斩击一次高速旋转;
@@ -65,10 +72,10 @@ namespace CoolerItemVisualEffect
                     }
                 case PreInstallSwoosh.夸张Exaggerate:
                     {
-                        cs.CoolerSwooshQuality = ConfigurationSwoosh_Advanced.QualityType.高high;
+                        cs.coolerSwooshQuality = ConfigurationSwoosh_Advanced.QualityType.高high;
                         cs.swooshSize = 3f;
                         cs.distortFactor = 1f;
-                        cs.Shake = 1f;
+                        cs.shake = 1f;
                         cs.swooshFactorStyle = ConfigurationSwoosh_Advanced.SwooshFactorStyle.系数中间插值;
                         cs.swooshActionStyle = ConfigurationSwoosh_Advanced.SwooshAction.两次普通斩击一次高速旋转;
                         cs.maxCount = 5;
@@ -77,10 +84,10 @@ namespace CoolerItemVisualEffect
                     }
                 case PreInstallSwoosh.明亮Bright:
                     {
-                        cs.CoolerSwooshQuality = ConfigurationSwoosh_Advanced.QualityType.高high;
-                        cs.IsLighterDecider = 0;
+                        cs.coolerSwooshQuality = ConfigurationSwoosh_Advanced.QualityType.高high;
+                        cs.isLighterDecider = 0;
                         cs.luminosityFactor = 0.6f;
-                        cs.ItemAdditive = true;
+                        cs.itemAdditive = true;
                         cs.glowLight = 1;
                         break;
                     }
@@ -92,7 +99,7 @@ namespace CoolerItemVisualEffect
                 case PreInstallSwoosh.光滑Smooth:
                     {
                         cs.swooshColorType = ConfigurationSwoosh_Advanced.SwooshColorType.加权平均_饱和与色调处理;
-                        cs.ImageIndex = 0f;
+                        cs.imageIndex = 0f;
                         break;
                     }
                 case PreInstallSwoosh.黑白Grey:
@@ -123,7 +130,7 @@ namespace CoolerItemVisualEffect
             if (cs == null) return;
             SetCSValue(cs);
             ConfigurationSwoosh_Advanced.Save(cs);
-            CoolerItemVisualEffect.ChangeAllPureHeatMap();
+            CoolerItemVisualEffect.WhenConfigSwooshChange();
             if (Main.netMode == NetmodeID.MultiplayerClient) ConfigurationSwoosh_Advanced.ConfigSwooshInstance.SendData();
         }
         public enum PreInstallSwoosh
@@ -198,9 +205,9 @@ namespace CoolerItemVisualEffect
             packet.Write((byte)(enter ? HandleNetwork.MessageType.EnterWorld : HandleNetwork.MessageType.Configs));
             //packet.Write(playerIndex ?? Main.myPlayer);
             if (whoami != null) packet.Write(whoami.Value);
-            packet.Write((byte)CoolerSwooshQuality);
-            packet.Write(ToolsNoUseNewSwooshEffect);
-            packet.Write(IsLighterDecider);
+            packet.Write((byte)coolerSwooshQuality);
+            packet.Write(toolsNoUseNewSwooshEffect);
+            packet.Write(isLighterDecider);
             packet.Write((byte)swooshColorType);
             packet.Write((byte)swooshSampler);
             packet.Write((byte)swooshFactorStyle);
@@ -213,16 +220,21 @@ namespace CoolerItemVisualEffect
             packet.Write(luminosityFactor);
             packet.Write(rotationVelocity);
             packet.Write(distortFactor);
-            packet.Write(ItemAdditive);
-            packet.Write(ItemHighLight);
-            packet.Write(Shake);
-            packet.Write(ImageIndex);
+            packet.Write(itemAdditive);
+            packet.Write(itemHighLight);
+            packet.Write(shake);
+            packet.Write((byte)imageIndex);
             packet.Write(checkAir);
             packet.Write(gather);
             packet.Write(allowZenith);
             packet.Write(glowLight);
             packet.Write((byte)maxCount);
-
+            packet.Write(directOfHeatMap);
+            packet.Write((byte)swooshTimeLeft);
+            packet.Write(onlyChangeSizeOfSwoosh);
+            packet.Write((byte)fadeStyle);
+            packet.Write((byte)growStyle);
+            packet.Write((byte)animateIndex);
             //packet.Write
             packet.Send(toCilent, ignoreCilent);
             //if (whoami != -1)
@@ -234,9 +246,9 @@ namespace CoolerItemVisualEffect
             if (whoami < 0 || whoami > 255) throw new System.Exception("我抄，超范围辣");
             var config = Main.player[whoami].GetModPlayer<CoolerItemVisualEffectPlayer>().ConfigurationSwoosh;
             //if (config == null) Main.player[whoami].GetModPlayer<WeaponDisplayPlayer>().configurationSwoosh = new ConfigurationSwoosh();
-            config.CoolerSwooshQuality = (QualityType)reader.ReadByte();
-            config.ToolsNoUseNewSwooshEffect = reader.ReadBoolean();
-            config.IsLighterDecider = reader.ReadSingle();
+            config.coolerSwooshQuality = (QualityType)reader.ReadByte();
+            config.toolsNoUseNewSwooshEffect = reader.ReadBoolean();
+            config.isLighterDecider = reader.ReadSingle();
             config.swooshColorType = (SwooshColorType)reader.ReadByte();
             config.swooshSampler = (SwooshSamplerState)reader.ReadByte();
             config.swooshFactorStyle = (SwooshFactorStyle)reader.ReadByte();
@@ -249,15 +261,21 @@ namespace CoolerItemVisualEffect
             config.luminosityFactor = reader.ReadSingle();
             config.rotationVelocity = reader.ReadSingle();
             config.distortFactor = reader.ReadSingle();
-            config.ItemAdditive = reader.ReadBoolean();
-            config.ItemHighLight = reader.ReadBoolean();
-            config.Shake = reader.ReadSingle();
-            config.ImageIndex = reader.ReadSingle();
+            config.itemAdditive = reader.ReadBoolean();
+            config.itemHighLight = reader.ReadBoolean();
+            config.shake = reader.ReadSingle();
+            config.imageIndex = reader.ReadByte();
             config.checkAir = reader.ReadBoolean();
             config.gather = reader.ReadBoolean();
             config.allowZenith = reader.ReadBoolean();
             config.glowLight = reader.ReadSingle();
             config.maxCount = reader.ReadByte();
+            config.directOfHeatMap = reader.ReadSingle();
+            config.swooshTimeLeft = reader.ReadByte();
+            config.onlyChangeSizeOfSwoosh = reader.ReadBoolean();
+            config.fadeStyle = (SwooshFadeStyle)reader.ReadByte();
+            config.growStyle = (SwooshGrowStyle)reader.ReadByte();
+            config.animateIndex = reader.ReadByte();
             //Main.NewText("向 " + Main.player[whoami] + "设置数据");
 
         }
@@ -267,8 +285,8 @@ namespace CoolerItemVisualEffect
         {
             return
                 CoolerSwooshActive == config.CoolerSwooshActive &&
-                ToolsNoUseNewSwooshEffect == config.ToolsNoUseNewSwooshEffect &&
-                IsLighterDecider == config.IsLighterDecider &&
+                toolsNoUseNewSwooshEffect == config.toolsNoUseNewSwooshEffect &&
+                isLighterDecider == config.isLighterDecider &&
                 swooshColorType == config.swooshColorType &&
                 swooshSampler == config.swooshSampler &&
                 swooshFactorStyle == config.swooshFactorStyle &&
@@ -281,24 +299,30 @@ namespace CoolerItemVisualEffect
                 luminosityFactor == config.luminosityFactor &&
                 rotationVelocity == config.rotationVelocity &&
                 distortFactor == config.distortFactor &&
-                ItemAdditive == config.ItemAdditive &&
-                ItemHighLight == config.ItemHighLight &&
-                Shake == config.Shake &&
-                ImageIndex == config.ImageIndex &&
+                itemAdditive == config.itemAdditive &&
+                itemHighLight == config.itemHighLight &&
+                shake == config.shake &&
+                imageIndex == config.imageIndex &&
                 checkAir == config.checkAir &&
                 gather == config.gather &&
                 allowZenith == config.allowZenith &&
                 glowLight == config.glowLight &&
-                maxCount == config.maxCount;
+                maxCount == config.maxCount &&
+                directOfHeatMap == config.directOfHeatMap &&
+                swooshTimeLeft == config.swooshTimeLeft &&
+                onlyChangeSizeOfSwoosh == config.onlyChangeSizeOfSwoosh &&
+                fadeStyle == config.fadeStyle &&
+                growStyle == config.growStyle &&
+                animateIndex == config.animateIndex;
         }
         public override void OnChanged()
         {
-            if (!EqualValue(ConfigurationNormal.instance.SetCSValue(new ConfigurationSwoosh_Advanced()))) 
+            if (!EqualValue(ConfigurationNormal.instance.SetCSValue(new ConfigurationSwoosh_Advanced())))
             {
                 ConfigurationNormal.instance.preInstallSwoosh = ConfigurationNormal.PreInstallSwoosh.自定义UserDefined;
-                Save(ConfigurationNormal.instance);
+                Save(ConfigurationNormal.instance); 
             }
-            CoolerItemVisualEffect.ChangeAllPureHeatMap();
+            CoolerItemVisualEffect.WhenConfigSwooshChange();
             //MagicConfigCounter++;
             if (Main.netMode == NetmodeID.MultiplayerClient) SendData();
         }
@@ -319,16 +343,16 @@ namespace CoolerItemVisualEffect
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.1")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.2")]
         [BackgroundColor(0, 0, 255, 127)]
-        public QualityType CoolerSwooshQuality { get; set; }
+        public QualityType coolerSwooshQuality { get; set; }
 
         [JsonIgnore]
-        public bool CoolerSwooshActive => (byte)CoolerSwooshQuality > 0;
+        public bool CoolerSwooshActive => (byte)coolerSwooshQuality > 0;
 
         [DefaultValue(false)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.3")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.4")]
         [BackgroundColor(15, 0, 255, 127)]
-        public bool ToolsNoUseNewSwooshEffect { get; set; }
+        public bool toolsNoUseNewSwooshEffect { get; set; }
         //[Increment(0.05f)]
         //[Range(0f, 1f)]
         //[DefaultValue(0.2f)]
@@ -344,7 +368,7 @@ namespace CoolerItemVisualEffect
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.6")]
         //[Slider]
         [BackgroundColor(30, 0, 255, 127)]
-        public float IsLighterDecider { get; set; }
+        public float isLighterDecider { get; set; }
 
         //[DefaultValue(true)]
         //[Label("挥砍效果颜色")]
@@ -449,13 +473,13 @@ namespace CoolerItemVisualEffect
         [BackgroundColor(225, 0, 255, 127)]
         //[BackgroundColor(0,0,0,0)]
         //[ColorHSLSlider(true)]
-        public bool ItemAdditive { get; set; }
+        public bool itemAdditive { get; set; }
 
         [DefaultValue(true)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.33")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.34")]
         [BackgroundColor(240, 0, 255, 127)]
-        public bool ItemHighLight { get; set; }
+        public bool itemHighLight { get; set; }
 
         [Increment(0.05f)]
         [DefaultValue(0f)]
@@ -463,32 +487,34 @@ namespace CoolerItemVisualEffect
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.35")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.36")]
         [BackgroundColor(255, 0, 255, 127)]
-        public float Shake { get; set; }
+        public float shake { get; set; }
 
         [Increment(1f)]
         [DefaultValue(7f)]
-        [Range(0, 8f)]
+        [Range(0, 11f)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.37")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.38")]
-        [BackgroundColor(255, 127, 255, 127)]
-        public float ImageIndex { get; set; }
+        [BackgroundColor(255, 0, 240, 127)]
+        public float imageIndex { get; set; }
+        [JsonIgnore]
+        public int ImageIndex => (int)MathHelper.Clamp(ConfigSwooshInstance.imageIndex, 0, 11);
 
         [DefaultValue(true)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.39")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.40")]
-        [BackgroundColor(127, 255, 255, 127)]
+        [BackgroundColor(255, 0, 225, 127)]
         public bool checkAir { get; set; }
 
         [DefaultValue(true)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.41")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.42")]
-        [BackgroundColor(255, 255, 127, 127)]
+        [BackgroundColor(255, 0, 210, 127)]
         public bool gather { get; set; }//
 
         [DefaultValue(true)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.43")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.44")]
-        [BackgroundColor(255, 255, 255, 127)]
+        [BackgroundColor(255, 0, 195, 127)]
         public bool allowZenith { get; set; }//
 
         [Increment(0.05f)]
@@ -496,16 +522,79 @@ namespace CoolerItemVisualEffect
         [Range(0f, 1f)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.45")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.46")]
-        [BackgroundColor(127, 127, 127, 127)]
+        [BackgroundColor(255, 0, 180, 127)]
         public float glowLight { get; set; }//
 
         [DefaultValue(1)]
         [Range(1, 10)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.51")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.52")]
-        [BackgroundColor(102, 153, 204, 127)]
+        [BackgroundColor(255, 0, 165, 127)]
         public int maxCount { get; set; }//
 
+        [DefaultValue(3.1415f)]
+        [Range(0, 6.283f)]
+        [Increment(0.05f)]
+        [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.53")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.54")]
+        [BackgroundColor(255, 0, 150, 127)]
+        public float directOfHeatMap { get; set; }
+
+        [DefaultValue(30f)]
+        [Range(0, 60f)]
+        [Increment(1f)]
+        [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.55")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.56")]
+        [BackgroundColor(255, 0, 135, 127)]
+        public float swooshTimeLeft { get; set; }
+
+        [DefaultValue(false)]
+        [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.57")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.58")]
+        [BackgroundColor(255, 0, 120, 127)]
+        public bool onlyChangeSizeOfSwoosh { get; set; }
+
+        [DrawTicks]
+        [DefaultValue(SwooshFadeStyle.全部Both)]
+        [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.59")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.60")]
+        [BackgroundColor(255, 0, 105, 127)]
+        public SwooshFadeStyle fadeStyle { get; set; }
+
+        [JsonIgnore]
+        public bool IsTransparentFade => fadeStyle == SwooshFadeStyle.逐渐透明GraduallyTransparent || fadeStyle == SwooshFadeStyle.全部Both;
+
+        [JsonIgnore]
+        public bool IsCloseAngleFade => fadeStyle == SwooshFadeStyle.角度收缩CloseTheAngle || fadeStyle == SwooshFadeStyle.全部Both;
+
+        [JsonIgnore]
+        public bool IsDarkFade => fadeStyle == SwooshFadeStyle.逐渐黯淡GraduallyFade || fadeStyle == SwooshFadeStyle.全部Both;
+
+        [DrawTicks]
+        [DefaultValue(SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest)]
+        [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.61")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.62")]
+        [BackgroundColor(255, 0, 90, 127)]
+        public SwooshGrowStyle growStyle { get; set; }
+
+        [JsonIgnore]
+        public bool IsExpandGrow => growStyle == SwooshGrowStyle.扩大Expand || growStyle == SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest;
+
+        [JsonIgnore]
+        public bool IsHorizontallyGrow => growStyle == SwooshGrowStyle.横向扩大ExpandHorizontally || growStyle == SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest;
+
+        [JsonIgnore]
+        public bool IsOffestGrow => growStyle == SwooshGrowStyle.平移Offest || growStyle == SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest;
+
+        [Increment(1f)]
+        [DefaultValue(3f)]
+        [Range(0, 5f)]
+        [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.63")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.64")]
+        [BackgroundColor(255, 0, 75, 127)]
+        public float animateIndex { get; set; }
+        [JsonIgnore]
+        public int AnimateIndex => (int)MathHelper.Clamp(ConfigSwooshInstance.animateIndex, 0, 5);
 
         public enum SwooshSamplerState : byte
         {
@@ -541,7 +630,22 @@ namespace CoolerItemVisualEffect
             关off,
             低low,
             中medium,
-            高high
+            高high,
+            极限ultra
+        }
+        public enum SwooshFadeStyle 
+        {
+            逐渐透明GraduallyTransparent,
+            角度收缩CloseTheAngle,
+            逐渐黯淡GraduallyFade,
+            全部Both
+        }
+        public enum SwooshGrowStyle
+        {
+            扩大Expand,
+            横向扩大ExpandHorizontally,
+            平移Offest,
+            横向扩大与平移BothExpandHorizontallyAndOffest
         }
     }
     //[Label("$Mods.CoolerItemVisualEffect.Config.Label")]

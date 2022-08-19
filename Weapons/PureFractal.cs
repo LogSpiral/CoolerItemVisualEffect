@@ -245,14 +245,14 @@ namespace CoolerItemVisualEffect.Weapons
             projectile.Opacity = Utils.GetLerpValue(0f, 5f, projectile.localAI[0], true) * Utils.GetLerpValue(120f, 115f, projectile.localAI[0], true);//修改透明度
         }
         //public override bool PreDraw(ref Color lightColor)
-        public void DrawSword() 
+        public void DrawSword()
         {
             var max = 0;
             Texture2D currentTex = GetPureFractalProjTexs(projectile.frame);
             float _scaler = currentTex.Size().Length();
             var multiValue = 1 - projectile.localAI[0] / 120f;
             var spEffect = projectile.ai[0] * projectile.velocity.X > 0 ? 0 : SpriteEffects.FlipHorizontally;
-
+            var size = ConfigSwooshInstance.onlyChangeSizeOfSwoosh ? 1 : ConfigSwooshInstance.swooshSize;
             for (int n = 0; n < Projectile.oldPos.Length; n++)
             {
                 if (projectile.oldPos[n] == default) { max = n; break; }
@@ -263,12 +263,12 @@ namespace CoolerItemVisualEffect.Weapons
                 //_fac *= _fac * _fac;
                 var _color = newColor * _fac;//newColor 
                 _color.A = 0;
-                Main.spriteBatch.Draw(currentTex, projectile.oldPos[n - 1] - Main.screenPosition, null, _color * multiValue, projectile.oldRot[n - 1] - MathHelper.PiOver4 + (spEffect == 0 ? 0 : MathHelper.PiOver2), currentTex.Size() * new Vector2(spEffect == 0 ? 0 : 1, 1), ConfigSwooshInstance.swooshSize, spEffect, 0);
-                DrawPrettyStarSparkle(projectile, 0, projectile.oldPos[n - 1] + (projectile.oldRot[n - 1] - MathHelper.PiOver2).ToRotationVector2() * _scaler * ConfigSwooshInstance.swooshSize - Main.screenPosition, Color.White, _color, Main.spriteBatch);
+                Main.spriteBatch.Draw(currentTex, projectile.oldPos[n - 1] - Main.screenPosition, null, _color * multiValue, projectile.oldRot[n - 1] - MathHelper.PiOver4 + (spEffect == 0 ? 0 : MathHelper.PiOver2), currentTex.Size() * new Vector2(spEffect == 0 ? 0 : 1, 1), size, spEffect, 0);
+                DrawPrettyStarSparkle(projectile, 0, projectile.oldPos[n - 1] + (projectile.oldRot[n - 1] - MathHelper.PiOver2).ToRotationVector2() * _scaler * size - Main.screenPosition, Color.White, _color, Main.spriteBatch);
 
             }
-            Main.spriteBatch.Draw(currentTex, projectile.oldPos[0] - Main.screenPosition, null, Color.White * multiValue, projectile.oldRot[0] - MathHelper.PiOver4 + (spEffect == 0 ? 0 : MathHelper.PiOver2), currentTex.Size() * new Vector2(spEffect == 0 ? 0 : 1, 1), ConfigSwooshInstance.swooshSize, spEffect, 0);
-            DrawPrettyStarSparkle(projectile, 0, projectile.oldPos[0] + (projectile.oldRot[0] - MathHelper.PiOver2).ToRotationVector2() * _scaler * ConfigSwooshInstance.swooshSize - Main.screenPosition, Color.White, newColor, Main.spriteBatch);
+            Main.spriteBatch.Draw(currentTex, projectile.oldPos[0] - Main.screenPosition, null, Color.White * multiValue, projectile.oldRot[0] - MathHelper.PiOver4 + (spEffect == 0 ? 0 : MathHelper.PiOver2), currentTex.Size() * new Vector2(spEffect == 0 ? 0 : 1, 1), size, spEffect, 0);
+            DrawPrettyStarSparkle(projectile, 0, projectile.oldPos[0] + (projectile.oldRot[0] - MathHelper.PiOver2).ToRotationVector2() * _scaler * size - Main.screenPosition, Color.White, newColor, Main.spriteBatch);
         }
         public void DrawSwoosh()
         {
@@ -362,9 +362,9 @@ namespace CoolerItemVisualEffect.Weapons
             switch (ConfigSwooshInstance.swooshSampler)
             {
                 default:
-                case SwooshSamplerState.各向异性: sampler = SamplerState.AnisotropicClamp; break;
-                case SwooshSamplerState.线性: sampler = SamplerState.LinearClamp; break;
-                case SwooshSamplerState.点: sampler = SamplerState.PointClamp; break;
+                case SwooshSamplerState.各向异性: sampler = SamplerState.AnisotropicWrap; break;
+                case SwooshSamplerState.线性: sampler = SamplerState.LinearWrap; break;
+                case SwooshSamplerState.点: sampler = SamplerState.PointWrap; break;
             }
             //List<CustomVertexInfo> triangleList = new List<CustomVertexInfo>();
             //if (bars.Count > 2)
@@ -448,7 +448,6 @@ namespace CoolerItemVisualEffect.Weapons
             #region 快乐顶点绘制_2(现在才进入正题)
             float _scaler = currentTex.Size().Length() * airFactor;
             var bars = new List<CustomVertexInfo>();
-            var realColor = newColor;
             var multiValue = 1 - projectile.localAI[0] / 120f;
             multiValue = 4 * multiValue / (3 * multiValue + 1);
             for (int i = 0; i < max; i++)
@@ -460,19 +459,17 @@ namespace CoolerItemVisualEffect.Weapons
                 var f = i > _value ? _i / (max - _value - 1f) : (_i / 14f);
                 f = 1 - f;
                 var alphaLight = 0.6f;
-                if (ConfigSwooshInstance.swooshColorType == SwooshColorType.加权平均_饱和与色调处理 || ConfigSwooshInstance.swooshColorType == SwooshColorType.色调处理与对角线混合)
-                {
-                    float h = (hsl.X + ConfigSwooshInstance.hueOffsetValue + ConfigSwooshInstance.hueOffsetRange * (2 * f - 1)) % 1;
-                    float s = MathHelper.Clamp(hsl.Y * ConfigSwooshInstance.saturationScalar, 0, 1);
-                    float l = MathHelper.Clamp(f > 0.5f ? hsl.Z * (2 - f * 2) + (f * 2 - 1) * Math.Max(hsl.Z, 0.5f + ConfigSwooshInstance.luminosityRange) : f * 2 * hsl.Z + (1 - f * 2) * Math.Min(hsl.Z, 0.5f - ConfigSwooshInstance.luminosityRange), 0, 1);
-                    realColor = Main.hslToRgb(h, s, l);
-                }
+                //if (ConfigSwooshInstance.swooshColorType == SwooshColorType.加权平均_饱和与色调处理 || ConfigSwooshInstance.swooshColorType == SwooshColorType.色调处理与对角线混合)
+                //{
+                //    float h = (hsl.X + ConfigSwooshInstance.hueOffsetValue + ConfigSwooshInstance.hueOffsetRange * (2 * f - 1)) % 1;
+                //    float s = MathHelper.Clamp(hsl.Y * ConfigSwooshInstance.saturationScalar, 0, 1);
+                //    float l = MathHelper.Clamp(f > 0.5f ? hsl.Z * (2 - f * 2) + (f * 2 - 1) * Math.Max(hsl.Z, 0.5f + ConfigSwooshInstance.luminosityRange) : f * 2 * hsl.Z + (1 - f * 2) * Math.Min(hsl.Z, 0.5f - ConfigSwooshInstance.luminosityRange), 0, 1);
+                //    realColor = Main.hslToRgb(h, s, l);
+                //}
                 var _f = f * f;//6 * f / (3 * f + 1) /(float)Math.Pow(f,instance.maxCount)
                 _f = MathHelper.Clamp(_f, 0, 1);
-                realColor.A = (byte)(_f * 255 * (float)Math.Pow(1 - i / 15 / 5f, 2));
-                bars.Add(new CustomVertexInfo(projectile.oldPos[i] + (projectile.oldRot[i] - MathHelper.PiOver2).ToRotationVector2() * _scaler * ConfigSwooshInstance.swooshSize, realColor * multiValue, new Vector3(1 - f, 1, alphaLight)));
-                realColor.A = 0;
-                bars.Add(new CustomVertexInfo(projectile.oldPos[i], realColor * multiValue, new Vector3(0, 0, alphaLight)));
+                bars.Add(new CustomVertexInfo(projectile.oldPos[i] + (projectile.oldRot[i] - MathHelper.PiOver2).ToRotationVector2() * _scaler * ConfigSwooshInstance.swooshSize, newColor with { A = (byte)(_f * 255 * (float)Math.Pow(1 - i / 15 / 5f, 2)) } * multiValue, new Vector3(1 - f, 1, alphaLight)));
+                bars.Add(new CustomVertexInfo(projectile.oldPos[i], newColor with { A = 0 } * multiValue, new Vector3(0, 0, alphaLight)));
             }
             List<CustomVertexInfo> _triangleList = new List<CustomVertexInfo>();
             if (bars.Count > 2)
@@ -495,6 +492,8 @@ namespace CoolerItemVisualEffect.Weapons
                     case SwooshColorType.函数生成热度图: passCount = 2; break;
                     case SwooshColorType.武器贴图对角线: passCount = 1; break;
                     case SwooshColorType.色调处理与对角线混合: passCount = 3; break;
+                    case SwooshColorType.加权平均_饱和与色调处理: passCount = 4; break;
+
                 }
                 //if (false)//useRender
                 //{
@@ -604,10 +603,12 @@ namespace CoolerItemVisualEffect.Weapons
                 ShaderSwooshEX.Parameters["uTime"].SetValue(0); ShaderSwooshEX.Parameters["checkAir"].SetValue(ConfigSwooshInstance.checkAir);
                 ShaderSwooshEX.Parameters["airFactor"].SetValue(airFactor);
                 ShaderSwooshEX.Parameters["gather"].SetValue(ConfigSwooshInstance.gather);
-                Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + (int)MathHelper.Clamp(ConfigSwooshInstance.ImageIndex, 0, 8));
-                Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
+                var _v = ConfigSwooshInstance.directOfHeatMap.ToRotationVector2();
+                ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
+                Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + ConfigSwooshInstance.ImageIndex);
+                Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage($"AniTex_{ConfigSwooshInstance.AnimateIndex}");
                 Main.graphics.GraphicsDevice.Textures[2] = currentTex;
-                if (ConfigSwooshInstance.swooshColorType == SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = GetPureFractalHeatMaps(Projectile.frame);
+                Main.graphics.GraphicsDevice.Textures[3] = GetPureFractalHeatMaps(Projectile.frame);//if (ConfigSwooshInstance.swooshColorType == SwooshColorType.函数生成热度图)
                 Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
                 Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
                 Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;

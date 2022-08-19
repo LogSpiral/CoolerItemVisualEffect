@@ -16,6 +16,7 @@ using Terraria.GameContent.Skies.CreditsRoll;
 using Terraria.UI;
 using static Terraria.GameContent.Skies.CreditsRoll.Segments.PlayerSegment;
 using static CoolerItemVisualEffect.ConfigurationSwoosh_Advanced;
+using System.Linq;
 using Terraria.Localization;
 using Terraria.Graphics.Renderers;
 using MonoMod.Cil;
@@ -192,7 +193,7 @@ namespace CoolerItemVisualEffect
                 #region 绘制FZ
                 if (firstZeniths.Count > 0)
                 {
-                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
                     foreach (var projectile in firstZeniths)
                     {
                         var firstZenith = projectile.ModProjectile as Weapons.FirstZenithProj;
@@ -240,9 +241,9 @@ namespace CoolerItemVisualEffect
                 switch (ConfigSwooshInstance.swooshSampler)
                 {
                     default:
-                    case SwooshSamplerState.各向异性: sampler = SamplerState.AnisotropicClamp; break;
-                    case SwooshSamplerState.线性: sampler = SamplerState.LinearClamp; break;
-                    case SwooshSamplerState.点: sampler = SamplerState.PointClamp; break;
+                    case SwooshSamplerState.各向异性: sampler = SamplerState.AnisotropicWrap; break;
+                    case SwooshSamplerState.线性: sampler = SamplerState.LinearWrap; break;
+                    case SwooshSamplerState.点: sampler = SamplerState.PointWrap; break;
                 }
                 RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
                 var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
@@ -267,6 +268,7 @@ namespace CoolerItemVisualEffect
                         case SwooshColorType.函数生成热度图: passCount = 2; break;
                         case SwooshColorType.武器贴图对角线: passCount = 1; break;
                         case SwooshColorType.色调处理与对角线混合: passCount = 3; break;
+                        case SwooshColorType.加权平均_饱和与色调处理: passCount = 4; break;
                     }
                     ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
                     //ShaderSwooshEX.Parameters["uLighter"].SetValue(ConfigSwooshInstance.luminosityFactor);
@@ -274,8 +276,11 @@ namespace CoolerItemVisualEffect
                     ShaderSwooshEX.Parameters["checkAir"].SetValue(ConfigSwooshInstance.checkAir);
                     ShaderSwooshEX.Parameters["airFactor"].SetValue(1);
                     ShaderSwooshEX.Parameters["gather"].SetValue(ConfigSwooshInstance.gather);
-                    Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + (int)MathHelper.Clamp(ConfigSwooshInstance.ImageIndex, 0, 8));
-                    Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
+                    ShaderSwooshEX.Parameters["lightShift"].SetValue(0);
+                    var _v = ConfigSwooshInstance.directOfHeatMap.ToRotationVector2();
+                    ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
+                    Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + ConfigSwooshInstance.ImageIndex);
+                    Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage($"AniTex_{ConfigSwooshInstance.AnimateIndex}");
                     Main.graphics.GraphicsDevice.Textures[2] = ModContent.Request<Texture2D>("CoolerItemVisualEffect/Weapons/FirstZenithProj_5").Value;
                     if (ConfigSwooshInstance.swooshColorType == SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = GetPureFractalHeatMaps(25);
                     Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
@@ -296,17 +301,17 @@ namespace CoolerItemVisualEffect
                     sb.End();
                 }
                 Main.graphics.GraphicsDevice.RasterizerState = originalState;
-                if (pureFractals.Count > 0 || firstZeniths.Count > 0) 
+                if (pureFractals.Count > 0 || firstZeniths.Count > 0)
                 {
-                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
-                    if (pureFractals.Count > 0) 
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
+                    if (pureFractals.Count > 0)
                     {
                         foreach (var projectile in pureFractals)
                         {
                             (projectile.ModProjectile as Weapons.PureFractalProj)?.DrawSword();
                         }
                     }
-                    if (firstZeniths.Count > 0) 
+                    if (firstZeniths.Count > 0)
                     {
                         foreach (var projectile in firstZeniths)
                         {
@@ -316,7 +321,7 @@ namespace CoolerItemVisualEffect
                     sb.End();
                 }
             }
-            myLabel:
+        myLabel:
             orig(self);
         }
         public static Texture2D emptyTex;
@@ -343,7 +348,7 @@ namespace CoolerItemVisualEffect
                 #region 绘制FZ
                 if (firstZeniths.Count > 0)
                 {
-                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
                     foreach (var projectile in firstZeniths)
                     {
                         //var instance = Main.netMode == NetmodeID.MultiplayerClient ? Main.player[projectile.owner].GetModPlayer<CoolerItemVisualEffectPlayer>().ConfigurationSwoosh : ConfigurationSwoosh.instance;
@@ -401,9 +406,9 @@ namespace CoolerItemVisualEffect
                 switch (ConfigSwooshInstance.swooshSampler)
                 {
                     default:
-                    case SwooshSamplerState.各向异性: sampler = SamplerState.AnisotropicClamp; break;
-                    case SwooshSamplerState.线性: sampler = SamplerState.LinearClamp; break;
-                    case SwooshSamplerState.点: sampler = SamplerState.PointClamp; break;
+                    case SwooshSamplerState.各向异性: sampler = SamplerState.AnisotropicWrap; break;
+                    case SwooshSamplerState.线性: sampler = SamplerState.LinearWrap; break;
+                    case SwooshSamplerState.点: sampler = SamplerState.PointWrap; break;
                 }
                 RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
                 var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
@@ -433,6 +438,7 @@ namespace CoolerItemVisualEffect
                         case SwooshColorType.函数生成热度图: passCount = 2; break;
                         case SwooshColorType.武器贴图对角线: passCount = 1; break;
                         case SwooshColorType.色调处理与对角线混合: passCount = 3; break;
+                        case SwooshColorType.加权平均_饱和与色调处理: passCount = 4; break;
                     }
                     ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
                     //ShaderSwooshEX.Parameters["uLighter"].SetValue(ConfigSwooshInstance.luminosityFactor);
@@ -440,8 +446,10 @@ namespace CoolerItemVisualEffect
                     ShaderSwooshEX.Parameters["checkAir"].SetValue(ConfigSwooshInstance.checkAir);
                     ShaderSwooshEX.Parameters["airFactor"].SetValue(1);
                     ShaderSwooshEX.Parameters["gather"].SetValue(ConfigSwooshInstance.gather);
-                    Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + (int)MathHelper.Clamp(ConfigSwooshInstance.ImageIndex, 0, 8));
-                    Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
+                    var _v = ConfigSwooshInstance.directOfHeatMap.ToRotationVector2();
+                    ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
+                    Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + ConfigSwooshInstance.ImageIndex);
+                    Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage($"AniTex_{ConfigSwooshInstance.AnimateIndex}");
                     Main.graphics.GraphicsDevice.Textures[2] = ModContent.Request<Texture2D>("CoolerItemVisualEffect/Weapons/FirstZenithProj_5").Value;
                     if (ConfigSwooshInstance.swooshColorType == SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = GetPureFractalHeatMaps(25);
                     Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
@@ -465,9 +473,9 @@ namespace CoolerItemVisualEffect
 
 
                 Main.graphics.GraphicsDevice.RasterizerState = originalState;
-                switch (ConfigSwooshInstance.CoolerSwooshQuality) 
+                switch (ConfigSwooshInstance.coolerSwooshQuality)
                 {
-                    case QualityType.中medium: 
+                    case QualityType.中medium:
                         {
                             for (int n = 0; n < ConfigSwooshInstance.maxCount; n++)
                             {
@@ -490,24 +498,21 @@ namespace CoolerItemVisualEffect
                             }
                             break;
                         }
-                    case QualityType.高high: 
+                    case QualityType.高high:
+                    case QualityType.极限ultra:
                         {
                             for (int n = 0; n < ConfigSwooshInstance.maxCount; n++)
                             {
 
                                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                                gd.SetRenderTarget(Main.screenTargetSwap);
                                 DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
                                 DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
-
-
                                 DistortEffect.Parameters["position"].SetValue(new Vector2(0, 4));
                                 DistortEffect.Parameters["tier2"].SetValue(ConfigSwooshInstance.luminosityFactor);
-                                gd.SetRenderTarget(Main.screenTargetSwap);
                                 gd.Clear(Color.Transparent);
                                 DistortEffect.CurrentTechnique.Passes[7].Apply();
                                 sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-
-
 
                                 gd.SetRenderTarget(Main.screenTarget);
                                 gd.Clear(Color.Transparent);
@@ -535,7 +540,7 @@ namespace CoolerItemVisualEffect
                 }
                 if (pureFractals.Count > 0 || firstZeniths.Count > 0)
                 {
-                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
                     if (pureFractals.Count > 0)
                     {
                         foreach (var projectile in pureFractals)
@@ -560,41 +565,47 @@ namespace CoolerItemVisualEffect
         static void DrawSwooshWithPlayer(Player drawPlayer)
         {
             var modPlayer = drawPlayer.GetModPlayer<CoolerItemVisualEffectPlayer>();
-            if (modPlayer.UseSlash)
+            if (modPlayer.UseSlash || modPlayer.SwooshActive)
             {
                 if (!TextureAssets.Item[drawPlayer.HeldItem.type].IsLoaded) TextureAssets.Item[drawPlayer.HeldItem.type] = Main.Assets.Request<Texture2D>("Images/Item_" + drawPlayer.HeldItem.type, ReLogic.Content.AssetRequestMode.AsyncLoad);
                 var itemTex = TextureAssets.Item[drawPlayer.HeldItem.type].Value;
-                var w = itemTex.Width;
-                var h = itemTex.Height;
-                var cs = new Color[w * h];
-                itemTex.GetData(cs);
-                Vector4 vcolor = default;
-                float count = 0;
-                float airFactor = 1;
-                Color target = default;
-
-                for (int n = 0; n < cs.Length; n++)
+                if (modPlayer.colorInfo.type != drawPlayer.HeldItem.type)
                 {
-                    if (cs[n] != default && (n - w < 0 || cs[n - w] != default) && (n - 1 < 0 || cs[n - 1] != default) && (n + w >= cs.Length || cs[n + w] != default) && (n + 1 >= cs.Length || cs[n + 1] != default))
+                    var w = itemTex.Width;
+                    var h = itemTex.Height;
+                    var cs = new Color[w * h];
+
+                    itemTex.GetData(cs);
+                    Vector4 vcolor = default;
+                    float count = 0;
+                    modPlayer.colorInfo.checkAirFactor = 1;
+                    Color target = default;
+
+                    for (int n = 0; n < cs.Length; n++)
                     {
-                        var weight = (float)((n + 1) % w * (h - n / w)) / w / h;
-                        vcolor += cs[n].ToVector4() * weight;
-                        count += weight;
+                        if (cs[n] != default && (n - w < 0 || cs[n - w] != default) && (n - 1 < 0 || cs[n - 1] != default) && (n + w >= cs.Length || cs[n + w] != default) && (n + 1 >= cs.Length || cs[n + 1] != default))
+                        {
+                            var weight = (float)((n + 1) % w * (h - n / w)) / w / h;
+                            vcolor += cs[n].ToVector4() * weight;
+                            count += weight;
+                        }
+                        Vector2 coord = new Vector2(n % w, n / w);
+                        coord /= new Vector2(w, h);
+                        if (modPlayer.ConfigurationSwoosh.checkAir && Math.Abs(1 - coord.X - coord.Y) * 0.7071067811f < 0.05f && cs[n] != default && target == default)
+                        {
+                            target = cs[n];
+                            modPlayer.colorInfo.checkAirFactor = coord.X;
+                        }
                     }
-                    Vector2 coord = new Vector2(n % w, n / w);
-                    coord /= new Vector2(w, h);
-                    if (ConfigSwooshInstance.checkAir && Math.Abs(1 - coord.X - coord.Y) * 0.7071067811f < 0.05f && cs[n] != default && target == default)
-                    {
-                        target = cs[n];
-                        airFactor = coord.X;
-                    }
+                    vcolor /= count;
+                    var newColor = modPlayer.colorInfo.color = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
+                    /*var hslVec = */
+                    modPlayer.hsl = Main.rgbToHsl(newColor);
+                    //if (hslVec.Z < modPlayer.ConfigurationSwoosh.isLighterDecider) { modPlayer.colorInfo.color = Main.hslToRgb(hslVec with { Z = 0 }); }//MathHelper.Clamp(hslVec.Z * .25f, 0, 1)
                 }
-                vcolor /= count;
-                var newColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
-                var hsl = Main.rgbToHsl(newColor);
                 try
                 {
-                    DrawSwoosh(drawPlayer, newColor, hsl.Z < ConfigSwooshInstance.IsLighterDecider, airFactor, ConfigSwooshInstance, out var rectangle);
+                    DrawSwoosh(drawPlayer);
                     //Main.NewText("!!!");
                 }
                 catch
@@ -736,6 +747,7 @@ namespace CoolerItemVisualEffect
         }
         public void CreateRender()
         {
+            if (Render != null) Render.Dispose();
             Render = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth == 0 ? 1920 : Main.screenWidth, Main.screenHeight == 0 ? 1120 : Main.screenHeight);
         }
         public RenderTarget2D Render
@@ -878,79 +890,7 @@ namespace CoolerItemVisualEffect
         internal static Effect distortEffect;
         internal static Effect finalFractalTailEffect;
         internal static Effect colorfulEffect;
-        public static bool CanUseRender => Lighting.Mode != Terraria.Graphics.Light.LightMode.Retro && Lighting.Mode != Terraria.Graphics.Light.LightMode.Trippy && Main.WaveQuality != 0 && (byte)ConfigSwooshInstance.CoolerSwooshQuality > 1;
-        public static void ChangeShooshStyle(Player player)
-        {
-            var vec = Main.MouseWorld - player.Center;
-            vec.Y *= player.gravDir;
-            player.direction = Math.Sign(vec.X);
-            var modPlayer = player.GetModPlayer<CoolerItemVisualEffectPlayer>();
-            modPlayer.negativeDir ^= true;
-
-
-            if (ConfigSwooshInstance.swooshFactorStyle == SwooshFactorStyle.系数中间插值)
-            {
-                modPlayer.rotationForShadow = modPlayer.rotationForShadowNext;
-                modPlayer.rotationForShadowNext = vec.ToRotation() + Main.rand.NextFloat(-MathHelper.Pi / 6, MathHelper.Pi / 6);
-                if (modPlayer.rotationForShadow == 0) modPlayer.rotationForShadow = vec.ToRotation();
-            }
-            else
-            {
-                modPlayer.rotationForShadow = vec.ToRotation() + Main.rand.NextFloat(-MathHelper.Pi / 6, MathHelper.Pi / 6);
-            }
-
-            modPlayer.swingCount++;
-
-            if (ConfigSwooshInstance.swooshFactorStyle == SwooshFactorStyle.系数中间插值)
-            {
-                modPlayer.kValue = modPlayer.kValueNext;
-                modPlayer.kValueNext = Main.rand.NextFloat(1, 2);
-                if (modPlayer.kValue == 0) modPlayer.kValue = modPlayer.kValueNext;
-            }
-            else
-            {
-                modPlayer.kValue = Main.rand.NextFloat(1, 2);
-            }
-
-
-            //string str = "";
-            //switch (Main.rand.Next(15))
-            //{
-            //    case 0: str = "泰拉瑞亚:每挥动一次换一次标题"; break;
-            //    case 1: str = "泰拉瑞亚:试试阅读《毛泽东选集》"; break;
-            //    case 2: str = "泰拉瑞亚:全世界无产者联合起来"; break;
-            //    case 3: str = "泰拉瑞亚:无间之钟无尽之夜"; break;
-            //    case 4: str = "泰拉瑞亚:听风雪喧嚷，看流星在飞翔"; break;
-            //    case 5: str = "幻世边境:完了泰拉成替身了"; break;
-            //    case 6: str = "泰拉瑞亚:风暴之城建设中"; break;
-            //    case 7: str = "泰拉瑞亚:东方太阳，正在升起"; break;
-            //    case 8: str = "泰拉瑞亚:无垠星空与时间洪流"; break;
-            //    case 9: str = "泰拉瑞亚:你打算在这幻界逗留多久呢?"; break;
-            //    case 10: str = "泰拉瑞亚:阿汪居然塞私货，太可恶了！！"; break;
-            //    case 11: str = "幻世边境:第一回 风暴城辉光重现，赤康邦暗流涌动。";break;
-            //    case 12: str = "幻世边境:第二回 星之河孤帆渺渺，时之风独旅茫茫。"; break;
-            //    case 13: str = "幻世边境:第三回 虚幻界醉生梦死，现实境山重水复。"; break;
-            //    case 14: str = "幻世边境:第四回 无间狱暮雾蒙蒙，人间世长夜漫漫。"; break;
-
-            //}
-            if (!ConfigurationNormal.instance.DontChangeMyTitle)
-                Main.instance.Window.Title = Language.GetTextValue("Mods.CoolerItemVisualEffect.StrangeTitle." + Main.rand.Next(11));//"幻世边境：完了泰拉成替身了";//"{$Mods.CoolerItemVisualEffect.StrangeTitle." + Main.rand.Next(15)+"}"//15
-
-            if (Main.netMode == NetmodeID.MultiplayerClient)
-            {
-                ModPacket packet = Instance.GetPacket();
-                packet.Write((byte)HandleNetwork.MessageType.BasicStats);
-                packet.Write(modPlayer.negativeDir);
-                packet.Write(modPlayer.rotationForShadow);
-                packet.Write(modPlayer.rotationForShadowNext);
-                packet.Write(modPlayer.swingCount);
-                packet.Write(modPlayer.kValue);
-                packet.Write(modPlayer.kValueNext);
-                packet.Write(modPlayer.UseSlash);
-                packet.Send(-1, -1); // 发包到服务器上 再由服务器转发到其他客户端
-                NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, player.whoAmI); // 同步direction
-            }
-        }
+        public static bool CanUseRender => Lighting.Mode != Terraria.Graphics.Light.LightMode.Retro && Lighting.Mode != Terraria.Graphics.Light.LightMode.Trippy && Main.WaveQuality != 0 && (byte)ConfigSwooshInstance.coolerSwooshQuality > 1;
         private void PlayerDrawLayers_DrawPlayer_27_HeldItem_WeaponDisplay(On.Terraria.DataStructures.PlayerDrawLayers.orig_DrawPlayer_27_HeldItem orig, ref PlayerDrawSet drawinfo)
         {
             var drawPlayer = drawinfo.drawPlayer;
@@ -975,7 +915,7 @@ namespace CoolerItemVisualEffect
                 }
             }// || heldItem.type == ItemID.Terragrim || heldItem.type == ItemID.Arkhalis
             flagMelee = drawPlayer.HeldItem.damage > 0 && drawPlayer.HeldItem.useStyle == ItemUseStyleID.Swing && drawPlayer.itemAnimation > 0 && drawPlayer.HeldItem.DamageType == DamageClass.Melee && !drawPlayer.HeldItem.noUseGraphic && instance.CoolerSwooshActive;
-            if (instance.ToolsNoUseNewSwooshEffect)
+            if (instance.toolsNoUseNewSwooshEffect)
             {
                 flagMelee = flagMelee && drawPlayer.HeldItem.axe == 0 && drawPlayer.HeldItem.hammer == 0 && drawPlayer.HeldItem.pick == 0;
             }
@@ -1064,583 +1004,891 @@ namespace CoolerItemVisualEffect
             //    DrawSwoosh(drawPlayer, newColor);
             //}
         }
-        public static void DrawSwoosh(Player drawPlayer, Color newColor, bool alphaBlend, float checkAirFactor, ConfigurationSwoosh_Advanced instance, out Rectangle bodyRec)
+        public static void UpdateHeatMap(ref Texture2D texture, Vector3 hsl, ConfigurationSwoosh_Advanced config)
         {
-            //Main.NewText(checkAirFactor);
-            bodyRec = default;
+            var colors = new Color[300];
+            for (int i = 0; i < 300; i++)
+            {
+                var f = i / 299f;//分割成25次惹，f从1/25f到1//1 - 
+                //f = f * f;// *f
+                float h = (hsl.X + config.hueOffsetValue + config.hueOffsetRange * (2 * f - 1)) % 1;
+                float s = MathHelper.Clamp(hsl.Y * config.saturationScalar, 0, 1);
+                float l = MathHelper.Clamp(f > 0.5f ? hsl.Z * (2 - f * 2) + (f * 2 - 1) * Math.Max(hsl.Z, 0.5f + config.luminosityRange) : f * 2 * hsl.Z + (1 - f * 2) * Math.Min(hsl.Z, 0.5f - config.luminosityRange), 0, 1);
+                var currentColor = Main.hslToRgb(h, s, l);
+                colors[i] = currentColor;
+            }
+            if (texture == null) texture = new Texture2D(Main.graphics.GraphicsDevice, 300, 1);
+            texture.SetData(colors);
+        }
+        public static void WhenConfigSwooshChange()
+        {
+            ChangeAllPureHeatMap();
+            if (Main.player != null)
+                foreach (var player in Main.player)
+                {
+                    if (player.active)
+                    {
+                        var modPlr = player.GetModPlayer<CoolerItemVisualEffectPlayer>();
+                        UpdateHeatMap(ref modPlr.colorInfo.tex, modPlr.hsl, modPlr.ConfigurationSwoosh);
+                        modPlr.UpdateVertex();
+                        modPlr.UpdateFactor();
+                        if (modPlr.SwooshActive) modPlr.UpdateSwooshHM();
+                    }
+                }
+        }
+        public static void DrawSwoosh(Player drawPlayer)
+        {
             if (ShaderSwooshEX == null) return;
             if (ItemEffect == null) return;
             if (DistortEffect == null) return;
             if (Main.GameViewMatrix == null) return;
-            //Main.NewText("!!!!");
             var trans = Main.GameViewMatrix != null ? Main.GameViewMatrix.TransformationMatrix : Matrix.Identity;
-            var modPlayer = drawPlayer.GetModPlayer<CoolerItemVisualEffectPlayer>();//modplayer类
-                                                                                    //if (drawPlayer.itemAnimation == drawPlayer.itemAnimationMax - 1 && !Main.gamePaused)
-                                                                                    //{
-                                                                                    //    var vec = Main.MouseWorld - drawPlayer.Center;
-                                                                                    //    vec.Y *= drawPlayer.gravDir;
-                                                                                    //    drawPlayer.direction = Math.Sign(vec.X);
-                                                                                    //    modPlayer.negativeDir ^= true;
-                                                                                    //    modPlayer.rotationForShadow = vec.ToRotation() + Main.rand.NextFloat(-MathHelper.Pi / 6, MathHelper.Pi / 6);
-                                                                                    //    modPlayer.kValue = Main.rand.NextFloat(1, 2);
-                                                                                    //}
-            var fac = modPlayer.factorGeter;
-            fac = modPlayer.negativeDir ? 1 - fac : fac;//每次挥动都会改变方向，所以插值函数方向也会一起变（原本是从1到0，反过来就是0到1(虽然说一般都是0到1
-
-
-
-            //var fac = 1 - (cValue - 1) * (1 - factor) * (1 - factor) - (2 - cValue) * (1 - factor);//丢到另一个插值函数里了，可以自己画一下图像，这个插值效果比上面那个线性插值好//((float)Math.Sqrt(factor) + factor) * .5f;//(cValue - 1) * factor * factor + (2 - cValue) * factor
-            //fac *= 3;
-            //fac %= 1;
-            //Main.NewText(new Vector2(fac,factor));
-
-            //var drawCen = drawPlayer.gravDir == -1 ? new Vector2(drawPlayer.Center.X, (2 * (Main.screenPosition + new Vector2(960, 560)) - drawPlayer.Center - new Vector2(0, 96)).Y) : drawPlayer.Center;//2 * (Main.screenPosition + new Vector2(960, 560)) - drawPlayer.Center - new Vector2(0, 96)
-            //var fac = (float)Math.Sqrt(factor);
-            //var theta = (fac * -1.125f + (1 - fac) * 0.1125f) * Pi;、   adaw、
+            var modPlayer = drawPlayer.GetModPlayer<CoolerItemVisualEffectPlayer>();
+            var instance = modPlayer.ConfigurationSwoosh;
+            var newColor = modPlayer.colorInfo.color;
+            var alphaBlend = modPlayer.hsl.Z < instance.isLighterDecider;
+            var checkAirFactor = modPlayer.colorInfo.checkAirFactor;
+            var itemTex = TextureAssets.Item[drawPlayer.HeldItem.type].Value;
             var drawCen = drawPlayer.Center;
-            float rotVel = instance.swooshActionStyle == SwooshAction.两次普通斩击一次高速旋转 && modPlayer.swingCount % 3 == 2 ? instance.rotationVelocity : 1;
-            var theta = (1.2375f * fac * rotVel - 1.125f) * MathHelper.Pi;//线性插值后乘上一个系数，这里的起始角度和终止角度是试出来的（
-            CustomVertexInfo[] c = new CustomVertexInfo[6];//顶点数组，绘制完整的物品需要两个三角形(六个顶点，两组重合
-            var itemTex = TextureAssets.Item[drawPlayer.HeldItem.type].Value;//获取物品贴图
-            float xScaler = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.kValue, modPlayer.kValueNext, fac) : modPlayer.kValue;//获取x轴方向缩放系数
-            float scaler = itemTex.Size().Length() * drawPlayer.GetAdjustedItemScale(drawPlayer.HeldItem) / xScaler * 0.5f * instance.swooshSize * checkAirFactor;//对椭圆进行位似变换(你直接说坐标乘上一个系数不就好了吗，屑阿汪// * modPlayer.ScalerOfSword / 15f
-            var cos = (float)Math.Cos(theta) * scaler;
-            var sin = (float)Math.Sin(theta) * scaler;//这里(cos,sin)对应的位置就是我们希望贴图右上角所在的位置，而(0,0)对应的位置是贴图左下角所在的位置
-            var rotator = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.rotationForShadow, modPlayer.rotationForShadowNext, fac) : modPlayer.rotationForShadow;
-            var u = new Vector2(xScaler * (cos - sin), -cos - sin).RotatedBy(rotator);
-            var v = new Vector2(-xScaler * (cos + sin), sin - cos).RotatedBy(rotator);//这里其实应该是都要除个二，或者上面scaler那里0.7改成0.5
-                                                                                      //此处u对应的是贴图左上角或者右下角(由方向决定,v同理。u+v就是贴图右上角(剑锋位置。因为我们希望画出来是椭圆，所以我们给x方向乘上个系数，然后在根据使用朝向进行旋转就好啦
+            var fac = modPlayer.FactorGeter;
+            CustomVertexInfo[] c = new CustomVertexInfo[6];
             var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
-            //方法名是创建正交偏移中心 l=left  r=right t=top b=bottom n=zNearPlane f=zFarPlane
-            //( 2 / (r - l),           0,           0, -(r + l) / (r - l)
-            //            0, 2 / (t - b),           0, -(t + b) / (t - b)
-            //            0,           0, 2 / (n - f), -(n + f) / (f - n)
-            //            0,           0,           0,                  1）
-            //这尼玛的是什么鬼————
-            //用人话说就是
-            //x取值在[l,r]
-            //y取值在[b,t]
-            //z取值在[n,f]
-            //w取值为1时
-            //将这个b矩阵作用在(x,y,z,w)上后
-            //x、y、z映射到[-1,1]
-
             var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
-            //假设这里丢进去是(x,y,z),出来的矩阵就是
-            //( 1, 0, 0, 0
-            //  0, 1, 0, 0
-            //  0, 0, 1, 0
-            //  x, y, z, 1)
-            //然后如果你将矩阵作用在(a,b,c)上就是(a, b, c, a * x + b * y + c * z + w),说实话我不是很能理解这个的意义
-
             RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
-
-            //var w = itemTex.Width;
-            //var h = itemTex.Height;
-            //var cs = new Color[w * h];
-            //itemTex.GetData(cs);
-            //Vector4 vcolor = default;
-            //float count = 0;
-            //for (int n = 0; n < cs.Length; n++)
-            //{
-            //    if (cs[n] != default)
-            //    {
-            //        var weight = (float)((n + 1) % w * (h - n / w)) / w / h;
-            //        vcolor += cs[n].ToVector4() * weight;
-            //        count += weight;
-            //    }
-            //}
-            //vcolor /= count;
-            //var newColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
-            //这一步是对贴图的颜色取加权平均数，右上角权重为1，左下角权重为0.01，左上和右下0.1
-            //说人话就是尽量贴近剑锋处的颜色
-            //其实我可以把武器的贴图丢到shader里然后整分多层颜色，没必要整这个加权平均
-            //我下次试试那样的.fx
-
-
-            //spriteBatch.End();
-            //spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.Transform);
-
-            List<CustomVertexInfo> bars = new List<CustomVertexInfo>();
-
-            var swooshAniFac = modPlayer.negativeDir ? 4 * fac - 3 : 4 * fac;////modPlayer.negativeDir ? 1 - (float)Math.Sqrt(1 - fac * fac) : 1 - (float)Math.Sqrt(1 - (fac - 1) * (fac - 1))
-            swooshAniFac = MathHelper.Clamp(swooshAniFac, 0, 1);
-            var theta3 = (1.2375f * swooshAniFac * rotVel - 1.125f) * MathHelper.Pi;//这里是又一处插值
-            float xScaler3 = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.kValue, modPlayer.kValueNext, swooshAniFac) : modPlayer.kValue;
-            var rotator3 = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.rotationForShadow, modPlayer.rotationForShadowNext, swooshAniFac) : modPlayer.rotationForShadow;
-            //我们武器所在的角度是theta，我们拖尾的末端的角度就是上面的theta3，下面的theta2就是theta渐变到theta3
-
-            //var cos2 = (float)Math.Cos(theta3) * scaler;
-            //var sin2 = (float)Math.Sin(theta3) * scaler;
-            //var u2 = new Vector2(cos2 * xScaler + sin2, -sin2 * xScaler + cos2).RotatedBy(modPlayer.rotationForShadow);
-            //var v2 = new Vector2(cos2 * xScaler - sin2, -sin2 * xScaler - cos2).RotatedBy(modPlayer.rotationForShadow) * length;
-            //var oldVec = u2 + v2;
-
-
-
-            Color realColor = newColor;
-            Vector3 hsl = Main.rgbToHsl(realColor);
-            for (int i = 0; i < 45; i++)
+            if (modPlayer.colorInfo.tex == null || modPlayer.colorInfo.type != drawPlayer.HeldItem.type)
             {
-                var f = i / 44f;//分割成25次惹，f从1/25f到1
-                var theta2 = f.Lerp(theta3, theta, true);//快乐线性插值
-                var xScaler2 = (instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? f : 1).Lerp(xScaler3, xScaler, true);
-                var rotator2 = (instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? f : 1).Lerp(rotator3, rotator, true);
-                var cos2 = (float)Math.Cos(theta2) * scaler;
-                var sin2 = (float)Math.Sin(theta2) * scaler;
-
-
-                var u2 = new Vector2(xScaler2 * (cos2 - sin2), -cos2 - sin2).RotatedBy(rotator2);
-                var v2 = new Vector2(-xScaler2 * (cos2 + sin2), sin2 - cos2).RotatedBy(rotator2);
-                //和刚刚上面那里一样的流程，不要问我为什么不用一个数组存储已经算好的之前的u、v
-                //因为那样的话如果你武器很快的话效果就很烂了（指不够平滑圆润
-                //这种写法虽然对电脑不太友好但是效果好（x
-                var newVec = u2 + v2;//不过这里我们只需要最后的结果(那为什么不直接(cos2 * xScaler,sin2)，阿汪你在干什么
-                var alphaLight = alphaBlend ? Lighting.GetColor((drawPlayer.Center / 16).ToPoint().X, (drawPlayer.Center / 16).ToPoint().Y).R / 255f * .6f : 0.6f;
-                if (instance.swooshColorType == SwooshColorType.加权平均_饱和与色调处理 || instance.swooshColorType == SwooshColorType.色调处理与对角线混合)
+                if (instance.swooshColorType == SwooshColorType.函数生成热度图 || instance.swooshColorType == SwooshColorType.加权平均_饱和与色调处理 || instance.swooshColorType == SwooshColorType.色调处理与对角线混合)
                 {
-                    float h = (hsl.X + instance.hueOffsetValue + instance.hueOffsetRange * (2 * f - 1)) % 1;
-                    float s = MathHelper.Clamp(hsl.Y * instance.saturationScalar, 0, 1);
-                    float l = MathHelper.Clamp(f > 0.5f ? hsl.Z * (2 - f * 2) + (f * 2 - 1) * Math.Max(hsl.Z, 0.5f + instance.luminosityRange) : f * 2 * hsl.Z + (1 - f * 2) * Math.Min(hsl.Z, 0.5f - instance.luminosityRange), 0, 1);
-                    realColor = Main.hslToRgb(h, s, l);
-                    //Main.NewText((h, s, l, realColor), realColor);
+                    UpdateHeatMap(ref modPlayer.colorInfo.tex, modPlayer.hsl, instance);
                 }
-                var _f = f * f; ;//f;// 6 * f / (3 * f + 1)
-                _f = MathHelper.Clamp(_f, 0, 1);
-                //_f = ConfigurationSwoosh.instance.distortFactor != 0 ? _f : _f * _f;
-                realColor.A = (byte)(_f * 255);//.MultiplyRGBA(new Color(1,1,1,_f))
-                bars.Add(new CustomVertexInfo(drawCen + newVec, realColor, new Vector3(1 - f, 1, alphaLight)));//(3 * f - 4) / (4 * f - 3)//快乐连顶点
-                realColor.A = 0;//.MultiplyRGBA(new Color(1, 1, 1, 0))
-                bars.Add(new CustomVertexInfo(drawCen, realColor, new Vector3(0, 0, alphaLight)));// + newVec * (1 - f)
-                                                                                                  //bars.Add(new CustomVertexInfo(drawCen + newVec, alphaBlend ? new Color(realColor.R / 255f, realColor.G / 255f, realColor.B / 255f, _f) : realColor, new Vector3(1 - f, 1, alphaBlend ? alphaLight : _f)));//(3 * f - 4) / (4 * f - 3)//快乐连顶点
-                                                                                                  //bars.Add(new CustomVertexInfo(drawCen, alphaBlend ? new Color(realColor.R / 255f, realColor.G / 255f, realColor.B / 255f, 0) : realColor, new Vector3(0, 0, alphaBlend ? alphaLight : 0)));
-                                                                                                  //bars.Add(new CustomVertexInfo(drawCen + newVec, alphaBlend ? new Color(newColor.R / 255f, newColor.G / 255f, newColor.B / 255f, f) : newColor, new Vector3(1 - f, 1, alphaBlend ? alphaLight : 3 * f / (3 * f + 1))));//(3 * f - 4) / (4 * f - 3)//快乐连顶点
-                                                                                                  //bars.Add(new CustomVertexInfo(drawCen, alphaBlend ? new Color(newColor.R / 255f, newColor.G / 255f, newColor.B / 255f, 0) : newColor, new Vector3(0, 0, alphaBlend ? alphaLight : 0)));
-                                                                                                  //oldVec = newVec;
+                modPlayer.colorInfo.type = drawPlayer.HeldItem.type;
             }
-            //Main.NewText(new Vector3(fac, MathHelper.Clamp(modPlayer.negativeDir ? (4 * fac - 3) : 4 * fac, 0, 1), modPlayer.negativeDir ? -1 : 1));
+
+            if (!Main.gamePaused) modPlayer.UpdateVertex();
             SamplerState sampler;
             switch (instance.swooshSampler)
             {
                 default:
-                case SwooshSamplerState.各向异性: sampler = SamplerState.AnisotropicClamp; break;
-                case SwooshSamplerState.线性: sampler = SamplerState.LinearClamp; break;
-                case SwooshSamplerState.点: sampler = SamplerState.PointClamp; break;
+                case SwooshSamplerState.各向异性: sampler = SamplerState.AnisotropicWrap; break;
+                case SwooshSamplerState.线性: sampler = SamplerState.LinearWrap; break;
+                case SwooshSamplerState.点: sampler = SamplerState.PointWrap; break;
             }
-            List<CustomVertexInfo> triangleList = new List<CustomVertexInfo>();
-            if (bars.Count > 2)
+            var (u, v) = modPlayer.vectors;
+            //List<CustomVertexInfo> triangleList = new List<CustomVertexInfo>();
+
+            CustomVertexInfo[] triangleList = null;//new CustomVertexInfo[264]
+            if (modPlayer.UseSlash)
             {
-                for (int i = 0; i < bars.Count - 2; i += 2)
+                triangleList = new CustomVertexInfo[264];
+                var bars = (CustomVertexInfo[])modPlayer.vertexInfos.Clone();
+                for (int n = 0; n < 90; n++) bars[n].Position += drawCen;
+                for (int i = 0; i < 88; i += 2)
                 {
-                    triangleList.Add(bars[i]);
-                    triangleList.Add(bars[i + 2]);
-                    triangleList.Add(bars[i + 1]);
-
-                    triangleList.Add(bars[i + 1]);
-                    triangleList.Add(bars[i + 2]);
-                    triangleList.Add(bars[i + 3]);
+                    triangleList[3 * i] = bars[i];
+                    triangleList[3 * i + 1] = bars[i + 2];
+                    triangleList[3 * i + 2] = bars[i + 1];
+                    triangleList[3 * i + 3] = bars[i + 1];
+                    triangleList[3 * i + 4] = bars[i + 2];
+                    triangleList[3 * i + 5] = bars[i + 3];
                 }
-
-
-                //RenderTarget2D render = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
-                bool useRender = (instance.distortFactor != 0 || instance.maxCount > 1) && CanUseRender;
-                var gd = Main.graphics.GraphicsDevice;
-                var sb = Main.spriteBatch;
-                var passCount = 0;
-                switch (instance.swooshColorType)
-                {
-                    case SwooshColorType.函数生成热度图: passCount = 2; break;
-                    case SwooshColorType.武器贴图对角线: passCount = 1; break;
-                    case SwooshColorType.色调处理与对角线混合: passCount = 3; break;
-                }
-                if (instance.swooshColorType == SwooshColorType.函数生成热度图 && (modPlayer.colorBar.tex == null || modPlayer.colorBar.type != drawPlayer.HeldItem.type))
-                {
-                    var colors = new Color[1500];
-                    for (int i = 0; i < 300; i++)
-                    {
-                        var f = i / 299f;//分割成25次惹，f从1/25f到1//1 - 
-                        f = f * f;// *f
-                        float h = (hsl.X + instance.hueOffsetValue + instance.hueOffsetRange * (2 * f - 1)) % 1;
-                        float s = MathHelper.Clamp(hsl.Y * instance.saturationScalar, 0, 1);
-                        float l = MathHelper.Clamp(f > 0.5f ? hsl.Z * (2 - f * 2) + (f * 2 - 1) * Math.Max(hsl.Z, 0.5f + instance.luminosityRange) : f * 2 * hsl.Z + (1 - f * 2) * Math.Min(hsl.Z, 0.5f - instance.luminosityRange), 0, 1);
-                        var currentColor = Main.hslToRgb(h, s, l);
-                        for (int n = 0; n < 5; n++)
-                        {
-                            colors[i + 300 * n] = currentColor;
-                        }
-                    }
-                    if (modPlayer.colorBar.tex == null) modPlayer.colorBar.tex = new Texture2D(Main.graphics.GraphicsDevice, 300, 5);
-                    modPlayer.colorBar.tex.SetData(colors);
-                    modPlayer.colorBar.type = drawPlayer.HeldItem.type;
-                    //Main.graphics.GraphicsDevice.Textures[2] = colorBar;
-                    //sb.Draw(colorBar, new Vector2(240, 240), Color.White);
-                }
-                if (useRender)
-                {
-                    #region MyRegion
-                    //gd.SetRenderTarget(Main.screenTargetSwap);
-                    //sp.End();
-
-                    //sp.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-                    //sp.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-                    //sp.End();
-
-                    //gd.SetRenderTarget(render);
-                    //gd.Clear(Color.Transparent);
-
-
-                    //Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
-                    //DistortEffect.Parameters["uTransform"].SetValue(model * projection);
-                    //DistortEffect.Parameters["uTime"].SetValue(-(float)Main.time * 0.06f);//-(float)Main.time * 0.06f
-                    //DistortEffect.Parameters["unit"].SetValue((u + v) * 0.005f);
-                    //Main.graphics.GraphicsDevice.Textures[0] = Main.screenTarget;
-                    //Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("BaseTex_7");
-                    //Main.graphics.GraphicsDevice.Textures[2] = GetWeaponDisplayImage("AniTex");
-                    //Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.AnisotropicClamp;
-                    //Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.AnisotropicClamp;
-                    //Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.AnisotropicClamp;
-                    //ShaderSwooshEX.CurrentTechnique.Passes[0].Apply();
-                    //var tris = new CustomVertexInfo[triangleList.Count];
-                    //for (int n = 0; n < tris.Length; n++)
-                    //{
-                    //    tris[n] = triangleList[n];
-                    //    tris[n].Color = new Vector4((tris[n].Position - Main.screenPosition) / new Vector2(1920, 1120), 0, 0).ToColor();
-                    //}
-                    //Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, tris, 0, tris.Length / 3);
-                    //Main.graphics.GraphicsDevice.RasterizerState = originalState;
-                    ////Main.spriteBatch.Draw(Main.screenTarget, new Vector2(64, 64), null, Color.White * .5f, 0, default, 1, 0, 0);
-                    //Main.spriteBatch.End();
-
-                    //gd.SetRenderTarget(Main.screenTarget);
-                    //sp.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-                    //sp.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-                    //sp.Draw(render, Vector2.Zero, Color.White);
-                    #endregion
-                    //先在自己的render上画这个弹幕
-                    sb.End();
-                    gd.SetRenderTarget(Instance.Render);
-                    gd.Clear(Color.Transparent);
-                    sb.Begin(SpriteSortMode.Immediate, alphaBlend ? BlendState.NonPremultiplied : BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);//Main.DefaultSamplerState//Main.GameViewMatrix.TransformationMatrix
-                    ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
-                    //ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
-                    ShaderSwooshEX.Parameters["uTime"].SetValue(0);//-(float)Main.time * 0.06f
-                    ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);//-(float)Main.time * 0.06f
-                    ShaderSwooshEX.Parameters["airFactor"].SetValue(checkAirFactor);
-                    ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
-
-                    Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + (int)MathHelper.Clamp(instance.ImageIndex, 0, 8));//字面意义，base那个是不会随时间动的，ani那个会动//BaseTex//_7
-                    Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
-                    Main.graphics.GraphicsDevice.Textures[2] = itemTex;
-                    if (instance.swooshColorType == SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = modPlayer.colorBar.tex;
-
-
-                    Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
-                    Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
-                    Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
-                    Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
-
-
-                    //if (alphaBlend) passCount += 2;
-                    ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
-                    Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList.ToArray(), 0, triangleList.Count / 3);
-                    Main.graphics.GraphicsDevice.RasterizerState = originalState;
-
-                    switch (instance.CoolerSwooshQuality) 
-                    {
-                        case QualityType.中medium:
-                            for (int n = 0; n < instance.maxCount; n++)
-                            {
-                                sb.End();
-                                //然后在随便一个render里绘制屏幕，并把上面那个带弹幕的render传进shader里对屏幕进行处理
-                                //原版自带的screenTargetSwap就是一个可以使用的render，（原版用来连续上滤镜）
-
-                                gd.SetRenderTarget(Main.screenTargetSwap);//将画布设置为这个
-                                gd.Clear(Color.Transparent);//清空
-                                sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-                                DistortEffect.CurrentTechnique.Passes[0].Apply();//ApplyPass
-                                DistortEffect.Parameters["tex0"].SetValue(Instance.Render);//render可以当成贴图使用或者绘制。（前提是当前gd.SetRenderTarget的不是这个render，否则会报错）
-                                DistortEffect.Parameters["offset"].SetValue((u + v) * -0.002f * (1 - 2 * Math.Abs(0.5f - fac)) * instance.distortFactor);//设置参数时间
-                                DistortEffect.Parameters["invAlpha"].SetValue(0);
-                                sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);//绘制原先屏幕内容
-                                                                                      //pixelshader里处理
-                                sb.End();
-
-                                //最后在screenTarget上把刚刚的结果画上
-                                gd.SetRenderTarget(Main.screenTarget);
-                                gd.Clear(Color.Transparent);
-                                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-                                sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-                                //sb.End();
-
-                                //Main.spriteBatch.Begin(SpriteSortMode.Immediate, alphaBlend ? BlendState.NonPremultiplied : BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
-                                //Main.instance.GraphicsDevice.BlendState = BlendState.Additive;
-                                sb.Draw(Instance.Render, Vector2.Zero, new Color(1f, 1f, 1f, 0));//
-                                //Main.instance.GraphicsDevice.BlendState = BlendState.AlphaBlend;
-                            }
-                            break;
-                        case QualityType.高high:
-                            for (int n = 0; n < instance.maxCount; n++)
-                            {
-                                sb.End();
-                                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-                                DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-                                DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
-
-
-                                DistortEffect.Parameters["position"].SetValue(new Vector2(0, 6));
-                                DistortEffect.Parameters["tier2"].SetValue(instance.luminosityFactor);
-                                gd.SetRenderTarget(Main.screenTargetSwap);
-                                gd.Clear(Color.Transparent);
-                                DistortEffect.CurrentTechnique.Passes[7].Apply();
-                                sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-
-
-
-                                gd.SetRenderTarget(Main.screenTarget);
-                                gd.Clear(Color.Transparent);
-                                DistortEffect.CurrentTechnique.Passes[6].Apply();
-                                sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-
-                                DistortEffect.Parameters["position"].SetValue(new Vector2(0, 9));
-                                DistortEffect.Parameters["ImageSize"].SetValue((u + v) * -0.0004f * (1 - 2 * Math.Abs(0.5f - fac)) * instance.distortFactor);
-                                gd.SetRenderTarget(Main.screenTargetSwap);
-                                gd.Clear(Color.Transparent);
-                                DistortEffect.CurrentTechnique.Passes[5].Apply();
-                                sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-
-                                gd.SetRenderTarget(Main.screenTarget);
-                                gd.Clear(Color.Transparent);
-                                DistortEffect.CurrentTechnique.Passes[4].Apply();
-                                sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-                                #region 乱糟糟注释
-                                //Main.spriteBatch.End();
-                                //Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-
-                                ////Main.NewText(CoolerItemVisualEffect.DistortEffect.CurrentTechnique.Passes.Count);
-
-                                ////CoolerItemVisualEffect.DistortEffect.Parameters["offset"].SetValue(Rotation.ToRotationVector2() * -0.002f * useDistort);//* (1 - 2 * Math.Abs(0.5f - useDistort))
-                                ////CoolerItemVisualEffect.DistortEffect.Parameters["invAlpha"].SetValue(0);
-
-
-                                //CoolerItemVisualEffect.DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-                                //CoolerItemVisualEffect.DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
-                                //CoolerItemVisualEffect.DistortEffect.Parameters["position"].SetValue(new Vector2(0, 7));
-                                //CoolerItemVisualEffect.DistortEffect.Parameters["tier2"].SetValue(0.4f);
-                                //for (int n = 0; n < 3; n++)
-                                //{
-                                //    gd.SetRenderTarget(Main.screenTargetSwap);
-                                //    gd.Clear(Color.Transparent);
-                                //    CoolerItemVisualEffect.DistortEffect.CurrentTechnique.Passes[7].Apply();
-                                //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-
-
-
-                                //    gd.SetRenderTarget(Main.screenTarget);
-                                //    gd.Clear(Color.Transparent);
-                                //    CoolerItemVisualEffect.DistortEffect.CurrentTechnique.Passes[6].Apply();
-                                //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-                                //}
-                                //sb.End();
-                                //Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-                                //DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-                                //DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
-                                //DistortEffect.Parameters["position"].SetValue(new Vector2(0, 3));
-                                //DistortEffect.Parameters["tier2"].SetValue(0.2f);
-                                //for (int n = 0; n < 3; n++)
-                                //{
-                                //    gd.SetRenderTarget(Main.screenTargetSwap);
-                                //    gd.Clear(Color.Transparent);
-                                //    DistortEffect.CurrentTechnique.Passes[7].Apply();
-                                //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-
-
-
-                                //    gd.SetRenderTarget(Main.screenTarget);
-                                //    gd.Clear(Color.Transparent);
-                                //    DistortEffect.CurrentTechnique.Passes[6].Apply();
-                                //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-                                //}
-                                //DistortEffect.Parameters["position"].SetValue(new Vector2(0, 3));
-                                //DistortEffect.Parameters["ImageSize"].SetValue((u + v) * -0.002f * (1 - 2 * Math.Abs(0.5f - fac)) * instance.distortFactor);
-                                //for (int n = 0; n < 2; n++)
-                                //{
-                                //    gd.SetRenderTarget(Main.screenTargetSwap);
-                                //    gd.Clear(Color.Transparent);
-                                //    DistortEffect.CurrentTechnique.Passes[5].Apply();
-                                //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-
-                                //    gd.SetRenderTarget(Main.screenTarget);
-                                //    gd.Clear(Color.Transparent);
-                                //    DistortEffect.CurrentTechnique.Passes[4].Apply();
-                                //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-                                //}
-                                //sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-                                //sb.Draw(Instance.Render, Vector2.Zero, Color.White);
-                                #endregion
-                                sb.End();
-                                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-                                sb.Draw(Instance.Render, Vector2.Zero, Color.White);
-                            }
-                            break;
-                    }
-                }
-                else
-                {
-                    sb.End();
-                    sb.Begin(SpriteSortMode.Immediate, alphaBlend ? BlendState.NonPremultiplied : BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);//Main.DefaultSamplerState//Main.GameViewMatrix.TransformationMatrix
-                    ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);//
-                    //ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
-                    ShaderSwooshEX.Parameters["uTime"].SetValue(0);//-(float)Main.time * 0.06f
-                    ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);
-                    ShaderSwooshEX.Parameters["airFactor"].SetValue(checkAirFactor);
-                    ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
-
-
-                    Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + (int)MathHelper.Clamp(instance.ImageIndex, 0, 8));//字面意义，base那个是不会随时间动的，ani那个会动//BaseTex//_7
-                    Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
-                    Main.graphics.GraphicsDevice.Textures[2] = itemTex;
-                    if (instance.swooshColorType == SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = modPlayer.colorBar.tex;
-                    //if (ConfigurationSwoosh.instance.swooshColorType == SwooshColorType.函数生成热度图) 
-                    //{
-                    //    var colorBar = new Texture2D(Main.graphics.GraphicsDevice,300,60);
-                    //    colorBar.SetData<Color>();
-                    //    Main.graphics.GraphicsDevice.Textures[3] = colorBar;
-                    //}
-
-
-                    Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
-                    Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
-                    Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
-                    Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
-
-                    //var passCount = 0;
-                    //if (ConfigurationSwoosh.instance.swooshColorType == SwooshColorType.武器贴图对角线) passCount++;
-                    //if (alphaBlend) passCount += 2;
-                    ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
-                    Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList.ToArray(), 0, triangleList.Count / 3);
-                    Main.graphics.GraphicsDevice.RasterizerState = originalState;
-                    //ShaderSwooshEX.Parameters["uTransform"].SetValue(model * projection);
-                    //ShaderSwooshEX.Parameters["uLighter"].SetValue(ConfigurationSwoosh.instance.luminosityFactor);
-                    //ShaderSwooshEX.Parameters["uTime"].SetValue(0);//-(float)Main.time * 0.06f
-                    //Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_7");//字面意义，base那个是不会随时间动的，ani那个会动//BaseTex
-                    //Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
-                    //Main.graphics.GraphicsDevice.Textures[2] = itemTex;
-                    ////if (ConfigurationSwoosh.instance.swooshColorType == SwooshColorType.函数生成热度图) 
-                    ////{
-                    ////    var colorBar = new Texture2D(Main.graphics.GraphicsDevice,300,60);
-                    ////    colorBar.SetData<Color>();
-                    ////    Main.graphics.GraphicsDevice.Textures[3] = colorBar;
-                    ////}
-
-
-                    //Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.AnisotropicClamp;
-                    //Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.AnisotropicClamp;
-                    //Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.AnisotropicClamp;
-                    //Main.graphics.GraphicsDevice.SamplerStates[3] = SamplerState.AnisotropicClamp;
-
-                    //var passCount = 0;
-                    //if (ConfigurationSwoosh.instance.swooshColorType == SwooshColorType.武器贴图对角线) passCount++;
-                    ////if (alphaBlend) passCount += 2;
-                    //ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
-                    //Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList.ToArray(), 0, triangleList.Count / 3);
-                    //Main.graphics.GraphicsDevice.RasterizerState = originalState;
-                }
-
             }
 
-            //var color = Main.hslToRgb(0.33f, 0.75f, 0.75f);
-            //.5f
-            var num0 = modPlayer.negativeDir ? 1 : 0;
-            u /= checkAirFactor;
-            v /= checkAirFactor;
-            float light = instance.glowLight;
-            c[0] = new CustomVertexInfo(drawCen, newColor, new Vector3(0, 1, light));//因为零向量固定是左下角所以纹理固定(0,1)
-            c[1] = new CustomVertexInfo(u + drawCen, newColor, new Vector3(num0 ^ 1, num0 ^ 1, light));//这一处也许有更优美的写法
-            c[2] = new CustomVertexInfo(v + drawCen, newColor, new Vector3(num0, num0, light));
-            c[3] = c[1];
-            c[4] = new CustomVertexInfo(u + v + drawCen, newColor, new Vector3(1, 0, light));//因为u+v固定是右上角所以纹理固定(1,0)
-            c[5] = c[2];
-            //Main.spriteBatch.DrawLine(u + v + drawPlayer.Center, drawPlayer.Center, Color.Red);
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate, instance.ItemAdditive ? BlendState.Additive : BlendState.AlphaBlend, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
-            itemEffect.Parameters["uTransform"].SetValue(model * trans * projection);
-            //将变换矩阵作用在正交投影矩阵上，具体结果以及意义我下次再想想
-            //半年前就问过零群各位大佬，他们都说没必要搞懂，tr图像变换矩阵而已。
-            itemEffect.Parameters["uTime"].SetValue((float)Main.time / 60 % 1);//传入时间偏移量
-            itemEffect.Parameters["uItemColor"].SetValue(instance.ItemHighLight ? Vector4.One : Lighting.GetColor((drawPlayer.Center / 16).ToPoint().X, (drawPlayer.Center / 16).ToPoint().Y).ToVector4());
-            //传入顶点绘制出的物品的颜色，这里采用环境光，和sb.Draw的那个color参数差不多(吧
-            itemEffect.Parameters["uItemGlowColor"].SetValue(new Color(250, 250, 250, drawPlayer.HeldItem.alpha).ToVector4());
-
-            Main.graphics.GraphicsDevice.Textures[0] = itemTex;//传入物品贴图
-            Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("Style_12");//传入因时间而x纹理坐标发生偏移的灰度图，这里其实并不明显，你可以参考我mod里的无间之钟在黑暗环境下的效果
-            Main.graphics.GraphicsDevice.Textures[2] = GetWeaponDisplayImage("Style_18");//传入固定叠加的灰度图
-            var tex = emptyTex ??= new Texture2D(Main.graphics.GraphicsDevice, 1, 1);
-            tex.SetData(new Color[] { Color.Transparent });
-            Main.graphics.GraphicsDevice.Textures[3] = tex;
-            var g = drawPlayer.HeldItem.glowMask;
-            if (g != -1)
+            bool useRender = (instance.distortFactor != 0 || instance.luminosityFactor != 0 || instance.maxCount > 1) && CanUseRender;
+            var gd = Main.graphics.GraphicsDevice;
+            var sb = Main.spriteBatch;
+            var passCount = 0;
+            switch (instance.swooshColorType)
             {
-                //Main.graphics.GraphicsDevice.Textures[3] = TextureAssets.GlowMask[g].Value;
-                Main.graphics.GraphicsDevice.Textures[3] = TextureAssets.GlowMask[g].Value;
+                case SwooshColorType.函数生成热度图: passCount = 2; break;
+                case SwooshColorType.武器贴图对角线: passCount = 1; break;
+                case SwooshColorType.色调处理与对角线混合: passCount = 3; break;
+                case SwooshColorType.加权平均_饱和与色调处理: passCount = 4; break;
+
             }
-            if (drawPlayer.HeldItem.type == 3823)
+
+            
+            sb.End();
+            if (useRender)
             {
-                //Main.graphics.GraphicsDevice.Textures[1] = TextureAssets.ItemFlame[3823].Value;
-                Main.graphics.GraphicsDevice.Textures[3] = ModContent.Request<Texture2D>("CoolerItemVisualEffect/Shader/ItemFlame_3823").Value;
-
-                //ItemEffect.Parameters["uItemGlowColor"].SetValue(new Color(100, 100, 100, 0).ToVector4());
-
+                gd.SetRenderTarget(Instance.Render);
+                gd.Clear(Color.Transparent);
             }
-            //上面这两个灰度图叠加后作为插值的t，大概是这样的映射:t=0时最终物品上的颜色是0(黑色，additive模式下是透明的)，t=0.5时是color（顶点传入的color参数，不是上面uItemColor,t=1时是1(白色)
+            sb.Begin(SpriteSortMode.Immediate, alphaBlend ? BlendState.NonPremultiplied : BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);//Main.DefaultSamplerState//Main.GameViewMatrix.TransformationMatrix
+            ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
+            ShaderSwooshEX.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
+            ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);
+            ShaderSwooshEX.Parameters["airFactor"].SetValue(checkAirFactor);
+            ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
+            var _v = modPlayer.ConfigurationSwoosh.directOfHeatMap.ToRotationVector2();
+            ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
+            ShaderSwooshEX.Parameters["lightShift"].SetValue(0);
+            Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + instance.ImageIndex);
+            Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage($"AniTex_{modPlayer.ConfigurationSwoosh.AnimateIndex}");
+            Main.graphics.GraphicsDevice.Textures[2] = itemTex;
+            Main.graphics.GraphicsDevice.Textures[3] = modPlayer.colorInfo.tex;
             Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
             Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
             Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
             Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
-
-            itemEffect.CurrentTechnique.Passes[2].Apply();//这里是第三个pass，可以直接写下标不必写pass名(
-            Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, c, 0, 2);
+            if (modPlayer.UseSlash)
+            {
+                ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList, 0, 88);
+            }
+            if (modPlayer.SwooshActive)
+            {
+                foreach (var ultraSwoosh in modPlayer.ultraSwooshes)
+                {
+                    if (ultraSwoosh != null && ultraSwoosh.Active)
+                    {
+                        triangleList = new CustomVertexInfo[174];
+                        for (int i = 0; i < 58; i += 2)
+                        {
+                            triangleList[3 * i] = ultraSwoosh.vertexInfos[i];
+                            triangleList[3 * i + 1] = ultraSwoosh.vertexInfos[i + 2];
+                            triangleList[3 * i + 2] = ultraSwoosh.vertexInfos[i + 1];
+                            triangleList[3 * i + 3] = ultraSwoosh.vertexInfos[i + 1];
+                            triangleList[3 * i + 4] = ultraSwoosh.vertexInfos[i + 2];
+                            triangleList[3 * i + 5] = ultraSwoosh.vertexInfos[i + 3];
+                        }
+                        ShaderSwooshEX.Parameters["airFactor"].SetValue(ultraSwoosh.checkAirFactor);
+                        Main.graphics.GraphicsDevice.Textures[2] = TextureAssets.Item[ultraSwoosh.type].Value;
+                        Main.graphics.GraphicsDevice.Textures[3] = ultraSwoosh.heatMap;
+                        ShaderSwooshEX.Parameters["lightShift"].SetValue(instance.IsDarkFade ? (ultraSwoosh.timeLeft / (float)ultraSwoosh.timeLeftMax) - 1f : 0);
+                        ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+                        Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList, 0, 58);
+                    }
+                }
+            }
             Main.graphics.GraphicsDevice.RasterizerState = originalState;
 
-            //float num20 = (u+v).ToRotation() * drawPlayer.direction;
-            //drawPlayer.bodyFrame.Y = drawPlayer.bodyFrame.Height * 3;
-            //if ((double)num20 < -0.75)
-            //{
-            //    drawPlayer.bodyFrame.Y = drawPlayer.bodyFrame.Height * 2;
-            //    if (drawPlayer.gravDir == -1f)
-            //    {
-            //        drawPlayer.bodyFrame.Y = drawPlayer.bodyFrame.Height * 4;
-            //    }
-            //}
-            //if ((double)num20 > 0.6)
-            //{
-            //    drawPlayer.bodyFrame.Y = drawPlayer.bodyFrame.Height * 4;
-            //    if (drawPlayer.gravDir == -1f)
-            //    {
-            //        drawPlayer.bodyFrame.Y = drawPlayer.bodyFrame.Height * 2;
-            //        return;
-            //    }
-            //}
-            //var vel = u + v;
-            //bodyRec = drawPlayer.bodyFrame;
-            //bodyRec.Y = 112 + 56 * (int)(Math.Abs(new Vector2(-vel.Y, vel.X).ToRotation()) / MathHelper.Pi * 3);
-            //drawPlayer.bodyFrame.Y = 112 + 56 * (int)(Math.Abs(new Vector2(-vel.Y, vel.X).ToRotation()) / MathHelper.Pi * 3);
-            modPlayer.direct = (u + v).ToRotation();
-            modPlayer.HitboxPosition = u + v;
-            if (Main.netMode == NetmodeID.MultiplayerClient)
+            if (useRender)
             {
-                ModPacket packet = Instance.GetPacket();
-                packet.Write((byte)HandleNetwork.MessageType.rotationDirect);
-                packet.Write(modPlayer.direct);
-                packet.WritePackedVector2(modPlayer.HitboxPosition);
-                packet.Send(-1, -1); // 发包到服务器上 再由服务器转发到其他客户端
-                //NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, drawPlayer.whoAmI); // 同步direction
+                switch (instance.coolerSwooshQuality)
+                {
+                    case QualityType.中medium:
+                        for (int n = 0; n < instance.maxCount; n++)
+                        {
+                            sb.End();
+                            //然后在随便一个render里绘制屏幕，并把上面那个带弹幕的render传进shader里对屏幕进行处理
+                            //原版自带的screenTargetSwap就是一个可以使用的render，（原版用来连续上滤镜）
+
+                            gd.SetRenderTarget(Main.screenTargetSwap);//将画布设置为这个
+                            gd.Clear(Color.Transparent);//清空
+                            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                            DistortEffect.Parameters["tex0"].SetValue(Instance.Render);//render可以当成贴图使用或者绘制。（前提是当前gd.SetRenderTarget的不是这个render，否则会报错）
+                            Vector2 direct = (instance.swooshFactorStyle == SwooshFactorStyle.每次开始时决定系数 ? modPlayer.kValue : ((modPlayer.kValue + modPlayer.kValueNext) * .5f)).ToRotationVector2() * -0.1f * (1 - 2 * Math.Abs(0.5f - fac));
+                            DistortEffect.Parameters["offset"].SetValue(direct);//设置参数时间
+                            DistortEffect.Parameters["invAlpha"].SetValue(0);
+                            DistortEffect.CurrentTechnique.Passes[0].Apply();//ApplyPass
+                            sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);//绘制原先屏幕内容
+                                                                                  //pixelshader里处理
+                            sb.End();
+
+                            //最后在screenTarget上把刚刚的结果画上
+                            gd.SetRenderTarget(Main.screenTarget);
+                            gd.Clear(Color.Transparent);
+                            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                            sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                            //sb.End();
+
+                            //Main.spriteBatch.Begin(SpriteSortMode.Immediate, alphaBlend ? BlendState.NonPremultiplied : BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
+                            //Main.instance.GraphicsDevice.BlendState = BlendState.Additive;
+                            sb.Draw(Instance.Render, Vector2.Zero, new Color(1f, 1f, 1f, alphaBlend ? 1 : 0));//
+                                                                                                              //Main.instance.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+                        }
+                        break;
+                    case QualityType.高high:
+                    case QualityType.极限ultra:
+                        for (int n = 0; n < instance.maxCount; n++)
+                        {
+                            sb.End();
+                            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                            gd.SetRenderTarget(Main.screenTargetSwap);
+                            DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+                            DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
+                            DistortEffect.Parameters["position"].SetValue(new Vector2(0, 6));
+                            DistortEffect.Parameters["tier2"].SetValue(instance.luminosityFactor);
+                            gd.Clear(Color.Transparent);
+                            DistortEffect.CurrentTechnique.Passes[7].Apply();
+                            sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+                            gd.SetRenderTarget(Main.screenTarget);
+                            gd.Clear(Color.Transparent);
+                            DistortEffect.CurrentTechnique.Passes[6].Apply();
+                            sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+
+                            #region MyRegion
+                            //DistortEffect.Parameters["position"].SetValue(new Vector2(0, 9));
+                            //DistortEffect.Parameters["ImageSize"].SetValue((u + v) * -0.0004f * (1 - 2 * Math.Abs(0.5f - fac)) * instance.distortFactor);
+                            //gd.SetRenderTarget(Main.screenTargetSwap);
+                            //gd.Clear(Color.Transparent);
+                            //DistortEffect.CurrentTechnique.Passes[5].Apply();
+                            //sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+
+                            //gd.SetRenderTarget(Main.screenTarget);
+                            //gd.Clear(Color.Transparent);
+                            //DistortEffect.CurrentTechnique.Passes[4].Apply();
+                            //sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                            //sb.End();
+                            //Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                            //sb.Draw(Instance.Render, Vector2.Zero, Color.White);
+                            #endregion
+
+
+                            gd.SetRenderTarget(Main.screenTargetSwap);//将画布设置为这个
+                            gd.Clear(Color.Transparent);//清空
+                            Vector2 direct = (instance.swooshFactorStyle == SwooshFactorStyle.每次开始时决定系数 ? modPlayer.kValue : ((modPlayer.kValue + modPlayer.kValueNext) * .5f)).ToRotationVector2() * -0.1f * (1 - 2 * Math.Abs(0.5f - fac)) * instance.distortFactor;//(u + v)
+                            DistortEffect.Parameters["offset"].SetValue(direct);//设置参数时间
+                            DistortEffect.Parameters["invAlpha"].SetValue(0);
+                            DistortEffect.CurrentTechnique.Passes[0].Apply();//ApplyPass
+                            sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);//绘制原先屏幕内容
+                            gd.SetRenderTarget(Main.screenTarget);
+                            gd.Clear(Color.Transparent);
+                            sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                            //sb.End();
+
+                            //Main.spriteBatch.Begin(SpriteSortMode.Immediate, alphaBlend ? BlendState.NonPremultiplied : BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
+                            //Main.instance.GraphicsDevice.BlendState = BlendState.Additive;
+                            sb.End();
+                            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                            sb.Draw(Instance.Render, Vector2.Zero, new Color(1f, 1f, 1f, alphaBlend ? 1 : 0));//
+
+
+                        }
+                        break;
+                }
             }
+
+
+            if (modPlayer.UseSlash)
+            {
+                var num0 = modPlayer.negativeDir ? 1 : 0;
+                float light = instance.glowLight;
+                c[0] = new CustomVertexInfo(drawCen, newColor, new Vector3(0, 1, light));//因为零向量固定是左下角所以纹理固定(0,1)
+                c[1] = new CustomVertexInfo(u + drawCen, newColor, new Vector3(num0 ^ 1, num0 ^ 1, light));//这一处也许有更优美的写法
+                c[2] = new CustomVertexInfo(v + drawCen, newColor, new Vector3(num0, num0, light));
+                c[3] = c[1];
+                c[4] = new CustomVertexInfo(u + v + drawCen, newColor, new Vector3(1, 0, light));//因为u+v固定是右上角所以纹理固定(1,0)
+                c[5] = c[2];
+                //Main.spriteBatch.DrawLine(u + v + drawPlayer.Center, drawPlayer.Center, Color.Red);
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, instance.itemAdditive ? BlendState.Additive : BlendState.AlphaBlend, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
+                itemEffect.Parameters["uTransform"].SetValue(model * trans * projection);
+                //将变换矩阵作用在正交投影矩阵上，具体结果以及意义我下次再想想
+                //半年前就问过零群各位大佬，他们都说没必要搞懂，tr图像变换矩阵而已。
+                itemEffect.Parameters["uTime"].SetValue((float)Main.time / 60 % 1);//传入时间偏移量
+                itemEffect.Parameters["uItemColor"].SetValue(instance.itemHighLight ? Vector4.One : Lighting.GetColor((drawPlayer.Center / 16).ToPoint().X, (drawPlayer.Center / 16).ToPoint().Y).ToVector4());
+                //传入顶点绘制出的物品的颜色，这里采用环境光，和sb.Draw的那个color参数差不多(吧
+                itemEffect.Parameters["uItemGlowColor"].SetValue(new Color(250, 250, 250, drawPlayer.HeldItem.alpha).ToVector4());
+
+                Main.graphics.GraphicsDevice.Textures[0] = itemTex;//传入物品贴图
+                Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("Style_12");//传入因时间而x纹理坐标发生偏移的灰度图，这里其实并不明显，你可以参考我mod里的无间之钟在黑暗环境下的效果
+                Main.graphics.GraphicsDevice.Textures[2] = GetWeaponDisplayImage("Style_18");//传入固定叠加的灰度图
+                var tex = emptyTex ??= new Texture2D(Main.graphics.GraphicsDevice, 1, 1);
+                tex.SetData(new Color[] { Color.Transparent });
+                Main.graphics.GraphicsDevice.Textures[3] = tex;
+                var g = drawPlayer.HeldItem.glowMask;
+                if (g != -1)
+                {
+                    //Main.graphics.GraphicsDevice.Textures[3] = TextureAssets.GlowMask[g].Value;
+                    Main.graphics.GraphicsDevice.Textures[3] = TextureAssets.GlowMask[g].Value;
+                }
+                if (drawPlayer.HeldItem.type == 3823)
+                {
+                    //Main.graphics.GraphicsDevice.Textures[1] = TextureAssets.ItemFlame[3823].Value;
+                    Main.graphics.GraphicsDevice.Textures[3] = ModContent.Request<Texture2D>("CoolerItemVisualEffect/Shader/ItemFlame_3823").Value;
+
+                    //ItemEffect.Parameters["uItemGlowColor"].SetValue(new Color(100, 100, 100, 0).ToVector4());
+
+                }
+                //上面这两个灰度图叠加后作为插值的t，大概是这样的映射:t=0时最终物品上的颜色是0(黑色，additive模式下是透明的)，t=0.5时是color（顶点传入的color参数，不是上面uItemColor,t=1时是1(白色)
+                Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
+                Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
+                Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
+                Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
+
+                itemEffect.CurrentTechnique.Passes[2].Apply();//这里是第三个pass，可以直接写下标不必写pass名(
+                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, c, 0, 2);
+                Main.graphics.GraphicsDevice.RasterizerState = originalState;
+                modPlayer.direct = (u + v).ToRotation();
+                modPlayer.HitboxPosition = u + v;
+                if (Main.netMode == NetmodeID.MultiplayerClient)
+                {
+                    ModPacket packet = Instance.GetPacket();
+                    packet.Write((byte)HandleNetwork.MessageType.rotationDirect);
+                    packet.Write(modPlayer.direct);
+                    packet.WritePackedVector2(modPlayer.HitboxPosition);
+                    packet.Send(-1, -1);
+                }
+            }
+
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
         }
         public const string ImagePath = "CoolerItemVisualEffect/Shader/";
         public static Texture2D GetWeaponDisplayImage(string name) => ModContent.Request<Texture2D>(ImagePath + name).Value;
         #region 阿汪废弃的代码，为什么是注释而不是删掉呢？？反正下辈子都用不到的东西
+        //public static void DrawSwoosh(Player drawPlayer)//, Color newColor, bool alphaBlend, float checkAirFactor, ConfigurationSwoosh_Advanced instance, out Rectangle bodyRec)
+        //{
+        //    //Main.NewText(checkAirFactor);
+        //    //bodyRec = default;
+        //    if (ShaderSwooshEX == null) return;
+        //    if (ItemEffect == null) return;
+        //    if (DistortEffect == null) return;
+        //    if (Main.GameViewMatrix == null) return;
+        //    //Main.NewText("!!!!");
+        //    var trans = Main.GameViewMatrix != null ? Main.GameViewMatrix.TransformationMatrix : Matrix.Identity;
+        //    var modPlayer = drawPlayer.GetModPlayer<CoolerItemVisualEffectPlayer>();//modplayer类
+        //                                                                            //if (drawPlayer.itemAnimation == drawPlayer.itemAnimationMax - 1 && !Main.gamePaused)
+        //                                                                            //{
+        //                                                                            //    var vec = Main.MouseWorld - drawPlayer.Center;
+        //                                                                            //    vec.Y *= drawPlayer.gravDir;
+        //                                                                            //    drawPlayer.direction = Math.Sign(vec.X);
+        //                                                                            //    modPlayer.negativeDir ^= true;
+        //                                                                            //    modPlayer.rotationForShadow = vec.ToRotation() + Main.rand.NextFloat(-MathHelper.Pi / 6, MathHelper.Pi / 6);
+        //                                                                            //    modPlayer.kValue = Main.rand.NextFloat(1, 2);
+        //                                                                            //}
+        //    var instance = modPlayer.ConfigurationSwoosh;
+        //    var newColor = modPlayer.colorInfo.color;
+        //    var alphaBlend = modPlayer.hsl.Z > instance.isLighterDecider;
+        //    var checkAirFactor = modPlayer.colorInfo.checkAirFactor;
+        //    var fac = modPlayer.factorGeter;
+        //    fac = modPlayer.negativeDir ? 1 - fac : fac;//每次挥动都会改变方向，所以插值函数方向也会一起变（原本是从1到0，反过来就是0到1(虽然说一般都是0到1
+
+
+
+        //    //var fac = 1 - (cValue - 1) * (1 - factor) * (1 - factor) - (2 - cValue) * (1 - factor);//丢到另一个插值函数里了，可以自己画一下图像，这个插值效果比上面那个线性插值好//((float)Math.Sqrt(factor) + factor) * .5f;//(cValue - 1) * factor * factor + (2 - cValue) * factor
+        //    //fac *= 3;
+        //    //fac %= 1;
+        //    //Main.NewText(new Vector2(fac,factor));
+
+        //    //var drawCen = drawPlayer.gravDir == -1 ? new Vector2(drawPlayer.Center.X, (2 * (Main.screenPosition + new Vector2(960, 560)) - drawPlayer.Center - new Vector2(0, 96)).Y) : drawPlayer.Center;//2 * (Main.screenPosition + new Vector2(960, 560)) - drawPlayer.Center - new Vector2(0, 96)
+        //    //var fac = (float)Math.Sqrt(factor);
+        //    //var theta = (fac * -1.125f + (1 - fac) * 0.1125f) * Pi;、   adaw、
+        //    var drawCen = drawPlayer.Center;
+        //    float rotVel = instance.swooshActionStyle == SwooshAction.两次普通斩击一次高速旋转 && modPlayer.swingCount % 3 == 2 ? instance.rotationVelocity : 1;
+        //    var theta = (1.2375f * fac * rotVel - 1.125f) * MathHelper.Pi;//线性插值后乘上一个系数，这里的起始角度和终止角度是试出来的（
+        //    CustomVertexInfo[] c = new CustomVertexInfo[6];//顶点数组，绘制完整的物品需要两个三角形(六个顶点，两组重合
+        //    var itemTex = TextureAssets.Item[drawPlayer.HeldItem.type].Value;//获取物品贴图
+        //    float xScaler = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.kValue, modPlayer.kValueNext, fac) : modPlayer.kValue;//获取x轴方向缩放系数
+        //    float scaler = itemTex.Size().Length() * drawPlayer.GetAdjustedItemScale(drawPlayer.HeldItem) / xScaler * 0.5f * instance.swooshSize * checkAirFactor;//对椭圆进行位似变换(你直接说坐标乘上一个系数不就好了吗，屑阿汪// * modPlayer.ScalerOfSword / 15f
+        //    var cos = (float)Math.Cos(theta) * scaler;
+        //    var sin = (float)Math.Sin(theta) * scaler;//这里(cos,sin)对应的位置就是我们希望贴图右上角所在的位置，而(0,0)对应的位置是贴图左下角所在的位置
+        //    var rotator = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.rotationForShadow, modPlayer.rotationForShadowNext, fac) : modPlayer.rotationForShadow;
+        //    var u = new Vector2(xScaler * (cos - sin), -cos - sin).RotatedBy(rotator);
+        //    var v = new Vector2(-xScaler * (cos + sin), sin - cos).RotatedBy(rotator);//这里其实应该是都要除个二，或者上面scaler那里0.7改成0.5
+        //                                                                              //此处u对应的是贴图左上角或者右下角(由方向决定,v同理。u+v就是贴图右上角(剑锋位置。因为我们希望画出来是椭圆，所以我们给x方向乘上个系数，然后在根据使用朝向进行旋转就好啦
+        //    var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
+        //    //方法名是创建正交偏移中心 l=left  r=right t=top b=bottom n=zNearPlane f=zFarPlane
+        //    //( 2 / (r - l),           0,           0, -(r + l) / (r - l)
+        //    //            0, 2 / (t - b),           0, -(t + b) / (t - b)
+        //    //            0,           0, 2 / (n - f), -(n + f) / (f - n)
+        //    //            0,           0,           0,                  1）
+        //    //这尼玛的是什么鬼————
+        //    //用人话说就是
+        //    //x取值在[l,r]
+        //    //y取值在[b,t]
+        //    //z取值在[n,f]
+        //    //w取值为1时
+        //    //将这个b矩阵作用在(x,y,z,w)上后
+        //    //x、y、z映射到[-1,1]
+
+        //    var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
+        //    //假设这里丢进去是(x,y,z),出来的矩阵就是
+        //    //( 1, 0, 0, 0
+        //    //  0, 1, 0, 0
+        //    //  0, 0, 1, 0
+        //    //  x, y, z, 1)
+        //    //然后如果你将矩阵作用在(a,b,c)上就是(a, b, c, a * x + b * y + c * z + w),说实话我不是很能理解这个的意义
+
+        //    RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
+
+        //    //var w = itemTex.Width;
+        //    //var h = itemTex.Height;
+        //    //var cs = new Color[w * h];
+        //    //itemTex.GetData(cs);
+        //    //Vector4 vcolor = default;
+        //    //float count = 0;
+        //    //for (int n = 0; n < cs.Length; n++)
+        //    //{
+        //    //    if (cs[n] != default)
+        //    //    {
+        //    //        var weight = (float)((n + 1) % w * (h - n / w)) / w / h;
+        //    //        vcolor += cs[n].ToVector4() * weight;
+        //    //        count += weight;
+        //    //    }
+        //    //}
+        //    //vcolor /= count;
+        //    //var newColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
+        //    //这一步是对贴图的颜色取加权平均数，右上角权重为1，左下角权重为0.01，左上和右下0.1
+        //    //说人话就是尽量贴近剑锋处的颜色
+        //    //其实我可以把武器的贴图丢到shader里然后整分多层颜色，没必要整这个加权平均
+        //    //我下次试试那样的.fx
+
+
+        //    //spriteBatch.End();
+        //    //spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.Transform);
+
+        //    List<CustomVertexInfo> bars = new List<CustomVertexInfo>();
+
+        //    var swooshAniFac = modPlayer.negativeDir ? 4 * fac - 3 : 4 * fac;////modPlayer.negativeDir ? 1 - (float)Math.Sqrt(1 - fac * fac) : 1 - (float)Math.Sqrt(1 - (fac - 1) * (fac - 1))
+        //    swooshAniFac = MathHelper.Clamp(swooshAniFac, 0, 1);
+        //    var theta3 = (1.2375f * swooshAniFac * rotVel - 1.125f) * MathHelper.Pi;//这里是又一处插值
+        //    float xScaler3 = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.kValue, modPlayer.kValueNext, swooshAniFac) : modPlayer.kValue;
+        //    var rotator3 = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.rotationForShadow, modPlayer.rotationForShadowNext, swooshAniFac) : modPlayer.rotationForShadow;
+        //    //我们武器所在的角度是theta，我们拖尾的末端的角度就是上面的theta3，下面的theta2就是theta渐变到theta3
+
+        //    //var cos2 = (float)Math.Cos(theta3) * scaler;
+        //    //var sin2 = (float)Math.Sin(theta3) * scaler;
+        //    //var u2 = new Vector2(cos2 * xScaler + sin2, -sin2 * xScaler + cos2).RotatedBy(modPlayer.rotationForShadow);
+        //    //var v2 = new Vector2(cos2 * xScaler - sin2, -sin2 * xScaler - cos2).RotatedBy(modPlayer.rotationForShadow) * length;
+        //    //var oldVec = u2 + v2;
+
+
+
+        //    //Color realColor = newColor;
+        //    //Vector3 hsl = Main.rgbToHsl(realColor);
+        //    for (int i = 0; i < 45; i++)
+        //    {
+        //        var f = i / 44f;//分割成25次惹，f从1/25f到1
+        //        var theta2 = f.Lerp(theta3, theta, true);//快乐线性插值
+        //        var xScaler2 = (instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? f : 1).Lerp(xScaler3, xScaler, true);
+        //        var rotator2 = (instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? f : 1).Lerp(rotator3, rotator, true);
+        //        var cos2 = (float)Math.Cos(theta2) * scaler;
+        //        var sin2 = (float)Math.Sin(theta2) * scaler;
+
+
+        //        var u2 = new Vector2(xScaler2 * (cos2 - sin2), -cos2 - sin2).RotatedBy(rotator2);
+        //        var v2 = new Vector2(-xScaler2 * (cos2 + sin2), sin2 - cos2).RotatedBy(rotator2);
+        //        //和刚刚上面那里一样的流程，不要问我为什么不用一个数组存储已经算好的之前的u、v
+        //        //因为那样的话如果你武器很快的话效果就很烂了（指不够平滑圆润
+        //        //这种写法虽然对电脑不太友好但是效果好（x
+        //        var newVec = u2 + v2;//不过这里我们只需要最后的结果(那为什么不直接(cos2 * xScaler,sin2)，阿汪你在干什么
+        //        var alphaLight = alphaBlend ? Lighting.GetColor((drawPlayer.Center / 16).ToPoint().X, (drawPlayer.Center / 16).ToPoint().Y).R / 255f * .6f : 0.6f;
+        //        #region 傻宝才每帧重新寄蒜这些
+        //        //if (instance.swooshColorType == SwooshColorType.加权平均_饱和与色调处理 || instance.swooshColorType == SwooshColorType.色调处理与对角线混合)
+        //        //{
+        //        //    float h = (hsl.X + instance.hueOffsetValue + instance.hueOffsetRange * (2 * f - 1)) % 1;
+        //        //    float s = MathHelper.Clamp(hsl.Y * instance.saturationScalar, 0, 1);
+        //        //    float l = MathHelper.Clamp(f > 0.5f ? hsl.Z * (2 - f * 2) + (f * 2 - 1) * Math.Max(hsl.Z, 0.5f + instance.luminosityRange) : f * 2 * hsl.Z + (1 - f * 2) * Math.Min(hsl.Z, 0.5f - instance.luminosityRange), 0, 1);
+        //        //    realColor = Main.hslToRgb(h, s, l);
+        //        //    //Main.NewText((h, s, l, realColor), realColor);
+        //        //}
+        //        #endregion
+
+        //        var _f = f * f; ;//f;// 6 * f / (3 * f + 1)
+        //        _f = MathHelper.Clamp(_f, 0, 1);
+        //        //_f = ConfigurationSwoosh.instance.distortFactor != 0 ? _f : _f * _f;
+        //        //realColor.A = (byte)(_f * 255);//.MultiplyRGBA(new Color(1,1,1,_f))
+        //        bars.Add(new CustomVertexInfo(drawCen + newVec, newColor with { A = (byte)(_f * 255) }, new Vector3(1 - f, 1, alphaLight)));//(3 * f - 4) / (4 * f - 3)//快乐连顶点
+        //        //realColor.A = 0;//.MultiplyRGBA(new Color(1, 1, 1, 0))
+        //        bars.Add(new CustomVertexInfo(drawCen, newColor with { A = (byte)(_f * 255) }, new Vector3(0, 0, alphaLight)));// + newVec * (1 - f)
+        //                                                                                                                       //bars.Add(new CustomVertexInfo(drawCen + newVec, alphaBlend ? new Color(realColor.R / 255f, realColor.G / 255f, realColor.B / 255f, _f) : realColor, new Vector3(1 - f, 1, alphaBlend ? alphaLight : _f)));//(3 * f - 4) / (4 * f - 3)//快乐连顶点
+        //                                                                                                                       //bars.Add(new CustomVertexInfo(drawCen, alphaBlend ? new Color(realColor.R / 255f, realColor.G / 255f, realColor.B / 255f, 0) : realColor, new Vector3(0, 0, alphaBlend ? alphaLight : 0)));
+        //                                                                                                                       //bars.Add(new CustomVertexInfo(drawCen + newVec, alphaBlend ? new Color(newColor.R / 255f, newColor.G / 255f, newColor.B / 255f, f) : newColor, new Vector3(1 - f, 1, alphaBlend ? alphaLight : 3 * f / (3 * f + 1))));//(3 * f - 4) / (4 * f - 3)//快乐连顶点
+        //                                                                                                                       //bars.Add(new CustomVertexInfo(drawCen, alphaBlend ? new Color(newColor.R / 255f, newColor.G / 255f, newColor.B / 255f, 0) : newColor, new Vector3(0, 0, alphaBlend ? alphaLight : 0)));
+        //                                                                                                                       //oldVec = newVec;
+        //    }
+        //    //Main.NewText(new Vector3(fac, MathHelper.Clamp(modPlayer.negativeDir ? (4 * fac - 3) : 4 * fac, 0, 1), modPlayer.negativeDir ? -1 : 1));
+        //    SamplerState sampler;
+        //    switch (instance.swooshSampler)
+        //    {
+        //        default:
+        //        case SwooshSamplerState.各向异性: sampler = SamplerState.AnisotropicWrap; break;
+        //        case SwooshSamplerState.线性: sampler = SamplerState.LinearWrap; break;
+        //        case SwooshSamplerState.点: sampler = SamplerState.PointWrap; break;
+        //    }
+        //    List<CustomVertexInfo> triangleList = new List<CustomVertexInfo>();
+        //    if (bars.Count > 2)
+        //    {
+        //        for (int i = 0; i < bars.Count - 2; i += 2)
+        //        {
+        //            triangleList.Add(bars[i]);
+        //            triangleList.Add(bars[i + 2]);
+        //            triangleList.Add(bars[i + 1]);
+
+        //            triangleList.Add(bars[i + 1]);
+        //            triangleList.Add(bars[i + 2]);
+        //            triangleList.Add(bars[i + 3]);
+        //        }
+
+
+        //        //RenderTarget2D render = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+        //        bool useRender = (instance.distortFactor != 0 || instance.maxCount > 1) && CanUseRender;
+        //        var gd = Main.graphics.GraphicsDevice;
+        //        var sb = Main.spriteBatch;
+        //        var passCount = 0;
+        //        switch (instance.swooshColorType)
+        //        {
+        //            case SwooshColorType.函数生成热度图: passCount = 2; break;
+        //            case SwooshColorType.武器贴图对角线: passCount = 1; break;
+        //            case SwooshColorType.色调处理与对角线混合: passCount = 3; break;
+        //        }
+        //        if (instance.swooshColorType == SwooshColorType.函数生成热度图 || instance.swooshColorType == SwooshColorType.加权平均_饱和与色调处理 || instance.swooshColorType == SwooshColorType.加权平均_饱和与色调处理 && (modPlayer.colorInfo.tex == null || modPlayer.colorInfo.type != drawPlayer.HeldItem.type))
+        //        {
+        //            UpdateHeatMap(ref modPlayer.colorInfo.tex, modPlayer.hsl, instance);
+        //            modPlayer.colorInfo.type = drawPlayer.HeldItem.type;
+        //            //Main.graphics.GraphicsDevice.Textures[2] = colorBar;
+        //            //sb.Draw(colorBar, new Vector2(240, 240), Color.White);
+        //        }
+        //        if (useRender)
+        //        {
+        //            #region MyRegion
+        //            //gd.SetRenderTarget(Main.screenTargetSwap);
+        //            //sp.End();
+
+        //            //sp.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+        //            //sp.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+        //            //sp.End();
+
+        //            //gd.SetRenderTarget(render);
+        //            //gd.Clear(Color.Transparent);
+
+
+        //            //Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
+        //            //DistortEffect.Parameters["uTransform"].SetValue(model * projection);
+        //            //DistortEffect.Parameters["uTime"].SetValue(-(float)Main.time * 0.06f);//-(float)Main.time * 0.06f
+        //            //DistortEffect.Parameters["unit"].SetValue((u + v) * 0.005f);
+        //            //Main.graphics.GraphicsDevice.Textures[0] = Main.screenTarget;
+        //            //Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("BaseTex_7");
+        //            //Main.graphics.GraphicsDevice.Textures[2] = GetWeaponDisplayImage("AniTex");
+        //            //Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.AnisotropicWrap;
+        //            //Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.AnisotropicWrap;
+        //            //Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.AnisotropicWrap;
+        //            //ShaderSwooshEX.CurrentTechnique.Passes[0].Apply();
+        //            //var tris = new CustomVertexInfo[triangleList.Count];
+        //            //for (int n = 0; n < tris.Length; n++)
+        //            //{
+        //            //    tris[n] = triangleList[n];
+        //            //    tris[n].Color = new Vector4((tris[n].Position - Main.screenPosition) / new Vector2(1920, 1120), 0, 0).ToColor();
+        //            //}
+        //            //Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, tris, 0, tris.Length / 3);
+        //            //Main.graphics.GraphicsDevice.RasterizerState = originalState;
+        //            ////Main.spriteBatch.Draw(Main.screenTarget, new Vector2(64, 64), null, Color.White * .5f, 0, default, 1, 0, 0);
+        //            //Main.spriteBatch.End();
+
+        //            //gd.SetRenderTarget(Main.screenTarget);
+        //            //sp.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+        //            //sp.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+        //            //sp.Draw(render, Vector2.Zero, Color.White);
+        //            #endregion
+        //            //先在自己的render上画这个弹幕
+        //            sb.End();
+        //            gd.SetRenderTarget(Instance.Render);
+        //            gd.Clear(Color.Transparent);
+        //            sb.Begin(SpriteSortMode.Immediate, alphaBlend ? BlendState.NonPremultiplied : BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);//Main.DefaultSamplerState//Main.GameViewMatrix.TransformationMatrix
+        //            ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
+        //            //ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
+        //            ShaderSwooshEX.Parameters["uTime"].SetValue(0);//-(float)Main.time * 0.06f
+        //            ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);//-(float)Main.time * 0.06f
+        //            ShaderSwooshEX.Parameters["airFactor"].SetValue(checkAirFactor);
+        //            ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
+
+        //            Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + instance.ImageIndex);//字面意义，base那个是不会随时间动的，ani那个会动//BaseTex//_7
+        //            Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
+        //            Main.graphics.GraphicsDevice.Textures[2] = itemTex;
+        //            if (instance.swooshColorType == SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = modPlayer.colorInfo.tex;
+
+
+        //            Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
+        //            Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
+        //            Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
+        //            Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
+
+
+        //            //if (alphaBlend) passCount += 2;
+        //            ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+        //            Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList.ToArray(), 0, triangleList.Count / 3);
+        //            Main.graphics.GraphicsDevice.RasterizerState = originalState;
+
+        //            switch (instance.coolerSwooshQuality)
+        //            {
+        //                case QualityType.中medium:
+        //                    for (int n = 0; n < instance.maxCount; n++)
+        //                    {
+        //                        sb.End();
+        //                        //然后在随便一个render里绘制屏幕，并把上面那个带弹幕的render传进shader里对屏幕进行处理
+        //                        //原版自带的screenTargetSwap就是一个可以使用的render，（原版用来连续上滤镜）
+
+        //                        gd.SetRenderTarget(Main.screenTargetSwap);//将画布设置为这个
+        //                        gd.Clear(Color.Transparent);//清空
+        //                        sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+        //                        DistortEffect.CurrentTechnique.Passes[0].Apply();//ApplyPass
+        //                        DistortEffect.Parameters["tex0"].SetValue(Instance.Render);//render可以当成贴图使用或者绘制。（前提是当前gd.SetRenderTarget的不是这个render，否则会报错）
+        //                        DistortEffect.Parameters["offset"].SetValue((u + v) * -0.002f * (1 - 2 * Math.Abs(0.5f - fac)) * instance.distortFactor);//设置参数时间
+        //                        DistortEffect.Parameters["invAlpha"].SetValue(0);
+        //                        sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);//绘制原先屏幕内容
+        //                                                                              //pixelshader里处理
+        //                        sb.End();
+
+        //                        //最后在screenTarget上把刚刚的结果画上
+        //                        gd.SetRenderTarget(Main.screenTarget);
+        //                        gd.Clear(Color.Transparent);
+        //                        sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+        //                        sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+        //                        //sb.End();
+
+        //                        //Main.spriteBatch.Begin(SpriteSortMode.Immediate, alphaBlend ? BlendState.NonPremultiplied : BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
+        //                        //Main.instance.GraphicsDevice.BlendState = BlendState.Additive;
+        //                        sb.Draw(Instance.Render, Vector2.Zero, new Color(1f, 1f, 1f, 0));//
+        //                        //Main.instance.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+        //                    }
+        //                    break;
+        //                case QualityType.高high:
+        //                    for (int n = 0; n < instance.maxCount; n++)
+        //                    {
+        //                        sb.End();
+        //                        Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+        //                        gd.SetRenderTarget(Main.screenTargetSwap);
+        //                        DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+        //                        DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
+        //                        DistortEffect.Parameters["position"].SetValue(new Vector2(0, 6));
+        //                        DistortEffect.Parameters["tier2"].SetValue(instance.luminosityFactor);
+        //                        gd.Clear(Color.Transparent);
+        //                        DistortEffect.CurrentTechnique.Passes[7].Apply();
+        //                        sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+        //                        gd.SetRenderTarget(Main.screenTarget);
+        //                        gd.Clear(Color.Transparent);
+        //                        DistortEffect.CurrentTechnique.Passes[6].Apply();
+        //                        sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+        //                        DistortEffect.Parameters["position"].SetValue(new Vector2(0, 9));
+        //                        DistortEffect.Parameters["ImageSize"].SetValue((u + v) * -0.0004f * (1 - 2 * Math.Abs(0.5f - fac)) * instance.distortFactor);
+        //                        gd.SetRenderTarget(Main.screenTargetSwap);
+        //                        gd.Clear(Color.Transparent);
+        //                        DistortEffect.CurrentTechnique.Passes[5].Apply();
+        //                        sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+
+        //                        gd.SetRenderTarget(Main.screenTarget);
+        //                        gd.Clear(Color.Transparent);
+        //                        DistortEffect.CurrentTechnique.Passes[4].Apply();
+        //                        sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+        //                        #region 乱糟糟注释
+        //                        //Main.spriteBatch.End();
+        //                        //Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+
+        //                        ////Main.NewText(CoolerItemVisualEffect.DistortEffect.CurrentTechnique.Passes.Count);
+
+        //                        ////CoolerItemVisualEffect.DistortEffect.Parameters["offset"].SetValue(Rotation.ToRotationVector2() * -0.002f * useDistort);//* (1 - 2 * Math.Abs(0.5f - useDistort))
+        //                        ////CoolerItemVisualEffect.DistortEffect.Parameters["invAlpha"].SetValue(0);
+
+
+        //                        //CoolerItemVisualEffect.DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+        //                        //CoolerItemVisualEffect.DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
+        //                        //CoolerItemVisualEffect.DistortEffect.Parameters["position"].SetValue(new Vector2(0, 7));
+        //                        //CoolerItemVisualEffect.DistortEffect.Parameters["tier2"].SetValue(0.4f);
+        //                        //for (int n = 0; n < 3; n++)
+        //                        //{
+        //                        //    gd.SetRenderTarget(Main.screenTargetSwap);
+        //                        //    gd.Clear(Color.Transparent);
+        //                        //    CoolerItemVisualEffect.DistortEffect.CurrentTechnique.Passes[7].Apply();
+        //                        //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+
+
+
+        //                        //    gd.SetRenderTarget(Main.screenTarget);
+        //                        //    gd.Clear(Color.Transparent);
+        //                        //    CoolerItemVisualEffect.DistortEffect.CurrentTechnique.Passes[6].Apply();
+        //                        //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+        //                        //}
+        //                        //sb.End();
+        //                        //Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+        //                        //DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+        //                        //DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
+        //                        //DistortEffect.Parameters["position"].SetValue(new Vector2(0, 3));
+        //                        //DistortEffect.Parameters["tier2"].SetValue(0.2f);
+        //                        //for (int n = 0; n < 3; n++)
+        //                        //{
+        //                        //    gd.SetRenderTarget(Main.screenTargetSwap);
+        //                        //    gd.Clear(Color.Transparent);
+        //                        //    DistortEffect.CurrentTechnique.Passes[7].Apply();
+        //                        //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+
+
+
+        //                        //    gd.SetRenderTarget(Main.screenTarget);
+        //                        //    gd.Clear(Color.Transparent);
+        //                        //    DistortEffect.CurrentTechnique.Passes[6].Apply();
+        //                        //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+        //                        //}
+        //                        //DistortEffect.Parameters["position"].SetValue(new Vector2(0, 3));
+        //                        //DistortEffect.Parameters["ImageSize"].SetValue((u + v) * -0.002f * (1 - 2 * Math.Abs(0.5f - fac)) * instance.distortFactor);
+        //                        //for (int n = 0; n < 2; n++)
+        //                        //{
+        //                        //    gd.SetRenderTarget(Main.screenTargetSwap);
+        //                        //    gd.Clear(Color.Transparent);
+        //                        //    DistortEffect.CurrentTechnique.Passes[5].Apply();
+        //                        //    sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+
+        //                        //    gd.SetRenderTarget(Main.screenTarget);
+        //                        //    gd.Clear(Color.Transparent);
+        //                        //    DistortEffect.CurrentTechnique.Passes[4].Apply();
+        //                        //    sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+        //                        //}
+        //                        //sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+        //                        //sb.Draw(Instance.Render, Vector2.Zero, Color.White);
+        //                        #endregion
+        //                        sb.End();
+        //                        Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+        //                        sb.Draw(Instance.Render, Vector2.Zero, Color.White);
+        //                    }
+        //                    break;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            sb.End();
+        //            sb.Begin(SpriteSortMode.Immediate, alphaBlend ? BlendState.NonPremultiplied : BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);//Main.DefaultSamplerState//Main.GameViewMatrix.TransformationMatrix
+        //            ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);//
+        //            //ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
+        //            ShaderSwooshEX.Parameters["uTime"].SetValue(0);//-(float)Main.time * 0.06f
+        //            ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);
+        //            ShaderSwooshEX.Parameters["airFactor"].SetValue(checkAirFactor);
+        //            ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
+
+
+        //            Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + instance.ImageIndex);//字面意义，base那个是不会随时间动的，ani那个会动//BaseTex//_7
+        //            Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
+        //            Main.graphics.GraphicsDevice.Textures[2] = itemTex;
+        //            if (instance.swooshColorType == SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = modPlayer.colorInfo.tex;
+        //            //if (ConfigurationSwoosh.instance.swooshColorType == SwooshColorType.函数生成热度图) 
+        //            //{
+        //            //    var colorBar = new Texture2D(Main.graphics.GraphicsDevice,300,60);
+        //            //    colorBar.SetData<Color>();
+        //            //    Main.graphics.GraphicsDevice.Textures[3] = colorBar;
+        //            //}
+
+
+        //            Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
+        //            Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
+        //            Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
+        //            Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
+
+        //            //var passCount = 0;
+        //            //if (ConfigurationSwoosh.instance.swooshColorType == SwooshColorType.武器贴图对角线) passCount++;
+        //            //if (alphaBlend) passCount += 2;
+        //            ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+        //            Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList.ToArray(), 0, triangleList.Count / 3);
+        //            Main.graphics.GraphicsDevice.RasterizerState = originalState;
+        //            //ShaderSwooshEX.Parameters["uTransform"].SetValue(model * projection);
+        //            //ShaderSwooshEX.Parameters["uLighter"].SetValue(ConfigurationSwoosh.instance.luminosityFactor);
+        //            //ShaderSwooshEX.Parameters["uTime"].SetValue(0);//-(float)Main.time * 0.06f
+        //            //Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_7");//字面意义，base那个是不会随时间动的，ani那个会动//BaseTex
+        //            //Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
+        //            //Main.graphics.GraphicsDevice.Textures[2] = itemTex;
+        //            ////if (ConfigurationSwoosh.instance.swooshColorType == SwooshColorType.函数生成热度图) 
+        //            ////{
+        //            ////    var colorBar = new Texture2D(Main.graphics.GraphicsDevice,300,60);
+        //            ////    colorBar.SetData<Color>();
+        //            ////    Main.graphics.GraphicsDevice.Textures[3] = colorBar;
+        //            ////}
+
+
+        //            //Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.AnisotropicWrap;
+        //            //Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.AnisotropicWrap;
+        //            //Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.AnisotropicWrap;
+        //            //Main.graphics.GraphicsDevice.SamplerStates[3] = SamplerState.AnisotropicWrap;
+
+        //            //var passCount = 0;
+        //            //if (ConfigurationSwoosh.instance.swooshColorType == SwooshColorType.武器贴图对角线) passCount++;
+        //            ////if (alphaBlend) passCount += 2;
+        //            //ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+        //            //Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList.ToArray(), 0, triangleList.Count / 3);
+        //            //Main.graphics.GraphicsDevice.RasterizerState = originalState;
+        //        }
+
+        //    }
+
+        //    //var color = Main.hslToRgb(0.33f, 0.75f, 0.75f);
+        //    //.5f
+        //    var num0 = modPlayer.negativeDir ? 1 : 0;
+        //    u /= checkAirFactor;
+        //    v /= checkAirFactor;
+        //    float light = instance.glowLight;
+        //    c[0] = new CustomVertexInfo(drawCen, newColor, new Vector3(0, 1, light));//因为零向量固定是左下角所以纹理固定(0,1)
+        //    c[1] = new CustomVertexInfo(u + drawCen, newColor, new Vector3(num0 ^ 1, num0 ^ 1, light));//这一处也许有更优美的写法
+        //    c[2] = new CustomVertexInfo(v + drawCen, newColor, new Vector3(num0, num0, light));
+        //    c[3] = c[1];
+        //    c[4] = new CustomVertexInfo(u + v + drawCen, newColor, new Vector3(1, 0, light));//因为u+v固定是右上角所以纹理固定(1,0)
+        //    c[5] = c[2];
+        //    //Main.spriteBatch.DrawLine(u + v + drawPlayer.Center, drawPlayer.Center, Color.Red);
+        //    Main.spriteBatch.End();
+        //    Main.spriteBatch.Begin(SpriteSortMode.Immediate, instance.itemAdditive ? BlendState.Additive : BlendState.AlphaBlend, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
+        //    itemEffect.Parameters["uTransform"].SetValue(model * trans * projection);
+        //    //将变换矩阵作用在正交投影矩阵上，具体结果以及意义我下次再想想
+        //    //半年前就问过零群各位大佬，他们都说没必要搞懂，tr图像变换矩阵而已。
+        //    itemEffect.Parameters["uTime"].SetValue((float)Main.time / 60 % 1);//传入时间偏移量
+        //    itemEffect.Parameters["uItemColor"].SetValue(instance.itemHighLight ? Vector4.One : Lighting.GetColor((drawPlayer.Center / 16).ToPoint().X, (drawPlayer.Center / 16).ToPoint().Y).ToVector4());
+        //    //传入顶点绘制出的物品的颜色，这里采用环境光，和sb.Draw的那个color参数差不多(吧
+        //    itemEffect.Parameters["uItemGlowColor"].SetValue(new Color(250, 250, 250, drawPlayer.HeldItem.alpha).ToVector4());
+
+        //    Main.graphics.GraphicsDevice.Textures[0] = itemTex;//传入物品贴图
+        //    Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("Style_12");//传入因时间而x纹理坐标发生偏移的灰度图，这里其实并不明显，你可以参考我mod里的无间之钟在黑暗环境下的效果
+        //    Main.graphics.GraphicsDevice.Textures[2] = GetWeaponDisplayImage("Style_18");//传入固定叠加的灰度图
+        //    var tex = emptyTex ??= new Texture2D(Main.graphics.GraphicsDevice, 1, 1);
+        //    tex.SetData(new Color[] { Color.Transparent });
+        //    Main.graphics.GraphicsDevice.Textures[3] = tex;
+        //    var g = drawPlayer.HeldItem.glowMask;
+        //    if (g != -1)
+        //    {
+        //        //Main.graphics.GraphicsDevice.Textures[3] = TextureAssets.GlowMask[g].Value;
+        //        Main.graphics.GraphicsDevice.Textures[3] = TextureAssets.GlowMask[g].Value;
+        //    }
+        //    if (drawPlayer.HeldItem.type == 3823)
+        //    {
+        //        //Main.graphics.GraphicsDevice.Textures[1] = TextureAssets.ItemFlame[3823].Value;
+        //        Main.graphics.GraphicsDevice.Textures[3] = ModContent.Request<Texture2D>("CoolerItemVisualEffect/Shader/ItemFlame_3823").Value;
+
+        //        //ItemEffect.Parameters["uItemGlowColor"].SetValue(new Color(100, 100, 100, 0).ToVector4());
+
+        //    }
+        //    //上面这两个灰度图叠加后作为插值的t，大概是这样的映射:t=0时最终物品上的颜色是0(黑色，additive模式下是透明的)，t=0.5时是color（顶点传入的color参数，不是上面uItemColor,t=1时是1(白色)
+        //    Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
+        //    Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
+        //    Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
+        //    Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
+
+        //    itemEffect.CurrentTechnique.Passes[2].Apply();//这里是第三个pass，可以直接写下标不必写pass名(
+        //    Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, c, 0, 2);
+        //    Main.graphics.GraphicsDevice.RasterizerState = originalState;
+
+        //    //float num20 = (u+v).ToRotation() * drawPlayer.direction;
+        //    //drawPlayer.bodyFrame.Y = drawPlayer.bodyFrame.Height * 3;
+        //    //if ((double)num20 < -0.75)
+        //    //{
+        //    //    drawPlayer.bodyFrame.Y = drawPlayer.bodyFrame.Height * 2;
+        //    //    if (drawPlayer.gravDir == -1f)
+        //    //    {
+        //    //        drawPlayer.bodyFrame.Y = drawPlayer.bodyFrame.Height * 4;
+        //    //    }
+        //    //}
+        //    //if ((double)num20 > 0.6)
+        //    //{
+        //    //    drawPlayer.bodyFrame.Y = drawPlayer.bodyFrame.Height * 4;
+        //    //    if (drawPlayer.gravDir == -1f)
+        //    //    {
+        //    //        drawPlayer.bodyFrame.Y = drawPlayer.bodyFrame.Height * 2;
+        //    //        return;
+        //    //    }
+        //    //}
+        //    //var vel = u + v;
+        //    //bodyRec = drawPlayer.bodyFrame;
+        //    //bodyRec.Y = 112 + 56 * (int)(Math.Abs(new Vector2(-vel.Y, vel.X).ToRotation()) / MathHelper.Pi * 3);
+        //    //drawPlayer.bodyFrame.Y = 112 + 56 * (int)(Math.Abs(new Vector2(-vel.Y, vel.X).ToRotation()) / MathHelper.Pi * 3);
+        //    modPlayer.direct = (u + v).ToRotation();
+        //    modPlayer.HitboxPosition = u + v;
+        //    if (Main.netMode == NetmodeID.MultiplayerClient)
+        //    {
+        //        ModPacket packet = Instance.GetPacket();
+        //        packet.Write((byte)HandleNetwork.MessageType.rotationDirect);
+        //        packet.Write(modPlayer.direct);
+        //        packet.WritePackedVector2(modPlayer.HitboxPosition);
+        //        packet.Send(-1, -1); // 发包到服务器上 再由服务器转发到其他客户端
+        //        //NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, drawPlayer.whoAmI); // 同步direction
+        //    }
+        //    Main.spriteBatch.End();
+        //    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
+        //}
+
         //private void DrawSwoosh(Player drawPlayer, Color newColor)
         //{
         //    //counter++;

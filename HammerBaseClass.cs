@@ -269,7 +269,7 @@ namespace CoolerItemVisualEffect
             endAngle = Player.gravDir == -1 ? MathHelper.PiOver2 - endAngle : endAngle;
             CustomVertexInfo[] bars = CreateVertexs(drawCen, scaler,Player.gravDir == -1 ? MathHelper.PiOver2 - Rotation: Rotation, endAngle, additive ? 0.6f : Lighting.GetColor((projCenter / 16).ToPoint().X, (projCenter / 16).ToPoint().Y).R / 255f * .6f, ref whenSkip);
             if (bars.Length < 2) goto mylable;
-            SamplerState sampler = SamplerState.LinearClamp;
+            SamplerState sampler = SamplerState.LinearWrap;
             CustomVertexInfo[] triangleList = new CustomVertexInfo[(bars.Length - 2) * 3];//
             for (int i = 0; i < bars.Length - 2; i += 2)
             {
@@ -347,7 +347,7 @@ namespace CoolerItemVisualEffect
                 CoolerItemVisualEffect.ShaderSwooshEX.Parameters["airFactor"].SetValue(1);
                 CoolerItemVisualEffect.ShaderSwooshEX.Parameters["gather"].SetValue(true);
                 Main.graphics.GraphicsDevice.Textures[0] = GetTexture("BaseTex_" + indexOfGreyTex);
-                Main.graphics.GraphicsDevice.Textures[1] = GetTexture("AniTex");
+                Main.graphics.GraphicsDevice.Textures[1] = GetTexture($"AniTex_{ConfigurationSwoosh_Advanced.ConfigSwooshInstance.AnimateIndex}");
                 Main.graphics.GraphicsDevice.Textures[2] = itemTex;
                 if (HeatMap != null && useHeatMap)
                     Main.graphics.GraphicsDevice.Textures[3] = HeatMap;
@@ -454,7 +454,6 @@ namespace CoolerItemVisualEffect
                 }
 
 
-
                 //sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
                 //sb.End();
 
@@ -477,7 +476,7 @@ namespace CoolerItemVisualEffect
                 CoolerItemVisualEffect.ShaderSwooshEX.Parameters["airFactor"].SetValue(1f);
                 CoolerItemVisualEffect.ShaderSwooshEX.Parameters["gather"].SetValue(true);
                 Main.graphics.GraphicsDevice.Textures[0] = GetTexture("BaseTex_" + indexOfGreyTex);
-                Main.graphics.GraphicsDevice.Textures[1] = GetTexture("AniTex");
+                Main.graphics.GraphicsDevice.Textures[1] = GetTexture($"AniTex_{ConfigurationSwoosh_Advanced.ConfigSwooshInstance.AnimateIndex}");
                 Main.graphics.GraphicsDevice.Textures[2] = itemTex;
                 if (HeatMap != null && useHeatMap)
                     Main.graphics.GraphicsDevice.Textures[3] = HeatMap;

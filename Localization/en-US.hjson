@@ -73,7 +73,7 @@ Mods:{
 			Weighted Average With Optimization Hue And Saturation
 			Heat Map Built By A Function
 			Diagonal Color Of The Enabled Weapon
-			Blend "Weighted Average With Optimization Hue" And "Saturation And Diagonal Color Of the Enabled Weapon"
+			Blend "Weighted Average With Optimization Hue And Saturation" And "Diagonal Color Of the Enabled Weapon"
 			'''
 			9:Sampler Style Of Slashing
 			10:
@@ -125,7 +125,7 @@ Mods:{
 			35:The Strength Of Screen Shaking
 			36:Which Is Annoier Than 「MasterSpark」From TouhouProject
 			37:Style Of Slashing
-			38:I only prepared 8 kinds, recommend (default) the last one
+			38:I Only Prepared 12 Kinds, Recommend (Default) The One Which Index Is 7.
 			39:Detects Whether It Is Hollow
 			40:Just Try It And Make Your Own Choices www
 			41:Whether The End Is Retracted
@@ -149,6 +149,23 @@ Mods:{
 			50:OMG this is so wired.The Title Will Change If It Is Off.
 			51:Draw the Effect How Many Times？
 			52:The Default Is Once(normal),It Will Be So Coool More Than Once,But It Well Be Very Lagging(x  It Only Active When Your LightingMode Is White Or Color
+			53:Offset Angle Of ColorBar
+			54:
+			'''
+			The Default is π,And Set It To 0 Will Inverse The Direction(They Are Polar Gradient)，Use π/2 Or 3*π/2 To Get Radial Gradient
+			Need "Weighted Average With Optimization Hue And Saturation"
+			Or " Blend "Weighted Average With Optimization Hue And Saturation" And "Diagonal Color Of the Enabled Weapon" "
+			'''
+			55:LeftTime Of Swoosh
+			56:The Default Is 15 Frame  Need "Ultra" Quality
+			57:Don't Change Size Of Item ItSelf
+			58:Only Change The Size Of SwooshEffect If It Is Yes, The Default Is No.
+			59:Fade Style Of Swoosh
+			60:The Default Is Both  Need "Ultra" Quality
+			61:Grow Style Of Swoosh
+			62:The Both Expand Horizontally And Offest Is Both  Need "Ultra" Quality
+			63:Style Of Slashing Animation Texture
+			64:I Only Prepared 6 Kinds, Recommend (Default) The One Which Index Is 3.
 		}
 		Config:{
 			Label:Visual Settings

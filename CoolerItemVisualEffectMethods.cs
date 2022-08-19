@@ -920,7 +920,17 @@ namespace CoolerItemVisualEffect
     }
     public static class CoolerItemVisualEffectMethods
     {
-
+        /// <summary>
+        /// 阿汪超喜欢用的插值函数，获得一个先迅速增加再慢慢变小的插值
+        /// </summary>
+        /// <param name="value">丢进去的变量，取值范围一般是[0,maxTimeWhen]</param>
+        /// <param name="maxTimeWhen">什么时候插值结束呢</param>
+        /// <returns>自己画函数图像去，真的像是一个小山丘一样(</returns>
+        public static float HillFactor2(this float value, float maxTimeWhen = 1)
+        {
+            //return Clamp((center - Math.Abs(center - value)) / center / whenGetMax, 0, 1);
+            return (1 - (float)Math.Cos(MathHelper.TwoPi * Math.Sqrt(value / maxTimeWhen))) * 0.5f;
+        }
         public static void DrawPrettyStarSparkle(this Projectile projectile, SpriteBatch spriteBatch, SpriteEffects dir, Vector2 drawpos, Color drawColor, Color shineColor)
         {
             Texture2D value = CoolerItemVisualEffectMethods.GetTexture("FinalFractalLight");

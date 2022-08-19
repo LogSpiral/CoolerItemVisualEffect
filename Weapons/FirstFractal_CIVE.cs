@@ -461,9 +461,9 @@ namespace CoolerItemVisualEffect.Weapons
         //        switch (instance.swooshSampler)
         //        {
         //            default:
-        //            case ConfigurationSwoosh.SwooshSamplerState.各向异性: sampler = SamplerState.AnisotropicClamp; break;
-        //            case ConfigurationSwoosh.SwooshSamplerState.线性: sampler = SamplerState.LinearClamp; break;
-        //            case ConfigurationSwoosh.SwooshSamplerState.点: sampler = SamplerState.PointClamp; break;
+        //            case ConfigurationSwoosh.SwooshSamplerState.各向异性: sampler = SamplerState.AnisotropicWrap; break;
+        //            case ConfigurationSwoosh.SwooshSamplerState.线性: sampler = SamplerState.LinearWrap; break;
+        //            case ConfigurationSwoosh.SwooshSamplerState.点: sampler = SamplerState.PointWrap; break;
         //        }
         //        RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
         //        var trans = Main.GameViewMatrix != null ? Main.GameViewMatrix.TransformationMatrix : Matrix.Identity;
@@ -606,7 +606,7 @@ namespace CoolerItemVisualEffect.Weapons
         //}
         public override bool PreDraw(ref Color lightColor) => false;
 
-        public void DrawOthers() 
+        public void DrawOthers()
         {
             if (drawPlayer == null) drawPlayer = new Player();
             Player player = drawPlayer;
@@ -644,7 +644,7 @@ namespace CoolerItemVisualEffect.Weapons
             color84.A /= 2;
             projectile.DrawPrettyStarSparkle(Main.spriteBatch, spriteEffects, vector71, color84, Main.hslToRgb(drawColor, 1f, 0.5f));
         }
-        public void DrawSword() 
+        public void DrawSword()
         {
             SpriteEffects spriteEffects = projectile.ai[0] > 0 ? 0 : SpriteEffects.FlipHorizontally;
             Texture2D texture2D4 = TextureAssets.Projectile[projectile.type].Value;
@@ -655,7 +655,7 @@ namespace CoolerItemVisualEffect.Weapons
             origin *= spriteEffects == 0 ? new Vector2(0.1f, 0.9f) : new Vector2(0.9f, 0.9f);
             var rot = projectile.oldRot[0] + MathHelper.PiOver4;
             rot += projectile.ai[0] < 0 ? MathHelper.Pi / 2 : 0;
-            Main.spriteBatch.Draw(texture2D4, projectile.oldPos[0] - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(rectangle29), color84, rot, origin, ConfigurationSwoosh_Advanced.ConfigSwooshInstance.swooshSize, spriteEffects, 0);
+            Main.spriteBatch.Draw(texture2D4, projectile.oldPos[0] - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(rectangle29), color84, rot, origin, ConfigurationSwoosh_Advanced.ConfigSwooshInstance.onlyChangeSizeOfSwoosh ? 1 : ConfigurationSwoosh_Advanced.ConfigSwooshInstance.swooshSize, spriteEffects, 0);
         }
     }
     public class WitheredWoodSword : ModItem
