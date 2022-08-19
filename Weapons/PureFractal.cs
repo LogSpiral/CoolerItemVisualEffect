@@ -605,6 +605,8 @@ namespace CoolerItemVisualEffect.Weapons
                 ShaderSwooshEX.Parameters["gather"].SetValue(ConfigSwooshInstance.gather);
                 var _v = ConfigSwooshInstance.directOfHeatMap.ToRotationVector2();
                 ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
+                ShaderSwooshEX.Parameters["lightShift"].SetValue(0);
+                ShaderSwooshEX.Parameters["distortScaler"].SetValue(0);
                 Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + ConfigSwooshInstance.ImageIndex);
                 Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage($"AniTex_{ConfigSwooshInstance.AnimateIndex}");
                 Main.graphics.GraphicsDevice.Textures[2] = currentTex;

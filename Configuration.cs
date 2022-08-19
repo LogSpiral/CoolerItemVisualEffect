@@ -48,6 +48,7 @@ namespace CoolerItemVisualEffect
             cs.fadeStyle = ConfigurationSwoosh_Advanced.SwooshFadeStyle.全部Both;
             cs.growStyle = ConfigurationSwoosh_Advanced.SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest;
             cs.animateIndex = 3;
+            cs.distortSize = 1.5f;
             switch (preInstallSwoosh)
             {
                 //case PreInstallSwoosh.普通Normal: 
@@ -235,6 +236,7 @@ namespace CoolerItemVisualEffect
             packet.Write((byte)fadeStyle);
             packet.Write((byte)growStyle);
             packet.Write((byte)animateIndex);
+            packet.Write(distortSize);
             //packet.Write
             packet.Send(toCilent, ignoreCilent);
             //if (whoami != -1)
@@ -276,6 +278,7 @@ namespace CoolerItemVisualEffect
             config.fadeStyle = (SwooshFadeStyle)reader.ReadByte();
             config.growStyle = (SwooshGrowStyle)reader.ReadByte();
             config.animateIndex = reader.ReadByte();
+            config.distortSize = reader.ReadSingle();
             //Main.NewText("向 " + Main.player[whoami] + "设置数据");
 
         }
@@ -313,7 +316,8 @@ namespace CoolerItemVisualEffect
                 onlyChangeSizeOfSwoosh == config.onlyChangeSizeOfSwoosh &&
                 fadeStyle == config.fadeStyle &&
                 growStyle == config.growStyle &&
-                animateIndex == config.animateIndex;
+                animateIndex == config.animateIndex &&
+                distortSize == config.distortSize;
         }
         public override void OnChanged()
         {
@@ -596,6 +600,13 @@ namespace CoolerItemVisualEffect
         [JsonIgnore]
         public int AnimateIndex => (int)MathHelper.Clamp(ConfigSwooshInstance.animateIndex, 0, 5);
 
+        [Increment(0.05f)]
+        [DefaultValue(1.5f)]
+        [Range(0.5f, 3f)]
+        [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.65")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.66")]
+        [BackgroundColor(255, 0, 60, 127)]
+        public float distortSize { get; set; }
         public enum SwooshSamplerState : byte
         {
             各向异性,

@@ -59,6 +59,7 @@ namespace CoolerItemVisualEffect
         public readonly CustomVertexInfo[] vertexInfos = new CustomVertexInfo[90];
         public (Vector2 u, Vector2 v) vectors;
         public readonly UltraSwoosh[] ultraSwooshes = new UltraSwoosh[60];
+        public UltraSwoosh currentSwoosh;
         //public override void PreUpdate() {
         //    if (Player.itemAnimation == 1) {
         //        negativeDir ^= true;
@@ -367,6 +368,7 @@ namespace CoolerItemVisualEffect
                             ultra.hsl = hsl;
                             ultra.rotation = rotationForShadow;
                             ultra.xScaler = kValue;
+                            currentSwoosh = ultra;
                         }
                         break;
                     }

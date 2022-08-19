@@ -921,6 +921,30 @@ namespace CoolerItemVisualEffect
     public static class CoolerItemVisualEffectMethods
     {
         /// <summary>
+        /// 阿汪超喜欢用的插值函数，获得一个先上后下的插值
+        /// </summary>
+        /// <param name="value">丢进去的变量，取值范围一般是[0,2*center]</param>
+        /// <param name="center">中间值，或者说最大值点</param>
+        /// <param name="whenGetMax">决定丢进去的值与最大值的比值为多少时第一次达到最大值(1)，一般取(0,0.5f]</param>
+        /// <returns>自己画函数图像去，不是三角形就是梯形(</returns>
+        public static float SymmetricalFactor2(this float value, float center, float whenGetMax)
+        {
+            //return Clamp((center - Math.Abs(center - value)) / center / whenGetMax, 0, 1);
+            return value.SymmetricalFactor(center, whenGetMax * center * 2);
+        }
+
+        /// <summary>
+        /// 阿汪超喜欢用的插值函数，获得一个先上后下的插值
+        /// </summary>
+        /// <param name="value">丢进去的变量，取值范围一般是[0,2*center]</param>
+		/// <param name="center">中间值，或者说最大值点</param>
+		/// <param name="whenGetMax">决定丢进去的值为多少时第一次达到最大值(1)，一般取(0,center]</param>
+		/// <returns>自己画函数图像去，不是三角形就是梯形(</returns>
+        public static float SymmetricalFactor(this float value, float center, float whenGetMax)
+        {
+            return MathHelper.Clamp((center - Math.Abs(center - value)) / whenGetMax, 0, 1);
+        }
+        /// <summary>
         /// 阿汪超喜欢用的插值函数，获得一个先迅速增加再慢慢变小的插值
         /// </summary>
         /// <param name="value">丢进去的变量，取值范围一般是[0,maxTimeWhen]</param>

@@ -166,6 +166,8 @@ Mods:{
 			62:The Both Expand Horizontally And Offest Is Both  Need "Ultra" Quality
 			63:Style Of Slashing Animation Texture
 			64:I Only Prepared 6 Kinds, Recommend (Default) The One Which Index Is 3.
+			65:Size Of Distortion
+			66:The Default Is 1.5(Set It To 1 If It Is Too Lag)  Need "Medium" Quality
 		}
 		Config:{
 			Label:Visual Settings
