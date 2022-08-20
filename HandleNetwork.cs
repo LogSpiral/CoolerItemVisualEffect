@@ -39,6 +39,7 @@ namespace CoolerItemVisualEffect
                             float kValue = reader.ReadSingle();
                             float kValueNext = reader.ReadSingle();
                             bool UseSlash = reader.ReadBoolean();
+                            float offsetSize = reader.ReadSingle();
                             CoolerItemVisualEffectPlayer modPlayer = Main.player[whoAmI].GetModPlayer<CoolerItemVisualEffectPlayer>();
                             modPlayer.negativeDir = negativeDir;
                             modPlayer.rotationForShadow = rotationForShadow;
@@ -47,6 +48,7 @@ namespace CoolerItemVisualEffect
                             modPlayer.kValue = kValue;
                             modPlayer.kValueNext = kValueNext;
                             modPlayer.UseSlash = UseSlash;
+                            modPlayer.actionOffsetSize = offsetSize;
 
                             ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
                             packet.Write((byte)MessageType.BasicStats);
@@ -57,6 +59,7 @@ namespace CoolerItemVisualEffect
                             packet.Write(kValue);
                             packet.Write(kValueNext);
                             packet.Write(UseSlash);
+                            packet.Write(offsetSize);
                             packet.Write((byte)whoAmI);
                             packet.Send(-1, whoAmI);
                             return;
@@ -176,6 +179,7 @@ namespace CoolerItemVisualEffect
                             modPlayer.kValue = kValue;
                             modPlayer.kValueNext = kValueNext;
                             modPlayer.UseSlash = UseSlash;
+                            modPlayer.actionOffsetSize = reader.ReadSingle();
                             return;
                         }
                     case MessageType.Hitbox:

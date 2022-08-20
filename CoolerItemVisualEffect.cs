@@ -1048,18 +1048,18 @@ namespace CoolerItemVisualEffect
                     }
                 }
         }
-        public static void DrawSwooshContent(CoolerItemVisualEffectPlayer modPlayer, Matrix result, ConfigurationSwoosh_Advanced instance, SamplerState sampler, Texture2D itemTex, float checkAirFactor, int passCount, CustomVertexInfo[] array, bool distort = false)
+        public static void DrawSwooshContent(CoolerItemVisualEffectPlayer modPlayer, Matrix result, ConfigurationSwoosh_Advanced instance, SamplerState sampler, Texture2D itemTex, float checkAirFactor, int passCount, CustomVertexInfo[] array, bool distort = false, float scaler = 1f)
         {
-            var scaler = distort ? instance.distortSize : 1;
+            var distortScaler = distort ? instance.distortSize : 1;
             ShaderSwooshEX.Parameters["uTransform"].SetValue(result);
             ShaderSwooshEX.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
             ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);
             ShaderSwooshEX.Parameters["airFactor"].SetValue(checkAirFactor);
-            ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
+            ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather && !distort);
             var _v = modPlayer.ConfigurationSwoosh.directOfHeatMap.ToRotationVector2();
             ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
             ShaderSwooshEX.Parameters["lightShift"].SetValue(0);
-            ShaderSwooshEX.Parameters["distortScaler"].SetValue(distort ? scaler : 0);
+            ShaderSwooshEX.Parameters["distortScaler"].SetValue(distortScaler * scaler);
             Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + instance.ImageIndex);
             Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage($"AniTex_{modPlayer.ConfigurationSwoosh.AnimateIndex}");
             Main.graphics.GraphicsDevice.Textures[2] = itemTex;
@@ -1068,10 +1068,10 @@ namespace CoolerItemVisualEffect
             Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
             Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
             Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
-            if (modPlayer.UseSlash)
+            if (modPlayer.UseSlash)// && ((instance.swooshActionStyle != SwooshAction.向后倾一定角度后重击 && instance.swooshActionStyle != SwooshAction.两次普通斩击一次高速旋转) || modPlayer.Player.itemAnimation < 18)
             {
                 ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
-                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, CreateTriList(array, modPlayer.Player.Center, scaler), 0, 88);
+                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, CreateTriList(array, modPlayer.Player.Center, distortScaler), 0, 88);
             }
             if (modPlayer.SwooshActive)
             {
@@ -1084,7 +1084,7 @@ namespace CoolerItemVisualEffect
                         Main.graphics.GraphicsDevice.Textures[3] = ultraSwoosh.heatMap;
                         ShaderSwooshEX.Parameters["lightShift"].SetValue(instance.IsDarkFade ? (ultraSwoosh.timeLeft / (float)ultraSwoosh.timeLeftMax) - 1f : 0);
                         ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
-                        Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, CreateTriList(ultraSwoosh.vertexInfos, ultraSwoosh.center, scaler, true), 0, 58);
+                        Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, CreateTriList(ultraSwoosh.vertexInfos, ultraSwoosh.center, distortScaler, true), 0, 58);
                     }
                 }
             }
@@ -1176,7 +1176,7 @@ namespace CoolerItemVisualEffect
                 gd.Clear(Color.Transparent);
             }
             sb.Begin(SpriteSortMode.Immediate, alphaBlend ? BlendState.NonPremultiplied : BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);//Main.DefaultSamplerState//Main.GameViewMatrix.TransformationMatrix
-            DrawSwooshContent(modPlayer, result, instance, sampler, itemTex, checkAirFactor, passCount, modPlayer.vertexInfos);
+            DrawSwooshContent(modPlayer, result, instance, sampler, itemTex, checkAirFactor, passCount, modPlayer.vertexInfos, false, instance.onlyChangeSizeOfSwoosh ? modPlayer.RealSize : 1f);
             if (useRender)
             {
                 if (instance.distortFactor != 0 && instance.distortSize != 1)
@@ -1188,10 +1188,10 @@ namespace CoolerItemVisualEffect
                         gd.Clear(Color.Transparent);
                     }
                     sb.Begin(SpriteSortMode.Immediate, alphaBlend ? BlendState.NonPremultiplied : BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);//Main.DefaultSamplerState//Main.GameViewMatrix.TransformationMatrix
-                    DrawSwooshContent(modPlayer, result, instance, sampler, itemTex, checkAirFactor, passCount, modPlayer.vertexInfos, true);
+                    DrawSwooshContent(modPlayer, result, instance, sampler, itemTex, checkAirFactor, passCount, modPlayer.vertexInfos, true, instance.onlyChangeSizeOfSwoosh ? modPlayer.RealSize : 1f);//
                 }
                 Vector2 direct = (instance.swooshFactorStyle == SwooshFactorStyle.每次开始时决定系数 ? modPlayer.kValue : ((modPlayer.kValue + modPlayer.kValueNext) * .5f)).ToRotationVector2() * -0.1f * instance.distortFactor;
-                direct *= modPlayer.SwooshActive ? (modPlayer.currentSwoosh.timeLeft / (float)modPlayer.currentSwoosh.timeLeftMax) : (instance.coolerSwooshQuality == QualityType.极限ultra ? (1 - fac) : fac.SymmetricalFactor2(0.5f, 0.2f)); 
+                direct *= modPlayer.SwooshActive ? (modPlayer.currentSwoosh.timeLeft / (float)modPlayer.currentSwoosh.timeLeftMax) : (instance.coolerSwooshQuality == QualityType.极限ultra ? (1 - fac) : fac.SymmetricalFactor2(0.5f, 0.2f));
                 switch (instance.coolerSwooshQuality)
                 {
                     case QualityType.中medium:

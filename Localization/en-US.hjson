@@ -55,7 +55,8 @@ Mods:{
 			If You Want To Affect The Actual Attack Effect, Please Go To The Gameplay Settings To Open The Hitbox
 			The Quality Over Low Need LightingMode Is Color Or White, And The Water Quality Isn't Off.
 			Medium: Active Distort And Draw More Times.
-			High:Active Bloom Glow Light Effect.
+			High: Active Bloom Glow Light Effect.
+			Ultra: Active UltraSwoosh Effect.(Jsut Try It, As I Can't Explain It Well.
 			'''
 			3:Cancel The Effect Of The New Slashing Effect On Tools
 			4:
@@ -94,9 +95,17 @@ Mods:{
 			14:
 			'''
 			The Follow Is
-			Slashing Normally
-			Tilt Backward And Hit Hard
-			Slashing Normally Twice And Tail-Wagging Once
+            Transverse Splitting
+            Transverse Splitting_EX
+            Heavy Slash
+            Up Slash
+            Cloud Slash
+            Wind Slash
+            Rain Slash
+            Thunder Slash
+			Storm Ultra Slash
+            Transverse Splitting_EX_Old
+            Transverse Splitting_Failed
 			'''
 			15:Size Of The Item And Slash
 			16:According To The Default Size Is The Right HitBox, But Who Doesn't Like A Bigger Size?
@@ -152,7 +161,7 @@ Mods:{
 			53:Offset Angle Of ColorBar
 			54:
 			'''
-			The Default is π,And Set It To 0 Will Inverse The Direction(They Are Polar Gradient)，Use π/2 Or 3*π/2 To Get Radial Gradient
+			The Default is pi,And Set It To 0 Will Inverse The Direction(They Are Polar Gradient)，Use pi/2 Or 3*pi/2 To Get Radial Gradient
 			Need "Weighted Average With Optimization Hue And Saturation"
 			Or " Blend "Weighted Average With Optimization Hue And Saturation" And "Diagonal Color Of the Enabled Weapon" "
 			'''
@@ -168,6 +177,10 @@ Mods:{
 			64:I Only Prepared 6 Kinds, Recommend (Default) The One Which Index Is 3.
 			65:Size Of Distortion
 			66:The Default Is 1.5(Set It To 1 If It Is Too Lag)  Need "Medium" Quality
+			67:Show The Heat Map
+			68:Not "Weighted Average" And "Diagonal Color Of The Enabled Weapon"
+			69:Change Swoosh Size As ActionStyle Changes
+			70:Change As ActionStyle Changes,Don't You Want It?
 		}
 		Config:{
 			Label:Visual Settings

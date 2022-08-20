@@ -24,7 +24,7 @@ namespace CoolerItemVisualEffect
             cs.swooshColorType = ConfigurationSwoosh_Advanced.SwooshColorType.色调处理与对角线混合;
             cs.swooshSampler = ConfigurationSwoosh_Advanced.SwooshSamplerState.线性;
             cs.swooshFactorStyle = ConfigurationSwoosh_Advanced.SwooshFactorStyle.每次开始时决定系数;
-            cs.swooshActionStyle = ConfigurationSwoosh_Advanced.SwooshAction.向后倾一定角度后重击;
+            cs.swooshActionStyle = ConfigurationSwoosh_Advanced.SwooshAction.左右横劈_后倾;
             cs.swooshSize = 1f;
             cs.hueOffsetRange = 0.2f;
             cs.hueOffsetValue = 0f;
@@ -43,12 +43,13 @@ namespace CoolerItemVisualEffect
             cs.glowLight = 0f;
             cs.maxCount = 1;
             cs.directOfHeatMap = MathHelper.Pi;
-            cs.swooshTimeLeft = 30;
-            cs.onlyChangeSizeOfSwoosh = false;
+            cs.swooshTimeLeft = 30; 
+            cs.onlyChangeSizeOfSwoosh = true;
             cs.fadeStyle = ConfigurationSwoosh_Advanced.SwooshFadeStyle.全部Both;
             cs.growStyle = ConfigurationSwoosh_Advanced.SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest;
             cs.animateIndex = 3;
             cs.distortSize = 1.5f;
+            cs.actionOffsetSize = true;
             switch (preInstallSwoosh)
             {
                 //case PreInstallSwoosh.普通Normal: 
@@ -61,7 +62,7 @@ namespace CoolerItemVisualEffect
                         cs.shake = 0.3f;
                         cs.distortFactor = 1f;
                         cs.swooshSize = 1.5f;
-                        cs.swooshActionStyle = ConfigurationSwoosh_Advanced.SwooshAction.两次普通斩击一次高速旋转;
+                        cs.swooshActionStyle = ConfigurationSwoosh_Advanced.SwooshAction.旋风劈;
                         cs.maxCount = 3;
                         cs.luminosityFactor = 0.4f;
                         break;
@@ -78,7 +79,7 @@ namespace CoolerItemVisualEffect
                         cs.distortFactor = 1f;
                         cs.shake = 1f;
                         cs.swooshFactorStyle = ConfigurationSwoosh_Advanced.SwooshFactorStyle.系数中间插值;
-                        cs.swooshActionStyle = ConfigurationSwoosh_Advanced.SwooshAction.两次普通斩击一次高速旋转;
+                        cs.swooshActionStyle = ConfigurationSwoosh_Advanced.SwooshAction.旋风劈;
                         cs.maxCount = 5;
                         cs.luminosityFactor = 1f;
                         break;
@@ -103,6 +104,81 @@ namespace CoolerItemVisualEffect
                         cs.imageIndex = 0f;
                         break;
                     }
+                case PreInstallSwoosh.泰拉Terra_EspeciallyTerraBladeRecommended: 
+                    {
+                        cs.coolerSwooshQuality = ConfigurationSwoosh_Advanced.QualityType.极限ultra;
+                        cs.swooshColorType = ConfigurationSwoosh_Advanced.SwooshColorType.函数生成热度图;
+                        cs.swooshActionStyle = ConfigurationSwoosh_Advanced.SwooshAction.风暴灭却剑;
+                        cs.hueOffsetRange = -0.25f;
+                        cs.hueOffsetValue = 0.15f;
+                        cs.luminosityFactor = 1f;
+                        cs.rotationVelocity = 2f;
+                        cs.distortFactor = 1f;
+                        cs.shake = 0.4f;
+                        cs.glowLight = 1f;
+                        cs.maxCount = 2;
+                        break;
+                    }
+                case PreInstallSwoosh.神圣Holy_EspeciallyTrueExcaliburRecommended:
+                    {
+                        cs.coolerSwooshQuality = ConfigurationSwoosh_Advanced.QualityType.极限ultra;
+                        cs.swooshColorType = ConfigurationSwoosh_Advanced.SwooshColorType.函数生成热度图;
+                        cs.swooshActionStyle = ConfigurationSwoosh_Advanced.SwooshAction.流雨断;
+                        cs.hueOffsetRange = 0.25f;
+                        cs.hueOffsetValue = 0.9f;
+                        cs.luminosityFactor = 1f;
+                        cs.rotationVelocity = 2f;
+                        cs.distortFactor = 1f;
+                        cs.shake = 0.2f;
+                        cs.glowLight = 1f;
+                        cs.maxCount = 2;
+                        break;
+                    }
+                case PreInstallSwoosh.永夜Evil_EspeciallyTrueNightsEdgeRecommended:
+                    {
+                        cs.coolerSwooshQuality = ConfigurationSwoosh_Advanced.QualityType.极限ultra;
+                        cs.swooshColorType = ConfigurationSwoosh_Advanced.SwooshColorType.函数生成热度图;
+                        cs.swooshActionStyle = ConfigurationSwoosh_Advanced.SwooshAction.旋风劈;
+                        cs.hueOffsetRange = 0.25f;
+                        cs.hueOffsetValue = 0.05f;
+                        cs.luminosityFactor = 1f;
+                        cs.rotationVelocity = 2f;
+                        cs.distortFactor = 1f;
+                        cs.shake = 0.2f;
+                        cs.glowLight = 1f;
+                        cs.maxCount = 2;
+                        break;
+                    }
+                case PreInstallSwoosh.旧日OldOnes_EspeciallyFlyingDragonRecommended:
+                    {
+                        cs.coolerSwooshQuality = ConfigurationSwoosh_Advanced.QualityType.极限ultra;
+                        cs.swooshColorType = ConfigurationSwoosh_Advanced.SwooshColorType.函数生成热度图;
+                        cs.swooshActionStyle = ConfigurationSwoosh_Advanced.SwooshAction.腾云斩;
+                        cs.hueOffsetRange = 0.2f;
+                        cs.hueOffsetValue = 0.95f;
+                        cs.luminosityFactor = 1f;
+                        cs.rotationVelocity = 2f;
+                        cs.distortFactor = 1f;
+                        cs.shake = 0.2f;
+                        cs.glowLight = 1f;
+                        cs.maxCount = 2;
+                        break;
+                    }
+                case PreInstallSwoosh.波涌Influx_EspeciallyInfluxWaverRecommended: 
+                    {
+                        cs.coolerSwooshQuality = ConfigurationSwoosh_Advanced.QualityType.极限ultra;
+                        cs.swooshColorType = ConfigurationSwoosh_Advanced.SwooshColorType.函数生成热度图;
+                        cs.swooshActionStyle = ConfigurationSwoosh_Advanced.SwooshAction.鸣雷刺;
+                        cs.hueOffsetRange = 0.15f;
+                        cs.hueOffsetValue = 0.05f;
+                        cs.luminosityFactor = 1f;
+                        cs.rotationVelocity = 2f;
+                        cs.distortFactor = 1f;
+                        cs.shake = 0.2f;
+                        cs.glowLight = 1f;
+                        cs.maxCount = 2;
+                        break;
+                    }
                 case PreInstallSwoosh.黑白Grey:
                     {
                         cs.swooshColorType = ConfigurationSwoosh_Advanced.SwooshColorType.加权平均_饱和与色调处理;
@@ -119,6 +195,22 @@ namespace CoolerItemVisualEffect
                     {
                         cs.swooshColorType = ConfigurationSwoosh_Advanced.SwooshColorType.加权平均_饱和与色调处理;
                         cs.hueOffsetRange = 1f;
+                        break;
+                    }
+                case PreInstallSwoosh.超级彩虹UltraRainbow:
+                    {
+                        cs.coolerSwooshQuality = ConfigurationSwoosh_Advanced.QualityType.极限ultra;
+                        cs.swooshColorType = ConfigurationSwoosh_Advanced.SwooshColorType.加权平均_饱和与色调处理;
+                        cs.swooshActionStyle = ConfigurationSwoosh_Advanced.SwooshAction.风暴灭却剑;
+                        cs.hueOffsetRange = 1f;
+                        cs.hueOffsetValue = 0f;
+                        cs.luminosityFactor = 1f;
+                        cs.rotationVelocity = 2f;
+                        cs.distortFactor = 0.75f;
+                        cs.shake = 0.1f;
+                        cs.glowLight = 1f;
+                        cs.maxCount = 4;
+                        cs.directOfHeatMap = MathHelper.Pi * 1.5f;
                         break;
                     }
             }
@@ -143,9 +235,15 @@ namespace CoolerItemVisualEffect
             明亮Bright,
             怪异Strange,
             光滑Smooth,
+            泰拉Terra_EspeciallyTerraBladeRecommended,
+            神圣Holy_EspeciallyTrueExcaliburRecommended,
+            永夜Evil_EspeciallyTrueNightsEdgeRecommended,
+            旧日OldOnes_EspeciallyFlyingDragonRecommended,
+            波涌Influx_EspeciallyInfluxWaverRecommended,
             黑白Grey,
             反相InverseHue,
             彩虹Rainbow,
+            超级彩虹UltraRainbow,
             自定义UserDefined
         }
 
@@ -400,7 +498,7 @@ namespace CoolerItemVisualEffect
         public SwooshFactorStyle swooshFactorStyle { get; set; }
 
         [DrawTicks]
-        [DefaultValue(SwooshAction.向后倾一定角度后重击)]
+        [DefaultValue(SwooshAction.左右横劈_后倾)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.13")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.14")]
         [BackgroundColor(60, 0, 255, 127)]
@@ -416,7 +514,7 @@ namespace CoolerItemVisualEffect
 
         [DefaultValue(0.2f)]
         [Increment(0.01f)]
-        [Range(0f, 1f)]
+        [Range(-1f, 1f)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.17")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.18")]
         [BackgroundColor(120, 0, 255, 127)]
@@ -552,7 +650,7 @@ namespace CoolerItemVisualEffect
         [BackgroundColor(255, 0, 135, 127)]
         public float swooshTimeLeft { get; set; }
 
-        [DefaultValue(false)]
+        [DefaultValue(true)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.57")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.58")]
         [BackgroundColor(255, 0, 120, 127)]
@@ -607,6 +705,18 @@ namespace CoolerItemVisualEffect
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.66")]
         [BackgroundColor(255, 0, 60, 127)]
         public float distortSize { get; set; }
+
+        [DefaultValue(false)]
+        [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.67")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.68")]
+        [BackgroundColor(255, 0, 45, 127)]
+        public bool showHeatMap { get; set; }
+
+        [DefaultValue(true)]
+        [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.69")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.70")]
+        [BackgroundColor(255, 0, 30, 127)]
+        public bool actionOffsetSize { get; set; }
         public enum SwooshSamplerState : byte
         {
             各向异性,
@@ -615,11 +725,17 @@ namespace CoolerItemVisualEffect
         }
         public enum SwooshAction : byte
         {
-            正常挥砍,
-            向后倾一定角度后重击,
-            两次普通斩击一次高速旋转,
-            向后倾一定角度后重击_旧,
-            向后倾一定角度后重击_失败,
+            左右横劈,
+            左右横劈_后倾,
+            重斩,
+            上挑,
+            腾云斩,
+            旋风劈,
+            流雨断,
+            鸣雷刺,
+            风暴灭却剑,
+            左右横劈_后倾_旧,
+            左右横劈_失败,
 
             //摇摆重击
         }
