@@ -246,6 +246,13 @@ namespace CoolerItemVisualEffect
             超级彩虹UltraRainbow,
             自定义UserDefined
         }
+        public enum HitBoxStyle
+        {
+            原版Vanilla,
+            矩形Rectangle,
+            线状AABBLine,
+            剑气UltraSwoosh
+        }
 
         [DefaultValue(true)]
         [Label("$Mods.CoolerItemVisualEffect.Config.Num1")]
@@ -263,13 +270,16 @@ namespace CoolerItemVisualEffect
         [Label("$Mods.CoolerItemVisualEffect.Config.11")]
         [Tooltip("$Mods.CoolerItemVisualEffect.Config.12")]
         [Slider]
-        public float WeaponScale;
+        public float weaponScale;
 
-        [DefaultValue(true)]
-        [Label("$Mods.CoolerItemVisualEffect.ConfigurationServer.HitboxName")]
-        [Tooltip("$Mods.CoolerItemVisualEffect.ConfigurationServer.HitboxTooltip")]
+        [DefaultValue(HitBoxStyle.线状AABBLine)]
+        [DrawTicks]
+        [Label("$Mods.CoolerItemVisualEffect.Config.11")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.Config.12")]
+        public HitBoxStyle hitBoxStyle;
+
+        [JsonIgnore]
         public bool UseHitbox;
-
         //[Range(1, 20)]
         //[Increment(1)]
         //[DefaultValue(4)]
@@ -335,6 +345,11 @@ namespace CoolerItemVisualEffect
             packet.Write((byte)growStyle);
             packet.Write((byte)animateIndex);
             packet.Write(distortSize);
+            packet.Write(showHeatMap);
+            packet.Write(actionOffsetSize);
+            packet.Write(actionOffsetSpeed);
+            packet.Write(actionModifyEffect);
+            packet.Write(ignoreDamageType);
             //packet.Write
             packet.Send(toCilent, ignoreCilent);
             //if (whoami != -1)
@@ -377,6 +392,11 @@ namespace CoolerItemVisualEffect
             config.growStyle = (SwooshGrowStyle)reader.ReadByte();
             config.animateIndex = reader.ReadByte();
             config.distortSize = reader.ReadSingle();
+            config.showHeatMap = reader.ReadBoolean();
+            config.actionOffsetSize = reader.ReadBoolean();
+            config.actionOffsetSpeed = reader.ReadBoolean();
+            config.actionModifyEffect = reader.ReadBoolean();
+            config.ignoreDamageType = reader.ReadBoolean();
             //Main.NewText("向 " + Main.player[whoami] + "设置数据");
 
         }
@@ -415,7 +435,12 @@ namespace CoolerItemVisualEffect
                 fadeStyle == config.fadeStyle &&
                 growStyle == config.growStyle &&
                 animateIndex == config.animateIndex &&
-                distortSize == config.distortSize;
+                distortSize == config.distortSize &&
+                showHeatMap == config.showHeatMap &&
+                actionOffsetSize == config.actionOffsetSize &&
+                actionOffsetSpeed == config.actionOffsetSpeed &&
+                actionModifyEffect == config.actionModifyEffect &&
+                ignoreDamageType == config.ignoreDamageType;
         }
         public override void OnChanged()
         {
@@ -717,6 +742,24 @@ namespace CoolerItemVisualEffect
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.70")]
         [BackgroundColor(255, 0, 30, 127)]
         public bool actionOffsetSize { get; set; }
+
+        [DefaultValue(true)]
+        [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.73")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.74")]
+        [BackgroundColor(255, 0, 15, 127)]
+        public bool actionOffsetSpeed { get; set; }
+
+        [DefaultValue(true)]
+        [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.75")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.76")]
+        [BackgroundColor(255, 0, 0, 127)]
+        public bool actionModifyEffect { get; set; }
+
+        [DefaultValue(false)]
+        [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.77")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.78")]
+        [BackgroundColor(255, 15, 0, 127)]
+        public bool ignoreDamageType { get; set; }
         public enum SwooshSamplerState : byte
         {
             各向异性,

@@ -560,6 +560,7 @@ namespace CoolerItemVisualEffect
                 }
             }
             //mylabel:
+
             orig(self, finalTexture, screenTarget1, screenTarget2, clearColor);
         }
 
@@ -902,6 +903,8 @@ namespace CoolerItemVisualEffect
         internal static Effect distortEffect;
         internal static Effect finalFractalTailEffect;
         internal static Effect colorfulEffect;
+        public static bool MeleeCheck(DamageClass damageClass) => damageClass == DamageClass.Melee 
+            || damageClass.GetEffectInheritance(DamageClass.Melee) || !damageClass.GetModifierInheritance(DamageClass.Melee).Equals(StatInheritanceData.None);
         public static bool CanUseRender => Lighting.Mode != Terraria.Graphics.Light.LightMode.Retro && Lighting.Mode != Terraria.Graphics.Light.LightMode.Trippy && Main.WaveQuality != 0 && (byte)ConfigSwooshInstance.coolerSwooshQuality > 1;
         private void PlayerDrawLayers_DrawPlayer_27_HeldItem_WeaponDisplay(On.Terraria.DataStructures.PlayerDrawLayers.orig_DrawPlayer_27_HeldItem orig, ref PlayerDrawSet drawinfo)
         {
@@ -926,7 +929,7 @@ namespace CoolerItemVisualEffect
 
                 }
             }// || heldItem.type == ItemID.Terragrim || heldItem.type == ItemID.Arkhalis
-            flagMelee = drawPlayer.HeldItem.damage > 0 && drawPlayer.HeldItem.useStyle == ItemUseStyleID.Swing && drawPlayer.itemAnimation > 0 && drawPlayer.HeldItem.DamageType == DamageClass.Melee && !drawPlayer.HeldItem.noUseGraphic && instance.CoolerSwooshActive;
+            flagMelee = drawPlayer.HeldItem.damage > 0 && drawPlayer.HeldItem.useStyle == ItemUseStyleID.Swing && drawPlayer.itemAnimation > 0 && modPlayer.IsMeleeBroadSword && !drawPlayer.HeldItem.noUseGraphic && instance.CoolerSwooshActive;
             if (instance.toolsNoUseNewSwooshEffect)
             {
                 flagMelee = flagMelee && drawPlayer.HeldItem.axe == 0 && drawPlayer.HeldItem.hammer == 0 && drawPlayer.HeldItem.pick == 0;
@@ -1343,7 +1346,7 @@ namespace CoolerItemVisualEffect
                 Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, c, 0, 2);
                 Main.graphics.GraphicsDevice.RasterizerState = originalState;
                 modPlayer.direct = (u + v).ToRotation();
-                modPlayer.HitboxPosition = u + v;
+                modPlayer.HitboxPosition = (u + v) * (instance.onlyChangeSizeOfSwoosh ? instance.swooshSize : 1f);
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
                     ModPacket packet = Instance.GetPacket();

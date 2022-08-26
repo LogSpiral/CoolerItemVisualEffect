@@ -7,6 +7,7 @@ using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using static CoolerItemVisualEffect.ConfigurationSwoosh_Advanced;
+using Terraria.ID;
 
 namespace CoolerItemVisualEffect
 {
@@ -69,6 +70,47 @@ namespace CoolerItemVisualEffect
         //}
         public int swooshTimeCounter;
         public float actionOffsetSize;
+        public float actionOffsetSpeed;
+        public float actionOffsetKnockBack;
+        public float actionOffsetDamage;
+        public int actionOffsetCritAdder;
+        public float actionOffsetCritMultiplyer;
+
+        public override bool? CanHitNPC(Item item, NPC target)
+        {
+            //bool? modCanHit = CombinedHooks.CanPlayerHitNPCWithItem(this, sItem, Main.npc[i]);
+            var style = ConfigurationNormal.instance.hitBoxStyle;
+            if (style == 0 || style == ConfigurationNormal.HitBoxStyle.矩形Rectangle || ConfigurationSwoosh.coolerSwooshQuality == QualityType.关off) return null;
+            var canHit = false;
+
+            if (style == ConfigurationNormal.HitBoxStyle.剑气UltraSwoosh)
+            {
+                if (ConfigurationSwoosh.coolerSwooshQuality == QualityType.极限ultra)
+                {
+                    foreach (var swoosh in ultraSwooshes)
+                    {
+                        if (swoosh != null && swoosh.Active)
+                        {
+                            float _point = 0f;
+                            Vector2 center = swoosh.center;
+                            Vector2 unit = swoosh.rotation.ToRotationVector2() * swoosh.scaler * swoosh.xScaler;
+                            if (Collision.CheckAABBvLineCollision(target.Hitbox.TopLeft(), target.Hitbox.Size(), center - .5f * unit, center + unit, scaler, ref _point))
+                            {
+                                canHit = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                goto mylabel;
+            }
+            if (style == ConfigurationNormal.HitBoxStyle.线状AABBLine) goto mylabel;
+            return false;
+        mylabel:
+            float point = 0f;
+            canHit |= Collision.CheckAABBvLineCollision(target.Hitbox.TopLeft(), target.Hitbox.Size(), player.Center, HitboxPosition + player.Center, 32, ref point);
+            return canHit && !target.dontTakeDamage && player.CanNPCBeHitByPlayerOrPlayerProjectile(target);
+        }
         public override void OnEnterWorld(Player player)
         {
 
@@ -154,7 +196,9 @@ namespace CoolerItemVisualEffect
                 var newVec = u2 + v2;
                 //var _f = f * f;
                 //_f = MathHelper.Clamp(_f, 0, 1);
-                vertexInfos[2 * i] = new CustomVertexInfo(newVec, colorInfo.color with { A = (byte)((1 - f).HillFactor2(1) * 255) }, new Vector3(1 - f, 1, alphaLight));//(byte)(_f * 255)//drawCen + 
+                var _flag = (byte)ConfigurationSwoosh.swooshActionStyle > 0 && (byte)ConfigurationSwoosh.swooshActionStyle < 9;
+                var progress = _flag ? Utils.GetLerpValue(player.itemAnimationMax, 18, player.itemAnimation, true) : 1f;
+                vertexInfos[2 * i] = new CustomVertexInfo(newVec, colorInfo.color with { A = (byte)((1 - f).HillFactor2(1) * 255 * progress) }, new Vector3(1 - f, 1, alphaLight));//(byte)(_f * 255)//drawCen + 
                 vertexInfos[2 * i + 1] = new CustomVertexInfo(default, colorInfo.color with { A = 0 }, new Vector3(0, 0, alphaLight));//drawCen
             }
 
@@ -298,17 +342,21 @@ namespace CoolerItemVisualEffect
         //public float a;
         //public float b;
         //public float c;
+        public bool IsMeleeBroadSword => CoolerItemVisualEffect.MeleeCheck(player.HeldItem.DamageType) || ConfigurationSwoosh.ignoreDamageType;
+        public float strengthOfShake;
         public override void ModifyScreenPosition()
         {
             //player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && player.itemAnimation > 0 && player.HeldItem.DamageType == DamageClass.Melee && !player.HeldItem.noUseGraphic && ConfigSwooshInstance.CoolerSwooshActive && !Main.gamePaused && (!ConfigSwooshInstance.ToolsNoUseNewSwooshEffect || player.HeldItem.axe == 0 && player.HeldItem.hammer == 0 && player.HeldItem.pick == 0) || player.HeldItem.type == ItemID.Zenith && player.itemAnimation > 0 && ConfigSwooshInstance.allowZenith
             if (UseSlash)
             {
-                var fac = FactorGeter;
-                fac *= 4 * (1 - fac);
-                fac = MathHelper.Clamp(2 * fac - 1, 0, 1);
-                Main.screenPosition += Main.rand.NextVector2Unit() * fac * 24 * ConfigurationSwoosh.shake * (swingCount % 3 == 0 ? 3 : 1);
+                //var fac = FactorGeter;
+                //fac *= 4 * (1 - fac);
+                //fac = MathHelper.Clamp(2 * fac - 1, 0, 1);
+                //Main.screenPosition += Main.rand.NextVector2Unit() * fac * 24 * ConfigurationSwoosh.shake * (swingCount % 3 == 0 ? 3 : 1);
+                strengthOfShake *= 0.8f;
+                if (strengthOfShake < 0.25f) strengthOfShake = 0;
+                Main.screenPosition += Main.rand.NextVector2Unit() * strengthOfShake * 24 * ConfigurationSwoosh.shake;
             }
-            base.ModifyScreenPosition();
         }
         public override void PreUpdate()
         {
@@ -347,16 +395,21 @@ namespace CoolerItemVisualEffect
                 }
                 //Main.NewText(player.HeldItem.noUseGraphic);
             }
-            var flag = player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && player.HeldItem.DamageType == DamageClass.Melee && !player.HeldItem.noUseGraphic;
+            var flag = player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && IsMeleeBroadSword && !player.HeldItem.noUseGraphic;
             flag |= player.HeldItem.type.SpecialCheck() && ConfigurationSwoosh.allowZenith;
             if (flag && player.itemAnimation > 0) swooshTimeCounter = 0; else swooshTimeCounter++;
             if (swooshTimeCounter >= 15)
             {
                 swooshTimeCounter = 0;
                 swingCount = 0;
+                SetActionValue();
+                SetActionSpeed();
             }
             if ((player.itemAnimation == player.itemAnimationMax || player.itemAnimation == 0) && lastItemAnimation == 1 && flag && ConfigurationSwoosh.coolerSwooshQuality == QualityType.极限ultra && HitboxPosition != default)
             {
+
+                SetActionSpeed();
+
                 for (int n = 0; n < 60; n++)
                 {
                     var ultra = ultraSwooshes[n];
@@ -434,17 +487,95 @@ namespace CoolerItemVisualEffect
 
             }
         }
+        public override float UseSpeedMultiplier(Item item) => ConfigurationSwoosh.actionOffsetSpeed ? actionOffsetSpeed : 1f;
+        public override void ModifyHitNPC(Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
+        {
+            if (ConfigurationSwoosh.actionModifyEffect)
+            {
+                damage = (int)(damage * actionOffsetDamage);
+                strengthOfShake = actionOffsetDamage * Main.rand.NextFloat(0.85f, 1.15f);
+                knockback = (int)(damage * actionOffsetKnockBack);
+                var _crit = player.GetWeaponCrit(item);
+                _crit += actionOffsetCritAdder;
+                _crit = (int)(_crit * actionOffsetCritMultiplyer);
+                crit = Main.rand.Next(100) < _crit;
+            }
+        }
+        private void SetActionValue(float size = 1f /*,float speed = 1f*/, float knockBack = 1f, float damage = 1f, int critAdder = 0, float critMultiplyer = 1f)
+        {
+            actionOffsetSize = size;
+            //actionOffsetSpeed = speed;
+            actionOffsetDamage = damage;
+            actionOffsetCritAdder = critAdder;
+            actionOffsetCritMultiplyer = critMultiplyer;
+        }
+        private void SetActionSpeed()
+        {
+            var action = ConfigurationSwoosh.swooshActionStyle;
+            switch (action)
+            {
+                case SwooshAction.左右横劈:
+                case SwooshAction.左右横劈_后倾:
+                case SwooshAction.左右横劈_后倾_旧:
+                case SwooshAction.左右横劈_失败:
+                default:
+                    actionOffsetSpeed = 1f;
+                    break;
+                case SwooshAction.重斩:
+                    actionOffsetSpeed = 0.5f;
+                    break;
+                case SwooshAction.上挑:
+                    actionOffsetSpeed = 0.5f;
+                    break;
+                case SwooshAction.腾云斩:
+                    CloudSpeed((swingCount + 1) % 3);
+                    break;
+                case SwooshAction.旋风劈:
+                    WindSpeed((swingCount + 1) % 3);
+                    break;
+                case SwooshAction.流雨断:
+                    RainSpeed((swingCount + 1) % 8);
+                    break;
+                case SwooshAction.鸣雷刺:
+                    ThunderSpeed((swingCount + 1) % 4);
+                    break;
+                case SwooshAction.风暴灭却剑:
+                    //雷雨风云 雨雷云风
+                    var sc = (swingCount + 1) % 36;
+                    if (sc < 4) ThunderSpeed(sc);
+                    else if (sc < 12) RainSpeed(sc - 4);
+                    else if (sc < 15) WindSpeed(sc - 12);
+                    else if (sc < 18) CloudSpeed(sc - 15);
+                    else if (sc < 26) RainSpeed(sc - 18);
+                    else if (sc < 30) ThunderSpeed(sc - 26);
+                    else if (sc < 33) CloudSpeed(sc - 30);
+                    else WindSpeed(sc - 33);
+                    break;
+            }
+        }
         private void CloudSet(int counter, out float _newKValue)
         {
-            negativeDir = (counter == 2) ^ player.direction == -1;
-            _newKValue = (counter == 2) ? Main.rand.NextFloat(0.5f, .8f) : Main.rand.NextFloat(1, 1.2f);
-            actionOffsetSize = (counter == 2) ? Main.rand.NextFloat(1f, 1.25f) : Main.rand.NextFloat(1f, 1.5f);
+            var flag = counter == 2;
+            negativeDir = flag ^ player.direction == -1;
+            _newKValue = flag ? Main.rand.NextFloat(0.5f, .8f) : Main.rand.NextFloat(1, 1.2f);
+            SetActionValue
+                (
+                    flag ? Main.rand.NextFloat(1f, 1.25f) : Main.rand.NextFloat(1f, 1.5f),
+                    /*flag ? 0.33f : 0.5f,*/ flag ? 2f : 1.5f, flag ? 2.5f : 2, 4, 1.05f
+                );
         }
         private void WindSet(int counter, out float _newKValue)
         {
             negativeDir ^= true;
             _newKValue = Main.rand.NextFloat(1, 2);
-            actionOffsetSize = counter == 2 ? 1.5f : 1f;
+            var flag = counter == 2;
+            if (flag)
+                SetActionValue
+                (
+                    1.5f,
+                    /*0.33f,*/ 1.5f, 2, 6, 1.1f
+                );
+            else SetActionValue();
         }
         private void RainSet(int counter, out float _newKValue)
         {
@@ -452,21 +583,47 @@ namespace CoolerItemVisualEffect
             {
                 negativeDir = player.direction == -1;
                 _newKValue = Main.rand.NextFloat(1, 1.2f);
-                actionOffsetSize = Main.rand.NextFloat(1f, 1.5f);
+                SetActionValue
+                    (
+                        Main.rand.NextFloat(1f, 1.5f),
+                        /*0.5f,*/ 1.5f, 2, 4, 1.05f
+                    );
             }
             else
             {
                 negativeDir = counter % 2 == 1 ^ player.direction == -1;
                 _newKValue = counter == 7 ? Main.rand.NextFloat(2, 3f) : Main.rand.NextFloat(1.5f, 2f);
-                actionOffsetSize = counter == 7 ? Main.rand.NextFloat(2, 3) : 1;
+                if (counter == 7)
+                    SetActionValue
+                        (
+                            Main.rand.NextFloat(2, 3),
+                            //0.25f,
+                            2f,
+                            3,
+                            6,
+                            1.1f
+                        );
+                else SetActionValue();
             }
         }
         private void ThunderSet(int counter, out float _newKValue)
         {
             negativeDir ^= true;
             _newKValue = counter == 3 ? Main.rand.NextFloat(4f, 7f) : Main.rand.NextFloat(3f, 4.5f);
-            actionOffsetSize = swingCount % 4 == 3 ? 2f : 1.25f;
+            SetActionValue
+                (
+                    counter % 4 == 3 ? 2f : 1.25f,
+                    //1.5f,
+                    .75f,
+                    0.8f,
+                    2,
+                    .9f
+                );
         }
+        private void CloudSpeed(int counter) => actionOffsetSpeed = counter == 2 ? 0.33f : 0.5f;
+        private void WindSpeed(int counter) => actionOffsetSpeed = counter == 2 ? 0.33f : 1f;
+        private void RainSpeed(int counter) => actionOffsetSpeed = counter < 3 ? .5f : (counter == 7 ? 0.25f : 1f);
+        private void ThunderSpeed(int counter) => actionOffsetSpeed = 1.5f;
         public void ChangeShooshStyle()
         {
             var vec = Main.MouseWorld - player.Center;
@@ -484,17 +641,17 @@ namespace CoolerItemVisualEffect
                 default:
                     negativeDir ^= true;
                     _newKValue = Main.rand.NextFloat(1, 2);
-                    actionOffsetSize = 1f;
+                    SetActionValue();
                     break;
                 case SwooshAction.重斩:
                     negativeDir = player.direction == -1;
                     _newKValue = Main.rand.NextFloat(1, 1.2f);
-                    actionOffsetSize = Main.rand.NextFloat(1f, 1.5f);
+                    SetActionValue(Main.rand.NextFloat(1f, 1.5f)/*, .5f*/, 1.5f, 2, 4, 1.05f);
                     break;
                 case SwooshAction.上挑:
                     negativeDir = player.direction == 1;
                     _newKValue = Main.rand.NextFloat(0.5f, .8f);
-                    actionOffsetSize = Main.rand.NextFloat(1f, 1.25f);
+                    SetActionValue(Main.rand.NextFloat(1f, 1.25f)/*, .5f*/, 1.5f, 2, 4, 1.05f);
                     break;
                 case SwooshAction.腾云斩:
                     CloudSet(swingCount % 3, out _newKValue);
@@ -681,7 +838,7 @@ namespace CoolerItemVisualEffect
             //    }
             //}
             if (ConfigurationSwoosh.showHeatMap && colorInfo.tex != null && !Main.gameMenu)
-                Main.spriteBatch.Draw(colorInfo.tex, player.Center - Main.screenPosition + new Vector2(0, -96), null, Color.White, 0, new Vector2(150, .5f), new Vector2(1, 50f), SpriteEffects.None, 0);
+                Main.spriteBatch.Draw(colorInfo.tex, player.Center - Main.screenPosition + new Vector2(-760, -340), null, Color.White, 0, new Vector2(150, .5f), new Vector2(1, 50f), SpriteEffects.None, 0);
 
             //Main.spriteBatch.Draw(colorInfo.tex, new Rectangle(200, 200, 300, 50), Color.White);
             //HitboxPosition = Vector2.Zero;//重置
@@ -778,7 +935,7 @@ namespace CoolerItemVisualEffect
             {//动态武器
                 rectangle = Main.itemAnimations[holditem.type].GetFrame(texture, -1);
             }
-            DrawData item = new DrawData(texture, value5, new Rectangle?(rectangle), drawInfo.colorArmorBody, rot, origin, ConfigurationNormal.instance.WeaponScale * holditem.scale, drawInfo.playerEffect, 0);
+            DrawData item = new DrawData(texture, value5, new Rectangle?(rectangle), drawInfo.colorArmorBody, rot, origin, ConfigurationNormal.instance.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
             //switch (CoolerItemVisualEffect.Config.DyeUsed)
             //{
             //    case DyeSlot.None:
@@ -800,7 +957,7 @@ namespace CoolerItemVisualEffect
             if (holditem.glowMask >= 0)
             {
                 Texture2D glow = TextureAssets.GlowMask[holditem.glowMask].Value;
-                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, ConfigurationNormal.instance.WeaponScale * holditem.scale, drawInfo.playerEffect, 0);
+                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, ConfigurationNormal.instance.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
                 //switch (CoolerItemVisualEffect.Config.DyeUsed)
                 //{
                 //    case DyeSlot.None:
@@ -823,7 +980,7 @@ namespace CoolerItemVisualEffect
             if (holditem.ModItem != null && ModContent.HasAsset(holditem.ModItem.Texture + "_Glow"))
             {
                 Texture2D glow = ModContent.Request<Texture2D>(holditem.ModItem.Texture + "_Glow").Value;
-                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, ConfigurationNormal.instance.WeaponScale * holditem.scale, drawInfo.playerEffect, 0);
+                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, ConfigurationNormal.instance.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
                 drawInfo.DrawDataCache.Add(itemglow);
             }
         }

@@ -103,7 +103,7 @@ Mods:{
             Wind Slash
             Rain Slash
             Thunder Slash
-			Storm Ultra Slash
+            Storm Ultra Slash
             Transverse Splitting_EX_Old
             Transverse Splitting_Failed
 			'''
@@ -181,6 +181,17 @@ Mods:{
 			68:Not "Weighted Average" And "Diagonal Color Of The Enabled Weapon"
 			69:Change Swoosh Size As ActionStyle Changes
 			70:Change As ActionStyle Changes,Don't You Want It?
+			71:Mode Of Melee Hit Box
+			72:
+			'''
+			Although I Said "Visual Effect Modify", But I Need To Consider The Balance Of Visual Effect And Hit Box
+			'''
+			73:Change Use Time As ActionStyle Changes
+			74:Notice: This Will Out The Range Of "Visual Effect",Please Consider It
+			75:Change Use Effect As ActionStyle Changes(Work In Progress)
+			76:Notice: This Will Out The Range Of "Visual Effect",Please Consider It
+			77:Ignore The Damage Type
+			78:Even If It Is A Magic Staff？？！！
 		}
 		Config:{
 			Label:Visual Settings

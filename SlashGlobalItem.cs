@@ -143,11 +143,11 @@ namespace CoolerItemVisualEffect
     //    //    }
     //    //}
     //}
-    public class SlashGlobalItem : GlobalItem 
+    public class SlashGlobalItem : GlobalItem
     {
         public override bool AppliesToEntity(Item item, bool lateInstantiation)
         {
-            bool useSlashEffect = item.useStyle == ItemUseStyleID.Swing && item.DamageType == DamageClass.Melee;
+            bool useSlashEffect = item.useStyle == ItemUseStyleID.Swing && (CoolerItemVisualEffect.MeleeCheck(item.DamageType) || ConfigurationSwoosh_Advanced.ConfigSwooshInstance.ignoreDamageType);
             if (ConfigurationSwoosh_Advanced.ConfigSwooshInstance.toolsNoUseNewSwooshEffect)
             {
                 useSlashEffect = useSlashEffect && item.axe == 0 && item.hammer == 0 && item.pick == 0;
