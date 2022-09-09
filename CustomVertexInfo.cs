@@ -20,7 +20,12 @@ namespace CoolerItemVisualEffect
             Color = color;
             TexCoord = texCoord;
         }
-
+        public CustomVertexInfo(Vector2 position, float alpha, Vector3 texCoord)
+        {
+            Position = position;
+            Color = Color.White with { A = (byte)(MathHelper.Clamp(255 * alpha, 0, 255)) };
+            TexCoord = texCoord;
+        }
         public CustomVertexInfo(Vector2 position, Vector3 texCoord)
         {
             Position = position;

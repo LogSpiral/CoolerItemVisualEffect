@@ -74,7 +74,7 @@ namespace CoolerItemVisualEffect
                             vcolor += cs[i].ToVector4() * weight;
                             count += weight;
                         }
-                        Vector2 coord = new Vector2(n % w, n / w);
+                        Vector2 coord = new Vector2(i % w, i / w);
                         coord /= new Vector2(w, he);
                         if (ConfigSwooshInstance.checkAir && Math.Abs(1 - coord.X - coord.Y) * 0.7071067811f < 0.05f && cs[i] != default && target == default)
                         {
@@ -173,7 +173,7 @@ namespace CoolerItemVisualEffect
 
         private void Main_DrawProjectiles_CoolerSwoosh(On.Terraria.Main.orig_DrawProjectiles orig, Main self)
         {
-            if (CanUseRender) goto myLabel;
+            if (CanUseRender) goto _myLabel;
             List<Projectile> pureFractals = new List<Projectile>();
             List<Projectile> firstZeniths = new List<Projectile>();
             var trans = Main.GameViewMatrix != null ? Main.GameViewMatrix.TransformationMatrix : Matrix.Identity;
@@ -210,8 +210,8 @@ namespace CoolerItemVisualEffect
                         var realColor = new Color(151, 145, 186);
                         var hsl = new Vector3(0.691667f, 0.229166f, 0.65f);
                         var multiValue = 1 - projectile.localAI[0] / 90f;
-                        bars.Add(new CustomVertexInfo(projectile.oldPos[0] + projectile.oldRot[0].ToRotationVector2() * _scaler * ConfigSwooshInstance.swooshSize, default, new Vector3(1, 1, 0.6f)));
-                        bars.Add(new CustomVertexInfo(projectile.oldPos[0], default, new Vector3(0, 0, 0.6f)));
+                        bars.Add(new CustomVertexInfo(projectile.oldPos[0] + projectile.oldRot[0].ToRotationVector2() * _scaler * ConfigSwooshInstance.swooshSize, default(Color), new Vector3(1, 1, 0.6f)));
+                        bars.Add(new CustomVertexInfo(projectile.oldPos[0], default(Color), new Vector3(0, 0, 0.6f)));
                         for (int i = 0; i < max; i++)
                         {
                             var f = i / (max - 1f);
@@ -322,7 +322,8 @@ namespace CoolerItemVisualEffect
                     sb.End();
                 }
             }
-        myLabel:
+        _myLabel:
+
             orig(self);
         }
         public static Texture2D emptyTex;
@@ -368,8 +369,8 @@ namespace CoolerItemVisualEffect
                         var realColor = new Color(151, 145, 186);
                         var hsl = new Vector3(0.691667f, 0.229166f, 0.65f);
                         var multiValue = 1 - projectile.localAI[0] / 90f;
-                        bars.Add(new CustomVertexInfo(projectile.oldPos[0] + projectile.oldRot[0].ToRotationVector2() * _scaler * ConfigSwooshInstance.swooshSize, default, new Vector3(1, 1, 0.6f)));
-                        bars.Add(new CustomVertexInfo(projectile.oldPos[0], default, new Vector3(0, 0, 0.6f)));
+                        bars.Add(new CustomVertexInfo(projectile.oldPos[0] + projectile.oldRot[0].ToRotationVector2() * _scaler * ConfigSwooshInstance.swooshSize, default(Color), new Vector3(1, 1, 0.6f)));
+                        bars.Add(new CustomVertexInfo(projectile.oldPos[0], default(Color), new Vector3(0, 0, 0.6f)));
                         for (int i = 0; i < max; i++)
                         {
                             var f = i / (max - 1f);
@@ -896,6 +897,7 @@ namespace CoolerItemVisualEffect
         internal static Effect FinalFractalTailEffect => finalFractalTailEffect ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/FinalFractalTailEffect").Value;
         internal static Effect ColorfulEffect => colorfulEffect ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/ColorfulEffect").Value;
 
+        internal static Effect EightTrigramsFurnaceEffect => eightTrigramsFurnaceEffect ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/EightTrigramsFurnaceEffect").Value;
 
         internal static Effect shaderSwooshEX;
         internal static Effect itemEffect;
@@ -903,6 +905,7 @@ namespace CoolerItemVisualEffect
         internal static Effect distortEffect;
         internal static Effect finalFractalTailEffect;
         internal static Effect colorfulEffect;
+        internal static Effect eightTrigramsFurnaceEffect;
         public static bool MeleeCheck(DamageClass damageClass) => damageClass == DamageClass.Melee 
             || damageClass.GetEffectInheritance(DamageClass.Melee) || !damageClass.GetModifierInheritance(DamageClass.Melee).Equals(StatInheritanceData.None);
         public static bool CanUseRender => Lighting.Mode != Terraria.Graphics.Light.LightMode.Retro && Lighting.Mode != Terraria.Graphics.Light.LightMode.Trippy && Main.WaveQuality != 0 && (byte)ConfigSwooshInstance.coolerSwooshQuality > 1;
@@ -910,7 +913,7 @@ namespace CoolerItemVisualEffect
         {
             var drawPlayer = drawinfo.drawPlayer;
             var modPlayer = drawPlayer.GetModPlayer<CoolerItemVisualEffectPlayer>();
-            var instance = (Main.netMode == NetmodeID.SinglePlayer || drawPlayer.whoAmI == Main.myPlayer) ? ConfigurationSwoosh_Advanced.ConfigSwooshInstance : modPlayer.ConfigurationSwoosh;
+            var instance = (Main.netMode == NetmodeID.SinglePlayer || drawPlayer.whoAmI == Main.myPlayer) ? ConfigSwooshInstance : modPlayer.ConfigurationSwoosh;
             Item heldItem = drawinfo.heldItem;
             bool flag = drawPlayer.itemAnimation > 0 && heldItem.useStyle != ItemUseStyleID.None;
             bool flag2 = heldItem.holdStyle != 0 && !drawPlayer.pulley;

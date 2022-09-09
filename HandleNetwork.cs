@@ -14,7 +14,8 @@ namespace CoolerItemVisualEffect
             Configs,
             EnterWorld,
             PureFractal,
-            FinalFractalPlayer
+            FinalFractalPlayer,
+            ActionOffsetSpeed
         }
 
         internal static void HandlePacket(BinaryReader reader, int whoAmI)
@@ -40,6 +41,11 @@ namespace CoolerItemVisualEffect
                             float kValueNext = reader.ReadSingle();
                             bool UseSlash = reader.ReadBoolean();
                             float offsetSize = reader.ReadSingle();
+                            float offsetDamage = reader.ReadSingle();
+                            float offsetKnockBack = reader.ReadSingle();
+                            int offsetCritAdder = reader.ReadInt32();
+                            float offsetCritMultiplyer = reader.ReadSingle();
+
                             CoolerItemVisualEffectPlayer modPlayer = Main.player[whoAmI].GetModPlayer<CoolerItemVisualEffectPlayer>();
                             modPlayer.negativeDir = negativeDir;
                             modPlayer.rotationForShadow = rotationForShadow;
@@ -49,6 +55,10 @@ namespace CoolerItemVisualEffect
                             modPlayer.kValueNext = kValueNext;
                             modPlayer.UseSlash = UseSlash;
                             modPlayer.actionOffsetSize = offsetSize;
+                            modPlayer.actionOffsetDamage = offsetDamage;
+                            modPlayer.actionOffsetKnockBack = offsetKnockBack;
+                            modPlayer.actionOffsetCritAdder = offsetCritAdder;
+                            modPlayer.actionOffsetCritMultiplyer = offsetCritMultiplyer;
 
                             ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
                             packet.Write((byte)MessageType.BasicStats);
@@ -60,7 +70,22 @@ namespace CoolerItemVisualEffect
                             packet.Write(kValueNext);
                             packet.Write(UseSlash);
                             packet.Write(offsetSize);
+                            packet.Write(offsetDamage);
+                            packet.Write(offsetKnockBack);
+                            packet.Write(offsetCritAdder);
+                            packet.Write(offsetCritMultiplyer);
                             packet.Write((byte)whoAmI);
+                            packet.Send(-1, whoAmI);
+                            return;
+                        }
+                    case MessageType.ActionOffsetSpeed: 
+                        {
+                            var offsetSpeed = reader.ReadSingle();
+                            Main.player[whoAmI].GetModPlayer<CoolerItemVisualEffectPlayer>().actionOffsetSpeed = offsetSpeed;
+                            ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
+                            packet.Write((byte)MessageType.ActionOffsetSpeed);
+                            packet.Write((byte)whoAmI);
+                            packet.Write(offsetSpeed);
                             packet.Send(-1, whoAmI);
                             return;
                         }
@@ -169,6 +194,11 @@ namespace CoolerItemVisualEffect
                             float kValue = reader.ReadSingle();
                             float kValueNext = reader.ReadSingle();
                             bool UseSlash = reader.ReadBoolean();
+                            float offsetSize = reader.ReadSingle();
+                            float offsetDamage = reader.ReadSingle();
+                            float offsetKnockBack = reader.ReadSingle();
+                            int offsetCritAdder = reader.ReadInt32();
+                            float offsetCritMultiplyer = reader.ReadSingle();
                             int playerIndex = reader.ReadByte();
 
                             CoolerItemVisualEffectPlayer modPlayer = Main.player[playerIndex].GetModPlayer<CoolerItemVisualEffectPlayer>();
@@ -179,7 +209,16 @@ namespace CoolerItemVisualEffect
                             modPlayer.kValue = kValue;
                             modPlayer.kValueNext = kValueNext;
                             modPlayer.UseSlash = UseSlash;
-                            modPlayer.actionOffsetSize = reader.ReadSingle();
+                            modPlayer.actionOffsetSize = offsetSize;
+                            modPlayer.actionOffsetDamage = offsetDamage;
+                            modPlayer.actionOffsetKnockBack = offsetKnockBack;
+                            modPlayer.actionOffsetCritAdder = offsetCritAdder;
+                            modPlayer.actionOffsetCritMultiplyer = offsetCritMultiplyer;
+                            return;
+                        }
+                    case MessageType.ActionOffsetSpeed: 
+                        {
+                            Main.player[reader.ReadByte()].GetModPlayer<CoolerItemVisualEffectPlayer>().actionOffsetSpeed = reader.ReadSingle();
                             return;
                         }
                     case MessageType.Hitbox:

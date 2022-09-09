@@ -181,8 +181,8 @@ namespace CoolerItemVisualEffect.Weapons
             //airFactor = reader.ReadSingle();
         }
         Projectile projectile => Projectile;
-        Color newColor => CoolerItemVisualEffect.PureFractalColors[Projectile.frame];
-        float airFactor => CoolerItemVisualEffect.PureFractalAirFactorss[Projectile.frame];
+        Color newColor => PureFractalColors[Projectile.frame];
+        float airFactor => PureFractalAirFactorss[Projectile.frame];
         public override void PostAI()
         {
             Vector2 value1 = Main.player[projectile.owner].position - Main.player[projectile.owner].oldPosition;

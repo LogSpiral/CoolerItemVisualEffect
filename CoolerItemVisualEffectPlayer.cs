@@ -81,6 +81,13 @@ namespace CoolerItemVisualEffect
             //bool? modCanHit = CombinedHooks.CanPlayerHitNPCWithItem(this, sItem, Main.npc[i]);
             var style = ConfigurationNormal.instance.hitBoxStyle;
             if (style == 0 || style == ConfigurationNormal.HitBoxStyle.矩形Rectangle || ConfigurationSwoosh.coolerSwooshQuality == QualityType.关off) return null;
+            if (ConfigurationSwoosh.actionModifyEffect)
+            {
+                if (player.itemAnimation > 18)
+                    return false;
+                else
+                    player.attackCD = 0;
+            }
             var canHit = false;
 
             if (style == ConfigurationNormal.HitBoxStyle.剑气UltraSwoosh)
@@ -92,11 +99,15 @@ namespace CoolerItemVisualEffect
                         if (swoosh != null && swoosh.Active)
                         {
                             float _point = 0f;
-                            Vector2 center = swoosh.center;
-                            Vector2 unit = swoosh.rotation.ToRotationVector2() * swoosh.scaler * swoosh.xScaler;
-                            if (Collision.CheckAABBvLineCollision(target.Hitbox.TopLeft(), target.Hitbox.Size(), center - .5f * unit, center + unit, scaler, ref _point))
+                            Vector2 unit = swoosh.rotation.ToRotationVector2() * swoosh.scaler * swoosh.xScaler * 2;
+                            var num = 1 - swoosh.timeLeft / (float)swoosh.timeLeftMax;
+                            Vector2 adder = (unit * 0.25f + swoosh.rotation.ToRotationVector2() * scaler * 4f) * (ConfigurationSwoosh.IsOffestGrow ? num : 0);
+                            if (ConfigurationSwoosh.growStyle == SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest) adder *= 0.25f;
+                            Vector2 center = swoosh.center + adder;
+                            if (Collision.CheckAABBvLineCollision(target.Hitbox.TopLeft(), target.Hitbox.Size(), center - .5f * unit, center + unit, scaler * 2, ref _point))
                             {
                                 canHit = true;
+                                //Main.NewText("事剑气诶！");
                                 break;
                             }
                         }
@@ -106,10 +117,11 @@ namespace CoolerItemVisualEffect
             }
             if (style == ConfigurationNormal.HitBoxStyle.线状AABBLine) goto mylabel;
             return false;
+
         mylabel:
             float point = 0f;
             canHit |= Collision.CheckAABBvLineCollision(target.Hitbox.TopLeft(), target.Hitbox.Size(), player.Center, HitboxPosition + player.Center, 32, ref point);
-            return canHit && !target.dontTakeDamage && player.CanNPCBeHitByPlayerOrPlayerProjectile(target);
+            return canHit && !target.dontTakeDamage && player.CanNPCBeHitByPlayerOrPlayerProjectile(target) && !target.friendly;
         }
         public override void OnEnterWorld(Player player)
         {
@@ -197,7 +209,7 @@ namespace CoolerItemVisualEffect
                 //var _f = f * f;
                 //_f = MathHelper.Clamp(_f, 0, 1);
                 var _flag = (byte)ConfigurationSwoosh.swooshActionStyle > 0 && (byte)ConfigurationSwoosh.swooshActionStyle < 9;
-                var progress = _flag ? Utils.GetLerpValue(player.itemAnimationMax, 18, player.itemAnimation, true) : 1f;
+                var progress = _flag ? Utils.GetLerpValue(MathHelper.Clamp(player.itemAnimationMax, 18, 114514), 18, player.itemAnimation, true) : 1f;
                 vertexInfos[2 * i] = new CustomVertexInfo(newVec, colorInfo.color with { A = (byte)((1 - f).HillFactor2(1) * 255 * progress) }, new Vector3(1 - f, 1, alphaLight));//(byte)(_f * 255)//drawCen + 
                 vertexInfos[2 * i + 1] = new CustomVertexInfo(default, colorInfo.color with { A = 0 }, new Vector3(0, 0, alphaLight));//drawCen
             }
@@ -369,13 +381,20 @@ namespace CoolerItemVisualEffect
             //        break;
             //    }
             //}
+            if (ConfigurationSwoosh.actionModifyEffect && player.itemAnimation < 18)
+            {
+                player.attackCD = 0;
+            }
         }
         public override void PostUpdate()
         {
             //base.PostUpdate();
-
+            if (ConfigurationSwoosh.actionModifyEffect && player.itemAnimation < 18)
+            {
+                player.attackCD = 0;
+            }
             //Main.NewText($"这事颜色{colorInfo.color}  {hsl}", colorInfo.color);
-            //TODO 整出新的热度图生成模式 修复alphablend判定bug 修复无法出现黑色的bug
+            //TODO 整出新的热度图生成模式 修复无法出现黑色的bug 增加剑气像素精度设置(1*1 2*2 3*3...)
             if (Player.HeldItem.type.SpecialCheck())
             {
                 if (ConfigurationSwoosh.allowZenith && ConfigurationSwoosh.CoolerSwooshActive)
@@ -494,7 +513,7 @@ namespace CoolerItemVisualEffect
             {
                 damage = (int)(damage * actionOffsetDamage);
                 strengthOfShake = actionOffsetDamage * Main.rand.NextFloat(0.85f, 1.15f);
-                knockback = (int)(damage * actionOffsetKnockBack);
+                knockback = knockback * actionOffsetKnockBack;
                 var _crit = player.GetWeaponCrit(item);
                 _crit += actionOffsetCritAdder;
                 _crit = (int)(_crit * actionOffsetCritMultiplyer);
@@ -505,6 +524,7 @@ namespace CoolerItemVisualEffect
         {
             actionOffsetSize = size;
             //actionOffsetSpeed = speed;
+            actionOffsetKnockBack = knockBack;
             actionOffsetDamage = damage;
             actionOffsetCritAdder = critAdder;
             actionOffsetCritMultiplyer = critMultiplyer;
@@ -551,6 +571,14 @@ namespace CoolerItemVisualEffect
                     else if (sc < 33) CloudSpeed(sc - 30);
                     else WindSpeed(sc - 33);
                     break;
+            }
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
+                packet.Write((byte)HandleNetwork.MessageType.ActionOffsetSpeed);
+                packet.Write(actionOffsetSpeed);
+                packet.Send(-1, -1); // 发包到服务器上 再由服务器转发到其他客户端
+                NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, Main.myPlayer); // 同步direction
             }
         }
         private void CloudSet(int counter, out float _newKValue)
@@ -741,8 +769,12 @@ namespace CoolerItemVisualEffect
                 packet.Write(kValueNext);
                 packet.Write(UseSlash);
                 packet.Write(actionOffsetSize);
+                packet.Write(actionOffsetDamage);
+                packet.Write(actionOffsetKnockBack);
+                packet.Write(actionOffsetCritAdder);
+                packet.Write(actionOffsetCritMultiplyer);
                 packet.Send(-1, -1); // 发包到服务器上 再由服务器转发到其他客户端
-                NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, player.whoAmI); // 同步direction
+                NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, Main.myPlayer); // 同步direction
             }
         }
         public float RealSize => ConfigurationSwoosh.swooshSize * (ConfigurationSwoosh.actionOffsetSize ? actionOffsetSize : 1);
@@ -759,7 +791,10 @@ namespace CoolerItemVisualEffect
         //}
         public override void ResetEffects()
         {
-
+            //if (player.HeldItem.type == ItemID.MagicMirror && player.ItemAnimationActive)
+            //{
+            //    Main.NewText((player.itemTime, player.itemTimeMax, player.itemAnimation, player.itemAnimationMax));
+            //}
 
             //if (player.controlUseItem || (player.controlUseTile && player.altFunctionUse == 2) || (scaler > 0 && scaler < 15))
             //{
@@ -823,7 +858,15 @@ namespace CoolerItemVisualEffect
 
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
         {
+            if (ConfigurationNormal.instance.TeleprotEffectActive && player.HeldItem.type == ItemID.MagicMirror && player.ItemAnimationActive)
+            {
+                var fac = player.itemAnimation / (float)player.itemAnimationMax;
+                var _fac = (fac * 2 % 1).HillFactor2() * (fac < .5f ? .5f : 1f);
+                var yscaler = (.25f +  fac * (fac - 1)) * 1.5f;
+                Main.spriteBatch.Draw(CoolerItemVisualEffectMethods.GetTexture("MagicZone/MagicZone_2"), player.Center + new Vector2(0, -128 + 256 * fac) - Main.screenPosition, null, Color.Cyan with { A = 0 } * _fac, 0, new Vector2(150), new Vector2(1, yscaler) * _fac, 0, 0);
 
+                Main.spriteBatch.Draw(CoolerItemVisualEffectMethods.GetTexture("MagicZone/MagicZone_2"), player.Center + new Vector2(0,128 - 256 * fac) - Main.screenPosition, null, Color.Cyan with { A = 0 } * _fac, 0, new Vector2(150), new Vector2(1, yscaler) * _fac, 0, 0);
+            }
             //foreach (var projectile in Main.projectile) 
             //{
             //    if (projectile.type == ProjectileID.FinalFractal && projectile.active) 
@@ -838,8 +881,12 @@ namespace CoolerItemVisualEffect
             //    }
             //}
             if (ConfigurationSwoosh.showHeatMap && colorInfo.tex != null && !Main.gameMenu)
-                Main.spriteBatch.Draw(colorInfo.tex, player.Center - Main.screenPosition + new Vector2(-760, -340), null, Color.White, 0, new Vector2(150, .5f), new Vector2(1, 50f), SpriteEffects.None, 0);
+            {
+                Main.spriteBatch.Draw(colorInfo.tex, player.Center - Main.screenPosition + (player.whoAmI == Main.myPlayer ? new Vector2(-760, -340) : new Vector2(0, -64)), null, Color.White, 0, new Vector2(150, .5f), new Vector2(1, 50f), SpriteEffects.None, 0);
+                //Main.spriteBatch.DrawString(FontAssets.MouseText.Value, (actionOffsetSize, actionOffsetSpeed, actionOffsetDamage, actionOffsetKnockBack, actionOffsetCritAdder, actionOffsetCritMultiplyer).ToString(), player.Center - Main.screenPosition + new Vector2(0, -64), Color.White);
+            }
 
+            //Main.spriteBatch.DrawLine(player.Center, HitboxPosition, Color.Red, 32, true, -Main.screenPosition);
             //Main.spriteBatch.Draw(colorInfo.tex, new Rectangle(200, 200, 300, 50), Color.White);
             //HitboxPosition = Vector2.Zero;//重置
             //Main.spriteBatch.DrawString(FontAssets.MouseText.Value, player.isFirstFractalAfterImage.ToString(), Player.Center - new Vector2(0, 64) - Main.screenPosition, Color.Red);

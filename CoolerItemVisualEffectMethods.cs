@@ -920,6 +920,730 @@ namespace CoolerItemVisualEffect
     }
     public static class CoolerItemVisualEffectMethods
     {
+        public static CustomVertexInfo[] TailVertexFromProj(this Projectile projectile, Vector2 Offset = default, float Width = 30, float alpha = 1, bool VeloTri = false, Color? mainColor = null)
+        {
+            List<CustomVertexInfo> bars = new List<CustomVertexInfo>();
+            int indexMax = -1;
+            for (int n = 0; n < projectile.oldPos.Length; n++) if (projectile.oldPos[n] == Vector2.Zero) { indexMax = n; break; }
+            //if(!Main.gamePaused)
+            //Main.NewText(projectile.oldPos[0]);
+            if (indexMax == -1) indexMax = projectile.oldPos.Length;
+            Offset += projectile.velocity;
+            var _mainColor = (mainColor ?? Color.Purple);
+            for (int i = 1; i < indexMax; ++i)
+            {
+                if (projectile.oldPos[i] == Vector2.Zero)
+                {
+                    break;
+                }
+                var normalDir = projectile.oldPos[i - 1] - projectile.oldPos[i];
+                normalDir = Vector2.Normalize(new Vector2(-normalDir.Y, normalDir.X));
+                var factor = i / (float)indexMax;
+                var w = 1 - factor;
+                bars.Add(new CustomVertexInfo(projectile.oldPos[i] + Offset + normalDir * Width, _mainColor * w, new Vector3((float)Math.Sqrt(factor), 1, alpha * .6f)));//w * 
+                bars.Add(new CustomVertexInfo(projectile.oldPos[i] + Offset + normalDir * -Width, _mainColor * w, new Vector3((float)Math.Sqrt(factor), 0, alpha * .6f)));//w * 
+            }
+            List<CustomVertexInfo> triangleList = new List<CustomVertexInfo>();
+            if (bars.Count > 2)
+            {
+                if (VeloTri)
+                {
+                    triangleList.Add(bars[0]);
+                    var vertex = new CustomVertexInfo((bars[0].Position + bars[1].Position) * 0.5f + Vector2.Normalize(projectile.velocity) * 30, _mainColor,
+                        new Vector3(0, 0.5f, alpha * .8f));
+                    triangleList.Add(bars[1]);
+                    triangleList.Add(vertex);
+                }
+
+                for (int i = 0; i < bars.Count - 2; i += 2)
+                {
+                    triangleList.Add(bars[i]);
+                    triangleList.Add(bars[i + 2]);
+                    triangleList.Add(bars[i + 1]);
+
+                    triangleList.Add(bars[i + 1]);
+                    triangleList.Add(bars[i + 2]);
+                    triangleList.Add(bars[i + 3]);
+                }
+            }
+            return triangleList.ToArray();
+        }
+        public static void DrawShaderTail(this SpriteBatch spriteBatch, Projectile projectile, Texture2D heatMap, Texture2D aniTex, Texture2D baseTex, float Width = 30, Vector2 Offset = default, float alpha = 1, bool VeloTri = false, bool additive = false, Color? mainColor = null)
+        {
+            var triangleList = projectile.TailVertexFromProj(Offset, Width, alpha, VeloTri, mainColor);
+            if (triangleList.Length < 3) return;
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            //RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
+            //var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
+            //var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
+            //IllusionBoundMod.DefaultEffect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
+            //IllusionBoundMod.DefaultEffect.Parameters["uTime"].SetValue(-(float)IllusionBoundMod.ModTime * 0.03f);
+            //Main.graphics.GraphicsDevice.Textures[0] = heatMap;
+            //Main.graphics.GraphicsDevice.Textures[1] = baseTex;
+            //Main.graphics.GraphicsDevice.Textures[2] = aniTex;
+            //Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
+            //Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;
+            //Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.PointWrap;
+            //IllusionBoundMod.DefaultEffect.CurrentTechnique.Passes[0].Apply();
+            //Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList, 0, triangleList.Length / 3);
+            //Main.graphics.GraphicsDevice.RasterizerState = originalState;
+            RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
+            var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
+            var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
+            ShaderSwooshEX.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
+            ShaderSwooshEX.Parameters["uTime"].SetValue(-(float)CoolerSystem.ModTime * 0.03f);
+
+            ShaderSwooshEX.Parameters["uLighter"].SetValue(0);
+            //CoolerItemVisualEffect.ShaderSwooshEX.Parameters["uTime"].SetValue(0);//-(float)Main.time * 0.06f
+            ShaderSwooshEX.Parameters["checkAir"].SetValue(false);
+            ShaderSwooshEX.Parameters["airFactor"].SetValue(1);
+            ShaderSwooshEX.Parameters["gather"].SetValue(false);
+            ShaderSwooshEX.Parameters["lightShift"].SetValue(0);
+            ShaderSwooshEX.Parameters["distortScaler"].SetValue(0);
+
+            Main.graphics.GraphicsDevice.Textures[0] = baseTex;
+            Main.graphics.GraphicsDevice.Textures[1] = aniTex;
+            Main.graphics.GraphicsDevice.Textures[2] = GetWeaponDisplayImage("BaseTex_8");
+            Main.graphics.GraphicsDevice.Textures[3] = heatMap;
+
+            Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
+            Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;
+            Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.PointWrap;
+            Main.graphics.GraphicsDevice.SamplerStates[3] = SamplerState.PointClamp;
+
+            ShaderSwooshEX.CurrentTechnique.Passes[mainColor == null ? 2 : 0].Apply();
+            Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList, 0, triangleList.Length / 3);
+            Main.graphics.GraphicsDevice.RasterizerState = originalState;
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Immediate, additive ? BlendState.Additive : BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        public static Vector2[] CatMullRomCurve(this Vector2[] vecs, int extraLength)
+        {
+            int l = vecs.Length;
+            extraLength += l;
+            Vector2[] scVecs = new Vector2[extraLength];
+            for (int n = 0; n < extraLength; n++)
+            {
+                float t = n / (float)extraLength;
+                float k = (l - 1) * t;
+                int i = (int)k;
+                float vk = k % 1;
+                if (i == 0)
+                {
+                    scVecs[n] = Vector2.CatmullRom(2 * vecs[0] - vecs[1], vecs[0], vecs[1], vecs[2], vk);
+                }
+                else if (i == l - 2)
+                {
+                    scVecs[n] = Vector2.CatmullRom(vecs[l - 3], vecs[l - 2], vecs[l - 1], 2 * vecs[l - 1] - vecs[l - 2], vk);
+                }
+                else
+                {
+                    scVecs[n] = Vector2.CatmullRom(vecs[i - 1], vecs[i], vecs[i + 1], vecs[i + 2], vk);
+                }
+            }
+            return scVecs;
+        }
+        public static Vector2[] CatMullRomCurve(this Vector2[] vecs, int extraLength, (int start, int end) range)
+        {
+            if (range.start >= range.end)
+            {
+                throw new Exception("你丫的找茬是吧，起点下标(start)必须小于终点下标(end)");
+            }
+
+            var (s, e) = range;
+            int l = e - s;
+            extraLength += l;
+            Vector2[] scVecs = new Vector2[extraLength];
+            for (int n = 0; n < extraLength; n++)
+            {
+                float t = n / (float)extraLength;
+                float k = (l - 1) * t;
+                int i = (int)k;
+                float vk = k % 1;
+                if (i == 0)
+                {
+                    scVecs[n] = Vector2.CatmullRom(2 * vecs[s] - vecs[1 + s], vecs[s], vecs[1 + s], vecs[2 + s], vk);
+                }
+                else if (i == l - 2)
+                {
+                    scVecs[n] = Vector2.CatmullRom(vecs[l - 3 + s], vecs[l - 2 + s], vecs[l - 1 + s], 2 * vecs[l - 1 + s] - vecs[l - 2 + s], vk);
+                }
+                else
+                {
+                    scVecs[n] = Vector2.CatmullRom(vecs[i - 1 + s], vecs[i + s], vecs[i + 1 + s], vecs[i + 2 + s], vk);
+                }
+            }
+            return scVecs;
+        }
+        public static void DrawQuadraticLaser_PassColorBar(this SpriteBatch spriteBatch, Vector2 start, Vector2 unit, Texture2D colorBar, Texture2D style, float length = 3200, float width = 512, float shakeRadMax = 0, float light = 4, bool timeOffset = false, float maxFactor = 0.5f, bool autoAdditive = true, (float x1, float y1, float x2, float y2) texcoord = default, float alpha = 1)
+        {
+
+            Effect effect = EightTrigramsFurnaceEffect; if (effect == null) return;
+            if (autoAdditive)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+            List<CustomVertexInfo> bars1 = new List<CustomVertexInfo>();
+            if (shakeRadMax > 0)
+            {
+                unit = unit.RotatedBy(Main.rand.NextFloat(-shakeRadMax, shakeRadMax));
+            }
+
+            Vector2 unit2 = new Vector2(-unit.Y, unit.X);
+            if (texcoord == default) texcoord = (0, 0, 1, 1);
+            bars1.Add(new CustomVertexInfo(start + unit2 * width, alpha, new Vector3(texcoord.x1, texcoord.y1, light)));
+            bars1.Add(new CustomVertexInfo(start - unit2 * width, alpha, new Vector3(texcoord.x1, texcoord.y2, light)));
+            bars1.Add(new CustomVertexInfo(start + unit2 * width + length * unit, alpha, new Vector3(texcoord.x2, texcoord.y1, 0)));
+            bars1.Add(new CustomVertexInfo(start - unit2 * width + length * unit, alpha, new Vector3(texcoord.x2, texcoord.y2, 0)));
+            List<CustomVertexInfo> triangleList1 = new List<CustomVertexInfo>();
+            if (bars1.Count > 2)
+            {
+                for (int i = 0; i < bars1.Count - 2; i += 2)
+                {
+                    triangleList1.Add(bars1[i]);
+                    triangleList1.Add(bars1[i + 2]);
+                    triangleList1.Add(bars1[i + 1]);
+                    triangleList1.Add(bars1[i + 1]);
+                    triangleList1.Add(bars1[i + 2]);
+                    triangleList1.Add(bars1[i + 3]);
+                }
+                RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
+                var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
+                var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
+                effect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
+                effect.Parameters["maxFactor"].SetValue(maxFactor);
+                effect.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
+                Main.graphics.GraphicsDevice.Textures[0] = GetTexture("BaseTex_8");
+                Main.graphics.GraphicsDevice.Textures[1] = style;
+                Main.graphics.GraphicsDevice.Textures[2] = colorBar;
+                Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
+                Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;
+                Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.PointWrap;
+                if (timeOffset)
+                {
+                    effect.CurrentTechnique.Passes["EightTrigramsFurnaceEffect_ColorBar_TimeOffset"].Apply();
+                }
+                else
+                {
+                    effect.CurrentTechnique.Passes["EightTrigramsFurnaceEffect_ColorBar"].Apply();
+                }
+
+                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList1.ToArray(), 0, triangleList1.Count / 3);
+                Main.graphics.GraphicsDevice.RasterizerState = originalState;
+            }
+            if (autoAdditive)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+        }
+        public static void DrawQuadraticLaser_PassColorBar(this SpriteBatch spriteBatch, (Vector2 start, Vector2 unit)[] startAndUnits, Texture2D colorBar, Texture2D style, float length = 3200, float width = 512, float shakeRadMax = 0, float light = 4, bool timeOffset = false, float maxFactor = 0.5f, bool autoAdditive = true, float alpha = 1)
+        {
+            Effect effect = EightTrigramsFurnaceEffect; if (effect == null) return;
+            if (autoAdditive)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+            RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
+            var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
+            var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
+            effect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
+            effect.Parameters["maxFactor"].SetValue(maxFactor);
+            effect.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
+            Main.graphics.GraphicsDevice.Textures[0] = GetTexture("BaseTex_8");
+            Main.graphics.GraphicsDevice.Textures[1] = style;
+            Main.graphics.GraphicsDevice.Textures[2] = colorBar;
+            Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
+            Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;
+            Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.PointWrap;
+            if (timeOffset)
+            {
+                effect.CurrentTechnique.Passes["EightTrigramsFurnaceEffect_ColorBar_TimeOffset"].Apply();
+            }
+            else
+            {
+                effect.CurrentTechnique.Passes["EightTrigramsFurnaceEffect_ColorBar"].Apply();
+            }
+
+            foreach (var (start, _unit) in startAndUnits)
+            {
+                List<CustomVertexInfo> bars1 = new List<CustomVertexInfo>();
+                var unit = _unit;
+                if (shakeRadMax > 0)
+                {
+                    unit = unit.RotatedBy(Main.rand.NextFloat(-shakeRadMax, shakeRadMax));
+                }
+
+                Vector2 unit2 = new Vector2(-unit.Y, unit.X);
+                bars1.Add(new CustomVertexInfo(start + unit2 * width, alpha, new Vector3(0, 0, light)));
+                bars1.Add(new CustomVertexInfo(start - unit2 * width, alpha, new Vector3(0, 1, light)));
+                bars1.Add(new CustomVertexInfo(start + unit2 * width + length * unit, alpha, new Vector3(1, 0, 0)));
+                bars1.Add(new CustomVertexInfo(start - unit2 * width + length * unit, alpha, new Vector3(1, 1, 0)));
+                List<CustomVertexInfo> triangleList1 = new List<CustomVertexInfo>();
+                if (bars1.Count > 2)
+                {
+                    for (int i = 0; i < bars1.Count - 2; i += 2)
+                    {
+                        triangleList1.Add(bars1[i]);
+                        triangleList1.Add(bars1[i + 2]);
+                        triangleList1.Add(bars1[i + 1]);
+                        triangleList1.Add(bars1[i + 1]);
+                        triangleList1.Add(bars1[i + 2]);
+                        triangleList1.Add(bars1[i + 3]);
+                    }
+                    Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList1.ToArray(), 0, triangleList1.Count / 3);
+                    Main.graphics.GraphicsDevice.RasterizerState = originalState;
+                }
+            }
+            if (autoAdditive)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+        }
+        public static void DrawQuadraticLaser_PassHeatMap(this SpriteBatch spriteBatch, Vector2 start, Vector2 unit, Texture2D heatMap, Texture2D style, float length = 3200, float width = 512, float shakeRadMax = 0, float light = 4, bool timeOffset = false, float maxFactor = 0.5f, bool autoAdditive = true, (float x1, float y1, float x2, float y2) texcoord = default, float alpha = 1)
+        {
+            Effect effect = EightTrigramsFurnaceEffect; if (effect == null) return;
+            if (autoAdditive)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+            List<CustomVertexInfo> bars1 = new List<CustomVertexInfo>();
+            if (shakeRadMax > 0)
+            {
+                unit = unit.RotatedBy(Main.rand.NextFloat(-shakeRadMax, shakeRadMax));
+            }
+
+            Vector2 unit2 = new Vector2(-unit.Y, unit.X);
+            if (texcoord == default) texcoord = (0, 0, 1, 1);
+            bars1.Add(new CustomVertexInfo(start + unit2 * width, alpha, new Vector3(texcoord.x1, texcoord.y1, light)));
+            bars1.Add(new CustomVertexInfo(start - unit2 * width, alpha, new Vector3(texcoord.x1, texcoord.y2, light)));
+            bars1.Add(new CustomVertexInfo(start + unit2 * width + length * unit, alpha, new Vector3(texcoord.x2, texcoord.y1, 0)));
+            bars1.Add(new CustomVertexInfo(start - unit2 * width + length * unit, alpha, new Vector3(texcoord.x2, texcoord.y2, 0)));
+            List<CustomVertexInfo> triangleList1 = new List<CustomVertexInfo>();
+            if (bars1.Count > 2)
+            {
+                for (int i = 0; i < bars1.Count - 2; i += 2)
+                {
+                    triangleList1.Add(bars1[i]);
+                    triangleList1.Add(bars1[i + 2]);
+                    triangleList1.Add(bars1[i + 1]);
+                    triangleList1.Add(bars1[i + 1]);
+                    triangleList1.Add(bars1[i + 2]);
+                    triangleList1.Add(bars1[i + 3]);
+                }
+                RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
+                var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
+                var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
+                effect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
+                effect.Parameters["maxFactor"].SetValue(maxFactor);
+                effect.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
+                Main.graphics.GraphicsDevice.Textures[0] = GetTexture("BaseTex_8");
+                Main.graphics.GraphicsDevice.Textures[1] = style;
+                Main.graphics.GraphicsDevice.Textures[2] = heatMap;
+                Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
+                Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;
+                Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.PointWrap;
+                if (timeOffset)
+                {
+                    effect.CurrentTechnique.Passes["EightTrigramsFurnaceEffect_HeatMap_TimeOffset"].Apply();
+                }
+                else
+                {
+                    effect.CurrentTechnique.Passes["EightTrigramsFurnaceEffect_HeatMap"].Apply();
+                }
+
+                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList1.ToArray(), 0, triangleList1.Count / 3);
+                Main.graphics.GraphicsDevice.RasterizerState = originalState;
+            }
+            if (autoAdditive)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+        }
+        public static void DrawQuadraticLaser_PassHeatMap(this SpriteBatch spriteBatch, (Vector2 start, Vector2 unit)[] startAndUnits, Texture2D heatMap, Texture2D style, float length = 3200, float width = 512, float shakeRadMax = 0, float light = 4, bool timeOffset = false, float maxFactor = 0.5f, bool autoAdditive = true, float alpha = 1)
+        {
+            Effect effect = EightTrigramsFurnaceEffect; if (effect == null) return;
+            if (autoAdditive)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+            RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
+            var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
+            var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
+            effect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
+            effect.Parameters["maxFactor"].SetValue(maxFactor);
+            effect.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
+            Main.graphics.GraphicsDevice.Textures[0] = GetTexture("BaseTex_8");
+            Main.graphics.GraphicsDevice.Textures[1] = style;
+            Main.graphics.GraphicsDevice.Textures[2] = heatMap;
+            Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
+            Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;
+            Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.PointWrap;
+            if (timeOffset)
+            {
+                effect.CurrentTechnique.Passes["EightTrigramsFurnaceEffect_HeatMap_TimeOffset"].Apply();
+            }
+            else
+            {
+                effect.CurrentTechnique.Passes["EightTrigramsFurnaceEffect_HeatMap"].Apply();
+            }
+
+            foreach (var (start, _unit) in startAndUnits)
+            {
+                List<CustomVertexInfo> bars1 = new List<CustomVertexInfo>();
+                var unit = _unit;
+                if (shakeRadMax > 0)
+                {
+                    unit = unit.RotatedBy(Main.rand.NextFloat(-shakeRadMax, shakeRadMax));
+                }
+
+                Vector2 unit2 = new Vector2(-unit.Y, unit.X);
+                bars1.Add(new CustomVertexInfo(start + unit2 * width, alpha, new Vector3(0, 0, light)));
+                bars1.Add(new CustomVertexInfo(start - unit2 * width, alpha, new Vector3(0, 1, light)));
+                bars1.Add(new CustomVertexInfo(start + unit2 * width + length * unit, alpha, new Vector3(1, 0, 0)));
+                bars1.Add(new CustomVertexInfo(start - unit2 * width + length * unit, alpha, new Vector3(1, 1, 0)));
+                List<CustomVertexInfo> triangleList1 = new List<CustomVertexInfo>();
+                if (bars1.Count > 2)
+                {
+                    for (int i = 0; i < bars1.Count - 2; i += 2)
+                    {
+                        triangleList1.Add(bars1[i]);
+                        triangleList1.Add(bars1[i + 2]);
+                        triangleList1.Add(bars1[i + 1]);
+                        triangleList1.Add(bars1[i + 1]);
+                        triangleList1.Add(bars1[i + 2]);
+                        triangleList1.Add(bars1[i + 3]);
+                    }
+                    Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList1.ToArray(), 0, triangleList1.Count / 3);
+                    Main.graphics.GraphicsDevice.RasterizerState = originalState;
+                }
+            }
+            if (autoAdditive)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+        }
+        public static void DrawQuadraticLaser_PassNormal(this SpriteBatch spriteBatch, Vector2 start, Vector2 unit, Color color, Texture2D style, float length = 3200, float width = 512, float shakeRadMax = 0, float light = 4, float maxFactor = 0.5f, bool autoAdditive = true)
+        {
+            Effect effect = EightTrigramsFurnaceEffect; if (effect == null) return;
+            if (autoAdditive)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+            List<CustomVertexInfo> bars1 = new List<CustomVertexInfo>();
+            if (shakeRadMax > 0)
+            {
+                unit = unit.RotatedBy(Main.rand.NextFloat(-shakeRadMax, shakeRadMax));
+            }
+
+            Vector2 unit2 = new Vector2(-unit.Y, unit.X);
+            bars1.Add(new CustomVertexInfo(start + unit2 * width, color, new Vector3(0, 0, light)));
+            bars1.Add(new CustomVertexInfo(start - unit2 * width, color, new Vector3(0, 1, light)));
+            bars1.Add(new CustomVertexInfo(start + unit2 * width + length * unit, color, new Vector3(1, 0, 0)));
+            bars1.Add(new CustomVertexInfo(start - unit2 * width + length * unit, color, new Vector3(1, 1, 0)));
+            List<CustomVertexInfo> triangleList1 = new List<CustomVertexInfo>();
+            if (bars1.Count > 2)
+            {
+                for (int i = 0; i < bars1.Count - 2; i += 2)
+                {
+                    triangleList1.Add(bars1[i]);
+                    triangleList1.Add(bars1[i + 2]);
+                    triangleList1.Add(bars1[i + 1]);
+                    triangleList1.Add(bars1[i + 1]);
+                    triangleList1.Add(bars1[i + 2]);
+                    triangleList1.Add(bars1[i + 3]);
+                }
+                RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
+                var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
+                var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
+                effect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
+                effect.Parameters["maxFactor"].SetValue(maxFactor);
+                effect.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
+                Main.graphics.GraphicsDevice.Textures[0] = GetTexture("BaseTex_8");
+                Main.graphics.GraphicsDevice.Textures[1] = style;
+                Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
+                Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;
+                effect.CurrentTechnique.Passes["EightTrigramsFurnaceEffect"].Apply();
+                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList1.ToArray(), 0, triangleList1.Count / 3);
+                Main.graphics.GraphicsDevice.RasterizerState = originalState;
+            }
+            if (autoAdditive)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+        }
+        public static void DrawQuadraticLaser_PassNormal(this SpriteBatch spriteBatch, (Vector2 start, Vector2 unit)[] startAndUnits, Color color, Texture2D style, float length = 3200, float width = 512, float shakeRadMax = 0, float light = 4, float maxFactor = 0.5f, bool autoAdditive = true)
+        {
+            Effect effect = EightTrigramsFurnaceEffect; if (effect == null) return;
+            if (autoAdditive)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+            RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
+            var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
+            var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
+            effect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
+            effect.Parameters["maxFactor"].SetValue(maxFactor);
+            effect.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
+            Main.graphics.GraphicsDevice.Textures[0] = GetTexture("BaseTex_8");
+            Main.graphics.GraphicsDevice.Textures[1] = style;
+            Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
+            Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;
+            effect.CurrentTechnique.Passes["EightTrigramsFurnaceEffect"].Apply();
+            foreach (var (start, _unit) in startAndUnits)
+            {
+                List<CustomVertexInfo> bars1 = new List<CustomVertexInfo>();
+                var unit = _unit;
+                if (shakeRadMax > 0)
+                {
+                    unit = unit.RotatedBy(Main.rand.NextFloat(-shakeRadMax, shakeRadMax));
+                }
+
+                Vector2 unit2 = new Vector2(-unit.Y, unit.X);
+                bars1.Add(new CustomVertexInfo(start + unit2 * width, color, new Vector3(0, 0, light)));
+                bars1.Add(new CustomVertexInfo(start - unit2 * width, color, new Vector3(0, 1, light)));
+                bars1.Add(new CustomVertexInfo(start + unit2 * width + length * unit, color, new Vector3(1, 0, 0)));
+                bars1.Add(new CustomVertexInfo(start - unit2 * width + length * unit, color, new Vector3(1, 1, 0)));
+                List<CustomVertexInfo> triangleList1 = new List<CustomVertexInfo>();
+                if (bars1.Count > 2)
+                {
+                    for (int i = 0; i < bars1.Count - 2; i += 2)
+                    {
+                        triangleList1.Add(bars1[i]);
+                        triangleList1.Add(bars1[i + 2]);
+                        triangleList1.Add(bars1[i + 1]);
+                        triangleList1.Add(bars1[i + 1]);
+                        triangleList1.Add(bars1[i + 2]);
+                        triangleList1.Add(bars1[i + 3]);
+                    }
+                    Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList1.ToArray(), 0, triangleList1.Count / 3);
+                    Main.graphics.GraphicsDevice.RasterizerState = originalState;
+                }
+            }
+            if (autoAdditive)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+        }
+        public static void DrawEffectLine(this SpriteBatch spriteBatch, Vector2 start, Vector2 _unit, Color color, Texture2D style, float startLight = 1, float endLight = 0, float length = 3200, float width = 512, bool autoAdditive = true)
+        {
+            try
+            {
+                Effect effect = ShaderSwooshEffect;
+                if (effect == null)
+                {
+                    return;
+                }
+
+                if (autoAdditive)
+                {
+                    spriteBatch.End();
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+                }
+                RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
+                var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
+                var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
+                effect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
+                effect.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
+                Main.graphics.GraphicsDevice.Textures[0] = GetTexture("BaseTex_8");
+                Main.graphics.GraphicsDevice.Textures[1] = style;
+                Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
+                Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;
+                effect.CurrentTechnique.Passes[0].Apply();
+                List<CustomVertexInfo> bars1 = new List<CustomVertexInfo>();
+                var unit = _unit;
+                Vector2 unit2 = new Vector2(-unit.Y, unit.X);
+                bars1.Add(new CustomVertexInfo(start + unit2 * width, color, new Vector3(0, 0, startLight)));
+                bars1.Add(new CustomVertexInfo(start - unit2 * width, color, new Vector3(0, 1, startLight)));
+                bars1.Add(new CustomVertexInfo(start + unit2 * width + length * unit, color, new Vector3(1, 0, endLight)));
+                bars1.Add(new CustomVertexInfo(start - unit2 * width + length * unit, color, new Vector3(1, 1, endLight)));
+                List<CustomVertexInfo> triangleList1 = new List<CustomVertexInfo>();
+                if (bars1.Count > 2)
+                {
+                    for (int i = 0; i < bars1.Count - 2; i += 2)
+                    {
+                        triangleList1.Add(bars1[i]);
+                        triangleList1.Add(bars1[i + 2]);
+                        triangleList1.Add(bars1[i + 1]);
+                        triangleList1.Add(bars1[i + 1]);
+                        triangleList1.Add(bars1[i + 2]);
+                        triangleList1.Add(bars1[i + 3]);
+                    }
+                    Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList1.ToArray(), 0, triangleList1.Count / 3);
+                    Main.graphics.GraphicsDevice.RasterizerState = originalState;
+                }
+                if (autoAdditive)
+                {
+                    spriteBatch.End();
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+                }
+            }
+            catch (Exception e)
+            {
+                Main.NewText(e);
+            }
+        }
+        public static void DrawEffectLine(this SpriteBatch spriteBatch, (Vector2 start, Vector2 unit)[] startAndUnits, Color color, Texture2D style, float startLight = 1, float endLight = 0, float length = 3200, float width = 512, bool autoAdditive = true)
+        {
+            Effect effect = ShaderSwooshEffect;
+            if (autoAdditive)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+            RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
+            var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
+            var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
+            effect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
+            //effect.Parameters["maxFactor"].SetValue(maxFactor);
+            effect.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
+            Main.graphics.GraphicsDevice.Textures[0] = GetTexture("BaseTex_8");
+            Main.graphics.GraphicsDevice.Textures[1] = style;
+            Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
+            Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;
+            effect.CurrentTechnique.Passes[0].Apply();
+            foreach (var (start, _unit) in startAndUnits)
+            {
+                List<CustomVertexInfo> bars1 = new List<CustomVertexInfo>();
+                var unit = _unit;
+                Vector2 unit2 = new Vector2(-unit.Y, unit.X);
+                bars1.Add(new CustomVertexInfo(start + unit2 * width, color, new Vector3(0, 0, startLight)));
+                bars1.Add(new CustomVertexInfo(start - unit2 * width, color, new Vector3(0, 1, startLight)));
+                bars1.Add(new CustomVertexInfo(start + unit2 * width + length * unit, color, new Vector3(1, 0, endLight)));
+                bars1.Add(new CustomVertexInfo(start - unit2 * width + length * unit, color, new Vector3(1, 1, endLight)));
+                List<CustomVertexInfo> triangleList1 = new List<CustomVertexInfo>();
+                if (bars1.Count > 2)
+                {
+                    for (int i = 0; i < bars1.Count - 2; i += 2)
+                    {
+                        triangleList1.Add(bars1[i]);
+                        triangleList1.Add(bars1[i + 2]);
+                        triangleList1.Add(bars1[i + 1]);
+                        triangleList1.Add(bars1[i + 1]);
+                        triangleList1.Add(bars1[i + 2]);
+                        triangleList1.Add(bars1[i + 3]);
+                    }
+                    Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList1.ToArray(), 0, triangleList1.Count / 3);
+                    Main.graphics.GraphicsDevice.RasterizerState = originalState;
+                }
+            }
+            if (autoAdditive)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+        }
+        public static void DrawEffectLine_StartAndEnd(this SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, Texture2D style, float startLight = 1, float endLight = 0, float width = 512, bool autoAdditive = true)
+        {
+            Effect effect = ShaderSwooshEffect;
+            if (autoAdditive)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+            RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
+            var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
+            var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
+            effect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
+            effect.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
+            Main.graphics.GraphicsDevice.Textures[0] = GetTexture("BaseTex_8");
+            Main.graphics.GraphicsDevice.Textures[1] = style;
+            Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
+            Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;
+            effect.CurrentTechnique.Passes[1].Apply();
+            List<CustomVertexInfo> bars1 = new List<CustomVertexInfo>();
+            var unit = Vector2.Normalize(end - start);
+            //unit.Normalize();
+            Vector2 unit2 = new Vector2(-unit.Y, unit.X);
+            bars1.Add(new CustomVertexInfo(start + unit2 * width, color, new Vector3(0, 0, startLight)));
+            bars1.Add(new CustomVertexInfo(start - unit2 * width, color, new Vector3(0, 1, startLight)));
+            bars1.Add(new CustomVertexInfo(end + unit2 * width, color, new Vector3(1, 0, endLight)));
+            bars1.Add(new CustomVertexInfo(end - unit2 * width, color, new Vector3(1, 1, endLight)));
+            List<CustomVertexInfo> triangleList1 = new List<CustomVertexInfo>();
+            if (bars1.Count > 2)
+            {
+                for (int i = 0; i < bars1.Count - 2; i += 2)
+                {
+                    triangleList1.Add(bars1[i]);
+                    triangleList1.Add(bars1[i + 2]);
+                    triangleList1.Add(bars1[i + 1]);
+                    triangleList1.Add(bars1[i + 1]);
+                    triangleList1.Add(bars1[i + 2]);
+                    triangleList1.Add(bars1[i + 3]);
+                }
+                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList1.ToArray(), 0, triangleList1.Count / 3);
+                Main.graphics.GraphicsDevice.RasterizerState = originalState;
+            }
+            if (autoAdditive)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+        }
+        public static void DrawEffectLine_StartAndEnd(this SpriteBatch spriteBatch, (Vector2 start, Vector2 end)[] startAndEnds, Color color, Texture2D style, float startLight = 1, float endLight = 0, float width = 512, bool autoAdditive = true)
+        {
+            Effect effect = ShaderSwooshEffect;
+            if (autoAdditive)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+            RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
+            var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
+            var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
+            effect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
+            effect.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
+            Main.graphics.GraphicsDevice.Textures[0] = GetTexture("BaseTex_8");
+            Main.graphics.GraphicsDevice.Textures[1] = style;
+            Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
+            Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;
+            effect.CurrentTechnique.Passes[1].Apply();
+            foreach (var (start, end) in startAndEnds)
+            {
+                List<CustomVertexInfo> bars1 = new List<CustomVertexInfo>();
+                var unit = Vector2.Normalize(end - start);
+                //unit.Normalize();
+                Vector2 unit2 = new Vector2(-unit.Y, unit.X);
+                bars1.Add(new CustomVertexInfo(start + unit2 * width, color, new Vector3(0, 0, startLight)));
+                bars1.Add(new CustomVertexInfo(start - unit2 * width, color, new Vector3(0, 1, startLight)));
+                bars1.Add(new CustomVertexInfo(end + unit2 * width, color, new Vector3(1, 0, endLight)));
+                bars1.Add(new CustomVertexInfo(end - unit2 * width, color, new Vector3(1, 1, endLight)));
+                List<CustomVertexInfo> triangleList1 = new List<CustomVertexInfo>();
+                if (bars1.Count > 2)
+                {
+                    for (int i = 0; i < bars1.Count - 2; i += 2)
+                    {
+                        triangleList1.Add(bars1[i]);
+                        triangleList1.Add(bars1[i + 2]);
+                        triangleList1.Add(bars1[i + 1]);
+                        triangleList1.Add(bars1[i + 1]);
+                        triangleList1.Add(bars1[i + 2]);
+                        triangleList1.Add(bars1[i + 3]);
+                    }
+                    Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList1.ToArray(), 0, triangleList1.Count / 3);
+                    Main.graphics.GraphicsDevice.RasterizerState = originalState;
+                }
+            }
+            if (autoAdditive)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+        }
+
         /// <summary>
         /// 阿汪超喜欢用的插值函数，获得一个先上后下的插值
         /// </summary>
@@ -957,7 +1681,7 @@ namespace CoolerItemVisualEffect
         }
         public static void DrawPrettyStarSparkle(this Projectile projectile, SpriteBatch spriteBatch, SpriteEffects dir, Vector2 drawpos, Color drawColor, Color shineColor)
         {
-            Texture2D value = CoolerItemVisualEffectMethods.GetTexture("FinalFractalLight");
+            Texture2D value = GetTexture("FinalFractalLight");
             Color color = shineColor * projectile.Opacity * 0.5f;
             color.A = 0;
             Vector2 origin = value.Size() / 2f;
@@ -1015,7 +1739,7 @@ namespace CoolerItemVisualEffect
             Vector2 value2 = projectile.Center + vector;
             Texture2D value3 = TextureAssets.Projectile[projectile.type].Value;
             //new Microsoft.Xna.Framework.Rectangle(0, 0, value3.Width, value3.Height).Size() /= 2f;
-            Texture2D value4 = CoolerItemVisualEffectMethods.GetTexture("FinalFractalTail");
+            Texture2D value4 = GetTexture("FinalFractalTail");
             Rectangle rectangle = Utils.Frame(value4, 1, 1, 0, 0, 0, 0);
             Vector2 origin2 = new Vector2((float)rectangle.Width / 2f, 10f);
             //Microsoft.Xna.Framework.Color.Cyan * 0.5f * scale;
@@ -1061,7 +1785,7 @@ namespace CoolerItemVisualEffect
                 num13 = num13 * 0.5f + 0.5f;*/
                 Vector2 position = projectile.Center - Main.screenPosition;
                 //Main.instance.LoadItem(75);
-                Texture2D value9 = CoolerItemVisualEffectMethods.GetTexture("FinalFractalTail2");
+                Texture2D value9 = GetTexture("FinalFractalTail2");
                 Rectangle rectangle2 = Utils.Frame(value9, 1, 8, 0, 0, 0, 0);
                 Vector2 origin3 = rectangle2.Size() / 2f;
                 spriteBatch.Draw(value9, position, new Microsoft.Xna.Framework.Rectangle?(rectangle2), color, rotation, origin3, projectile.scale, SpriteEffects.None, 0);
@@ -1114,26 +1838,39 @@ namespace CoolerItemVisualEffect
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null);
             CustomVertexInfo[] triangleArry = new CustomVertexInfo[6];
             RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
-            //Color c = Main.hslToRgb((float)IllusionBoundMod.ModTime / 60 % 1, 1f, 0.75f);
-            Vector2 scale = TextureAssets.Item[item.type].Size();
+            //Color c = Main.hslToRgb(CoolerSystem.ModTime / 60 % 1, 1f, 0.75f);
+            var texture = TextureAssets.Item[item.type].Value;
+            Vector2 scale = texture.Size();
             //triangleArry[0] = new CustomVertexInfo(item.position, c, new Vector3(0, 0, light));
             //triangleArry[1] = new CustomVertexInfo(item.position + new Vector2(scale.X, 0), c, new Vector3(1, 0, light));
             //triangleArry[2] = new CustomVertexInfo(item.position + scale, c, new Vector3(1, 1, light));
             //triangleArry[3] = triangleArry[2];
             //triangleArry[4] = new CustomVertexInfo(item.position + new Vector2(0, scale.Y), c, new Vector3(0, 1, light));
             //triangleArry[5] = triangleArry[0];
+            var ani = Main.itemAnimations[item.type];
+            var texCoordStart = new Vector2(0);
+            var texCoordEnd = new Vector2(1);
+
+            if (ani != null)
+            {
+                var frame = ani.GetFrame(texture);
+                texCoordStart = frame.TopLeft() / scale;
+                texCoordEnd = frame.BottomRight() / scale;
+                scale = frame.Size();
+            }
             scale *= 0.5f;
-            triangleArry[0] = new CustomVertexInfo(item.Center - scale.RotatedBy(rotation), c, new Vector3(0, 0, light));
-            triangleArry[1] = new CustomVertexInfo(item.Center + new Vector2(scale.X, -scale.Y).RotatedBy(rotation), c, new Vector3(1, 0, light));
-            triangleArry[2] = new CustomVertexInfo(item.Center + scale.RotatedBy(rotation), c, new Vector3(1, 1, light));
+            var center = item.Center;//item.position + scale
+            triangleArry[0] = new CustomVertexInfo(center - scale.RotatedBy(rotation), c, new Vector3(texCoordStart, light));
+            triangleArry[1] = new CustomVertexInfo(center + new Vector2(scale.X, -scale.Y).RotatedBy(rotation), c, new Vector3(new Vector2(texCoordEnd.X, texCoordStart.Y), light));
+            triangleArry[2] = new CustomVertexInfo(center + scale.RotatedBy(rotation), c, new Vector3(texCoordEnd, light));
             triangleArry[3] = triangleArry[2];
-            triangleArry[4] = new CustomVertexInfo(item.Center - new Vector2(scale.X, -scale.Y).RotatedBy(rotation), c, new Vector3(0, 1, light));
+            triangleArry[4] = new CustomVertexInfo(center - new Vector2(scale.X, -scale.Y).RotatedBy(rotation), c, new Vector3(new Vector2(texCoordStart.X, texCoordEnd.Y), light));
             triangleArry[5] = triangleArry[0];
             var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
             var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
             ItemEffect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
-            ItemEffect.Parameters["uTime"].SetValue(ModTime / 60f);//(float)IllusionBoundMod.ModTime / 60
-            Main.graphics.GraphicsDevice.Textures[0] = TextureAssets.Item[item.type].Value;
+            ItemEffect.Parameters["uTime"].SetValue(ModTime / 60f);//CoolerSystem.ModTime / 60
+            Main.graphics.GraphicsDevice.Textures[0] = texture;
             Main.graphics.GraphicsDevice.Textures[1] = effectTex;
             Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
             Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;
@@ -1148,11 +1885,13 @@ namespace CoolerItemVisualEffect
             if (ItemEffect == null) return;
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+            var ani = Main.itemAnimations[item.type];
             CustomVertexInfo[] triangleArry = new CustomVertexInfo[6];
             RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
-            Texture2D texture2D = TextureAssets.Item[item.type].Value;
-            float offsetX = texture2D.Width * Scale;
-            float offsetY = texture2D.Height * Scale;
+            Texture2D texture = TextureAssets.Item[item.type].Value;
+            Vector2 scale = texture.Size();
+            //float offsetX = texture.Width * Scale;
+            //float offsetY = texture.Height * Scale;
             //Color c = Main.hslToRgb(0f, 1f, 0.75f);
             //triangleArry[0] = new CustomVertexInfo(position + Main.screenPosition - new Vector2(offsetX, offsetY) + origin, c, new Vector3(0, 0, light));
             //triangleArry[1] = new CustomVertexInfo(position + Main.screenPosition + new Vector2(offsetX, -offsetY) + origin, c, new Vector3(1, 0, light));
@@ -1161,18 +1900,38 @@ namespace CoolerItemVisualEffect
             //triangleArry[4] = new CustomVertexInfo(position + Main.screenPosition - new Vector2(offsetX, -offsetY) + origin, c, new Vector3(0, 1, light));
             //triangleArry[5] = triangleArry[0];
             //Vector2 offset = ItemID.Sets.ItemIconPulse[item.type] ? default : new Vector2(-2, -2);
+            //var texCoordYstart = 0f;
+            //var texCoordYend = 1f;
+            //if (ani != null)
+            //{
+            //    offsetY /= ani.FrameCount;
+            //    texCoordYend = 1f / ani.FrameCount;
+            //    texCoordYstart = texCoordYend * ani.Frame;
+            //    texCoordYend += texCoordYstart;
+            //}
+            var texCoordStart = new Vector2(0);
+            var texCoordEnd = new Vector2(1);
+
+            if (ani != null)
+            {
+                var frame = ani.GetFrame(texture);
+                texCoordStart = frame.TopLeft() / scale;
+                texCoordEnd = frame.BottomRight() / scale;
+                scale = frame.Size();
+            }
+            scale *= Scale;
             position -= origin * Scale;
-            triangleArry[0] = new CustomVertexInfo(position + Main.screenPosition, c, new Vector3(0, 0, light));
-            triangleArry[1] = new CustomVertexInfo(position + Main.screenPosition + new Vector2(offsetX, 0), c, new Vector3(1, 0, light));
-            triangleArry[2] = new CustomVertexInfo(position + Main.screenPosition + new Vector2(offsetX, offsetY), c, new Vector3(1, 1, light));
+            triangleArry[0] = new CustomVertexInfo(position + Main.screenPosition, c, new Vector3(texCoordStart, light));
+            triangleArry[1] = new CustomVertexInfo(position + Main.screenPosition + new Vector2(scale.X, 0), c, new Vector3(new Vector2(texCoordEnd.X, texCoordStart.Y), light));
+            triangleArry[2] = new CustomVertexInfo(position + Main.screenPosition + scale, c, new Vector3(texCoordEnd, light));
             triangleArry[3] = triangleArry[2];
-            triangleArry[4] = new CustomVertexInfo(position + Main.screenPosition + new Vector2(0, offsetY), c, new Vector3(0, 1, light));
+            triangleArry[4] = new CustomVertexInfo(position + Main.screenPosition + new Vector2(0, scale.Y), c, new Vector3(new Vector2(texCoordStart.X, texCoordEnd.Y), light));
             triangleArry[5] = triangleArry[0];
             var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
             var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
             ItemEffect.Parameters["uTransform"].SetValue(model * projection);
             ItemEffect.Parameters["uTime"].SetValue(ModTime / 60f % 1);
-            Main.graphics.GraphicsDevice.Textures[0] = texture2D;
+            Main.graphics.GraphicsDevice.Textures[0] = texture;
             Main.graphics.GraphicsDevice.Textures[1] = effectTex;
             Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
             Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;

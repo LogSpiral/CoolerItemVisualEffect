@@ -223,6 +223,20 @@ Mods:{
 			19:Cancel the effect of the new slashing effect on tools
 			20:Yes, to cancel the effect of the new slashing effect on the tool, No, not cancel, the default is No
 			23:The type of Item light effect in world
+
+			24:Misc Settings
+
+			25:Active Extra Glow Effect To Item In World.
+			26:I'm So Lazy That It Only Has One Style.
+
+			27:Active Extra Glow Effect To Item In Inventory.
+			28:I Don't Like It Too Much As It Is Too Dazzling.
+
+			29:Active Extra Draw Effect To Proejectile.
+			30:I Hope You Like It.
+
+			31:Active Teleport Extra Effect(WIP)
+			32:Exaggerate Magic Effect Is Too Much!!(I'm boring with it a bit
 		}
 		ConfigurationServer:{
 			Label:Gameplay Settings

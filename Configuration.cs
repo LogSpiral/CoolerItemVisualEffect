@@ -50,6 +50,8 @@ namespace CoolerItemVisualEffect
             cs.animateIndex = 3;
             cs.distortSize = 1.5f;
             cs.actionOffsetSize = true;
+            cs.actionOffsetSpeed = true;
+            cs.actionModifyEffect = true;
             switch (preInstallSwoosh)
             {
                 //case PreInstallSwoosh.普通Normal: 
@@ -112,7 +114,7 @@ namespace CoolerItemVisualEffect
                         cs.hueOffsetRange = -0.25f;
                         cs.hueOffsetValue = 0.15f;
                         cs.luminosityFactor = 1f;
-                        cs.rotationVelocity = 2f;
+                        cs.rotationVelocity = 3f;
                         cs.distortFactor = 1f;
                         cs.shake = 0.4f;
                         cs.glowLight = 1f;
@@ -127,7 +129,7 @@ namespace CoolerItemVisualEffect
                         cs.hueOffsetRange = 0.25f;
                         cs.hueOffsetValue = 0.9f;
                         cs.luminosityFactor = 1f;
-                        cs.rotationVelocity = 2f;
+                        cs.rotationVelocity = 3f;
                         cs.distortFactor = 1f;
                         cs.shake = 0.2f;
                         cs.glowLight = 1f;
@@ -142,7 +144,7 @@ namespace CoolerItemVisualEffect
                         cs.hueOffsetRange = 0.25f;
                         cs.hueOffsetValue = 0.05f;
                         cs.luminosityFactor = 1f;
-                        cs.rotationVelocity = 2f;
+                        cs.rotationVelocity = 3f;
                         cs.distortFactor = 1f;
                         cs.shake = 0.2f;
                         cs.glowLight = 1f;
@@ -157,7 +159,7 @@ namespace CoolerItemVisualEffect
                         cs.hueOffsetRange = 0.2f;
                         cs.hueOffsetValue = 0.95f;
                         cs.luminosityFactor = 1f;
-                        cs.rotationVelocity = 2f;
+                        cs.rotationVelocity = 3f;
                         cs.distortFactor = 1f;
                         cs.shake = 0.2f;
                         cs.glowLight = 1f;
@@ -172,7 +174,7 @@ namespace CoolerItemVisualEffect
                         cs.hueOffsetRange = 0.15f;
                         cs.hueOffsetValue = 0.05f;
                         cs.luminosityFactor = 1f;
-                        cs.rotationVelocity = 2f;
+                        cs.rotationVelocity = 3f;
                         cs.distortFactor = 1f;
                         cs.shake = 0.2f;
                         cs.glowLight = 1f;
@@ -209,7 +211,7 @@ namespace CoolerItemVisualEffect
                         cs.distortFactor = 0.75f;
                         cs.shake = 0.1f;
                         cs.glowLight = 1f;
-                        cs.maxCount = 4;
+                        cs.maxCount = 2;
                         cs.directOfHeatMap = MathHelper.Pi * 1.5f;
                         break;
                     }
@@ -292,6 +294,27 @@ namespace CoolerItemVisualEffect
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.49")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.50")]
         public bool DontChangeMyTitle;
+
+        [Header("$Mods.CoolerItemVisualEffect.Config.24")]
+        [DefaultValue(false)]
+        [Label("$Mods.CoolerItemVisualEffect.Config.25")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.Config.26")]
+        public bool ItemDropEffectActive;
+
+        [DefaultValue(false)]
+        [Label("$Mods.CoolerItemVisualEffect.Config.27")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.Config.28")]
+        public bool ItemInventoryEffectActive;
+
+        [DefaultValue(true)]
+        [Label("$Mods.CoolerItemVisualEffect.Config.29")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.Config.30")]
+        public bool VanillaProjectileDrawModifyActive;
+
+        [DefaultValue(true)]
+        [Label("$Mods.CoolerItemVisualEffect.Config.31")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.Config.32")]
+        public bool TeleprotEffectActive;
         public static ConfigurationNormal instance => ModContent.GetInstance<ConfigurationNormal>();
 
     }
