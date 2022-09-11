@@ -205,6 +205,8 @@ Mods:{
 			'''
 			83:Coefficient Of Opacity
 			84:It Will Don't Care The Grey Value If It Is Zero.In Other Case, Opacity Will Multiply This Value.
+			85:Dust Amount
+			86:The Larger The Value Is , The More Dusts There Will Be.
 		}
 		Config:{
 			Label:Visual Settings

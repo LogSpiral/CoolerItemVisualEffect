@@ -196,7 +196,7 @@ namespace CoolerItemVisualEffect
             float xScaler3 = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.kValue, modPlayer.kValueNext, swooshAniFac) : modPlayer.kValue;
             var rotator3 = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.rotationForShadow, modPlayer.rotationForShadowNext, swooshAniFac) : modPlayer.rotationForShadow;
             var alphaLight = hsl.Z < instance.isLighterDecider ? Lighting.GetColor((drawPlayer.Center / 16).ToPoint().X, (drawPlayer.Center / 16).ToPoint().Y).R / 255f * .5f : 0.5f;
-
+            var _dustAllow = player.itemAnimation == 1 && ConfigurationSwoosh.dustQuantity != 0;
             for (int i = 0; i < 45; i++)
             {
                 var f = i / 44f;
@@ -213,9 +213,30 @@ namespace CoolerItemVisualEffect
                 var _flag = (byte)ConfigurationSwoosh.swooshActionStyle > 0 && (byte)ConfigurationSwoosh.swooshActionStyle < 9;
                 //var progress = _flag ? Utils.GetLerpValue(MathHelper.Clamp(player.itemAnimationMax, TimeToCutThem, 114514), TimeToCutThem, player.itemAnimation, true) : 1f;
                 var progress = _flag ? Utils.GetLerpValue(TimeToCutThem, TimeToCutThem * .5f, player.itemAnimation, true) : 1f;//MathHelper.Clamp(player.itemAnimationMax, TimeToCutThem, 114514)
-
-                vertexInfos[2 * i] = new CustomVertexInfo(newVec, colorInfo.color with { A = (byte)(MathHelper.Clamp((1 - f).HillFactor2() * 2f, 0, 1) * 255 * progress) }, new Vector3(1 - f, 1, alphaLight));//(byte)(_f * 255)//drawCen + 
-                vertexInfos[2 * i + 1] = new CustomVertexInfo(default, colorInfo.color with { A = (byte)(MathHelper.Clamp((1 - f).HillFactor2() * 2f, 0, 1) * 255 * progress) }, new Vector3(0, 0, alphaLight));//drawCen
+                var alphaValue = MathHelper.Clamp((1 - f).HillFactor2() * 2f, 0, 1);
+                if (_dustAllow)
+                {
+                    var scaler = MathHelper.Lerp(player.itemAnimationMax / (float)player.HeldItem.useAnimation,1,.5f);//1 / (ConfigurationSwoosh.actionOffsetSpeed && UseSlash ? actionOffsetSpeed : 1f)
+                    if (Main.rand.Next(100) < f.HillFactor2() * 50 * scaler * ConfigurationSwoosh.dustQuantity)
+                    {
+                        int _num = Main.rand.Next(2, 6);
+                        for (int k = 0; k < _num; k++)
+                        {
+                            var unit = new Vector2(-newVec.Y, newVec.X).SafeNormalize(default) * (negativeDir ? -1 : 1);
+                            var dustColor = Color.Lerp(Main.hslToRgb(Vector3.Clamp(hsl * new Vector3(1, ConfigurationSwoosh.saturationScalar, Main.rand.NextFloat(0.85f, 1.15f)), default, Vector3.One)), Color.White, Main.rand.NextFloat(0, 0.3f));
+                            Dust dust = Dust.NewDustPerfect(player.Center + newVec * Main.rand.NextFloat(1f, 1.25f), 278, unit, 100, dustColor, 1f);
+                            dust.scale = 0.4f + Main.rand.NextFloat(-1, 1) * 0.1f;
+                            dust.scale *= scaler;
+                            dust.fadeIn = 0.4f + Main.rand.NextFloat() * 0.3f;
+                            dust.fadeIn *= .5f * scaler;
+                            dust.noGravity = true;
+                            dust.velocity += unit * (3f + Main.rand.NextFloat() * 4f) * 2 * scaler;
+                        }
+                    }
+                }
+                alphaValue *= 255 * progress;
+                vertexInfos[2 * i] = new CustomVertexInfo(newVec, colorInfo.color with { A = (byte)alphaValue }, new Vector3(1 - f, 1, alphaLight));//(byte)(_f * 255)//drawCen + 
+                vertexInfos[2 * i + 1] = new CustomVertexInfo(default, colorInfo.color with { A = (byte)alphaValue }, new Vector3(0, 0, alphaLight));//drawCen
             }
 
             foreach (var swoosh in ultraSwooshes)
@@ -492,6 +513,33 @@ namespace CoolerItemVisualEffect
                 player.itemRotation = direct - MathHelper.ToRadians(90f); // 别问为啥-90°，问re去
                 //Main.NewText("!!!!!");
                 player.SetCompositeArmFront(enabled: true, Player.CompositeArmStretchAmount.Full, player.itemRotation);
+
+                if (player.itemAnimation > TimeToCutThem && ConfigurationSwoosh.dustQuantity != 0)
+                {
+                    var _flag = (byte)ConfigurationSwoosh.swooshActionStyle > 0 && (byte)ConfigurationSwoosh.swooshActionStyle < 9;
+                    var progress = _flag ? Utils.GetLerpValue(MathHelper.Clamp(player.itemAnimationMax, TimeToCutThem, 114514), TimeToCutThem, player.itemAnimation, true) : 1f;
+                    var scaler = player.itemAnimationMax / (float)player.HeldItem.useAnimation;
+                    if (Main.rand.Next(100) < progress * 100 * ConfigurationSwoosh.dustQuantity)
+                    {
+                        int _num = Main.rand.Next(2, 6);
+                        for (int k = 0; k < _num; k++)
+                        {
+                            var unit = Main.rand.NextVector2Unit();
+                            var dustColor = Color.Lerp(Main.hslToRgb(Vector3.Clamp(hsl * new Vector3(1, ConfigurationSwoosh.saturationScalar, Main.rand.NextFloat(0.85f, 1.15f)), default, Vector3.One)), Color.White, Main.rand.NextFloat(0, 0.3f));
+
+                            Dust dust = Dust.NewDustPerfect(player.Center + 128 * progress * unit, 278, -unit, 100, dustColor, 1f);
+                            dust.scale = (0.4f + Main.rand.NextFloat(-0.1f, 0.1f)) * scaler;
+                            dust.fadeIn = 0.4f + Main.rand.NextFloat() * 0.3f;
+                            dust.fadeIn *= scaler;
+                            dust.noGravity = true;
+                            dust.velocity -= unit * (3f + Main.rand.NextFloat() * 4f) * .5f;
+                        }
+                    }
+                }
+                else
+                {
+
+                }
             }
             if (player.itemAnimation == 0)
             {
@@ -514,6 +562,7 @@ namespace CoolerItemVisualEffect
                 }
 
             }
+            UpdateVertex();
         }
         public override float UseSpeedMultiplier(Item item) => ConfigurationSwoosh.actionOffsetSpeed && UseSlash ? actionOffsetSpeed : 1f;
         public override void ModifyHitNPC(Item item, NPC target, ref int damage, ref float knockback, ref bool crit)

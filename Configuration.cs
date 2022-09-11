@@ -272,7 +272,7 @@ namespace CoolerItemVisualEffect
         [Slider]
         public float weaponScale { get; set; }
 
-        [DefaultValue(HitBoxStyle.线状AABBLine)]
+        [DefaultValue(HitBoxStyle.剑气UltraSwoosh)]
         [DrawTicks]
         [Label("$Mods.CoolerItemVisualEffect.Config.33")]
         [Tooltip("$Mods.CoolerItemVisualEffect.Config.34")]
@@ -384,6 +384,7 @@ namespace CoolerItemVisualEffect
                 packet.Write(heatMapColors[n].PackedValue);
             }
             packet.Write(alphaFactor);
+            packet.Write(dustQuantity);
             //packet.Write
             packet.Send(toCilent, ignoreCilent);
             //if (whoami != -1)
@@ -438,6 +439,7 @@ namespace CoolerItemVisualEffect
                 config.heatMapColors.Add(new Color() { PackedValue = reader.ReadUInt32() });
             }
             config.alphaFactor = reader.ReadSingle();
+            config.dustQuantity = reader.ReadSingle();
             //Main.NewText("向 " + Main.player[whoami] + "设置数据");
 
         }
@@ -483,7 +485,8 @@ namespace CoolerItemVisualEffect
                 actionModifyEffect == config.actionModifyEffect &&
                 ignoreDamageType == config.ignoreDamageType &&
                 heatMapColors.EqualValue(config.heatMapColors) &&
-                alphaFactor == config.alphaFactor;
+                alphaFactor == config.alphaFactor &&
+                dustQuantity == config.dustQuantity;
         }
         public override void OnChanged()
         {
@@ -822,6 +825,14 @@ namespace CoolerItemVisualEffect
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.84")]
         [BackgroundColor(255, 60, 0, 127)]
         public float alphaFactor { get; set; }
+
+        [Increment(0.05f)]
+        [DefaultValue(.75f)]
+        [Range(0f, 1f)]
+        [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.85")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.86")]
+        [BackgroundColor(255, 75, 0, 127)]
+        public float dustQuantity { get; set; }
         public enum SwooshSamplerState : byte
         {
             各向异性,

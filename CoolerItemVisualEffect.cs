@@ -1317,6 +1317,7 @@ namespace CoolerItemVisualEffect
             if (Main.GameViewMatrix == null) return;
             var trans = Main.GameViewMatrix != null ? Main.GameViewMatrix.TransformationMatrix : Matrix.Identity;
             var modPlayer = drawPlayer.GetModPlayer<CoolerItemVisualEffectPlayer>();
+            //Main.NewText((drawPlayer.itemAnimation, drawPlayer.itemAnimationMax, drawPlayer.itemAnimation / (float)drawPlayer.itemAnimationMax));
             var instance = modPlayer.ConfigurationSwoosh;
             var newColor = modPlayer.colorInfo.color;
             var alphaBlend = modPlayer.hsl.Z < instance.isLighterDecider;
@@ -1341,7 +1342,7 @@ namespace CoolerItemVisualEffect
                 modPlayer.colorInfo.type = drawPlayer.HeldItem.type;
             }
             Matrix result = model * trans * projection;
-            if (!Main.gamePaused) modPlayer.UpdateVertex();
+            //if (!Main.gamePaused) modPlayer.UpdateVertex();
             SamplerState sampler;
             switch (instance.swooshSampler)
             {
