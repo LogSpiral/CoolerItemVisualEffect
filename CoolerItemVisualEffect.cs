@@ -265,6 +265,8 @@ namespace CoolerItemVisualEffect
                     }
                     switch (ConfigSwooshInstance.swooshColorType)
                     {
+                        case SwooshColorType.贴图生成热度图:
+                        case SwooshColorType.指定热度图:
                         case SwooshColorType.函数生成热度图: passCount = 2; break;
                         case SwooshColorType.武器贴图对角线: passCount = 1; break;
                         case SwooshColorType.色调处理与对角线混合: passCount = 3; break;
@@ -280,6 +282,8 @@ namespace CoolerItemVisualEffect
                     ShaderSwooshEX.Parameters["distortScaler"].SetValue(0);
                     var _v = ConfigSwooshInstance.directOfHeatMap.ToRotationVector2();
                     ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
+                    ShaderSwooshEX.Parameters["alphaFactor"].SetValue(ConfigSwooshInstance.alphaFactor);
+                    ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(ConfigSwooshInstance.alphaFactor == 0);
                     Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + ConfigSwooshInstance.ImageIndex);
                     Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage($"AniTex_{ConfigSwooshInstance.AnimateIndex}");
                     Main.graphics.GraphicsDevice.Textures[2] = ModContent.Request<Texture2D>("CoolerItemVisualEffect/Weapons/FirstZenithProj_5").Value;
@@ -448,6 +452,8 @@ namespace CoolerItemVisualEffect
                     ShaderSwooshEX.Parameters["checkAir"].SetValue(ConfigSwooshInstance.checkAir);
                     ShaderSwooshEX.Parameters["airFactor"].SetValue(1);
                     ShaderSwooshEX.Parameters["gather"].SetValue(ConfigSwooshInstance.gather);
+                    ShaderSwooshEX.Parameters["alphaFactor"].SetValue(ConfigSwooshInstance.alphaFactor);
+                    ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(ConfigSwooshInstance.alphaFactor == 0);
                     var _v = ConfigSwooshInstance.directOfHeatMap.ToRotationVector2();
                     ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
                     Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + ConfigSwooshInstance.ImageIndex);
@@ -906,7 +912,7 @@ namespace CoolerItemVisualEffect
         internal static Effect finalFractalTailEffect;
         internal static Effect colorfulEffect;
         internal static Effect eightTrigramsFurnaceEffect;
-        public static bool MeleeCheck(DamageClass damageClass) => damageClass == DamageClass.Melee 
+        public static bool MeleeCheck(DamageClass damageClass) => damageClass == DamageClass.Melee
             || damageClass.GetEffectInheritance(DamageClass.Melee) || !damageClass.GetModifierInheritance(DamageClass.Melee).Equals(StatInheritanceData.None);
         public static bool CanUseRender => Lighting.Mode != Terraria.Graphics.Light.LightMode.Retro && Lighting.Mode != Terraria.Graphics.Light.LightMode.Trippy && Main.WaveQuality != 0 && (byte)ConfigSwooshInstance.coolerSwooshQuality > 1;
         private void PlayerDrawLayers_DrawPlayer_27_HeldItem_WeaponDisplay(On.Terraria.DataStructures.PlayerDrawLayers.orig_DrawPlayer_27_HeldItem orig, ref PlayerDrawSet drawinfo)
@@ -1022,18 +1028,185 @@ namespace CoolerItemVisualEffect
             //    DrawSwoosh(drawPlayer, newColor);
             //}
         }
-        public static void UpdateHeatMap(ref Texture2D texture, Vector3 hsl, ConfigurationSwoosh_Advanced config)
+        private static float GetHeatMapFactor(float t, int colorCount, HeatMapFactorStyle style) => style switch
+        {
+            HeatMapFactorStyle.线性Linear => t,
+            HeatMapFactorStyle.分块Floor => (int)(t * (colorCount + 1)) / (float)colorCount,
+            HeatMapFactorStyle.二次Quadratic => t * t,
+            HeatMapFactorStyle.平方根SquareRoot => MathF.Sqrt(t),
+            HeatMapFactorStyle.柔和分块SmoothFloor => (t * colorCount).SmoothFloor() / colorCount,
+            _ => t
+        };
+        public static void UpdateHeatMap(ref Texture2D texture, Vector3 hsl, ConfigurationSwoosh_Advanced config, Texture2D itemTexture)
         {
             var colors = new Color[300];
-            for (int i = 0; i < 300; i++)
+            ref Vector3 _color = ref hsl; 
+            switch (config.swooshColorType)
             {
-                var f = i / 299f;//分割成25次惹，f从1/25f到1//1 - 
-                //f = f * f;// *f
-                float h = (hsl.X + config.hueOffsetValue + config.hueOffsetRange * (2 * f - 1)) % 1;
-                float s = MathHelper.Clamp(hsl.Y * config.saturationScalar, 0, 1);
-                float l = MathHelper.Clamp(f > 0.5f ? hsl.Z * (2 - f * 2) + (f * 2 - 1) * Math.Max(hsl.Z, 0.5f + config.luminosityRange) : f * 2 * hsl.Z + (1 - f * 2) * Math.Min(hsl.Z, 0.5f - config.luminosityRange), 0, 1);
-                var currentColor = Main.hslToRgb(h, s, l);
-                colors[i] = currentColor;
+                case SwooshColorType.贴图生成热度图:
+                    {
+                        var w = itemTexture.Width;
+                        var h = itemTexture.Height;
+                        var cs = new Color[w * h];
+                        itemTexture.GetData(cs);
+                        var currentColor = new Color[5];
+                        var infos = new (float? distance, int? index)[w * h];
+                        for (int n = 0; n < w * h; n++)
+                        {
+                            var color = cs[n];
+                            if (color != default)
+                            {
+                                infos[n] = (hsl.DistanceColor(Main.rgbToHsl(color)), n);//Main.hslToRgb(hsl).DistanceColor(color,0)
+                            }
+                        }
+                        var (distanceMin, distanceMax, indexMin, indexMax) = (114514f, 0f, 0, 0);
+                        foreach (var info in infos)
+                        {
+                            if (info.distance != null)
+                            {
+                                if (info.distance < distanceMin)
+                                {
+                                    distanceMin = info.distance.Value;
+                                    indexMin = info.index.Value;
+                                }
+                                if (info.distance > distanceMax)
+                                {
+                                    distanceMax = info.distance.Value;
+                                    indexMax = info.index.Value;
+                                }
+                            }
+                        }
+                        currentColor[4] = cs[indexMin];
+                        currentColor[0] = cs[indexMax];
+
+                        var _dis = new float[] { 114514, 114514, 114514 };
+                        var _target = new float[] { distanceMax * .75f + distanceMin * .25f, distanceMax * .5f + distanceMin * .5f, distanceMax * .25f + distanceMin * .75f };
+                        var _index = new int[] { -1, -1, -1 };
+                        foreach (var info in infos)
+                        {
+                            if (info.distance != null)
+                            {
+                                for (int n = 0; n < 3; n++)
+                                {
+                                    var d = Math.Abs(info.distance.Value - _target[n]);
+                                    if (d < _dis[n])
+                                    {
+                                        _dis[n] = d;
+                                        _index[n] = info.index.Value;
+                                    }
+                                }
+                            }
+                        }
+                        for (int n = 0; n < 3; n++)
+                        {
+                            currentColor[n + 1] = cs[_index[n]];
+                        }
+                        switch (config.heatMapFactorStyle)
+                        {
+                            case HeatMapFactorStyle.线性Linear:
+                                {
+                                    for (int n = 0; n < 300; n++)
+                                    {
+                                        colors[n] = (n / 299f).GetLerpArrayValue(currentColor);
+                                    }
+                                    break;
+                                }
+                            case HeatMapFactorStyle.分块Floor:
+                                {
+                                    for (int n = 0; n < 300; n++)
+                                    {
+                                        colors[n] = currentColor[n / 60];
+                                    }
+                                    break;
+                                }
+                            case HeatMapFactorStyle.二次Quadratic:
+                                {
+                                    for (int n = 0; n < 300; n++)
+                                    {
+                                        var fac = n / 299f;
+                                        fac *= fac;
+                                        colors[n] = fac.GetLerpArrayValue(currentColor);
+                                    }
+                                    break;
+                                }
+                            case HeatMapFactorStyle.平方根SquareRoot:
+                                {
+                                    for (int n = 0; n < 300; n++)
+                                    {
+                                        colors[n] = MathF.Sqrt(n / 299f).GetLerpArrayValue(currentColor);
+                                    }
+                                    break;
+                                }
+                            case HeatMapFactorStyle.柔和分块SmoothFloor:
+                                {
+                                    for (int n = 0; n < 300; n++)
+                                    {
+                                        colors[n] = ((n / 299f * 5).SmoothFloor() / 5f).GetLerpArrayValue(currentColor);
+                                    }
+                                    break;
+                                }
+                        }
+
+
+                        break;
+                    }
+                case SwooshColorType.指定热度图:
+                    {
+                        var list = config.heatMapColors;
+                        int count = list.Count;
+                        switch (count)
+                        {
+                            case 0:
+                                {
+                                    Main.NewText("更新热度图失败！请确保至少有一个颜色。", Color.DarkRed);
+                                    Main.NewText("Failed To Update The Heat Map! Please Ensure There's At Least One Color.", Color.DarkRed);
+                                    return;
+                                }
+                            case 1:
+                                {
+                                    var color = list[0];
+                                    for (int i = 0; i < 300; i++)
+                                    {
+                                        colors[i] = color;
+                                    }
+                                    break;
+                                }
+                            case 2:
+                                {
+                                    var color1 = list[0];
+                                    var color2 = list[1];
+                                    for (int i = 0; i < 300; i++)
+                                    {
+                                        colors[i] = Color.Lerp(color1, color2, GetHeatMapFactor(i / 299f, 2, config.heatMapFactorStyle));
+                                    }
+                                    break;
+                                }
+                            default:
+                                {
+                                    var array = list.ToArray();
+                                    for (int i = 0; i < 300; i++)
+                                    {
+                                        colors[i] = GetHeatMapFactor(i / 299f, list.Count, config.heatMapFactorStyle).GetLerpArrayValue(array);
+                                    }
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+                default:
+                    {
+                        for (int i = 0; i < 300; i++)
+                        {
+                            var f = GetHeatMapFactor(i / 299f, 6, config.heatMapFactorStyle);//分割成25次惹，f从1/25f到1//1 - 
+                                             //f = f * f;// *f
+                            float h = (hsl.X + config.hueOffsetValue + config.hueOffsetRange * (2 * f - 1)) % 1;
+                            float s = MathHelper.Clamp(hsl.Y * config.saturationScalar, 0, 1);
+                            float l = MathHelper.Clamp(f > 0.5f ? hsl.Z * (2 - f * 2) + (f * 2 - 1) * Math.Max(hsl.Z, 0.5f + config.luminosityRange) : f * 2 * hsl.Z + (1 - f * 2) * Math.Min(hsl.Z, 0.5f - config.luminosityRange), 0, 1);
+                            var currentColor = Main.hslToRgb(h, s, l);
+                            colors[i] = currentColor;
+                        }
+                        break;
+                    }
             }
             if (texture == null) texture = new Texture2D(Main.graphics.GraphicsDevice, 300, 1);
             texture.SetData(colors);
@@ -1047,7 +1220,7 @@ namespace CoolerItemVisualEffect
                     if (player.active)
                     {
                         var modPlr = player.GetModPlayer<CoolerItemVisualEffectPlayer>();
-                        UpdateHeatMap(ref modPlr.colorInfo.tex, modPlr.hsl, modPlr.ConfigurationSwoosh);
+                        UpdateHeatMap(ref modPlr.colorInfo.tex, modPlr.hsl, modPlr.ConfigurationSwoosh, TextureAssets.Item[player.HeldItem.type].Value);
                         modPlr.UpdateVertex();
                         modPlr.UpdateFactor();
                         if (modPlr.SwooshActive) modPlr.UpdateSwooshHM();
@@ -1066,6 +1239,8 @@ namespace CoolerItemVisualEffect
             ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
             ShaderSwooshEX.Parameters["lightShift"].SetValue(0);
             ShaderSwooshEX.Parameters["distortScaler"].SetValue(distortScaler * scaler);
+            ShaderSwooshEX.Parameters["alphaFactor"].SetValue(instance.alphaFactor);
+            ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(instance.alphaFactor == 0);
             Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + instance.ImageIndex);
             Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage($"AniTex_{modPlayer.ConfigurationSwoosh.AnimateIndex}");
             Main.graphics.GraphicsDevice.Textures[2] = itemTex;
@@ -1073,6 +1248,16 @@ namespace CoolerItemVisualEffect
             Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
             Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
             Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
+            switch (instance.swooshColorType) 
+            {
+                case SwooshColorType.函数生成热度图:
+                case SwooshColorType.贴图生成热度图:
+                case SwooshColorType.指定热度图: 
+                    {
+                        sampler = SamplerState.AnisotropicClamp;
+                        break;
+                    }
+            }
             Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
             if (modPlayer.UseSlash)// && ((instance.swooshActionStyle != SwooshAction.向后倾一定角度后重击 && instance.swooshActionStyle != SwooshAction.两次普通斩击一次高速旋转) || modPlayer.Player.itemAnimation < 18)
             {
@@ -1145,9 +1330,13 @@ namespace CoolerItemVisualEffect
             RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
             if (modPlayer.colorInfo.tex == null || modPlayer.colorInfo.type != drawPlayer.HeldItem.type)
             {
-                if (instance.swooshColorType == SwooshColorType.函数生成热度图 || instance.swooshColorType == SwooshColorType.加权平均_饱和与色调处理 || instance.swooshColorType == SwooshColorType.色调处理与对角线混合)
+                if (instance.swooshColorType == SwooshColorType.函数生成热度图 || 
+                    instance.swooshColorType == SwooshColorType.加权平均_饱和与色调处理 || 
+                    instance.swooshColorType == SwooshColorType.色调处理与对角线混合 ||
+                    instance.swooshColorType == SwooshColorType.贴图生成热度图 || 
+                    instance.swooshColorType == SwooshColorType.指定热度图)
                 {
-                    UpdateHeatMap(ref modPlayer.colorInfo.tex, modPlayer.hsl, instance);
+                    UpdateHeatMap(ref modPlayer.colorInfo.tex, modPlayer.hsl, instance, itemTex);
                 }
                 modPlayer.colorInfo.type = drawPlayer.HeldItem.type;
             }
@@ -1166,9 +1355,72 @@ namespace CoolerItemVisualEffect
             bool useRender = (instance.distortFactor != 0 || instance.luminosityFactor != 0 || instance.maxCount > 1) && CanUseRender;
             var gd = Main.graphics.GraphicsDevice;
             var sb = Main.spriteBatch;
+            if (modPlayer.UseSlash)
+            {
+                var num0 = modPlayer.negativeDir ? 1 : 0;
+                float light = instance.glowLight;
+                c[0] = new CustomVertexInfo(drawCen, newColor, new Vector3(0, 1, light));//因为零向量固定是左下角所以纹理固定(0,1)
+                c[1] = new CustomVertexInfo(u + drawCen, newColor, new Vector3(num0 ^ 1, num0 ^ 1, light));//这一处也许有更优美的写法
+                c[2] = new CustomVertexInfo(v + drawCen, newColor, new Vector3(num0, num0, light));
+                c[3] = c[1];
+                c[4] = new CustomVertexInfo(u + v + drawCen, newColor, new Vector3(1, 0, light));//因为u+v固定是右上角所以纹理固定(1,0)
+                c[5] = c[2];
+                //Main.spriteBatch.DrawLine(u + v + drawPlayer.Center, drawPlayer.Center, Color.Red);
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, instance.itemAdditive ? BlendState.Additive : BlendState.AlphaBlend, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
+                itemEffect.Parameters["uTransform"].SetValue(model * trans * projection);
+                //将变换矩阵作用在正交投影矩阵上，具体结果以及意义我下次再想想
+                //半年前就问过零群各位大佬，他们都说没必要搞懂，tr图像变换矩阵而已。
+                itemEffect.Parameters["uTime"].SetValue((float)Main.time / 60 % 1);//传入时间偏移量
+                itemEffect.Parameters["uItemColor"].SetValue(instance.itemHighLight ? Vector4.One : Lighting.GetColor((drawPlayer.Center / 16).ToPoint().X, (drawPlayer.Center / 16).ToPoint().Y).ToVector4());
+                //传入顶点绘制出的物品的颜色，这里采用环境光，和sb.Draw的那个color参数差不多(吧
+                itemEffect.Parameters["uItemGlowColor"].SetValue(new Color(250, 250, 250, drawPlayer.HeldItem.alpha).ToVector4());
+
+                Main.graphics.GraphicsDevice.Textures[0] = itemTex;//传入物品贴图
+                Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("Style_12");//传入因时间而x纹理坐标发生偏移的灰度图，这里其实并不明显，你可以参考我mod里的无间之钟在黑暗环境下的效果
+                Main.graphics.GraphicsDevice.Textures[2] = GetWeaponDisplayImage("Style_18");//传入固定叠加的灰度图
+                var tex = emptyTex ??= new Texture2D(Main.graphics.GraphicsDevice, 1, 1);
+                tex.SetData(new Color[] { Color.Transparent });
+                Main.graphics.GraphicsDevice.Textures[3] = tex;
+                var g = drawPlayer.HeldItem.glowMask;
+                if (g != -1)
+                {
+                    //Main.graphics.GraphicsDevice.Textures[3] = TextureAssets.GlowMask[g].Value;
+                    Main.graphics.GraphicsDevice.Textures[3] = TextureAssets.GlowMask[g].Value;
+                }
+                if (drawPlayer.HeldItem.type == 3823)
+                {
+                    //Main.graphics.GraphicsDevice.Textures[1] = TextureAssets.ItemFlame[3823].Value;
+                    Main.graphics.GraphicsDevice.Textures[3] = ModContent.Request<Texture2D>("CoolerItemVisualEffect/Shader/ItemFlame_3823").Value;
+
+                    //ItemEffect.Parameters["uItemGlowColor"].SetValue(new Color(100, 100, 100, 0).ToVector4());
+
+                }
+                //上面这两个灰度图叠加后作为插值的t，大概是这样的映射:t=0时最终物品上的颜色是0(黑色，additive模式下是透明的)，t=0.5时是color（顶点传入的color参数，不是上面uItemColor,t=1时是1(白色)
+                Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
+                Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
+                Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
+                Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
+
+                itemEffect.CurrentTechnique.Passes[2].Apply();//这里是第三个pass，可以直接写下标不必写pass名(
+                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, c, 0, 2);
+                Main.graphics.GraphicsDevice.RasterizerState = originalState;
+                modPlayer.direct = (u + v).ToRotation();
+                modPlayer.HitboxPosition = (u + v) * (instance.onlyChangeSizeOfSwoosh ? instance.swooshSize : 1f);
+                if (Main.netMode == NetmodeID.MultiplayerClient)
+                {
+                    ModPacket packet = Instance.GetPacket();
+                    packet.Write((byte)HandleNetwork.MessageType.rotationDirect);
+                    packet.Write(modPlayer.direct);
+                    packet.WritePackedVector2(modPlayer.HitboxPosition);
+                    packet.Send(-1, -1);
+                }
+            }
             var passCount = 0;
             switch (instance.swooshColorType)
             {
+                case SwooshColorType.贴图生成热度图:
+                case SwooshColorType.指定热度图:
                 case SwooshColorType.函数生成热度图: passCount = 2; break;
                 case SwooshColorType.武器贴图对角线: passCount = 1; break;
                 case SwooshColorType.色调处理与对角线混合: passCount = 3; break;
@@ -1298,67 +1550,7 @@ namespace CoolerItemVisualEffect
             }
 
 
-            if (modPlayer.UseSlash)
-            {
-                var num0 = modPlayer.negativeDir ? 1 : 0;
-                float light = instance.glowLight;
-                c[0] = new CustomVertexInfo(drawCen, newColor, new Vector3(0, 1, light));//因为零向量固定是左下角所以纹理固定(0,1)
-                c[1] = new CustomVertexInfo(u + drawCen, newColor, new Vector3(num0 ^ 1, num0 ^ 1, light));//这一处也许有更优美的写法
-                c[2] = new CustomVertexInfo(v + drawCen, newColor, new Vector3(num0, num0, light));
-                c[3] = c[1];
-                c[4] = new CustomVertexInfo(u + v + drawCen, newColor, new Vector3(1, 0, light));//因为u+v固定是右上角所以纹理固定(1,0)
-                c[5] = c[2];
-                //Main.spriteBatch.DrawLine(u + v + drawPlayer.Center, drawPlayer.Center, Color.Red);
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Immediate, instance.itemAdditive ? BlendState.Additive : BlendState.AlphaBlend, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
-                itemEffect.Parameters["uTransform"].SetValue(model * trans * projection);
-                //将变换矩阵作用在正交投影矩阵上，具体结果以及意义我下次再想想
-                //半年前就问过零群各位大佬，他们都说没必要搞懂，tr图像变换矩阵而已。
-                itemEffect.Parameters["uTime"].SetValue((float)Main.time / 60 % 1);//传入时间偏移量
-                itemEffect.Parameters["uItemColor"].SetValue(instance.itemHighLight ? Vector4.One : Lighting.GetColor((drawPlayer.Center / 16).ToPoint().X, (drawPlayer.Center / 16).ToPoint().Y).ToVector4());
-                //传入顶点绘制出的物品的颜色，这里采用环境光，和sb.Draw的那个color参数差不多(吧
-                itemEffect.Parameters["uItemGlowColor"].SetValue(new Color(250, 250, 250, drawPlayer.HeldItem.alpha).ToVector4());
 
-                Main.graphics.GraphicsDevice.Textures[0] = itemTex;//传入物品贴图
-                Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("Style_12");//传入因时间而x纹理坐标发生偏移的灰度图，这里其实并不明显，你可以参考我mod里的无间之钟在黑暗环境下的效果
-                Main.graphics.GraphicsDevice.Textures[2] = GetWeaponDisplayImage("Style_18");//传入固定叠加的灰度图
-                var tex = emptyTex ??= new Texture2D(Main.graphics.GraphicsDevice, 1, 1);
-                tex.SetData(new Color[] { Color.Transparent });
-                Main.graphics.GraphicsDevice.Textures[3] = tex;
-                var g = drawPlayer.HeldItem.glowMask;
-                if (g != -1)
-                {
-                    //Main.graphics.GraphicsDevice.Textures[3] = TextureAssets.GlowMask[g].Value;
-                    Main.graphics.GraphicsDevice.Textures[3] = TextureAssets.GlowMask[g].Value;
-                }
-                if (drawPlayer.HeldItem.type == 3823)
-                {
-                    //Main.graphics.GraphicsDevice.Textures[1] = TextureAssets.ItemFlame[3823].Value;
-                    Main.graphics.GraphicsDevice.Textures[3] = ModContent.Request<Texture2D>("CoolerItemVisualEffect/Shader/ItemFlame_3823").Value;
-
-                    //ItemEffect.Parameters["uItemGlowColor"].SetValue(new Color(100, 100, 100, 0).ToVector4());
-
-                }
-                //上面这两个灰度图叠加后作为插值的t，大概是这样的映射:t=0时最终物品上的颜色是0(黑色，additive模式下是透明的)，t=0.5时是color（顶点传入的color参数，不是上面uItemColor,t=1时是1(白色)
-                Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
-                Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
-                Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
-                Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
-
-                itemEffect.CurrentTechnique.Passes[2].Apply();//这里是第三个pass，可以直接写下标不必写pass名(
-                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, c, 0, 2);
-                Main.graphics.GraphicsDevice.RasterizerState = originalState;
-                modPlayer.direct = (u + v).ToRotation();
-                modPlayer.HitboxPosition = (u + v) * (instance.onlyChangeSizeOfSwoosh ? instance.swooshSize : 1f);
-                if (Main.netMode == NetmodeID.MultiplayerClient)
-                {
-                    ModPacket packet = Instance.GetPacket();
-                    packet.Write((byte)HandleNetwork.MessageType.rotationDirect);
-                    packet.Write(modPlayer.direct);
-                    packet.WritePackedVector2(modPlayer.HitboxPosition);
-                    packet.Send(-1, -1);
-                }
-            }
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, trans);

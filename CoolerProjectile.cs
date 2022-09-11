@@ -385,6 +385,8 @@ namespace CoolerItemVisualEffect
                             CoolerItemVisualEffect.ShaderSwooshEX.Parameters["gather"].SetValue(true);
                             CoolerItemVisualEffect.ShaderSwooshEX.Parameters["lightShift"].SetValue(0);
                             CoolerItemVisualEffect.ShaderSwooshEX.Parameters["distortScaler"].SetValue(0);
+                            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["alphaFactor"].SetValue(ConfigurationSwoosh_Advanced.ConfigSwooshInstance.alphaFactor);
+                            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(ConfigurationSwoosh_Advanced.ConfigSwooshInstance.alphaFactor == 0);
                             var _v = ConfigurationSwoosh_Advanced.ConfigSwooshInstance.directOfHeatMap.ToRotationVector2();
                             CoolerItemVisualEffect.ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
                             //var par = CoolerItemVisualEffect.ShaderSwooshEX.Parameters["heatRotation"];

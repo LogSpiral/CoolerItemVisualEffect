@@ -70,11 +70,13 @@ Mods:{
 			8:
 			'''
 			The Follow Is
-			Weighted Average
-			Weighted Average With Optimization Hue And Saturation
-			Heat Map Built By A Function
-			Diagonal Color Of The Enabled Weapon
-			Blend "Weighted Average With Optimization Hue And Saturation" And "Diagonal Color Of the Enabled Weapon"
+				Weighted Average
+				Weighted Average With Optimization Hue And Saturation
+				Heat Map Built By A Function
+				Diagonal Color Of The Enabled Weapon
+				Blend "Weighted Average With Optimization Hue And Saturation" And "Diagonal Color Of the Enabled Weapon"
+				Heat Map Built According To The Color Of Texture
+				Designated HeatMap
 			'''
 			9:Sampler Style Of Slashing
 			10:
@@ -95,17 +97,17 @@ Mods:{
 			14:
 			'''
 			The Follow Is
-            Transverse Splitting
-            Transverse Splitting_EX
-            Heavy Slash
-            Up Slash
-            Cloud Slash
-            Wind Slash
-            Rain Slash
-            Thunder Slash
-            Storm Ultra Slash
-            Transverse Splitting_EX_Old
-            Transverse Splitting_Failed
+				Transverse Splitting
+				Transverse Splitting_EX
+				Heavy Slash
+				Up Slash
+				Cloud Slash
+				Wind Slash
+				Rain Slash
+				Thunder Slash
+				Storm Ultra Slash
+				Transverse Splitting_EX_Old
+				Transverse Splitting_Failed
 			'''
 			15:Size Of The Item And Slash
 			16:According To The Default Size Is The Right HitBox, But Who Doesn't Like A Bigger Size?
@@ -192,6 +194,17 @@ Mods:{
 			76:Notice: This Will Out The Range Of "Visual Effect",Please Consider It
 			77:Ignore The Damage Type
 			78:Even If It Is A Magic Staff？？！！
+			79:Style Of HeatMap Factor
+			80:Not Only Lerp Finally, Good Work, 阿汪.
+			81:List Of Color Of Designated HeatMap
+			82:
+			'''
+			The First One To The Last One Correspond To Left To Right
+			(Show The HeatMap And You Can Know What I Mean
+			Need "Designated HeatMap"
+			'''
+			83:Coefficient Of Opacity
+			84:It Will Don't Care The Grey Value If It Is Zero.In Other Case, Opacity Will Multiply This Value.
 		}
 		Config:{
 			Label:Visual Settings
@@ -237,6 +250,9 @@ Mods:{
 
 			31:Active Teleport Extra Effect(WIP)
 			32:Exaggerate Magic Effect Is Too Much!!(I'm boring with it a bit
+
+			33:Melee Hit Box Modify Style
+			34:To reduce the sense of disobedience.
 		}
 		ConfigurationServer:{
 			Label:Gameplay Settings

@@ -603,6 +603,8 @@ namespace CoolerItemVisualEffect.Weapons
                 ShaderSwooshEX.Parameters["uTime"].SetValue(0); ShaderSwooshEX.Parameters["checkAir"].SetValue(ConfigSwooshInstance.checkAir);
                 ShaderSwooshEX.Parameters["airFactor"].SetValue(airFactor);
                 ShaderSwooshEX.Parameters["gather"].SetValue(ConfigSwooshInstance.gather);
+                ShaderSwooshEX.Parameters["alphaFactor"].SetValue(ConfigSwooshInstance.alphaFactor);
+                ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(ConfigSwooshInstance.alphaFactor == 0);
                 var _v = ConfigSwooshInstance.directOfHeatMap.ToRotationVector2();
                 ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
                 ShaderSwooshEX.Parameters["lightShift"].SetValue(0);

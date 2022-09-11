@@ -920,6 +920,58 @@ namespace CoolerItemVisualEffect
     }
     public static class CoolerItemVisualEffectMethods
     {
+        public static float SmoothFloor(this float t) 
+        {
+            t += .5f;
+            var f = (int)Math.Floor(t);
+            var g = MathF.Sin(MathHelper.TwoPi * t) / MathHelper.TwoPi + t - .5f;
+            return MathHelper.Lerp(f, g, Math.Abs(f - g) * 2);
+        }
+        public static bool EqualValue<T>(this IList<T> list, IList<T> target) 
+        {
+            var count = list.Count;
+            if (count != target.Count) return false;
+            for (int n = 0; n < count; n++) 
+            {
+                if (!list[n].Equals(target[n])) return false;
+            }
+            return true;
+        }
+        public static Color GetLerpArrayValue(this float factor, params Color[] values)
+        {
+            if (factor <= 0)
+            {
+                return values[0];
+            }
+            else if (factor >= 1)
+            {
+                return values[values.Length - 1];
+            }
+            else
+            {
+                int c = values.Length - 1;
+                int tier = (int)(c * factor);
+                return Color.Lerp(values[tier], values[tier + 1], c * factor % 1);
+            }
+        }
+        public static float DistanceColor(this Color mainColor, Color target, int style) => style switch { 0 => (mainColor.ToVector3() - target.ToVector3()).Length(), 1 => DistanceColor(mainColor, target), _ => 0 };
+        public static float DistanceColor(this Vector3 mainColor, Vector3 target)
+        {
+            float hueDistance;
+            float saturationDistance = Math.Max(mainColor.Y, target.Y) - Math.Min(mainColor.Y, target.Y);
+            float luminosityDistance = Math.Max(mainColor.Z, target.Z) - Math.Min(mainColor.Z, target.Z);
+            #region 色调处理
+            {
+                hueDistance = Math.Max(mainColor.X, target.X);
+                float helper = Math.Min(mainColor.X, target.X);
+                hueDistance = Math.Min(hueDistance - helper, helper + 1 - hueDistance);
+            }
+            #endregion
+            hueDistance *= mainColor.Y * 2 * MathF.Sqrt(mainColor.Z * (1 - mainColor.Z));
+            return hueDistance * 8 + saturationDistance + luminosityDistance;
+        }
+        public static float DistanceColor(this Color mainColor, Color target) => DistanceColor(Main.rgbToHsl(mainColor), Main.rgbToHsl(target));
+
         public static CustomVertexInfo[] TailVertexFromProj(this Projectile projectile, Vector2 Offset = default, float Width = 30, float alpha = 1, bool VeloTri = false, Color? mainColor = null)
         {
             List<CustomVertexInfo> bars = new List<CustomVertexInfo>();
@@ -1001,6 +1053,8 @@ namespace CoolerItemVisualEffect
             ShaderSwooshEX.Parameters["gather"].SetValue(false);
             ShaderSwooshEX.Parameters["lightShift"].SetValue(0);
             ShaderSwooshEX.Parameters["distortScaler"].SetValue(0);
+            ShaderSwooshEX.Parameters["alphaFactor"].SetValue(ConfigurationSwoosh_Advanced.ConfigSwooshInstance.alphaFactor);
+            ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(ConfigurationSwoosh_Advanced.ConfigSwooshInstance.alphaFactor == 0);
 
             Main.graphics.GraphicsDevice.Textures[0] = baseTex;
             Main.graphics.GraphicsDevice.Textures[1] = aniTex;

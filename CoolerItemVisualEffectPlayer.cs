@@ -75,7 +75,7 @@ namespace CoolerItemVisualEffect
         public float actionOffsetDamage;
         public int actionOffsetCritAdder;
         public float actionOffsetCritMultiplyer;
-
+        public float TimeToCutThem => 8f;
         public override bool? CanHitNPC(Item item, NPC target)
         {
             //bool? modCanHit = CombinedHooks.CanPlayerHitNPCWithItem(this, sItem, Main.npc[i]);
@@ -83,7 +83,7 @@ namespace CoolerItemVisualEffect
             if (style == 0 || style == ConfigurationNormal.HitBoxStyle.矩形Rectangle || ConfigurationSwoosh.coolerSwooshQuality == QualityType.关off) return null;
             if (ConfigurationSwoosh.actionModifyEffect)
             {
-                if (player.itemAnimation > 18)
+                if (player.itemAnimation > TimeToCutThem && (ConfigurationSwoosh.coolerSwooshQuality == QualityType.极限ultra ^ !SwooshActive))// && 
                     return false;
                 else
                     player.attackCD = 0;
@@ -166,9 +166,11 @@ namespace CoolerItemVisualEffect
             //var drawCen = drawPlayer.Center;
             float rotVel = instance.swooshActionStyle == SwooshAction.旋风劈 && modPlayer.swingCount % 3 == 0 ? instance.rotationVelocity : 1;
             var theta = (1.2375f * fac * rotVel - 1.125f) * MathHelper.Pi;
+            //theta = currentRotation = currentRotation.AngleLerp(theta, 0.15f);
             var itemTex = TextureAssets.Item[drawPlayer.HeldItem.type].Value;
             float xScaler = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.kValue, modPlayer.kValueNext, fac) : modPlayer.kValue;
             //float scaler = ;
+            currentSize = MathHelper.Lerp(currentSize, (ConfigurationSwoosh.actionOffsetSize ? actionOffsetSize : 1), 0.05f);
             modPlayer.scaler = itemTex.Size().Length() * drawPlayer.GetAdjustedItemScale(drawPlayer.HeldItem) / xScaler * 0.5f * modPlayer.RealSize * modPlayer.colorInfo.checkAirFactor;
 
             var rotator = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.rotationForShadow, modPlayer.rotationForShadowNext, fac) : modPlayer.rotationForShadow;
@@ -193,7 +195,7 @@ namespace CoolerItemVisualEffect
             var theta3 = (1.2375f * swooshAniFac * rotVel - 1.125f) * MathHelper.Pi;
             float xScaler3 = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.kValue, modPlayer.kValueNext, swooshAniFac) : modPlayer.kValue;
             var rotator3 = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.rotationForShadow, modPlayer.rotationForShadowNext, swooshAniFac) : modPlayer.rotationForShadow;
-            var alphaLight = hsl.Z < instance.isLighterDecider ? Lighting.GetColor((drawPlayer.Center / 16).ToPoint().X, (drawPlayer.Center / 16).ToPoint().Y).R / 255f * .6f : 0.6f;
+            var alphaLight = hsl.Z < instance.isLighterDecider ? Lighting.GetColor((drawPlayer.Center / 16).ToPoint().X, (drawPlayer.Center / 16).ToPoint().Y).R / 255f * .5f : 0.5f;
 
             for (int i = 0; i < 45; i++)
             {
@@ -209,9 +211,11 @@ namespace CoolerItemVisualEffect
                 //var _f = f * f;
                 //_f = MathHelper.Clamp(_f, 0, 1);
                 var _flag = (byte)ConfigurationSwoosh.swooshActionStyle > 0 && (byte)ConfigurationSwoosh.swooshActionStyle < 9;
-                var progress = _flag ? Utils.GetLerpValue(MathHelper.Clamp(player.itemAnimationMax, 18, 114514), 18, player.itemAnimation, true) : 1f;
-                vertexInfos[2 * i] = new CustomVertexInfo(newVec, colorInfo.color with { A = (byte)((1 - f).HillFactor2(1) * 255 * progress) }, new Vector3(1 - f, 1, alphaLight));//(byte)(_f * 255)//drawCen + 
-                vertexInfos[2 * i + 1] = new CustomVertexInfo(default, colorInfo.color with { A = 0 }, new Vector3(0, 0, alphaLight));//drawCen
+                //var progress = _flag ? Utils.GetLerpValue(MathHelper.Clamp(player.itemAnimationMax, TimeToCutThem, 114514), TimeToCutThem, player.itemAnimation, true) : 1f;
+                var progress = _flag ? Utils.GetLerpValue(TimeToCutThem, TimeToCutThem * .5f, player.itemAnimation, true) : 1f;//MathHelper.Clamp(player.itemAnimationMax, TimeToCutThem, 114514)
+
+                vertexInfos[2 * i] = new CustomVertexInfo(newVec, colorInfo.color with { A = (byte)(MathHelper.Clamp((1 - f).HillFactor2() * 2f, 0, 1) * 255 * progress) }, new Vector3(1 - f, 1, alphaLight));//(byte)(_f * 255)//drawCen + 
+                vertexInfos[2 * i + 1] = new CustomVertexInfo(default, colorInfo.color with { A = (byte)(MathHelper.Clamp((1 - f).HillFactor2() * 2f, 0, 1) * 255 * progress) }, new Vector3(0, 0, alphaLight));//drawCen
             }
 
             foreach (var swoosh in ultraSwooshes)
@@ -230,9 +234,9 @@ namespace CoolerItemVisualEffect
                         Vector2 adder = (offsetVec * 0.25f + swoosh.rotation.ToRotationVector2() * scaler * 2f) * (instance.IsOffestGrow ? num : 0);
                         if (instance.growStyle == SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest) adder *= 0.25f;
                         var realColor = swoosh.color;
-                        realColor.A = (byte)((1 - f).HillFactor2(1) * (instance.IsTransparentFade ? (1 - num) : 1) * 255);
+                        realColor.A = (byte)((1 - f).HillFactor2(1) * (instance.IsTransparentFade ? MathF.Sqrt(1 - num) : 1) * 255);
                         swoosh.vertexInfos[2 * i] = new CustomVertexInfo(swoosh.center + offsetVec + adder, realColor, new Vector3(1 - f, 1, alphaLight));
-                        realColor.A = 0;
+                        //realColor.A = 0;
                         swoosh.vertexInfos[2 * i + 1] = new CustomVertexInfo(swoosh.center + adder, realColor, new Vector3(0, 0, alphaLight));
                     }
                 }
@@ -245,7 +249,7 @@ namespace CoolerItemVisualEffect
             {
                 if (us != null && us.Active)
                 {
-                    CoolerItemVisualEffect.UpdateHeatMap(ref us.heatMap, us.hsl, ConfigurationSwoosh);
+                    CoolerItemVisualEffect.UpdateHeatMap(ref us.heatMap, us.hsl, ConfigurationSwoosh, TextureAssets.Item[us.type].Value);
                 }
             }
         }
@@ -292,9 +296,9 @@ namespace CoolerItemVisualEffect
                 case SwooshAction.左右横劈_后倾:
                 default:
                     {
-                        if (player.itemAnimationMax > 18)
+                        if (player.itemAnimationMax > TimeToCutThem)
                         {
-                            _factor = player.itemAnimation <= 9 ? (player.itemAnimation / 18f) : (((player.itemAnimation - 9f) / (player.itemAnimationMax - 9f) + 1f) / 2f);
+                            _factor = player.itemAnimation <= TimeToCutThem / 2f ? (player.itemAnimation / TimeToCutThem) : (((player.itemAnimation - TimeToCutThem / 2) / (player.itemAnimationMax - TimeToCutThem / 2) + 1f) / 2f);
                             fac = 1 - (cValue - 1) * (1 - _factor) * (1 - _factor) - (2 - cValue) * (1 - _factor);
                         }
                         else
@@ -381,7 +385,7 @@ namespace CoolerItemVisualEffect
             //        break;
             //    }
             //}
-            if (ConfigurationSwoosh.actionModifyEffect && player.itemAnimation < 18)
+            if (ConfigurationSwoosh.actionModifyEffect && player.itemAnimation < TimeToCutThem)
             {
                 player.attackCD = 0;
             }
@@ -389,7 +393,7 @@ namespace CoolerItemVisualEffect
         public override void PostUpdate()
         {
             //base.PostUpdate();
-            if (ConfigurationSwoosh.actionModifyEffect && player.itemAnimation < 18)
+            if (ConfigurationSwoosh.actionModifyEffect && player.itemAnimation < TimeToCutThem)
             {
                 player.attackCD = 0;
             }
@@ -467,7 +471,7 @@ namespace CoolerItemVisualEffect
                     if (ConfigurationSwoosh.CoolerSwooshActive) // 
                     {
                         //Main.NewText(swingCount);
-                        if (player.itemAnimationMax > 9)
+                        if (player.itemAnimationMax > TimeToCutThem / 2)
                             ItemID.Sets.SkipsInitialUseSound[player.HeldItem.type] = true;
                         if (Main.myPlayer == player.whoAmI)
                             ChangeShooshStyle();
@@ -479,7 +483,7 @@ namespace CoolerItemVisualEffect
                 }
             }
 
-            if (player.itemAnimation == 9 && ItemID.Sets.SkipsInitialUseSound[player.HeldItem.type])
+            if (player.itemAnimation == (int)(TimeToCutThem / 2) && ItemID.Sets.SkipsInitialUseSound[player.HeldItem.type])
             {
                 SoundEngine.PlaySound(player.HeldItem.UseSound, player.Center);
             }
@@ -488,6 +492,11 @@ namespace CoolerItemVisualEffect
                 player.itemRotation = direct - MathHelper.ToRadians(90f); // 别问为啥-90°，问re去
                 //Main.NewText("!!!!!");
                 player.SetCompositeArmFront(enabled: true, Player.CompositeArmStretchAmount.Full, player.itemRotation);
+            }
+            if (player.itemAnimation == 0)
+            {
+                currentRotation = (player.direction - 1) * MathHelper.PiOver2;
+                currentSize = 0;
             }
             for (int n = 0; n < 60; n++)
             {
@@ -506,7 +515,7 @@ namespace CoolerItemVisualEffect
 
             }
         }
-        public override float UseSpeedMultiplier(Item item) => ConfigurationSwoosh.actionOffsetSpeed ? actionOffsetSpeed : 1f;
+        public override float UseSpeedMultiplier(Item item) => ConfigurationSwoosh.actionOffsetSpeed && UseSlash ? actionOffsetSpeed : 1f;
         public override void ModifyHitNPC(Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
         {
             if (ConfigurationSwoosh.actionModifyEffect)
@@ -649,7 +658,7 @@ namespace CoolerItemVisualEffect
                 );
         }
         private void CloudSpeed(int counter) => actionOffsetSpeed = counter == 2 ? 0.33f : 0.5f;
-        private void WindSpeed(int counter) => actionOffsetSpeed = counter == 2 ? 0.33f : 1f;
+        private void WindSpeed(int counter) => actionOffsetSpeed = counter == 2 ? 0.5f : 1f;
         private void RainSpeed(int counter) => actionOffsetSpeed = counter < 3 ? .5f : (counter == 7 ? 0.25f : 1f);
         private void ThunderSpeed(int counter) => actionOffsetSpeed = 1.5f;
         public void ChangeShooshStyle()
@@ -777,7 +786,11 @@ namespace CoolerItemVisualEffect
                 NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, Main.myPlayer); // 同步direction
             }
         }
-        public float RealSize => ConfigurationSwoosh.swooshSize * (ConfigurationSwoosh.actionOffsetSize ? actionOffsetSize : 1);
+        public float RealSize => ConfigurationSwoosh.swooshSize * currentSize;
+
+        public float currentSize;
+        public float currentRotation;
+
         //public int ScalerOfSword
         //{
         //    get
@@ -862,10 +875,10 @@ namespace CoolerItemVisualEffect
             {
                 var fac = player.itemAnimation / (float)player.itemAnimationMax;
                 var _fac = (fac * 2 % 1).HillFactor2() * (fac < .5f ? .5f : 1f);
-                var yscaler = (.25f +  fac * (fac - 1)) * 1.5f;
+                var yscaler = (.25f + fac * (fac - 1)) * 1.5f;
                 Main.spriteBatch.Draw(CoolerItemVisualEffectMethods.GetTexture("MagicZone/MagicZone_2"), player.Center + new Vector2(0, -128 + 256 * fac) - Main.screenPosition, null, Color.Cyan with { A = 0 } * _fac, 0, new Vector2(150), new Vector2(1, yscaler) * _fac, 0, 0);
 
-                Main.spriteBatch.Draw(CoolerItemVisualEffectMethods.GetTexture("MagicZone/MagicZone_2"), player.Center + new Vector2(0,128 - 256 * fac) - Main.screenPosition, null, Color.Cyan with { A = 0 } * _fac, 0, new Vector2(150), new Vector2(1, yscaler) * _fac, 0, 0);
+                Main.spriteBatch.Draw(CoolerItemVisualEffectMethods.GetTexture("MagicZone/MagicZone_2"), player.Center + new Vector2(0, 128 - 256 * fac) - Main.screenPosition, null, Color.Cyan with { A = 0 } * _fac, 0, new Vector2(150), new Vector2(1, yscaler) * _fac, 0, 0);
             }
             //foreach (var projectile in Main.projectile) 
             //{
