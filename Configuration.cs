@@ -807,6 +807,7 @@ namespace CoolerItemVisualEffect
         [BackgroundColor(255, 15, 0, 127)]
         public bool ignoreDamageType { get; set; }
 
+        [DrawTicks]
         [DefaultValue(HeatMapFactorStyle.线性Linear)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.79")]
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.80")]
@@ -833,6 +834,16 @@ namespace CoolerItemVisualEffect
         [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.86")]
         [BackgroundColor(255, 75, 0, 127)]
         public float dustQuantity { get; set; }
+
+
+        [JsonIgnore]
+        public HeatMapConfigs heatMapConfigs = new HeatMapConfigs();
+
+        [JsonIgnore]
+        public DetailConfigs detailConfigs = new DetailConfigs();
+
+        [JsonIgnore]
+        public MeleeSwooshConfigs meleeSwooshConfigs = new MeleeSwooshConfigs();
         public enum SwooshSamplerState : byte
         {
             各向异性,
@@ -900,12 +911,17 @@ namespace CoolerItemVisualEffect
             平方根SquareRoot,
             柔和分块SmoothFloor
         }
-        class CustomFloatElement : FloatElement
+        public class HeatMapConfigs 
         {
-            public CustomFloatElement()
-            {
-                ColorMethod = new Utils.ColorLerpMethod((percent) => Color.Lerp(Color.BlueViolet, Color.Aquamarine, percent));
-            }
+
+        }
+        public class DetailConfigs 
+        {
+
+        }
+        public class MeleeSwooshConfigs 
+        {
+
         }
     }
     //[Label("$Mods.CoolerItemVisualEffect.Config.Label")]

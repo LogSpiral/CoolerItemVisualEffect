@@ -45,6 +45,7 @@ namespace CoolerItemVisualEffect
                             float offsetKnockBack = reader.ReadSingle();
                             int offsetCritAdder = reader.ReadInt32();
                             float offsetCritMultiplyer = reader.ReadSingle();
+                            bool oldNegativeDir = reader.ReadBoolean();
 
                             CoolerItemVisualEffectPlayer modPlayer = Main.player[whoAmI].GetModPlayer<CoolerItemVisualEffectPlayer>();
                             modPlayer.negativeDir = negativeDir;
@@ -59,6 +60,7 @@ namespace CoolerItemVisualEffect
                             modPlayer.actionOffsetKnockBack = offsetKnockBack;
                             modPlayer.actionOffsetCritAdder = offsetCritAdder;
                             modPlayer.actionOffsetCritMultiplyer = offsetCritMultiplyer;
+                            modPlayer.oldNegativeDir = oldNegativeDir;
 
                             ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
                             packet.Write((byte)MessageType.BasicStats);
@@ -74,6 +76,7 @@ namespace CoolerItemVisualEffect
                             packet.Write(offsetKnockBack);
                             packet.Write(offsetCritAdder);
                             packet.Write(offsetCritMultiplyer);
+                            packet.Write(oldNegativeDir);
                             packet.Write((byte)whoAmI);
                             packet.Send(-1, whoAmI);
                             return;
@@ -199,6 +202,7 @@ namespace CoolerItemVisualEffect
                             float offsetKnockBack = reader.ReadSingle();
                             int offsetCritAdder = reader.ReadInt32();
                             float offsetCritMultiplyer = reader.ReadSingle();
+                            bool oldNegativeDir = reader.ReadBoolean();
                             int playerIndex = reader.ReadByte();
 
                             CoolerItemVisualEffectPlayer modPlayer = Main.player[playerIndex].GetModPlayer<CoolerItemVisualEffectPlayer>();
@@ -214,6 +218,7 @@ namespace CoolerItemVisualEffect
                             modPlayer.actionOffsetKnockBack = offsetKnockBack;
                             modPlayer.actionOffsetCritAdder = offsetCritAdder;
                             modPlayer.actionOffsetCritMultiplyer = offsetCritMultiplyer;
+                            modPlayer.oldNegativeDir = oldNegativeDir;
                             return;
                         }
                     case MessageType.ActionOffsetSpeed: 

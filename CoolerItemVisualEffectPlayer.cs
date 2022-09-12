@@ -47,6 +47,7 @@ namespace CoolerItemVisualEffect
         public int lastItemAnimation;
         public float kValue;
         public bool negativeDir;
+        public bool oldNegativeDir;
         public float rotationForShadow;
         public float kValueNext;
         public float rotationForShadowNext;
@@ -83,13 +84,12 @@ namespace CoolerItemVisualEffect
             if (style == 0 || style == ConfigurationNormal.HitBoxStyle.矩形Rectangle || ConfigurationSwoosh.coolerSwooshQuality == QualityType.关off) return null;
             if (ConfigurationSwoosh.actionModifyEffect)
             {
-                if (player.itemAnimation > TimeToCutThem && (ConfigurationSwoosh.coolerSwooshQuality == QualityType.极限ultra ^ !SwooshActive))// && 
+                if (player.itemAnimation > TimeToCutThem / 2f && (ConfigurationSwoosh.coolerSwooshQuality == QualityType.极限ultra ^ !SwooshActive))// && 
                     return false;
                 else
                     player.attackCD = 0;
             }
             var canHit = false;
-
             if (style == ConfigurationNormal.HitBoxStyle.剑气UltraSwoosh)
             {
                 if (ConfigurationSwoosh.coolerSwooshQuality == QualityType.极限ultra)
@@ -216,7 +216,7 @@ namespace CoolerItemVisualEffect
                 var alphaValue = MathHelper.Clamp((1 - f).HillFactor2() * 2f, 0, 1);
                 if (_dustAllow)
                 {
-                    var scaler = MathHelper.Lerp(player.itemAnimationMax / (float)player.HeldItem.useAnimation,1,.5f);//1 / (ConfigurationSwoosh.actionOffsetSpeed && UseSlash ? actionOffsetSpeed : 1f)
+                    var scaler = MathHelper.Lerp(player.itemAnimationMax / (float)player.HeldItem.useAnimation, 1, .5f);//1 / (ConfigurationSwoosh.actionOffsetSpeed && UseSlash ? actionOffsetSpeed : 1f)
                     if (Main.rand.Next(100) < f.HillFactor2() * 50 * scaler * ConfigurationSwoosh.dustQuantity)
                     {
                         int _num = Main.rand.Next(2, 6);
@@ -319,12 +319,20 @@ namespace CoolerItemVisualEffect
                     {
                         if (player.itemAnimationMax > TimeToCutThem)
                         {
-                            _factor = player.itemAnimation <= TimeToCutThem / 2f ? (player.itemAnimation / TimeToCutThem) : (((player.itemAnimation - TimeToCutThem / 2) / (player.itemAnimationMax - TimeToCutThem / 2) + 1f) / 2f);
-                            fac = 1 - (cValue - 1) * (1 - _factor) * (1 - _factor) - (2 - cValue) * (1 - _factor);
+                            if ((negativeDir == oldNegativeDir && swingCount > 0) && player.itemAnimation > TimeToCutThem / 2f)//
+                            {
+                                var tangent1 = 1f / TimeToCutThem / (player.itemAnimationMax - TimeToCutThem * .5f);
+                                fac = MathHelper.Hermite(1, tangent1, 160 / 99f, 0f, Utils.GetLerpValue(TimeToCutThem / 2f, player.itemAnimationMax, player.itemAnimation, true));
+                            }
+                            else
+                            {
+                                _factor = player.itemAnimation <= TimeToCutThem / 2f ? (player.itemAnimation / TimeToCutThem) : (((player.itemAnimation - TimeToCutThem / 2) / (player.itemAnimationMax - TimeToCutThem / 2) + 1f) / 2f);
+                                fac = 1 - (cValue - 1) * (1 - _factor) * (1 - _factor) - (2 - cValue) * (1 - _factor);
+                            }
                         }
                         else
                         {
-                            float n = player.itemAnimationMax / 6f;
+                            float n = player.itemAnimationMax / TimeToCutThem * 3f;
                             if (n < 1) n = 1;
                             fac = 1 - (n - 1) * (1 - _factor) * (1 - _factor) - (2 - n) * (1 - _factor);
                         }
@@ -642,6 +650,7 @@ namespace CoolerItemVisualEffect
         private void CloudSet(int counter, out float _newKValue)
         {
             var flag = counter == 2;
+            oldNegativeDir = negativeDir;
             negativeDir = flag ^ player.direction == -1;
             _newKValue = flag ? Main.rand.NextFloat(0.5f, .8f) : Main.rand.NextFloat(1, 1.2f);
             SetActionValue
@@ -652,6 +661,7 @@ namespace CoolerItemVisualEffect
         }
         private void WindSet(int counter, out float _newKValue)
         {
+            oldNegativeDir = negativeDir;
             negativeDir ^= true;
             _newKValue = Main.rand.NextFloat(1, 2);
             var flag = counter == 2;
@@ -667,6 +677,7 @@ namespace CoolerItemVisualEffect
         {
             if (counter < 3)
             {
+                oldNegativeDir = negativeDir;
                 negativeDir = player.direction == -1;
                 _newKValue = Main.rand.NextFloat(1, 1.2f);
                 SetActionValue
@@ -677,6 +688,7 @@ namespace CoolerItemVisualEffect
             }
             else
             {
+                oldNegativeDir = negativeDir;
                 negativeDir = counter % 2 == 1 ^ player.direction == -1;
                 _newKValue = counter == 7 ? Main.rand.NextFloat(2, 3f) : Main.rand.NextFloat(1.5f, 2f);
                 if (counter == 7)
@@ -694,6 +706,7 @@ namespace CoolerItemVisualEffect
         }
         private void ThunderSet(int counter, out float _newKValue)
         {
+            oldNegativeDir = negativeDir;
             negativeDir ^= true;
             _newKValue = counter == 3 ? Main.rand.NextFloat(4f, 7f) : Main.rand.NextFloat(3f, 4.5f);
             SetActionValue
@@ -725,16 +738,19 @@ namespace CoolerItemVisualEffect
                 case SwooshAction.左右横劈_后倾_旧:
                 case SwooshAction.左右横劈_失败:
                 default:
+                    oldNegativeDir = negativeDir;
                     negativeDir ^= true;
                     _newKValue = Main.rand.NextFloat(1, 2);
                     SetActionValue();
                     break;
                 case SwooshAction.重斩:
+                    oldNegativeDir = negativeDir;
                     negativeDir = player.direction == -1;
                     _newKValue = Main.rand.NextFloat(1, 1.2f);
                     SetActionValue(Main.rand.NextFloat(1f, 1.5f)/*, .5f*/, 1.5f, 2, 4, 1.05f);
                     break;
                 case SwooshAction.上挑:
+                    oldNegativeDir = negativeDir;
                     negativeDir = player.direction == 1;
                     _newKValue = Main.rand.NextFloat(0.5f, .8f);
                     SetActionValue(Main.rand.NextFloat(1f, 1.25f)/*, .5f*/, 1.5f, 2, 4, 1.05f);
