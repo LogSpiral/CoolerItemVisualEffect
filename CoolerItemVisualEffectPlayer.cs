@@ -392,15 +392,15 @@ namespace CoolerItemVisualEffect
         public override void ModifyScreenPosition()
         {
             //player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && player.itemAnimation > 0 && player.HeldItem.DamageType == DamageClass.Melee && !player.HeldItem.noUseGraphic && ConfigSwooshInstance.CoolerSwooshActive && !Main.gamePaused && (!ConfigSwooshInstance.ToolsNoUseNewSwooshEffect || player.HeldItem.axe == 0 && player.HeldItem.hammer == 0 && player.HeldItem.pick == 0) || player.HeldItem.type == ItemID.Zenith && player.itemAnimation > 0 && ConfigSwooshInstance.allowZenith
-            if (UseSlash)
+            if (UseSlash || SwooshActive)
             {
                 //var fac = FactorGeter;
                 //fac *= 4 * (1 - fac);
                 //fac = MathHelper.Clamp(2 * fac - 1, 0, 1);
                 //Main.screenPosition += Main.rand.NextVector2Unit() * fac * 24 * ConfigurationSwoosh.shake * (swingCount % 3 == 0 ? 3 : 1);
-                strengthOfShake *= 0.8f;
-                if (strengthOfShake < 0.25f) strengthOfShake = 0;
-                Main.screenPosition += Main.rand.NextVector2Unit() * strengthOfShake * 24 * ConfigurationSwoosh.shake;
+                strengthOfShake *= 0.6f;
+                if (strengthOfShake < 0.025f) strengthOfShake = 0;
+                Main.screenPosition += Main.rand.NextVector2Unit() * strengthOfShake * 48 * ConfigurationSwoosh.shake;
             }
         }
         public override void PreUpdate()

@@ -47,7 +47,18 @@ Mods:{
 		}
 		ConfigSwoosh:
 		{
-		    Label:Slashing Visual Settings
+			Label:Advanced Settings
+			Label1:Melee Slashing Settings
+			Label2:Sprite Draw Settings
+			Label3:Heat Map Settings
+			Label4:Special Effect Settings
+			Label5:Other Settings
+
+			D1:Basic Settings
+			D2:Style Settings
+			D3:Value Settings
+			D4:Detail Settings
+			D5:Experimental Settings
 			1:More Cool Slashing Effects's Quality Setting
 			2:
 			'''
@@ -71,12 +82,10 @@ Mods:{
 			'''
 			The Follow Is
 				Weighted Average
-				Weighted Average With Optimization Hue And Saturation
-				Heat Map Built By A Function
+				Gradient
 				Diagonal Color Of The Enabled Weapon
-				Blend "Weighted Average With Optimization Hue And Saturation" And "Diagonal Color Of the Enabled Weapon"
-				Heat Map Built According To The Color Of Texture
-				Designated HeatMap
+				Blend "Gradient" And "Diagonal Color Of the Enabled Weapon"
+				Heat Map
 			'''
 			9:Sampler Style Of Slashing
 			10:
@@ -164,8 +173,8 @@ Mods:{
 			54:
 			'''
 			The Default is pi,And Set It To 0 Will Inverse The Direction(They Are Polar Gradient)，Use pi/2 Or 3*pi/2 To Get Radial Gradient
-			Need "Weighted Average With Optimization Hue And Saturation"
-			Or " Blend "Weighted Average With Optimization Hue And Saturation" And "Diagonal Color Of the Enabled Weapon" "
+			Need "Gradient"
+			Or " Blend "Gradient" And "Diagonal Color Of the Enabled Weapon" "
 			'''
 			55:LeftTime Of Swoosh
 			56:The Default Is 15 Frame  Need "Ultra" Quality
@@ -207,6 +216,8 @@ Mods:{
 			84:It Will Don't Care The Grey Value If It Is Zero.In Other Case, Opacity Will Multiply This Value.
 			85:Dust Amount
 			86:The Larger The Value Is , The More Dusts There Will Be.
+			87:Heat Map Create Style
+			88:Wow, You Can Try To Create The One You Like.
 		}
 		Config:{
 			Label:Visual Settings

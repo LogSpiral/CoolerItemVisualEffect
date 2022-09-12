@@ -489,10 +489,10 @@ namespace CoolerItemVisualEffect.Weapons
                 var passCount = 0;
                 switch (ConfigSwooshInstance.swooshColorType)
                 {
-                    case SwooshColorType.函数生成热度图: passCount = 2; break;
+                    case SwooshColorType.热度图: passCount = 2; break;
                     case SwooshColorType.武器贴图对角线: passCount = 1; break;
-                    case SwooshColorType.色调处理与对角线混合: passCount = 3; break;
-                    case SwooshColorType.加权平均_饱和与色调处理: passCount = 4; break;
+                    case SwooshColorType.单向渐变与对角线混合: passCount = 3; break;
+                    case SwooshColorType.单向渐变: passCount = 4; break;
 
                 }
                 //if (false)//useRender

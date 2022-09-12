@@ -217,7 +217,7 @@ namespace CoolerItemVisualEffect
                             var f = i / (max - 1f);
                             f = 1 - f;
                             var alphaLight = 0.6f;
-                            if (ConfigSwooshInstance.swooshColorType == SwooshColorType.加权平均_饱和与色调处理 || ConfigSwooshInstance.swooshColorType == SwooshColorType.色调处理与对角线混合)
+                            if (ConfigSwooshInstance.swooshColorType == SwooshColorType.单向渐变 || ConfigSwooshInstance.swooshColorType == SwooshColorType.单向渐变与对角线混合)
                             {
                                 float h = (hsl.X + ConfigSwooshInstance.hueOffsetValue + ConfigSwooshInstance.hueOffsetRange * (2 * f - 1)) % 1;
                                 float s = MathHelper.Clamp(hsl.Y * ConfigSwooshInstance.saturationScalar, 0, 1);
@@ -265,12 +265,10 @@ namespace CoolerItemVisualEffect
                     }
                     switch (ConfigSwooshInstance.swooshColorType)
                     {
-                        case SwooshColorType.贴图生成热度图:
-                        case SwooshColorType.指定热度图:
-                        case SwooshColorType.函数生成热度图: passCount = 2; break;
+                        case SwooshColorType.热度图: passCount = 2; break;
                         case SwooshColorType.武器贴图对角线: passCount = 1; break;
-                        case SwooshColorType.色调处理与对角线混合: passCount = 3; break;
-                        case SwooshColorType.加权平均_饱和与色调处理: passCount = 4; break;
+                        case SwooshColorType.单向渐变与对角线混合: passCount = 3; break;
+                        case SwooshColorType.单向渐变: passCount = 4; break;
                     }
                     ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
                     //ShaderSwooshEX.Parameters["uLighter"].SetValue(ConfigSwooshInstance.luminosityFactor);
@@ -287,7 +285,7 @@ namespace CoolerItemVisualEffect
                     Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + ConfigSwooshInstance.ImageIndex);
                     Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage($"AniTex_{ConfigSwooshInstance.AnimateIndex}");
                     Main.graphics.GraphicsDevice.Textures[2] = ModContent.Request<Texture2D>("CoolerItemVisualEffect/Weapons/FirstZenithProj_5").Value;
-                    if (ConfigSwooshInstance.swooshColorType == SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = GetPureFractalHeatMaps(25);
+                    if (ConfigSwooshInstance.swooshColorType == SwooshColorType.热度图) Main.graphics.GraphicsDevice.Textures[3] = GetPureFractalHeatMaps(25);
                     Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
                     Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
                     Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
@@ -380,7 +378,7 @@ namespace CoolerItemVisualEffect
                             var f = i / (max - 1f);
                             f = 1 - f;
                             var alphaLight = 0.6f;
-                            if (ConfigSwooshInstance.swooshColorType == SwooshColorType.加权平均_饱和与色调处理 || ConfigSwooshInstance.swooshColorType == SwooshColorType.色调处理与对角线混合)
+                            if (ConfigSwooshInstance.swooshColorType == SwooshColorType.单向渐变 || ConfigSwooshInstance.swooshColorType == SwooshColorType.单向渐变与对角线混合)
                             {
                                 float h = (hsl.X + ConfigSwooshInstance.hueOffsetValue + ConfigSwooshInstance.hueOffsetRange * (2 * f - 1)) % 1;
                                 float s = MathHelper.Clamp(hsl.Y * ConfigSwooshInstance.saturationScalar, 0, 1);
@@ -441,10 +439,10 @@ namespace CoolerItemVisualEffect
                     }
                     switch (ConfigSwooshInstance.swooshColorType)
                     {
-                        case SwooshColorType.函数生成热度图: passCount = 2; break;
+                        case SwooshColorType.热度图: passCount = 2; break;
                         case SwooshColorType.武器贴图对角线: passCount = 1; break;
-                        case SwooshColorType.色调处理与对角线混合: passCount = 3; break;
-                        case SwooshColorType.加权平均_饱和与色调处理: passCount = 4; break;
+                        case SwooshColorType.单向渐变与对角线混合: passCount = 3; break;
+                        case SwooshColorType.单向渐变: passCount = 4; break;
                     }
                     ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
                     //ShaderSwooshEX.Parameters["uLighter"].SetValue(ConfigSwooshInstance.luminosityFactor);
@@ -459,7 +457,7 @@ namespace CoolerItemVisualEffect
                     Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + ConfigSwooshInstance.ImageIndex);
                     Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage($"AniTex_{ConfigSwooshInstance.AnimateIndex}");
                     Main.graphics.GraphicsDevice.Textures[2] = ModContent.Request<Texture2D>("CoolerItemVisualEffect/Weapons/FirstZenithProj_5").Value;
-                    if (ConfigSwooshInstance.swooshColorType == SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = GetPureFractalHeatMaps(25);
+                    if (ConfigSwooshInstance.swooshColorType == SwooshColorType.热度图) Main.graphics.GraphicsDevice.Textures[3] = GetPureFractalHeatMaps(25);
                     Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
                     Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
                     Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
@@ -1040,10 +1038,10 @@ namespace CoolerItemVisualEffect
         public static void UpdateHeatMap(ref Texture2D texture, Vector3 hsl, ConfigurationSwoosh_Advanced config, Texture2D itemTexture)
         {
             var colors = new Color[300];
-            ref Vector3 _color = ref hsl; 
-            switch (config.swooshColorType)
+            ref Vector3 _color = ref hsl;
+            switch (config.heatMapCreateStyle)
             {
-                case SwooshColorType.贴图生成热度图:
+                case HeatMapCreateStyle.贴图生成:
                     {
                         var w = itemTexture.Width;
                         var h = itemTexture.Height;
@@ -1150,7 +1148,7 @@ namespace CoolerItemVisualEffect
 
                         break;
                     }
-                case SwooshColorType.指定热度图:
+                case HeatMapCreateStyle.指定:
                     {
                         var list = config.heatMapColors;
                         int count = list.Count;
@@ -1198,10 +1196,11 @@ namespace CoolerItemVisualEffect
                         for (int i = 0; i < 300; i++)
                         {
                             var f = GetHeatMapFactor(i / 299f, 6, config.heatMapFactorStyle);//分割成25次惹，f从1/25f到1//1 - 
-                                             //f = f * f;// *f
+                                                                                             //f = f * f;// *f
                             float h = (hsl.X + config.hueOffsetValue + config.hueOffsetRange * (2 * f - 1)) % 1;
                             float s = MathHelper.Clamp(hsl.Y * config.saturationScalar, 0, 1);
                             float l = MathHelper.Clamp(f > 0.5f ? hsl.Z * (2 - f * 2) + (f * 2 - 1) * Math.Max(hsl.Z, 0.5f + config.luminosityRange) : f * 2 * hsl.Z + (1 - f * 2) * Math.Min(hsl.Z, 0.5f - config.luminosityRange), 0, 1);
+                            while (h < 0) h++;
                             var currentColor = Main.hslToRgb(h, s, l);
                             colors[i] = currentColor;
                         }
@@ -1248,11 +1247,9 @@ namespace CoolerItemVisualEffect
             Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
             Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
             Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
-            switch (instance.swooshColorType) 
+            switch (instance.swooshColorType)
             {
-                case SwooshColorType.函数生成热度图:
-                case SwooshColorType.贴图生成热度图:
-                case SwooshColorType.指定热度图: 
+                case SwooshColorType.热度图:
                     {
                         sampler = SamplerState.AnisotropicClamp;
                         break;
@@ -1331,11 +1328,9 @@ namespace CoolerItemVisualEffect
             RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
             if (modPlayer.colorInfo.tex == null || modPlayer.colorInfo.type != drawPlayer.HeldItem.type)
             {
-                if (instance.swooshColorType == SwooshColorType.函数生成热度图 || 
-                    instance.swooshColorType == SwooshColorType.加权平均_饱和与色调处理 || 
-                    instance.swooshColorType == SwooshColorType.色调处理与对角线混合 ||
-                    instance.swooshColorType == SwooshColorType.贴图生成热度图 || 
-                    instance.swooshColorType == SwooshColorType.指定热度图)
+                if (instance.swooshColorType == SwooshColorType.热度图 ||
+                    instance.swooshColorType == SwooshColorType.单向渐变 ||
+                    instance.swooshColorType == SwooshColorType.单向渐变与对角线混合)
                 {
                     UpdateHeatMap(ref modPlayer.colorInfo.tex, modPlayer.hsl, instance, itemTex);
                 }
@@ -1420,12 +1415,10 @@ namespace CoolerItemVisualEffect
             var passCount = 0;
             switch (instance.swooshColorType)
             {
-                case SwooshColorType.贴图生成热度图:
-                case SwooshColorType.指定热度图:
-                case SwooshColorType.函数生成热度图: passCount = 2; break;
+                case SwooshColorType.热度图: passCount = 2; break;
                 case SwooshColorType.武器贴图对角线: passCount = 1; break;
-                case SwooshColorType.色调处理与对角线混合: passCount = 3; break;
-                case SwooshColorType.加权平均_饱和与色调处理: passCount = 4; break;
+                case SwooshColorType.单向渐变与对角线混合: passCount = 3; break;
+                case SwooshColorType.单向渐变: passCount = 4; break;
 
             }
             sb.End();
