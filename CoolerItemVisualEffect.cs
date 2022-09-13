@@ -1505,6 +1505,8 @@ namespace CoolerItemVisualEffect
                                 gd.Clear(Color.Transparent);
                                 DistortEffect.CurrentTechnique.Passes[6].Apply();
                                 sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                                sb.End();
+                                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
                             }
 
 
