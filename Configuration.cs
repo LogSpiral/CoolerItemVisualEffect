@@ -29,7 +29,8 @@ namespace CoolerItemVisualEffect
             cs.saturationScalar = 5f;
             cs.luminosityRange = 0.2f;
             cs.luminosityFactor = 0.2f;
-            cs.rotationVelocity = 3f;
+            //cs.swingAttackTime = 3f;
+            cs.swingAttackTime = 4f;
             cs.distortFactor = 0.25f;
             cs.itemAdditive = false;
             cs.itemHighLight = true;
@@ -90,7 +91,7 @@ namespace CoolerItemVisualEffect
                         cs.coolerSwooshQuality = ConfigurationSwoosh_Advanced.QualityType.极限ultra;
                         cs.isLighterDecider = 0;
                         cs.luminosityFactor = 0.6f;
-                        cs.itemAdditive = true;
+                        cs.itemAdditive = true;   
                         cs.maxCount = 2;
                         cs.glowLight = 1;
                         break;
@@ -114,7 +115,7 @@ namespace CoolerItemVisualEffect
                         cs.hueOffsetRange = -0.25f;
                         cs.hueOffsetValue = 0.15f;
                         cs.luminosityFactor = 1f;
-                        cs.rotationVelocity = 3f;
+                        cs.swingAttackTime = 4f;
                         cs.distortFactor = .4f;
                         cs.shake = 0.4f;
                         cs.glowLight = 1f;
@@ -130,7 +131,7 @@ namespace CoolerItemVisualEffect
                         cs.hueOffsetRange = 0.25f;
                         cs.hueOffsetValue = 0.9f;
                         cs.luminosityFactor = 1f;
-                        cs.rotationVelocity = 3f;
+                        cs.swingAttackTime = 3f;
                         cs.distortFactor = .3f;
                         cs.shake = 0.2f;
                         cs.glowLight = 1f;
@@ -145,7 +146,7 @@ namespace CoolerItemVisualEffect
                         cs.hueOffsetRange = 0.25f;
                         cs.hueOffsetValue = 0.05f;
                         cs.luminosityFactor = 1f;
-                        cs.rotationVelocity = 3f;
+                        cs.swingAttackTime = 3f;
                         cs.distortFactor = .3f;
                         cs.shake = 0.2f;
                         cs.glowLight = 1f;
@@ -160,7 +161,7 @@ namespace CoolerItemVisualEffect
                         cs.hueOffsetRange = 0.2f;
                         cs.hueOffsetValue = 0.95f;
                         cs.luminosityFactor = 1f;
-                        cs.rotationVelocity = 3f;
+                        cs.swingAttackTime = 3f;
                         cs.distortFactor = .5f;
                         cs.shake = 0.2f;
                         cs.glowLight = 1f;
@@ -176,7 +177,7 @@ namespace CoolerItemVisualEffect
                         cs.hueOffsetRange = 0.15f;
                         cs.hueOffsetValue = 0.05f;
                         cs.luminosityFactor = 1f;
-                        cs.rotationVelocity = 3f;
+                        cs.swingAttackTime = 3f;
                         cs.distortFactor = .25f;
                         cs.shake = 0.2f;
                         cs.glowLight = 1f;
@@ -211,7 +212,7 @@ namespace CoolerItemVisualEffect
                         cs.hueOffsetRange = 1f;
                         cs.hueOffsetValue = 0f;
                         cs.luminosityFactor = 1f;
-                        cs.rotationVelocity = 2f;
+                        cs.swingAttackTime = 2f;
                         cs.distortFactor = 0.75f;
                         cs.shake = 0.1f;
                         cs.glowLight = 1f;
@@ -360,7 +361,7 @@ namespace CoolerItemVisualEffect
             packet.Write(saturationScalar);
             packet.Write(luminosityRange);
             packet.Write(luminosityFactor);
-            packet.Write(rotationVelocity);
+            packet.Write(swingAttackTime);
             packet.Write(distortFactor);
             packet.Write(itemAdditive);
             packet.Write(itemHighLight);
@@ -416,7 +417,7 @@ namespace CoolerItemVisualEffect
             config.saturationScalar = reader.ReadSingle();
             config.luminosityRange = reader.ReadSingle();
             config.luminosityFactor = reader.ReadSingle();
-            config.rotationVelocity = reader.ReadSingle();
+            config.swingAttackTime = reader.ReadSingle();
             config.distortFactor = reader.ReadSingle();
             config.itemAdditive = reader.ReadBoolean();
             config.itemHighLight = reader.ReadBoolean();
@@ -469,7 +470,7 @@ namespace CoolerItemVisualEffect
                 saturationScalar == config.saturationScalar &&
                 luminosityRange == config.luminosityRange &&
                 luminosityFactor == config.luminosityFactor &&
-                rotationVelocity == config.rotationVelocity &&
+                swingAttackTime == config.swingAttackTime &&
                 distortFactor == config.distortFactor &&
                 itemAdditive == config.itemAdditive &&
                 itemHighLight == config.itemHighLight &&
@@ -707,10 +708,10 @@ namespace CoolerItemVisualEffect
         //[Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.28")]
         [JsonIgnore]
         //[BackgroundColor(195, 0, 255, 127)]
-        public float rotationVelocity
+        public float swingAttackTime
         {
-            get => meleeSwooshConfigs.rotationVelocity;
-            set => meleeSwooshConfigs.rotationVelocity = value;
+            get => meleeSwooshConfigs.swingAttackTime;
+            set => meleeSwooshConfigs.swingAttackTime = value;
         }
 
         //[Increment(0.05f)]
@@ -1302,14 +1303,17 @@ namespace CoolerItemVisualEffect
             [BackgroundColor(158, 0, 255, 255)]//127
             public bool checkAir = true;
 
-            [Increment(0.05f)]
-            [DefaultValue(3f)]
-            [Range(1f, 3f)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.27")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.28")]
+            //[Increment(0.05f)]
+            //[DefaultValue(3f)]
+            //[Range(1f, 3f)]
+            [Increment(1f)]
+            [DefaultValue(4f)]
+            [Range(2f, 10f)]
+            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.89")]
+            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.90")]
             //[BackgroundColor(0, 152, 255, 255)]//127
             [BackgroundColor(152, 0, 255, 255)]//127
-            public float rotationVelocity = 3f;
+            public float swingAttackTime = 3f;
 
             [Increment(0.05f)]
             [DefaultValue(0f)]

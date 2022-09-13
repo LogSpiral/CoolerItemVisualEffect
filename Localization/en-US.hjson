@@ -48,18 +48,18 @@ Mods:{
 		ConfigSwoosh:
 		{
 			Label:Advanced Settings
-			Label1:Melee Slashing Settings
-			Label2:Sprite Draw Settings
-			Label3:Heat Map Settings
-			Label4:Special Effect Settings
-			Label5:Other Settings
+			Label1:Melee Slashing Settings[i:1199]
+			Label2:Sprite Draw Settings[i:1071]
+			Label3:Heat Map Settings[i:2012]
+			Label4:Special Effect Settings[i:3541]
+			Label5:Other Settings[i:1344]
 
-			D1:Basic Settings
-			D2:Style Settings
-			D3:Value Settings
-			D4:Detail Settings
-			D5:Experimental Settings
-			1:More Cool Slashing Effects's Quality Setting
+			D1:Basic Settings[i:398]
+			D2:Style Settings[i:399][i:1163][i:983]
+			D3:Value Settings[i:2799]
+			D4:Detail Settings[i:3619]
+			D5:Experimental Settings[i:3611]
+			1:More Cool Slashing Effects's Quality Setting[i:2608][i:724][i:3764][i:757]
 			2:
 			'''
 			"Are You Tired With The Vanilla Melee Swing Style?"
@@ -69,15 +69,15 @@ Mods:{
 			High: Active Bloom Glow Light Effect.
 			Ultra: Active UltraSwoosh Effect.(Jsut Try It, As I Can't Explain It Well.
 			'''
-			3:Cancel The Effect Of The New Slashing Effect On Tools
+			3:Cancel The Effect Of The New Slashing Effect On Tools[i:1]
 			4:
 			'''
 			(Sobbing) How Can You Abandon Your Useful Tools?!
 			Yes, To Cancel The Effect Of The New Slashing Effect On The Tool, No, Not Cancel, The Default Is No
 			'''
-			5:Ignoring Natural Light When How Bright Is The Weapon Texture?
+			5:Ignoring Natural Light When How Bright Is The Weapon Texture?[i:389]
 			6:Brightness Greater Than This Value Will Use High-Brightness Slashing
-			7:Color Style Of Slashing
+			7:Color Style Of Slashing[i:1120]
 			8:
 			'''
 			The Follow Is
@@ -87,7 +87,7 @@ Mods:{
 				Blend "Gradient" And "Diagonal Color Of the Enabled Weapon"
 				Heat Map
 			'''
-			9:Sampler Style Of Slashing
+			9:Sampler Style Of Slashing[i:3186]
 			10:
 			'''
 			The Follow Is
@@ -95,14 +95,14 @@ Mods:{
 			Linear
 			Point
 			'''
-			11:Factor Style Of Slashing
+			11:Factor Style Of Slashing[i:583]
 			12:
 			'''
 			The Follow Is
 			Decide The Factor At The Beginning Of Each Time.
 			Linear Interpolation (Lerp The Current One And The Next One)
 			'''
-			13:Action Style Of Slashing
+			13:Action Style Of Slashing[i:498]
 			14:
 			'''
 			The Follow Is
@@ -118,39 +118,39 @@ Mods:{
 				Transverse Splitting_EX_Old
 				Transverse Splitting_Failed
 			'''
-			15:Size Of The Item And Slash
+			15:Size Of The Item And Slash[i:486]
 			16:According To The Default Size Is The Right HitBox, But Who Doesn't Like A Bigger Size?
-			17:The Offset Range Of Hue
+			17:The Offset Range Of Hue[i:1035]
 			18:The Value Of Plus Or Minus Centered On The Hue Of Original Color Is The Range Of Hue (Hue ∈ [OrighinHue - Value, OrighinHue + Value])
-			19:The Offset Value Of Original Hue
+			19:The Offset Value Of Original Hue[i:2870]
 			20:Add This Value To The Hue Of Original Color (OriginHue := OriginHue + Value)
-			21:Coefficient Of Hue
+			21:Coefficient Of Hue[i:1051]
 			22:Which One Do You Prefer,The Grey One Or The Colorful One?
-			23:The Offset Value Of Original Luminosity
+			23:The Offset Value Of Original Luminosity[i:3559]
 			24:Interpolation Similar To HSL
-			25:Coefficient Of Luminosity
+			25:Coefficient Of Luminosity[i:4952]
 			26:Strength Of Bloom Glow Light, Need "High" Quality
-			27:Coefficient Of Rotation Speed
+			27:Coefficient Of Rotation Speed[i:561]
 			28:Applies Only Tail-Wagging
-			29:Coefficient Of Distortion
+			29:Coefficient Of Distortion[i:2880]
 			30:It's So Weird That I'm Ready To Think About It By Brain, Need "Medium" Quality
-			31:Weapon And Weapon Swing Effects Are Translucent And Highlighted 
+			31:Weapon And Weapon Swing Effects Are Translucent And Highlighted [i:5005]
 			32:
 			'''
 			(Blend Additive,For Example,Color1=(0.5,0.7,0.3),Color2=(0.1,0.2,0.6),The Result Is (0.6,0.9,0.9))
 			阿汪:I Think This Is Weird But Someone Wants This
 			'''
-			33:Weapon HighLight（Ignore Natural Light)
+			33:Weapon HighLight（Ignore Natural Light)[i:65]
 			34:It Lights Up
-			35:The Strength Of Screen Shaking
+			35:The Strength Of Screen Shaking[i:1513]
 			36:Which Is Annoier Than 「MasterSpark」From TouhouProject
-			37:Style Of Slashing
+			37:Style Of Slashing[i:3368]
 			38:I Only Prepared 12 Kinds, Recommend (Default) The One Which Index Is 7.
-			39:Detects Whether It Is Hollow
+			39:Detects Whether It Is Hollow[i:3823]
 			40:Just Try It And Make Your Own Choices www
-			41:Whether The End Is Retracted
+			41:Whether The End Is Retracted[i:3018]
 			42:You Can Try The Don't Retracted Ones, All Great!
-			43:Apply The Slash Effect To Zenith And First Fractal
+			43:Apply The Slash Effect To Zenith And First Fractal[i:4956]
 			44:
 			'''
 			OMG It Is Really Cool For All Color Style
@@ -160,64 +160,66 @@ Mods:{
 			Finally Use Linear Interpolation
 			So Coooooooool！！！
 			'''
-			45:Item Glow Light As Enchanted Item In MineCraft
+			45:Item Glow Light As Enchanted Item In MineCraft[i:989]
 			46:Maybe Better After Add That?
 			Label_2:SlashingPreInstall
 			47:PreInstall Style
 			48:You can change the settings in the other page.
 			49:Don't Change The Game Title While Swing The Sword！！！
 			50:OMG this is so wired.The Title Will Change If It Is Off.
-			51:Draw the Effect How Many Times？
+			51:Draw the Effect How Many Times？[i:554]
 			52:The Default Is Once(normal),It Will Be So Coool More Than Once,But It Well Be Very Lagging(x  It Only Active When Your LightingMode Is White Or Color
-			53:Offset Angle Of ColorBar
+			53:Offset Angle Of ColorBar[i:393]
 			54:
 			'''
 			The Default is pi,And Set It To 0 Will Inverse The Direction(They Are Polar Gradient)，Use pi/2 Or 3*pi/2 To Get Radial Gradient
 			Need "Gradient"
 			Or " Blend "Gradient" And "Diagonal Color Of the Enabled Weapon" "
 			'''
-			55:LeftTime Of Swoosh
-			56:The Default Is 15 Frame  Need "Ultra" Quality
-			57:Don't Change Size Of Item ItSelf
+			55:LeftTime Of Swoosh[i:709]
+			56:The Default Is 30 Frame  Need "Ultra" Quality
+			57:Don't Change Size Of Item ItSelf[i:4923]
 			58:Only Change The Size Of SwooshEffect If It Is Yes, The Default Is No.
-			59:Fade Style Of Swoosh
+			59:Fade Style Of Swoosh[i:3368]
 			60:The Default Is Both  Need "Ultra" Quality
-			61:Grow Style Of Swoosh
+			61:Grow Style Of Swoosh[i:4144]
 			62:The Both Expand Horizontally And Offest Is Both  Need "Ultra" Quality
-			63:Style Of Slashing Animation Texture
+			63:Style Of Slashing Animation Texture[i:4144]
 			64:I Only Prepared 6 Kinds, Recommend (Default) The One Which Index Is 3.
-			65:Size Of Distortion
+			65:Size Of Distortion[i:3199]
 			66:The Default Is 1.5(Set It To 1 If It Is Too Lag)  Need "Medium" Quality
-			67:Show The Heat Map
+			67:Show The Heat Map[i:2012]
 			68:Not "Weighted Average" And "Diagonal Color Of The Enabled Weapon"
-			69:Change Swoosh Size As ActionStyle Changes
+			69:Change Swoosh Size As ActionStyle Changes[i:426]
 			70:Change As ActionStyle Changes,Don't You Want It?
 			71:Mode Of Melee Hit Box
 			72:
 			'''
 			Although I Said "Visual Effect Modify", But I Need To Consider The Balance Of Visual Effect And Hit Box
 			'''
-			73:Change Use Time As ActionStyle Changes
+			73:Change Use Time As ActionStyle Changes[i:3099]
 			74:Notice: This Will Out The Range Of "Visual Effect",Please Consider It
-			75:Change Use Effect As ActionStyle Changes(Work In Progress)
+			75:Change Use Effect As ActionStyle Changes(Work In Progress)[i:675]
 			76:Notice: This Will Out The Range Of "Visual Effect",Please Consider It
-			77:Ignore The Damage Type
+			77:Ignore The Damage Type[i:495]
 			78:Even If It Is A Magic Staff？？！！
-			79:Style Of HeatMap Factor
+			79:Style Of HeatMap Factor[i:583]
 			80:Not Only Lerp Finally, Good Work, 阿汪.
-			81:List Of Color Of Designated HeatMap
+			81:List Of Color Of Designated HeatMap[i:2012]
 			82:
 			'''
 			The First One To The Last One Correspond To Left To Right
 			(Show The HeatMap And You Can Know What I Mean
 			Need "Designated HeatMap"
 			'''
-			83:Coefficient Of Opacity
+			83:Coefficient Of Opacity[i:170]
 			84:It Will Don't Care The Grey Value If It Is Zero.In Other Case, Opacity Will Multiply This Value.
-			85:Dust Amount
+			85:Dust Amount[i:1348]
 			86:The Larger The Value Is , The More Dusts There Will Be.
-			87:Heat Map Create Style
+			87:Heat Map Create Style[i:3534]
 			88:Wow, You Can Try To Create The One You Like.
+			89:Max Time Of Cut Down[i:561]
+			90:The Unit Is Frame. It is 9 Before And Now It Is 4.
 		}
 		Config:{
 			Label:Visual Settings

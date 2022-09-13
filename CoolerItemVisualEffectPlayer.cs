@@ -76,7 +76,7 @@ namespace CoolerItemVisualEffect
         public float actionOffsetDamage;
         public int actionOffsetCritAdder;
         public float actionOffsetCritMultiplyer;
-        public float TimeToCutThem => 8f;
+        public float TimeToCutThem => ConfigurationSwoosh.swingAttackTime * 2;//8f
         public override bool? CanHitNPC(Item item, NPC target)
         {
             //bool? modCanHit = CombinedHooks.CanPlayerHitNPCWithItem(this, sItem, Main.npc[i]);
@@ -164,7 +164,9 @@ namespace CoolerItemVisualEffect
             var fac = modPlayer.FactorGeter;
             fac = modPlayer.negativeDir ? 1 - fac : fac;
             //var drawCen = drawPlayer.Center;
-            float rotVel = instance.swooshActionStyle == SwooshAction.旋风劈 && modPlayer.swingCount % 3 == 0 ? instance.rotationVelocity : 1;
+            //float rotVel = instance.swooshActionStyle == SwooshAction.旋风劈 && modPlayer.swingCount % 3 == 0 ? instance.rotationVelocity : 1;
+            float rotVel = instance.swooshActionStyle == SwooshAction.旋风劈 && modPlayer.swingCount % 3 == 0 ? 3 : 1;
+
             var theta = (1.2375f * fac * rotVel - 1.125f) * MathHelper.Pi;
             //theta = currentRotation = currentRotation.AngleLerp(theta, 0.15f);
             var itemTex = TextureAssets.Item[drawPlayer.HeldItem.type].Value;
@@ -474,7 +476,8 @@ namespace CoolerItemVisualEffect
                             ultra.type = colorInfo.type;
                             //Main.NewText(new Item(ultra.type).Name);
                             ultra.checkAirFactor = colorInfo.checkAirFactor;
-                            ultra.rotationVelocity = ConfigurationSwoosh.swooshActionStyle == SwooshAction.旋风劈 && swingCount % 3 == 0 ? ConfigurationSwoosh.rotationVelocity : 1f;//
+                            //ultra.rotationVelocity = ConfigurationSwoosh.swooshActionStyle == SwooshAction.旋风劈 && swingCount % 3 == 0 ? ConfigurationSwoosh.swingAttackTime : 1f;//
+                            ultra.rotationVelocity = ConfigurationSwoosh.swooshActionStyle == SwooshAction.旋风劈 && swingCount % 3 == 0 ? 2 : 1f;//
                             ultra.timeLeftMax = ultra.timeLeft = (byte)ConfigurationSwoosh.swooshTimeLeft;
                             ultra.scaler = scaler;
                             ultra.center = player.Center;
