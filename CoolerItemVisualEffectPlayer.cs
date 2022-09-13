@@ -172,7 +172,7 @@ namespace CoolerItemVisualEffect
             var itemTex = TextureAssets.Item[drawPlayer.HeldItem.type].Value;
             float xScaler = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.kValue, modPlayer.kValueNext, fac) : modPlayer.kValue;
             //float scaler = ;
-            currentSize = MathHelper.Lerp(currentSize, (ConfigurationSwoosh.actionOffsetSize ? actionOffsetSize : 1), 0.05f);
+            currentSize = MathHelper.Lerp(currentSize, (ConfigurationSwoosh.actionOffsetSize ? actionOffsetSize : 1), 0.2f);
             modPlayer.scaler = itemTex.Size().Length() * drawPlayer.GetAdjustedItemScale(drawPlayer.HeldItem) / xScaler * 0.5f * modPlayer.RealSize * modPlayer.colorInfo.checkAirFactor;
 
             var rotator = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.rotationForShadow, modPlayer.rotationForShadowNext, fac) : modPlayer.rotationForShadow;
@@ -449,7 +449,7 @@ namespace CoolerItemVisualEffect
                 }
                 //Main.NewText(player.HeldItem.noUseGraphic);
             }
-            var flag = player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && IsMeleeBroadSword && !player.HeldItem.noUseGraphic;
+            var flag = player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && IsMeleeBroadSword && !player.HeldItem.noUseGraphic && UseSlash;
             flag |= player.HeldItem.type.SpecialCheck() && ConfigurationSwoosh.allowZenith;
             if (flag && player.itemAnimation > 0) swooshTimeCounter = 0; else swooshTimeCounter++;
             if (swooshTimeCounter >= 15)
@@ -459,6 +459,7 @@ namespace CoolerItemVisualEffect
                 SetActionValue();
                 SetActionSpeed();
             }
+            //Main.NewText((swingCount,negativeDir,oldNegativeDir));
             if ((player.itemAnimation == player.itemAnimationMax || player.itemAnimation == 0) && lastItemAnimation == 1 && flag && ConfigurationSwoosh.coolerSwooshQuality == QualityType.极限ultra && HitboxPosition != default)
             {
 
@@ -573,7 +574,8 @@ namespace CoolerItemVisualEffect
                 }
 
             }
-            UpdateVertex();
+            if (UseSlash || SwooshActive)
+                UpdateVertex();
         }
         public override float UseSpeedMultiplier(Item item) => ConfigurationSwoosh.actionOffsetSpeed && UseSlash ? actionOffsetSpeed : 1f;
         public override void ModifyHitNPC(Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
@@ -961,7 +963,7 @@ namespace CoolerItemVisualEffect
             //        }
             //    }
             //}
-            if (ConfigurationSwoosh.showHeatMap && colorInfo.tex != null && !Main.gameMenu)
+            if (ConfigurationSwoosh.showHeatMap && colorInfo.tex != null && !Main.gameMenu && !drawInfo.headOnlyRender)
             {
                 Main.spriteBatch.Draw(colorInfo.tex, player.Center - Main.screenPosition + (player.whoAmI == Main.myPlayer ? new Vector2(-760, -340) : new Vector2(0, -64)), null, Color.White, 0, new Vector2(150, .5f), new Vector2(1, 50f), SpriteEffects.None, 0);
                 //Main.spriteBatch.DrawString(FontAssets.MouseText.Value, (actionOffsetSize, actionOffsetSpeed, actionOffsetDamage, actionOffsetKnockBack, actionOffsetCritAdder, actionOffsetCritMultiplyer).ToString(), player.Center - Main.screenPosition + new Vector2(0, -64), Color.White);
@@ -972,7 +974,7 @@ namespace CoolerItemVisualEffect
             //HitboxPosition = Vector2.Zero;//重置
             //Main.spriteBatch.DrawString(FontAssets.MouseText.Value, player.isFirstFractalAfterImage.ToString(), Player.Center - new Vector2(0, 64) - Main.screenPosition, Color.Red);
             //这个写法可以让绘制的东西在人物旋转后保持原来与人物的相对位置(试做的武器显示)
-            if (ConfigurationNormal.instance.useWeaponDisplay)
+            if (ConfigurationNormal.instance.useWeaponDisplay && !drawInfo.headOnlyRender)
             {
                 if (Main.gameMenu && ConfigurationNormal.instance.firstWeaponDisplay)//
                 {
@@ -1059,9 +1061,12 @@ namespace CoolerItemVisualEffect
                     if (Player.direction < 0) rot += MathHelper.PiOver2;
                 }
             }
-            if (Main.itemAnimations[holditem.type] != null)
+
+            var animation = Main.itemAnimations[holditem.type];
+            if (animation != null)
             {//动态武器
-                rectangle = Main.itemAnimations[holditem.type].GetFrame(texture, -1);
+                rectangle = animation.GetFrame(texture, -1);
+                origin = animation.GetFrame(texture).Size() * .5f;
             }
             DrawData item = new DrawData(texture, value5, new Rectangle?(rectangle), drawInfo.colorArmorBody, rot, origin, ConfigurationNormal.instance.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
             //switch (CoolerItemVisualEffect.Config.DyeUsed)

@@ -675,7 +675,7 @@ namespace CoolerItemVisualEffect
             //    if (Main.projectile[i].active && Main.projectile[i].owner == drawinfo.drawPlayer.whoAmI && Main.projectile[i].type == 591)
             //        Main.instance.DrawProj(i);
             //}
-            if (!drawPlayer.isFirstFractalAfterImage && shadow == 0f)
+            if (!drawPlayer.isFirstFractalAfterImage && shadow == 0f && !headOnly)
                 DrawSwooshWithPlayer(drawPlayer);
 
         }
@@ -1449,28 +1449,33 @@ namespace CoolerItemVisualEffect
                     case QualityType.中medium:
                         for (int n = 0; n < instance.maxCount; n++)
                         {
+
+                            sb.End();
+                            //然后在随便一个render里绘制屏幕，并把上面那个带弹幕的render传进shader里对屏幕进行处理
+                            //原版自带的screenTargetSwap就是一个可以使用的render，（原版用来连续上滤镜）
+
+                            gd.SetRenderTarget(Main.screenTargetSwap);//将画布设置为这个
+                            gd.Clear(Color.Transparent);//清空
+                            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
                             if (instance.distortFactor != 0)
                             {
-                                sb.End();
-                                //然后在随便一个render里绘制屏幕，并把上面那个带弹幕的render传进shader里对屏幕进行处理
-                                //原版自带的screenTargetSwap就是一个可以使用的render，（原版用来连续上滤镜）
-
-                                gd.SetRenderTarget(Main.screenTargetSwap);//将画布设置为这个
-                                gd.Clear(Color.Transparent);//清空
-                                sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
                                 DistortEffect.Parameters["tex0"].SetValue(instance.distortSize != 1 ? Instance.Render_AirDistort : Instance.Render);//render可以当成贴图使用或者绘制。（前提是当前gd.SetRenderTarget的不是这个render，否则会报错）
                                 DistortEffect.Parameters["offset"].SetValue(direct);//设置参数时间
                                 DistortEffect.Parameters["invAlpha"].SetValue(0);
                                 DistortEffect.CurrentTechnique.Passes[0].Apply();//ApplyPass
-                                sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);//绘制原先屏幕内容
-                                                                                      //pixelshader里处理
                             }
 
-                            sb.End();
+                            sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);//绘制原先屏幕内容
+                                                                                  //pixelshader里处理
 
+                            sb.End();
+                            //if (instance.distortFactor != 0) 
+                            //{
                             //最后在screenTarget上把刚刚的结果画上
                             gd.SetRenderTarget(Main.screenTarget);
                             gd.Clear(Color.Transparent);
+                            //}
+
                             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
                             sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
                             sb.Draw(Instance.Render, Vector2.Zero, new Color(1f, 1f, 1f, alphaBlend ? 1 : 0));
@@ -1480,8 +1485,12 @@ namespace CoolerItemVisualEffect
                     case QualityType.极限ultra:
                         for (int n = 0; n < instance.maxCount; n++)
                         {
-                            sb.End();
-                            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                            if (n == 0)
+                            {
+                                sb.End();
+                                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                            }
+
                             if (instance.luminosityFactor != 0)
                             {
                                 gd.SetRenderTarget(Main.screenTargetSwap);
@@ -1535,6 +1544,16 @@ namespace CoolerItemVisualEffect
                                 //Main.instance.GraphicsDevice.BlendState = BlendState.Additive;
                                 sb.End();
                                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                            }
+
+                            if (instance.distortFactor == 0 && instance.luminosityFactor == 0 && n == 0)
+                            {
+                                gd.SetRenderTarget(Main.screenTargetSwap);//将画布设置为这个
+                                gd.Clear(Color.Transparent);
+                                sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+                                gd.SetRenderTarget(Main.screenTarget);//将画布设置为这个
+                                gd.Clear(Color.Transparent);
+                                sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
                             }
                             sb.Draw(Instance.Render, Vector2.Zero, new Color(1f, 1f, 1f, alphaBlend ? 1 : 0));//
                                                                                                               //Main.instance.GraphicsDevice.BlendState = BlendState.AlphaBlend;
