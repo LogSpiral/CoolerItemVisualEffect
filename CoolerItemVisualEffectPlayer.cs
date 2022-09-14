@@ -449,7 +449,7 @@ namespace CoolerItemVisualEffect
                 }
                 //Main.NewText(player.HeldItem.noUseGraphic);
             }
-            var flag = player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && IsMeleeBroadSword && !player.HeldItem.noUseGraphic && UseSlash;
+            var flag = player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && IsMeleeBroadSword && !player.HeldItem.noUseGraphic;
             flag |= player.HeldItem.type.SpecialCheck() && ConfigurationSwoosh.allowZenith;
             if (flag && player.itemAnimation > 0) swooshTimeCounter = 0; else swooshTimeCounter++;
             if (swooshTimeCounter >= 15)
@@ -460,7 +460,7 @@ namespace CoolerItemVisualEffect
                 SetActionSpeed();
             }
             //Main.NewText((swingCount,negativeDir,oldNegativeDir));
-            if ((player.itemAnimation == player.itemAnimationMax || player.itemAnimation == 0) && lastItemAnimation == 1 && flag && ConfigurationSwoosh.coolerSwooshQuality == QualityType.极限ultra && HitboxPosition != default)
+            if ((player.itemAnimation == player.itemAnimationMax || player.itemAnimation == 0) && lastItemAnimation == 1 && UseSlash && ConfigurationSwoosh.coolerSwooshQuality == QualityType.极限ultra && HitboxPosition != default)
             {
 
                 SetActionSpeed();

@@ -17,7 +17,7 @@ namespace CoolerItemVisualEffect
         public ConfigurationSwoosh_Advanced SetCSValue(ConfigurationSwoosh_Advanced cs)
         {
             cs.coolerSwooshQuality = ConfigurationSwoosh_Advanced.QualityType.极限ultra;
-            cs.toolsNoUseNewSwooshEffect = false;
+            //cs.toolsNoUseNewSwooshEffect = false;
             cs.isLighterDecider = 0.2f;
             cs.swooshColorType = ConfigurationSwoosh_Advanced.SwooshColorType.热度图;
             cs.swooshSampler = ConfigurationSwoosh_Advanced.SwooshSamplerState.线性;
@@ -1176,12 +1176,12 @@ namespace CoolerItemVisualEffect
             [BackgroundColor(248, 0, 255, 255)]//127
             public QualityType coolerSwooshQuality = QualityType.极限ultra;
 
-            [DefaultValue(false)]
+            [DefaultValue(true)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.3")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.4")]
             //[BackgroundColor(0, 242, 255, 255)]//127
             [BackgroundColor(242, 0, 255, 255)]//127
-            public bool toolsNoUseNewSwooshEffect = false;
+            public bool toolsNoUseNewSwooshEffect = true;
 
             [DefaultValue(true)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.43")]
