@@ -39,13 +39,14 @@ namespace CoolerItemVisualEffect.FinalFractal
             }
         }
     }
-    public class FinalFractal : ModItem
+    public class FinalFractal_Old : ModItem
     {
         //public override void SetStaticDefaults()
         //{
         //    DisplayName.SetDefault("最终分形");
         //    Tooltip.SetDefault("它的一部分包含着它，这就是分形。无数的刀刃回旋着，它们是它的一部分。");
         //}
+
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             for (int n = 1; n < 4; n++)
@@ -54,7 +55,10 @@ namespace CoolerItemVisualEffect.FinalFractal
 
             }
 
-
+            if (Main.LocalPlayer.name != "")
+            {
+                tooltips.Add(new TooltipLine(Mod, "UShallNotPass!!!", Language.GetTextValue("Mods.CoolerItemVisualEffect.ItemName.UShallNotPass")) { OverrideColor = Color.Red });
+            }
             //tooltips.Add(new TooltipLine(Mod, "PureSuggestion", "「最初与最后的究极分形」") { OverrideColor = Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffect.ModTime) / 2 + 0.5f) });
             //tooltips.Add(new TooltipLine(Mod, "PureSuggestion", "「分形次元斩」") { OverrideColor = Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * (CoolerItemVisualEffect.ModTime + 40)) / 2 + 0.5f) });
             //tooltips.Add(new TooltipLine(Mod, "PureSuggestion", "天顶「FinalFractal」") { OverrideColor = Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * (CoolerItemVisualEffect.ModTime + 80)) / 2 + 0.5f) });
@@ -63,8 +67,8 @@ namespace CoolerItemVisualEffect.FinalFractal
         Item item => Item;
         public override void AddRecipes()
         {
-            CreateRecipe().AddIngredient<PureFractal>().QuickAddIngredient(4144, 3368).AddTile(TileID.LunarCraftingStation).Register();
-            CreateRecipe().AddIngredient<FirstZenith>().QuickAddIngredient(4144, 3368).AddTile(TileID.LunarCraftingStation).Register();
+            CreateRecipe().AddIngredient<PureFractal_Old>().QuickAddIngredient(4144, 3368).AddTile(TileID.LunarCraftingStation).Register();
+            CreateRecipe().AddIngredient<FirstZenith_Old>().QuickAddIngredient(4144, 3368).AddTile(TileID.LunarCraftingStation).Register();
             //var recipe = CreateRecipe();
             //recipe.QuickAddIngredient(
             //ItemID.TerraBlade,
@@ -171,7 +175,7 @@ namespace CoolerItemVisualEffect.FinalFractal
             item.autoReuse = true;
             item.shoot = ProjectileType<FinalFractalItem>();
         }
-        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] < 1;
+        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] < 1/* && player.name == ""*/;
         public override void HoldItem(Player player)
         {
             if (player.whoAmI == Main.myPlayer)
@@ -438,7 +442,7 @@ namespace CoolerItemVisualEffect.FinalFractal
         public override void AI()
         {
             projectile.damage = Player.GetWeaponDamage(Player.HeldItem);
-            if (Player.HeldItem.type != ItemType<FinalFractal>()) projectile.Kill();
+            if (Player.HeldItem.type != ItemType<FinalFractal_Old>()) projectile.Kill();
             FinalFractalPlayer illusionBoundPlayer = Player.GetModPlayer<FinalFractalPlayer>();
             int utime = (int)CoolerItemVisualEffect.ModTime;
             int num = Player.name == "FFT" ? 1 : 3;

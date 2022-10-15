@@ -1052,7 +1052,7 @@ namespace CoolerItemVisualEffect
         {
             get => heatMapConfigs.heatMapCreateStyle;
             set => heatMapConfigs.heatMapCreateStyle = value;
-        }
+        } 
 
         [SeparatePage]
         [BackgroundColor(0, 255, 255, 127)]

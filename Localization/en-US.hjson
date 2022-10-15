@@ -8,17 +8,40 @@ Mods:{
 			LivingWoodSword:Living Wood Sword
 			SereStoneSword:Sere Stone Sword
 			MossStoneSword:Moss Stone Sword
-			RustySteelBlade:Rusty Steel Blade(WIP)
-			RefinedSteelBlade:Refines Steel Blade(WIP)
+			RustySteelBlade:Rusty Steel Blade
+			RefinedSteelBlade:Refines Steel Blade
 			PureFractal:Pure Fractal
 			FirstZenith:First Zenith
 			FinalFractal:Final Fractal
+			WitheredWoodSword_Old:WitheredWoodSword_Old
+			LivingWoodSword_Old:LivingWoodSword_Old
+			SereStoneSword_Old:SereStoneSword_Old
+			MossStoneSword_Old:MossStoneSword_Old
+			RustySteelBlade_Old:RustySteelBlade_Old
+			RefinedSteelBlade_Old:RefinedSteelBlade_Old
+			PureFractal_Old:PureFractal_Old
+			FirstZenith_Old:FirstZenith_Old
+			FinalFractal_Old:FinalFractal_Old
+			UShallNotPass:
+			'''
+			I'm so sorry for the "Correct Name"
+			And I'm Making The New Version Of It Know.
+			The Old Version Will Be Retained.
+			You Can Use It Now(   ;)
+			'''
+			IDTKNOW:Pls Use This Weapon With A Correct Name.
 		}
 		ItemTooltip:{
 			旧日支配者:"This power has not fully awakened"
 			FirstFractal_CIVE:Denied，forgotten，faded......It will return finally。
 			PureFractal:The Edge of Zenith Which Upgraded by the Ancient and Pure NaturalMagic.Show it, Your first Power.
 			FinalFractal:Part of it includes itself, which we called Fractal. Infinite blades rotating as hurricane, they are part of it as well.
+			WitheredWoodSword_Old:Press Mouse Right, Then Dash And Release Thrones.
+			LivingWoodSword_Old:Press Mouse Right, Then Dash And Release Many Thrones.
+			SereStoneSword_Old:Press Mouse Right, And Release Stalagmites.
+			MossStoneSword_Old:Press Mouse Right, And Release List Of Stalagmite.
+			RustySteelBlade_Old:Press Mouse Right, And Release Rusty Steel Shards.
+			RefinedSteelBlade_Old:Press Mouse Right, And Release Many Refined Steel Shards.
 		}
 		FinalFractalTip:
 		{

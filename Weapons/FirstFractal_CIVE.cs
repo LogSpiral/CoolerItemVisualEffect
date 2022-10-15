@@ -113,44 +113,44 @@ namespace CoolerItemVisualEffect.Weapons
         }
         public override void AddRecipes()
         {
-            //Recipe recipe = CreateRecipe();
-            //recipe.QuickAddIngredient(
-            //ItemID.TerraBlade,
-            //ItemID.Meowmere,
-            //ItemID.StarWrath,
-            //ItemID.InfluxWaver,
-            //ItemID.TheHorsemansBlade,
-            //ItemID.Seedler,
-            //ItemID.EnchantedSword,
-            //ItemID.BeeKeeper,
-            //ItemID.Starfury,
-            //ItemID.CopperShortsword);
-            //recipe.AddTile(TileID.MythrilAnvil);
-            //recipe.ReplaceResult(this);
-            //recipe.Register();
-
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient<LivingWoodSword>();
-            recipe.AddIngredient<MossStoneSword>();
-            recipe.AddIngredient<RefinedSteelBlade>();
+            recipe.QuickAddIngredient(
+            ItemID.TerraBlade,
+            ItemID.Meowmere,
+            ItemID.StarWrath,
+            ItemID.InfluxWaver,
+            ItemID.TheHorsemansBlade,
+            ItemID.Seedler,
+            ItemID.EnchantedSword,
+            ItemID.BeeKeeper,
+            ItemID.Starfury,
+            ItemID.CopperShortsword);
+            recipe.AddTile(TileID.MythrilAnvil);
+            recipe.ReplaceResult(this);
+            recipe.Register();
+
+            recipe = CreateRecipe();//Recipe
+            recipe.AddIngredient<LivingWoodSword_Old>();
+            recipe.AddIngredient<MossStoneSword_Old>();
+            recipe.AddIngredient<RefinedSteelBlade_Old>();
             recipe.QuickAddIngredient(3258, 3823, 676, 3106, 671, 1928, 3827, 4923);
 
             recipe.AddTile(TileID.LunarCraftingStation);
             recipe.ReplaceResult(this);
             recipe.Register();
 
-            //recipe = CreateRecipe();
-            //recipe.AddIngredient(ItemID.Zenith);
-            //recipe.ReplaceResult(this);
-            //recipe.Register();
+            recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Zenith);
+            recipe.ReplaceResult(this);
+            recipe.Register();
 
-            //recipe = CreateRecipe();
-            //recipe.AddIngredient(this);
-            //recipe.ReplaceResult(ItemID.Zenith);
-            //recipe.Register();
+            recipe = CreateRecipe();
+            recipe.AddIngredient(this);
+            recipe.ReplaceResult(ItemID.Zenith);
+            recipe.Register();
         }
     }
-    public class FirstZenith : ModItem
+    public class FirstZenith_Old : ModItem
     {
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
@@ -160,6 +160,17 @@ namespace CoolerItemVisualEffect.Weapons
         {
             Item.ShaderItemEffectInWorld(spriteBatch, CoolerItemVisualEffectMethods.GetTexture("IMBellTex"), Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffect.ModTime) / 2 + 0.5f), rotation);
         }
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
+        {
+            if (Main.LocalPlayer.name != "")
+            {
+                tooltips.Add(new TooltipLine(Mod, "UShallNotPass!!!", Language.GetTextValue("Mods.CoolerItemVisualEffect.ItemName.UShallNotPass")) { OverrideColor = Color.Red });
+            }
+        }
+        //public override bool CanUseItem(Player player)
+        //{
+        //    return player.name == "";
+        //}
         public override void SetDefaults()
         {
             Item.useStyle = 5;
@@ -251,18 +262,18 @@ namespace CoolerItemVisualEffect.Weapons
         public override void AddRecipes()
         {
             var recipe = CreateRecipe();
-            recipe.QuickAddIngredient(ItemID.Zenith);
+            recipe.AddIngredient(ItemID.Zenith);
             recipe.AddIngredient<FirstFractal_CIVE>();
             recipe.AddTile(TileID.LunarCraftingStation);
             recipe.Register();
 
             recipe = CreateRecipe();
-            recipe.AddIngredient<PureFractal>();
+            recipe.AddIngredient<PureFractal_Old>();
             recipe.Register();
 
             recipe = CreateRecipe();
             recipe.AddIngredient(this);
-            recipe.ReplaceResult<PureFractal>();
+            recipe.ReplaceResult<PureFractal_Old>();
             recipe.Register();
         }
     }
@@ -658,7 +669,7 @@ namespace CoolerItemVisualEffect.Weapons
             Main.spriteBatch.Draw(texture2D4, projectile.oldPos[0] - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(rectangle29), color84, rot, origin, ConfigurationSwoosh_Advanced.ConfigSwooshInstance.onlyChangeSizeOfSwoosh ? 1 : ConfigurationSwoosh_Advanced.ConfigSwooshInstance.swooshSize, spriteEffects, 0);
         }
     }
-    public class WitheredWoodSword : ModItem
+    public class WitheredWoodSword_Old : ModItem
     {
         public Item item => Item;
 
@@ -675,6 +686,13 @@ namespace CoolerItemVisualEffect.Weapons
             item.knockBack = 6;
             item.useStyle = 1;
             item.autoReuse = true;
+        }
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
+        {
+            if (Main.LocalPlayer.name != "")
+            {
+                tooltips.Add(new TooltipLine(Mod, "UShallNotPass!!!", Language.GetTextValue("Mods.CoolerItemVisualEffect.ItemName.UShallNotPass")) { OverrideColor = Color.Red });
+            }
         }
         public override bool CanUseItem(Player player)
         {
@@ -695,7 +713,7 @@ namespace CoolerItemVisualEffect.Weapons
                 item.mana = 0;
 
             }
-            return player.ownedProjectileCounts[item.shoot] < 1; ;
+            return player.ownedProjectileCounts[item.shoot] < 1/* && player.name == ""*/;
         }
         public override bool AltFunctionUse(Player player)
         {
@@ -721,7 +739,7 @@ namespace CoolerItemVisualEffect.Weapons
             recipe.Register();
         }
     }
-    public class LivingWoodSword : WitheredWoodSword
+    public class LivingWoodSword_Old : WitheredWoodSword_Old
     {
         public override bool CanUseItem(Player player)
         {
@@ -742,7 +760,7 @@ namespace CoolerItemVisualEffect.Weapons
                 item.mana = 0;
 
             }
-            return player.ownedProjectileCounts[item.shoot] < 1; ;
+            return player.ownedProjectileCounts[item.shoot] < 1/* && player.name == ""*/;
         }
         public override void SetDefaults()
         {
@@ -757,7 +775,7 @@ namespace CoolerItemVisualEffect.Weapons
         public override void AddRecipes()
         {
             var recipe = CreateRecipe();
-            recipe.AddIngredient<WitheredWoodSword>();
+            recipe.AddIngredient<WitheredWoodSword_Old>();
             recipe.AddIngredient(ItemID.BrokenHeroSword);
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.ReplaceResult(this);
@@ -851,12 +869,12 @@ namespace CoolerItemVisualEffect.Weapons
             //var type = Player.HeldItem.type;
             var type = sourceItem.type;
 
-            if (type == ModContent.ItemType<WitheredWoodSword>())
+            if (type == ModContent.ItemType<WitheredWoodSword_Old>())
             {
                 return normal;
             }
 
-            if (type == ModContent.ItemType<LivingWoodSword>())
+            if (type == ModContent.ItemType<LivingWoodSword_Old>())
             {
                 return extra;
             }
@@ -864,7 +882,7 @@ namespace CoolerItemVisualEffect.Weapons
             return defaultValue;
         }
     }
-    public class SereStoneSword : ModItem
+    public class SereStoneSword_Old : ModItem
     {
         public Item item => Item;
         public override void SetDefaults()
@@ -900,7 +918,14 @@ namespace CoolerItemVisualEffect.Weapons
                 item.mana = 0;
 
             }
-            return player.ownedProjectileCounts[item.shoot] < 1;
+            return player.ownedProjectileCounts[item.shoot] < 1/* && player.name == ""*/;
+        }
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
+        {
+            if (Main.LocalPlayer.name != "")
+            {
+                tooltips.Add(new TooltipLine(Mod, "UShallNotPass!!!", Language.GetTextValue("Mods.CoolerItemVisualEffect.ItemName.UShallNotPass")) { OverrideColor = Color.Red });
+            }
         }
         public override bool AltFunctionUse(Player player)
         {
@@ -932,7 +957,7 @@ namespace CoolerItemVisualEffect.Weapons
             recipe.Register();
         }
     }
-    public class MossStoneSword : SereStoneSword
+    public class MossStoneSword_Old : SereStoneSword_Old
     {
         public override void SetDefaults()
         {
@@ -962,12 +987,12 @@ namespace CoolerItemVisualEffect.Weapons
                 item.mana = 0;
 
             }
-            return player.ownedProjectileCounts[item.shoot] < 1;
+            return player.ownedProjectileCounts[item.shoot] < 1/* && player.name == ""*/;
         }
         public override void AddRecipes()
         {
             var recipe = CreateRecipe();
-            recipe.AddIngredient<SereStoneSword>();
+            recipe.AddIngredient<SereStoneSword_Old>();
             recipe.AddIngredient(ItemID.BrokenHeroSword);
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.ReplaceResult(this);
@@ -1016,12 +1041,12 @@ namespace CoolerItemVisualEffect.Weapons
         {
             var type = sourceItem.type;
 
-            if (type == ModContent.ItemType<SereStoneSword>())
+            if (type == ModContent.ItemType<SereStoneSword_Old>())
             {
                 return normal;
             }
 
-            if (type == ModContent.ItemType<MossStoneSword>())
+            if (type == ModContent.ItemType<MossStoneSword_Old>())
             {
                 return extra;
             }
@@ -1149,7 +1174,7 @@ namespace CoolerItemVisualEffect.Weapons
         }
         public override bool ShouldUpdatePosition() => false;
     }
-    public class RustySteelBlade : ModItem
+    public class RustySteelBlade_Old : ModItem
     {
         public Item item => Item;
         public override void SetDefaults()
@@ -1185,7 +1210,14 @@ namespace CoolerItemVisualEffect.Weapons
                 item.mana = 0;
 
             }
-            return player.ownedProjectileCounts[item.shoot] < 1;
+            return player.ownedProjectileCounts[item.shoot] < 1/* && player.name == ""*/;
+        }
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
+        {
+            if (Main.LocalPlayer.name != "")
+            {
+                tooltips.Add(new TooltipLine(Mod, "UShallNotPass!!!", Language.GetTextValue("Mods.CoolerItemVisualEffect.ItemName.UShallNotPass")) { OverrideColor = Color.Red });
+            }
         }
         public override bool AltFunctionUse(Player player)
         {
@@ -1222,7 +1254,7 @@ namespace CoolerItemVisualEffect.Weapons
             recipe.Register();
         }
     }
-    public class RefinedSteelBlade : RustySteelBlade
+    public class RefinedSteelBlade_Old : RustySteelBlade_Old
     {
         public override void SetDefaults()
         {
@@ -1235,7 +1267,7 @@ namespace CoolerItemVisualEffect.Weapons
         public override void AddRecipes()
         {
             var recipe = CreateRecipe();
-            recipe.AddIngredient<RustySteelBlade>();
+            recipe.AddIngredient<RustySteelBlade_Old>();
             recipe.AddIngredient(ItemID.BrokenHeroSword, 3);
             recipe.AddTile(TileID.LunarCraftingStation);
             recipe.ReplaceResult(this);
@@ -1263,7 +1295,7 @@ namespace CoolerItemVisualEffect.Weapons
                         if (num166 == 1 || num166 == 2)
                         {
                             int num168;
-                            bool zenithTarget = PureFractal.GetZenithTarget(Main.MouseWorld, 400f, player, out num168);
+                            bool zenithTarget = PureFractal_Old.GetZenithTarget(Main.MouseWorld, 400f, player, out num168);
                             if (zenithTarget)
                             {
                                 value7 = Main.npc[num168].Center - player.MountedCenter;
@@ -1304,12 +1336,12 @@ namespace CoolerItemVisualEffect.Weapons
         {
             var type = sourceItem.type;
 
-            if (type == ModContent.ItemType<RustySteelBlade>())
+            if (type == ModContent.ItemType<RustySteelBlade_Old>())
             {
                 return normal;
             }
 
-            if (type == ModContent.ItemType<RefinedSteelBlade>())
+            if (type == ModContent.ItemType<RefinedSteelBlade_Old>())
             {
                 return extra;
             }

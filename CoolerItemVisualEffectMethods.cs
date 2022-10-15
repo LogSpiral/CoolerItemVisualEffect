@@ -1854,7 +1854,7 @@ namespace CoolerItemVisualEffect
         //{
         //    spriteBatch.Draw(TextureAssets.MagicPixel.Value, (start + end) / 2f - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, (end - start).ToRotation(), new Vector2(0.5f, 0.5f), new Vector2((end - start).Length(), width), 0, 0);
         //}
-        public static bool SpecialCheck(this int type) => new int[] { ItemID.Zenith, ModContent.ItemType<Weapons.FirstFractal_CIVE>(), ModContent.ItemType<Weapons.PureFractal>(), ModContent.ItemType<Weapons.FirstZenith>() }.Contains(type);
+        public static bool SpecialCheck(this int type) => new int[] { ItemID.Zenith, ModContent.ItemType<Weapons.FirstFractal_CIVE>(), ModContent.ItemType<Weapons.PureFractal_Old>(), ModContent.ItemType<Weapons.FirstZenith_Old>() }.Contains(type);
         public static void DrawHammer(this SpriteBatch spriteBatch, IHammerProj hammerProj)
         {
             Vector2 origin = hammerProj.DrawOrigin;
@@ -2078,6 +2078,13 @@ namespace CoolerItemVisualEffect
     }
     public static class CoolerItemVisualRecipeMethods
     {
+        public static void QuickSpawnItem(this Player player,IEntitySource source, params int[] ingredients)
+        {
+            foreach (var item in ingredients)
+            {
+                player.QuickSpawnItem(source, item);
+            }
+        }
         public static Recipe QuickAddIngredient(this Recipe recipe, params int[] ingredients)
         {
             foreach (var item in ingredients)

@@ -80,7 +80,7 @@ namespace CoolerItemVisualEffect
             switch (projectile.type)
             {
                 case ProjectileID.NightBeam:
-                case ProjectileID.DeathSickle:
+                //case ProjectileID.DeathSickle:
 
                 case ProjectileID.Starfury:
                 case ProjectileID.StarCannonStar:

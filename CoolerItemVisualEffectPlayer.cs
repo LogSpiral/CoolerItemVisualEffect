@@ -81,7 +81,7 @@ namespace CoolerItemVisualEffect
         {
             //bool? modCanHit = CombinedHooks.CanPlayerHitNPCWithItem(this, sItem, Main.npc[i]);
             var style = ConfigurationNormal.instance.hitBoxStyle;
-            if (style == 0 || style == ConfigurationNormal.HitBoxStyle.矩形Rectangle || ConfigurationSwoosh.coolerSwooshQuality == QualityType.关off) return null;
+            if (style == 0 || style == ConfigurationNormal.HitBoxStyle.矩形Rectangle || ConfigurationSwoosh.coolerSwooshQuality == QualityType.关off || !UseSlash) return null;
             if (ConfigurationSwoosh.actionModifyEffect)
             {
                 if (player.itemAnimation > TimeToCutThem / 2f && (ConfigurationSwoosh.coolerSwooshQuality == QualityType.极限ultra ^ !SwooshActive))// && 

@@ -1490,7 +1490,6 @@ namespace CoolerItemVisualEffect
                                 sb.End();
                                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
                             }
-
                             if (instance.luminosityFactor != 0)
                             {
                                 gd.SetRenderTarget(Main.screenTargetSwap);
@@ -2607,6 +2606,251 @@ namespace CoolerItemVisualEffect
         public override void UpdateUI(GameTime gameTime)
         {
             ModTime++;
+        }
+    }
+    public class ReturnBag : ModItem
+    {
+        public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        {
+            Item.ShaderItemEffectInventory(spriteBatch, position, origin, CoolerItemVisualEffectMethods.GetTexture("ItemEffectTex_0"), Color.Lerp(new Color(0, 162, 232), new Color(34, 177, 76), (float)Math.Sin(MathHelper.Pi / 60 * CoolerSystem.ModTime) / 2 + 0.5f), scale);
+        }
+        public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
+        {
+            Item.ShaderItemEffectInWorld(spriteBatch, CoolerItemVisualEffectMethods.GetTexture("ItemEffectTex_0"), Color.Lerp(new Color(0, 162, 232), new Color(34, 177, 76), (float)Math.Sin(MathHelper.Pi / 60 * CoolerSystem.ModTime) / 2 + 0.5f), rotation);
+        }
+        public override void SetDefaults()
+        {
+            Item.width = Item.height = 32;
+            Item.value = 1;
+            Item.rare = 11;
+            Item.maxStack = 114514;
+        }
+        public virtual string ReturnName => "我不知道啊啊啊啊啊啊";
+        //WitheredWoodSword:朽木之刃
+        //LivingWoodSword:灵木之刃
+        //SereStoneSword:枯石之刃
+        //MossStoneSword:苔石之刃
+        //RustySteelBlade:锈钢之刃
+        //RefinedSteelBlade:精钢之刃
+        //PureFractal:纯粹分形
+        //FirstZenith:初源峰巅
+        //FinalFractal:最终分形
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("返还袋ReturnBag");
+            Tooltip.SetDefault("");
+        }
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
+        {
+            var time = ((float)Math.Sin(CoolerSystem.ModTime / 60f * MathHelper.TwoPi) + 1) * .5f;
+            Color color;
+            if (time < 0.5f) color = Color.Lerp(Color.Cyan, Color.Green, time * 2f);
+            else color = Color.Lerp(Color.Green, Color.Yellow, time * 2f - 1);
+
+            var str = Language.GetTextValue("Mods.CoolerItemVisualEffect.ItemName." + ReturnName);
+
+            tooltips.Add(new TooltipLine(Mod, "YEEEEE", $"反还{str}的材料\nreturn the material of {str}") { OverrideColor = color });
+        }
+        public override string Texture => "Terraria/Images/Item_" + ItemID.CultistBossBag;
+        public override bool CanRightClick()
+        {
+            return true;
+        }
+        public override void RightClick(Player player)
+        {
+            for (int n = 0; n < 500; n++)
+            {
+                var fac = n / 500f;
+                var color = Main.hslToRgb(fac, 1f, .75f);
+                fac *= MathHelper.TwoPi;
+                var position = (fac * 3).ToRotationVector2() * (MathF.Sin(5 * fac) - .5f);
+                Dust dust = Dust.NewDustPerfect(player.Center + position * 256, 278, new Vector2(-position.Y, position.X), 100, color, 1f);
+                dust.scale = 0.4f + Main.rand.NextFloat(-1, 1) * 0.1f;
+                dust.fadeIn = 0.4f + Main.rand.NextFloat() * 0.3f;
+                dust.fadeIn *= .5f;
+                dust.noGravity = true;
+                dust.velocity *= (3f + Main.rand.NextFloat() * 4f) * 2;
+            }
+        }
+    }
+    public class WWBag : ReturnBag
+    {
+        public override string ReturnName => "WitheredWoodSword";
+        public override void RightClick(Player player)
+        {
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.WoodenSword);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.BorealWoodSword);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.PalmWoodSword);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.RichMahoganySword);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.ShadewoodSword);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.PearlwoodSword);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.CactusSword);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.Mushroom, 50);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.GlowingMushroom, 50);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.Acorn, 50);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.BambooBlock, 15);
+            base.RightClick(player);
+        }
+        public override void AddRecipes()
+        {
+            CreateRecipe().AddIngredient(ModContent.ItemType<Weapons.WitheredWoodSword_Old>()).Register();
+        }
+    }
+    public class LWBag : ReturnBag
+    {
+        public override string ReturnName => "LivingWoodSword";
+        public override void RightClick(Player player)
+        {
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.BrokenHeroSword);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ModContent.ItemType<Weapons.WitheredWoodSword_Old>());
+            base.RightClick(player);
+        }
+        public override void AddRecipes()
+        {
+            CreateRecipe().AddIngredient(ModContent.ItemType<Weapons.LivingWoodSword_Old>()).Register();
+        }
+    }
+    public class SSBag : ReturnBag
+    {
+        public override string ReturnName => "SereStoneSword";
+        public override void RightClick(Player player)
+        {
+            for (int n = 0; n < 6; n++)
+                player.QuickSpawnItem(Item.GetSource_GiftOrReward(), 3764 + n);//六种晶光刃
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.OrangePhasesaber);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.BoneSword);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.AntlionClaw);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.BeamSword);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.PurpleClubberfish);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.Bladetongue);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.StoneBlock, 500);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.EbonstoneBlock, 500);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.CrimstoneBlock, 500);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.PearlstoneBlock, 500);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.Sandstone, 500);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.CorruptSandstone, 500);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.CrimsonSandstone, 500);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.HallowSandstone, 500);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.Granite, 500);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.Obsidian, 50);
+            base.RightClick(player);
+
+        }
+        public override void AddRecipes()
+        {
+            CreateRecipe().AddIngredient(ModContent.ItemType<Weapons.LivingWoodSword_Old>()).Register();
+        }
+    }
+    public class MSBag : ReturnBag
+    {
+        public override string ReturnName => "MossStoneSword";
+        public override void RightClick(Player player)
+        {
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.BrokenHeroSword);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ModContent.ItemType<Weapons.SereStoneSword_Old>());
+            base.RightClick(player);
+
+        }
+        public override void AddRecipes()
+        {
+            CreateRecipe().AddIngredient(ModContent.ItemType<Weapons.MossStoneSword_Old>()).Register();
+        }
+    }
+    public class RSBag : ReturnBag
+    {
+        public override string ReturnName => "RustySteelBlade";
+        public override void RightClick(Player player)
+        {
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(),
+ItemID.CopperBroadsword,
+ItemID.TinBroadsword,
+ItemID.IronBroadsword,
+ItemID.LeadBroadsword,
+ItemID.SilverBroadsword,
+ItemID.TungstenBroadsword,
+ItemID.GoldBroadsword,
+ItemID.PlatinumBroadsword,
+ItemID.Gladius,
+ItemID.Katana,
+ItemID.DyeTradersScimitar,
+ItemID.FalconBlade,
+ItemID.CobaltSword,
+ItemID.PalladiumSword,
+ItemID.MythrilSword,
+ItemID.OrichalcumSword,
+ItemID.BreakerBlade,
+ItemID.Cutlass,
+ItemID.AdamantiteSword,
+ItemID.TitaniumSword,
+ItemID.ChlorophyteSaber,
+ItemID.ChlorophyteClaymore);
+            base.RightClick(player);
+
+        }
+        public override void AddRecipes()
+        {
+            CreateRecipe().AddIngredient(ModContent.ItemType<Weapons.RustySteelBlade_Old>()).Register();
+        }
+    }
+    public class RSEXBag : ReturnBag
+    {
+        public override string ReturnName => "RefinedSteelBlade";
+        public override void RightClick(Player player)
+        {
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.BrokenHeroSword, 3);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ModContent.ItemType<Weapons.RustySteelBlade_Old>());
+            base.RightClick(player);
+
+        }
+        public override void AddRecipes()
+        {
+            CreateRecipe().AddIngredient(ModContent.ItemType<Weapons.RefinedSteelBlade_Old>()).Register();
+        }
+    }
+    public class PFBag : ReturnBag
+    {
+        public override string ReturnName => "PureFractal";
+        public override void RightClick(Player player)
+        {
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ItemID.Zenith);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ModContent.ItemType<Weapons.FirstFractal_CIVE>());
+            base.RightClick(player);
+
+        }
+        public override void AddRecipes()
+        {
+            CreateRecipe().AddIngredient(ModContent.ItemType<Weapons.PureFractal_Old>()).Register();
+        }
+    }
+    public class FZBag : ReturnBag
+    {
+        public override string ReturnName => "FirstZenith";
+        public override void RightClick(Player player)
+        {
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(),ItemID.Zenith);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ModContent.ItemType<Weapons.FirstFractal_CIVE>());
+            base.RightClick(player);
+
+        }
+        public override void AddRecipes()
+        {
+            CreateRecipe().AddIngredient(ModContent.ItemType<Weapons.FirstZenith_Old>()).Register();
+        }
+    }
+    public class FFBag : ReturnBag
+    {
+        public override string ReturnName => "FinalFractal";
+        public override void RightClick(Player player)
+        {
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), 4144);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), 3368);
+            player.QuickSpawnItem(Item.GetSource_GiftOrReward(), ModContent.ItemType<Weapons.FirstZenith_Old>());
+            base.RightClick(player);
+
+        }
+        public override void AddRecipes()
+        {
+            CreateRecipe().AddIngredient(ModContent.ItemType<FinalFractal.FinalFractal_Old>()).Register();
         }
     }
     //public class MyModSystem : ModSystem

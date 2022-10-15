@@ -13,12 +13,35 @@ Mods:{
 			PureFractal:纯粹分形
 			FirstZenith:初源峰巅
 			FinalFractal:最终分形
+			WitheredWoodSword_Old:朽木之刃_旧版
+			LivingWoodSword_Old:灵木之刃_旧版
+			SereStoneSword_Old:枯石之刃_旧版
+			MossStoneSword_Old:苔石之刃_旧版
+			RustySteelBlade_Old:锈钢之刃_旧版
+			RefinedSteelBlade_Old:精钢之刃_旧版
+			PureFractal_Old:纯粹分形_旧版
+			FirstZenith_Old:初源峰巅_旧版
+			FinalFractal_Old:最终分形_旧版
+			UShallNotPass:
+			'''
+			关于名字限制，我很抱歉
+			鉴于之前做得实在太烂了，我正在制作新版本
+			旧版本的会保留。
+			现在可以快乐使用了(   ;)
+			'''
+			IDTKNOW:Pls Use This Weapon With A Correct Name.
 		}
 		ItemTooltip:{
 			旧日支配者:"这股力量还未完全苏醒"
 			FirstFractal_CIVE:否定，忘却，尘封......终有一天其将破土而出。
 			PureFractal:远古纯粹的自然魔法洗礼之后的天顶之锋，展露吧，你最初的锋芒。
 			FinalFractal:它的一部分包含着它，这就是分形。无数的刀刃回旋着，它们是它的一部分。
+			WitheredWoodSword_Old:右键蓄力后冲刺并释放荆棘
+			LivingWoodSword_Old:右键蓄力后冲刺并释放大量荆棘
+			SereStoneSword_Old:右键蓄力释放石笋
+			MossStoneSword_Old:右键蓄力释放石笋阵
+			RustySteelBlade_Old:右键蓄力释放锈铁飞刃
+			RefinedSteelBlade_Old:右键蓄力释放大量精钢飞刃
 		}
 		FinalFractalTip:
 		{

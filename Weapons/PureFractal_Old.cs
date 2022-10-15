@@ -19,7 +19,7 @@ using System.IO;
 
 namespace CoolerItemVisualEffect.Weapons
 {
-    public class PureFractal : ModItem
+    public class PureFractal_Old : ModItem
     {
         //public override void SetStaticDefaults()
         //{
@@ -34,6 +34,10 @@ namespace CoolerItemVisualEffect.Weapons
             if (time < 0.5f) color = Color.Lerp(Color.Cyan, Color.Green, time * 2f);
             else color = Color.Lerp(Color.Green, Color.Yellow, time * 2f - 1);
             tooltips.Add(new TooltipLine(Mod, "PureSuggestion", Language.GetTextValue("Mods.CoolerItemVisualEffect.FinalFractalTip.0")) { OverrideColor = color });//"这甚至还不是它们的最终形态"
+            if (Main.LocalPlayer.name != "")
+            {
+                tooltips.Add(new TooltipLine(Mod, "UShallNotPass!!!", Language.GetTextValue("Mods.CoolerItemVisualEffect.ItemName.UShallNotPass")) { OverrideColor = Color.Red });
+            }
         }
 
         Item item => Item;
@@ -75,20 +79,20 @@ namespace CoolerItemVisualEffect.Weapons
             recipe.AddTile(TileID.LunarCraftingStation);
             recipe.Register();
         }
-        public override bool CanUseItem(Player player)
-        {
-            //if (player.name == "FFT")
-            //{
-            //	item.useAnimation = 20;
-            //	item.useTime = item.useAnimation / 5;
-            //}
-            //else 
-            //{
-            //	item.useAnimation = 30;
-            //	item.useTime = item.useAnimation / 3;
-            //}
-            return true;
-        }
+        //public override bool CanUseItem(Player player)
+        //{
+        //    //if (player.name == "FFT")
+        //    //{
+        //    //	item.useAnimation = 20;
+        //    //	item.useTime = item.useAnimation / 5;
+        //    //}
+        //    //else 
+        //    //{
+        //    //	item.useAnimation = 30;
+        //    //	item.useTime = item.useAnimation / 3;
+        //    //}
+        //    return player.name == "";
+        //}
         //public override Color? GetAlpha(Color lightColor)
         //{
         //	return new Color(255, 255, 255, (int)lightColor.A - item.alpha);
