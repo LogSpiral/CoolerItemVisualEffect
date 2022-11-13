@@ -34,14 +34,23 @@ Mods:{
 		ItemTooltip:{
 			旧日支配者:"This power has not fully awakened"
 			FirstFractal_CIVE:Denied，forgotten，faded......It will return finally。
-			PureFractal:The Edge of Zenith Which Upgraded by the Ancient and Pure NaturalMagic.Show it, Your first Power.
-			FinalFractal:Part of it includes itself, which we called Fractal. Infinite blades rotating as hurricane, they are part of it as well.
+			PureFractal_Old:The Edge of Zenith Which Upgraded by the Ancient and Pure NaturalMagic.Show it, Your first Power.
+			FinalFractal_Old:Part of it includes itself, which we called Fractal. Infinite blades rotating as hurricane, they are part of it as well.
 			WitheredWoodSword_Old:Press Mouse Right, Then Dash And Release Thrones.
 			LivingWoodSword_Old:Press Mouse Right, Then Dash And Release Many Thrones.
 			SereStoneSword_Old:Press Mouse Right, And Release Stalagmites.
 			MossStoneSword_Old:Press Mouse Right, And Release List Of Stalagmite.
 			RustySteelBlade_Old:Press Mouse Right, And Release Rusty Steel Shards.
 			RefinedSteelBlade_Old:Press Mouse Right, And Release Many Refined Steel Shards.
+			WitheredWoodSword:(New Version Work In Progress)
+			LivingWoodSword:(New Version Work In Progress)
+			SereStoneSword:(New Version Work In Progress)
+			MossStoneSword:(New Version Work In Progress)
+			RustySteelBlade:(New Version Work In Progress)
+			RefinedSteelBlade:(New Version Work In Progress)
+			FirstZenith:(New Version Work In Progress)
+			PureFractal:The Edge of Zenith Which Upgraded by the Ancient and Pure NaturalMagic.Show it, Your first Power.(New Version Work In Progress)
+			FinalFractal:Part of it includes itself, which we called Fractal. Infinite blades rotating as hurricane, they are part of it as well.(New Version Work In Progress)
 		}
 		FinalFractalTip:
 		{

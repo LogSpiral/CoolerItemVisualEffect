@@ -28,9 +28,48 @@ namespace CoolerItemVisualEffect
         public bool Active => timeLeft > 0;
         public float scaler;
         public byte timeLeftMax;
+        public (float from, float to) angleRange;
+        public bool updateWithData;
     }
     public class CoolerItemVisualEffectPlayer : ModPlayer
     {
+        public void NewUltraSwoosh(
+            Color? color = null, int? type = null, float? airFac = null,
+            float? rotVel = null, byte? timeLeft = null, float? _scaler = null,
+            Vector2? center = null, Texture2D heat = null, bool? _negativeDir = null,
+            Vector3? _hsl = null, float? _rotation = null, float? xscaler = null,
+            (float, float)? angleRange = null)
+        {
+            for (int n = 0; n < 60; n++)
+            {
+                var ultra = ultraSwooshes[n];
+                if (ultra == null || !ultra.Active)
+                {
+                    if (ultra == null) ultra = ultraSwooshes[n] = new UltraSwoosh();
+                    if (!ultra.Active)
+                    {
+                        ultra.color = color ?? colorInfo.color;
+                        ultra.type = type ?? colorInfo.type;
+                        //Main.NewText(new Item(ultra.type).Name);
+                        ultra.checkAirFactor = airFac ?? colorInfo.checkAirFactor;
+                        //ultra.rotationVelocity = ConfigurationSwoosh.swooshActionStyle == SwooshAction.旋风劈 && swingCount % 3 == 0 ? ConfigurationSwoosh.swingAttackTime : 1f;//
+                        ultra.rotationVelocity = rotVel ?? (ConfigurationSwoosh.swooshActionStyle == SwooshAction.旋风劈 && swingCount % 3 == 0 ? 2 : 1f);//
+                        ultra.timeLeftMax = ultra.timeLeft = timeLeft ?? (byte)ConfigurationSwoosh.swooshTimeLeft;
+                        ultra.scaler = _scaler ?? scaler;
+                        ultra.center = center ?? player.Center;
+                        ultra.heatMap = heat ?? colorInfo.tex;
+                        ultra.negativeDir = _negativeDir ?? negativeDir;
+                        ultra.hsl = _hsl ?? hsl;
+                        ultra.rotation = _rotation ?? rotationForShadow;
+                        ultra.xScaler = xscaler ?? kValue;
+                        ultra.angleRange = angleRange ?? (-1.125f, 0.7125f);
+                        ultra.updateWithData = false;
+                        currentSwoosh = ultra;
+                    }
+                    break;
+                }
+            }
+        }
         public bool SwooshActive
         {
             get
@@ -157,104 +196,112 @@ namespace CoolerItemVisualEffect
         }
         public void UpdateVertex()
         {
+            //Main.NewText("YEEEEEE");
             //Main.NewText((ConfigSwooshInstance.IsExpandGrow, ConfigSwooshInstance.IsHorizontallyGrow, ConfigSwooshInstance.IsOffestGrow, ConfigSwooshInstance.growStyle));
-            var modPlayer = this;
-            var instance = ConfigurationSwoosh;
             var drawPlayer = player;
-            var fac = modPlayer.FactorGeter;
-            fac = modPlayer.negativeDir ? 1 - fac : fac;
-            //var drawCen = drawPlayer.Center;
-            //float rotVel = instance.swooshActionStyle == SwooshAction.旋风劈 && modPlayer.swingCount % 3 == 0 ? instance.rotationVelocity : 1;
-            float rotVel = instance.swooshActionStyle == SwooshAction.旋风劈 && modPlayer.swingCount % 3 == 0 ? 3 : 1;
 
-            var theta = (1.2375f * fac * rotVel - 1.125f) * MathHelper.Pi;
-            //theta = currentRotation = currentRotation.AngleLerp(theta, 0.15f);
-            var itemTex = TextureAssets.Item[drawPlayer.HeldItem.type].Value;
-            float xScaler = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.kValue, modPlayer.kValueNext, fac) : modPlayer.kValue;
-            //float scaler = ;
-            currentSize = MathHelper.Lerp(currentSize, (ConfigurationSwoosh.actionOffsetSize ? actionOffsetSize : 1), 0.2f);
-            modPlayer.scaler = itemTex.Size().Length() * drawPlayer.GetAdjustedItemScale(drawPlayer.HeldItem) / xScaler * 0.5f * modPlayer.RealSize * modPlayer.colorInfo.checkAirFactor;
-
-            var rotator = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.rotationForShadow, modPlayer.rotationForShadowNext, fac) : modPlayer.rotationForShadow;
-            float swooshAniFac;
-            if (instance.coolerSwooshQuality == QualityType.极限ultra)
-            {
-                swooshAniFac = modPlayer.negativeDir ? 0 : 1;
-            }
-            else
-            {
-                swooshAniFac = modPlayer.negativeDir ? 4 * fac - 3 : 4 * fac;
-                swooshAniFac = MathHelper.Clamp(swooshAniFac, 0, 1);
-            }
-            var vec = theta.ToRotationVector2() * scaler;
-            vectors.u = new Vector2(xScaler * (vec.X - vec.Y), -vec.X - vec.Y).RotatedBy(rotator) / colorInfo.checkAirFactor;
-            vectors.v = new Vector2(-xScaler * (vec.X + vec.Y), vec.Y - vec.X).RotatedBy(rotator) / colorInfo.checkAirFactor;
-            if (ConfigurationSwoosh.onlyChangeSizeOfSwoosh)
-            {
-                vectors.u /= RealSize;
-                vectors.v /= RealSize;
-            }
-            var theta3 = (1.2375f * swooshAniFac * rotVel - 1.125f) * MathHelper.Pi;
-            float xScaler3 = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.kValue, modPlayer.kValueNext, swooshAniFac) : modPlayer.kValue;
-            var rotator3 = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.rotationForShadow, modPlayer.rotationForShadowNext, swooshAniFac) : modPlayer.rotationForShadow;
+            var instance = ConfigurationSwoosh;
             var alphaLight = hsl.Z < instance.isLighterDecider ? Lighting.GetColor((drawPlayer.Center / 16).ToPoint().X, (drawPlayer.Center / 16).ToPoint().Y).R / 255f * .5f : 0.5f;
-            var _dustAllow = player.itemAnimation == 1 && ConfigurationSwoosh.dustQuantity != 0;
-            for (int i = 0; i < 45; i++)
+
+            if (UseSlash) 
             {
-                var f = i / 44f;
-                var theta2 = f.Lerp(theta3, theta, true);
-                var xScaler2 = (instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? f : 1).Lerp(xScaler3, xScaler, true);
-                var rotator2 = (instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? f : 1).Lerp(rotator3, rotator, true);
-                var cos2 = (float)Math.Cos(theta2) * scaler;
-                var sin2 = (float)Math.Sin(theta2) * scaler;
-                var u2 = new Vector2(xScaler2 * (cos2 - sin2), -cos2 - sin2).RotatedBy(rotator2);
-                var v2 = new Vector2(-xScaler2 * (cos2 + sin2), sin2 - cos2).RotatedBy(rotator2);
-                var newVec = u2 + v2;
-                //var _f = f * f;
-                //_f = MathHelper.Clamp(_f, 0, 1);
-                var _flag = (byte)ConfigurationSwoosh.swooshActionStyle > 0 && (byte)ConfigurationSwoosh.swooshActionStyle < 9;
-                //var progress = _flag ? Utils.GetLerpValue(MathHelper.Clamp(player.itemAnimationMax, TimeToCutThem, 114514), TimeToCutThem, player.itemAnimation, true) : 1f;
-                var progress = _flag ? Utils.GetLerpValue(TimeToCutThem, TimeToCutThem * .5f, player.itemAnimation, true) : 1f;//MathHelper.Clamp(player.itemAnimationMax, TimeToCutThem, 114514)
-                var alphaValue = MathHelper.Clamp((1 - f).HillFactor2() * 2f, 0, 1);
-                if (_dustAllow)
+                var modPlayer = this;
+                var fac = modPlayer.FactorGeter;
+                fac = modPlayer.negativeDir ? 1 - fac : fac;
+                //var drawCen = drawPlayer.Center;
+                //float rotVel = instance.swooshActionStyle == SwooshAction.旋风劈 && modPlayer.swingCount % 3 == 0 ? instance.rotationVelocity : 1;
+                float rotVel = instance.swooshActionStyle == SwooshAction.旋风劈 && modPlayer.swingCount % 3 == 0 ? 3 : 1;
+
+                var theta = (1.2375f * fac * rotVel - 1.125f) * MathHelper.Pi;
+                //theta = currentRotation = currentRotation.AngleLerp(theta, 0.15f);
+                var itemTex = TextureAssets.Item[drawPlayer.HeldItem.type].Value;
+                float xScaler = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.kValue, modPlayer.kValueNext, fac) : modPlayer.kValue;
+                //float scaler = ;
+                currentSize = MathHelper.Lerp(currentSize, (ConfigurationSwoosh.actionOffsetSize ? actionOffsetSize : 1), 0.2f);
+                modPlayer.scaler = itemTex.Size().Length() * drawPlayer.GetAdjustedItemScale(drawPlayer.HeldItem) / xScaler * 0.5f * modPlayer.RealSize * modPlayer.colorInfo.checkAirFactor;
+                var rotator = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.rotationForShadow, modPlayer.rotationForShadowNext, fac) : modPlayer.rotationForShadow;
+                float swooshAniFac;
+                if (instance.coolerSwooshQuality == QualityType.极限ultra)
                 {
-                    var scaler = MathHelper.Lerp(player.itemAnimationMax / (float)player.HeldItem.useAnimation, 1, .5f);//1 / (ConfigurationSwoosh.actionOffsetSpeed && UseSlash ? actionOffsetSpeed : 1f)
-                    if (Main.rand.Next(100) < f.HillFactor2() * 50 * scaler * ConfigurationSwoosh.dustQuantity)
+                    swooshAniFac = modPlayer.negativeDir ? 0 : 1;
+                }
+                else
+                {
+                    swooshAniFac = modPlayer.negativeDir ? 4 * fac - 3 : 4 * fac;
+                    swooshAniFac = MathHelper.Clamp(swooshAniFac, 0, 1);
+                }
+                var vec = theta.ToRotationVector2() * scaler;
+                vectors.u = new Vector2(xScaler * (vec.X - vec.Y), -vec.X - vec.Y).RotatedBy(rotator) / colorInfo.checkAirFactor;
+                vectors.v = new Vector2(-xScaler * (vec.X + vec.Y), vec.Y - vec.X).RotatedBy(rotator) / colorInfo.checkAirFactor;
+                if (ConfigurationSwoosh.onlyChangeSizeOfSwoosh)
+                {
+                    vectors.u /= RealSize;
+                    vectors.v /= RealSize;
+                }
+                var theta3 = (1.2375f * swooshAniFac * rotVel - 1.125f) * MathHelper.Pi;
+                float xScaler3 = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.kValue, modPlayer.kValueNext, swooshAniFac) : modPlayer.kValue;
+                var rotator3 = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.rotationForShadow, modPlayer.rotationForShadowNext, swooshAniFac) : modPlayer.rotationForShadow;
+                var _dustAllow = player.itemAnimation == 1 && ConfigurationSwoosh.dustQuantity != 0;
+                for (int i = 0; i < 45; i++)
+                {
+                    var f = i / 44f;
+                    var theta2 = f.Lerp(theta3, theta, true);
+                    var xScaler2 = (instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? f : 1).Lerp(xScaler3, xScaler, true);
+                    var rotator2 = (instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? f : 1).Lerp(rotator3, rotator, true);
+                    var cos2 = (float)Math.Cos(theta2) * scaler;
+                    var sin2 = (float)Math.Sin(theta2) * scaler;
+                    var u2 = new Vector2(xScaler2 * (cos2 - sin2), -cos2 - sin2).RotatedBy(rotator2);
+                    var v2 = new Vector2(-xScaler2 * (cos2 + sin2), sin2 - cos2).RotatedBy(rotator2);
+                    var newVec = u2 + v2;
+                    //var _f = f * f;
+                    //_f = MathHelper.Clamp(_f, 0, 1);
+                    var _flag = (byte)ConfigurationSwoosh.swooshActionStyle > 0 && (byte)ConfigurationSwoosh.swooshActionStyle < 9;
+                    //var progress = _flag ? Utils.GetLerpValue(MathHelper.Clamp(player.itemAnimationMax, TimeToCutThem, 114514), TimeToCutThem, player.itemAnimation, true) : 1f;
+                    var progress = _flag ? Utils.GetLerpValue(TimeToCutThem, TimeToCutThem * .5f, player.itemAnimation, true) : 1f;//MathHelper.Clamp(player.itemAnimationMax, TimeToCutThem, 114514)
+                    var alphaValue = MathHelper.Clamp((1 - f).HillFactor2() * 2f, 0, 1);
+                    if (_dustAllow)
                     {
-                        int _num = Main.rand.Next(2, 6);
-                        for (int k = 0; k < _num; k++)
+                        var scaler = MathHelper.Lerp(player.itemAnimationMax / (float)player.HeldItem.useAnimation, 1, .5f);//1 / (ConfigurationSwoosh.actionOffsetSpeed && UseSlash ? actionOffsetSpeed : 1f)
+                        if (Main.rand.Next(100) < f.HillFactor2() * 50 * scaler * ConfigurationSwoosh.dustQuantity)
                         {
-                            var unit = new Vector2(-newVec.Y, newVec.X).SafeNormalize(default) * (negativeDir ? -1 : 1);
-                            var dustColor = Color.Lerp(Main.hslToRgb(Vector3.Clamp(hsl * new Vector3(1, ConfigurationSwoosh.saturationScalar, Main.rand.NextFloat(0.85f, 1.15f)), default, Vector3.One)), Color.White, Main.rand.NextFloat(0, 0.3f));
-                            Dust dust = Dust.NewDustPerfect(player.Center + newVec * Main.rand.NextFloat(1f, 1.25f), 278, unit, 100, dustColor, 1f);
-                            dust.scale = 0.4f + Main.rand.NextFloat(-1, 1) * 0.1f;
-                            dust.scale *= scaler;
-                            dust.fadeIn = 0.4f + Main.rand.NextFloat() * 0.3f;
-                            dust.fadeIn *= .5f * scaler;
-                            dust.noGravity = true;
-                            dust.velocity += unit * (3f + Main.rand.NextFloat() * 4f) * 2 * scaler;
+                            int _num = Main.rand.Next(2, 6);
+                            for (int k = 0; k < _num; k++)
+                            {
+                                var unit = new Vector2(-newVec.Y, newVec.X).SafeNormalize(default) * (negativeDir ? -1 : 1);
+                                var dustColor = Color.Lerp(Main.hslToRgb(Vector3.Clamp(hsl * new Vector3(1, ConfigurationSwoosh.saturationScalar, Main.rand.NextFloat(0.85f, 1.15f)), default, Vector3.One)), Color.White, Main.rand.NextFloat(0, 0.3f));
+                                Dust dust = Dust.NewDustPerfect(player.Center + newVec * Main.rand.NextFloat(1f, 1.25f), 278, unit, 100, dustColor, 1f);
+                                dust.scale = 0.4f + Main.rand.NextFloat(-1, 1) * 0.1f;
+                                dust.scale *= scaler;
+                                dust.fadeIn = 0.4f + Main.rand.NextFloat() * 0.3f;
+                                dust.fadeIn *= .5f * scaler;
+                                dust.noGravity = true;
+                                dust.velocity += unit * (3f + Main.rand.NextFloat() * 4f) * 2 * scaler;
+                            }
                         }
                     }
+                    alphaValue *= 255 * progress;
+                    vertexInfos[2 * i] = new CustomVertexInfo(newVec, colorInfo.color with { A = (byte)alphaValue }, new Vector3(1 - f, 1, alphaLight));//(byte)(_f * 255)//drawCen + 
+                    vertexInfos[2 * i + 1] = new CustomVertexInfo(default, colorInfo.color with { A = (byte)alphaValue }, new Vector3(0, 0, alphaLight));//drawCen
                 }
-                alphaValue *= 255 * progress;
-                vertexInfos[2 * i] = new CustomVertexInfo(newVec, colorInfo.color with { A = (byte)alphaValue }, new Vector3(1 - f, 1, alphaLight));//(byte)(_f * 255)//drawCen + 
-                vertexInfos[2 * i + 1] = new CustomVertexInfo(default, colorInfo.color with { A = (byte)alphaValue }, new Vector3(0, 0, alphaLight));//drawCen
             }
+
 
             foreach (var swoosh in ultraSwooshes)
             {
+
                 if (swoosh != null && swoosh.Active)
                 {
+
                     for (int i = 0; i < 30; i++)
                     {
                         var f = i / 29f;
                         var num = 1 - swoosh.timeLeft / (float)swoosh.timeLeftMax;
                         var lerp = f.Lerp(instance.IsCloseAngleFade ? num : 0, 1);//num
                         //float theta2 = (1.8375f * lerp - 1.125f) * MathHelper.Pi + MathHelper.Pi;
-                        float theta2 = (1.8375f * lerp * swoosh.rotationVelocity - 1.125f) * MathHelper.Pi + MathHelper.Pi;
+                        float theta2 = ((swoosh.angleRange.to - swoosh.angleRange.from) * lerp * swoosh.rotationVelocity + swoosh.angleRange.from) * MathHelper.Pi + MathHelper.Pi;
                         if (swoosh.negativeDir) theta2 = MathHelper.TwoPi - theta2;
                         Vector2 offsetVec = -2 * (theta2.ToRotationVector2() * new Vector2(swoosh.xScaler * (instance.IsHorizontallyGrow ? (1 + num) : 1), 1)).RotatedBy(swoosh.rotation) * swoosh.scaler * (instance.IsExpandGrow ? (1 + num * (instance.growStyle == SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest ? 0.125f : 0.25f)) : 1);
-                        Vector2 adder = (offsetVec * 0.25f + swoosh.rotation.ToRotationVector2() * scaler * 2f) * (instance.IsOffestGrow ? num : 0);
+                        Vector2 adder = (offsetVec * 0.25f + swoosh.rotation.ToRotationVector2() * swoosh.scaler * 2f) * (instance.IsOffestGrow ? num : 0);
                         if (instance.growStyle == SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest) adder *= 0.25f;
                         var realColor = swoosh.color;
                         realColor.A = (byte)((1 - f).HillFactor2(1) * (instance.IsTransparentFade ? MathF.Sqrt(1 - num) : 1) * 255);
@@ -465,33 +512,7 @@ namespace CoolerItemVisualEffect
 
                 SetActionSpeed();
 
-                for (int n = 0; n < 60; n++)
-                {
-                    var ultra = ultraSwooshes[n];
-                    if (ultra == null || !ultra.Active)
-                    {
-                        if (ultra == null) ultra = ultraSwooshes[n] = new UltraSwoosh();
-                        if (!ultra.Active)
-                        {
-                            ultra.color = colorInfo.color;
-                            ultra.type = colorInfo.type;
-                            //Main.NewText(new Item(ultra.type).Name);
-                            ultra.checkAirFactor = colorInfo.checkAirFactor;
-                            //ultra.rotationVelocity = ConfigurationSwoosh.swooshActionStyle == SwooshAction.旋风劈 && swingCount % 3 == 0 ? ConfigurationSwoosh.swingAttackTime : 1f;//
-                            ultra.rotationVelocity = ConfigurationSwoosh.swooshActionStyle == SwooshAction.旋风劈 && swingCount % 3 == 0 ? 2 : 1f;//
-                            ultra.timeLeftMax = ultra.timeLeft = (byte)ConfigurationSwoosh.swooshTimeLeft;
-                            ultra.scaler = scaler;
-                            ultra.center = player.Center;
-                            ultra.heatMap = colorInfo.tex;
-                            ultra.negativeDir = negativeDir;
-                            ultra.hsl = hsl;
-                            ultra.rotation = rotationForShadow;
-                            ultra.xScaler = kValue;
-                            currentSwoosh = ultra;
-                        }
-                        break;
-                    }
-                }
+                NewUltraSwoosh();
             }
             lastItemAnimation = player.itemAnimation;
             //Main.NewText(player.HeldItem.noUseGraphic);

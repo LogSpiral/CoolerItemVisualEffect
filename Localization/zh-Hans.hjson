@@ -34,14 +34,23 @@ Mods:{
 		ItemTooltip:{
 			旧日支配者:"这股力量还未完全苏醒"
 			FirstFractal_CIVE:否定，忘却，尘封......终有一天其将破土而出。
-			PureFractal:远古纯粹的自然魔法洗礼之后的天顶之锋，展露吧，你最初的锋芒。
-			FinalFractal:它的一部分包含着它，这就是分形。无数的刀刃回旋着，它们是它的一部分。
 			WitheredWoodSword_Old:右键蓄力后冲刺并释放荆棘
 			LivingWoodSword_Old:右键蓄力后冲刺并释放大量荆棘
 			SereStoneSword_Old:右键蓄力释放石笋
 			MossStoneSword_Old:右键蓄力释放石笋阵
 			RustySteelBlade_Old:右键蓄力释放锈铁飞刃
 			RefinedSteelBlade_Old:右键蓄力释放大量精钢飞刃
+			PureFractal_Old:远古纯粹的自然魔法洗礼之后的天顶之锋，展露吧，你最初的锋芒。
+			FinalFractal_Old:它的一部分包含着它，这就是分形。无数的刀刃回旋着，它们是它的一部分。
+			WitheredWoodSword:(新版制作中)
+			LivingWoodSword:(新版制作中)
+			SereStoneSword:(新版制作中)
+			MossStoneSword:(新版制作中)
+			RustySteelBlade:(新版制作中)
+			RefinedSteelBlade:(新版制作中)
+			FirstZenith:(新版制作中)
+			PureFractal:远古纯粹的自然魔法洗礼之后的天顶之锋，展露吧，你最初的锋芒。(新版制作中)
+			FinalFractal:它的一部分包含着它，这就是分形。无数的刀刃回旋着，它们是它的一部分。(新版制作中)
 		}
 		FinalFractalTip:
 		{

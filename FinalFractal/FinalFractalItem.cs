@@ -188,6 +188,7 @@ namespace CoolerItemVisualEffect.FinalFractal
             }
         }
     }
+
     public class FinalFractalItem : ModProjectile
     {
         public override void SetStaticDefaults()

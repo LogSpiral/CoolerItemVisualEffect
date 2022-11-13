@@ -460,9 +460,9 @@ namespace CoolerItemVisualEffect.Weapons
                 //var f = 1 - (i / (max - 1f)) * 4 % 1;
                 int _i = i % 15;
                 var _value = max / 15 * 15;
-                var f = i > _value ? _i / (max - _value - 1f) : (_i / 14f);
+                var f = i > _value ? _i / (max - _value - 1f) : (_i / 15f);
                 f = 1 - f;
-                var alphaLight = 0.6f;
+                var alphaLight = 0.5f;
                 //if (ConfigSwooshInstance.swooshColorType == SwooshColorType.加权平均_饱和与色调处理 || ConfigSwooshInstance.swooshColorType == SwooshColorType.色调处理与对角线混合)
                 //{
                 //    float h = (hsl.X + ConfigSwooshInstance.hueOffsetValue + ConfigSwooshInstance.hueOffsetRange * (2 * f - 1)) % 1;
@@ -473,13 +473,14 @@ namespace CoolerItemVisualEffect.Weapons
                 var _f = f * f;//6 * f / (3 * f + 1) /(float)Math.Pow(f,instance.maxCount)
                 _f = MathHelper.Clamp(_f, 0, 1);
                 bars.Add(new CustomVertexInfo(projectile.oldPos[i] + (projectile.oldRot[i] - MathHelper.PiOver2).ToRotationVector2() * _scaler * ConfigSwooshInstance.swooshSize, newColor with { A = (byte)(_f * 255 * (float)Math.Pow(1 - i / 15 / 5f, 2)) } * multiValue, new Vector3(1 - f, 1, alphaLight)));
-                bars.Add(new CustomVertexInfo(projectile.oldPos[i], newColor with { A = 0 } * multiValue, new Vector3(0, 0, alphaLight)));
+                bars.Add(new CustomVertexInfo(projectile.oldPos[i], newColor with { A = 0 } * multiValue, new Vector3(1 - f, 0, alphaLight)));
             }
             List<CustomVertexInfo> _triangleList = new List<CustomVertexInfo>();
             if (bars.Count > 2)
             {
                 for (int i = 0; i < bars.Count - 2; i += 2)
                 {
+                    //if (i == 28) continue;
                     _triangleList.Add(bars[i]);
                     _triangleList.Add(bars[i + 2]);
                     _triangleList.Add(bars[i + 1]);
@@ -604,7 +605,7 @@ namespace CoolerItemVisualEffect.Weapons
                 //sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
                 ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
                 //ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
-                ShaderSwooshEX.Parameters["uTime"].SetValue(0); ShaderSwooshEX.Parameters["checkAir"].SetValue(ConfigSwooshInstance.checkAir);
+                ShaderSwooshEX.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f); ShaderSwooshEX.Parameters["checkAir"].SetValue(ConfigSwooshInstance.checkAir);
                 ShaderSwooshEX.Parameters["airFactor"].SetValue(airFactor);
                 ShaderSwooshEX.Parameters["gather"].SetValue(ConfigSwooshInstance.gather);
                 ShaderSwooshEX.Parameters["alphaFactor"].SetValue(ConfigSwooshInstance.alphaFactor);
@@ -620,6 +621,14 @@ namespace CoolerItemVisualEffect.Weapons
                 Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
                 Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
                 Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
+                switch (ConfigurationSwoosh_Advanced.ConfigSwooshInstance.swooshColorType)
+                {
+                    case SwooshColorType.热度图:
+                        {
+                            sampler = SamplerState.AnisotropicClamp;
+                            break;
+                        }
+                }
                 Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
                 ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
                 Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, _triangleList.ToArray(), 0, _triangleList.Count / 3);
@@ -726,4 +735,6 @@ namespace CoolerItemVisualEffect.Weapons
             ProjectileID.Sets.TrailCacheLength[projectile.type] = 60;
         }
     }
+
+
 }

@@ -818,7 +818,7 @@ namespace CoolerItemVisualEffect.Weapons
             //}
             base.Kill(timeLeft);
         }
-        public virtual void OnChargedShoot()
+        public override void OnChargedShoot()
         {
             SoundEngine.PlaySound(SoundID.Item60, projectile.position);
 
@@ -863,6 +863,7 @@ namespace CoolerItemVisualEffect.Weapons
             {
                 sourceItem = itemSource.Item;
             }
+            base.OnSpawn(source);
         }
         public virtual T UpgradeValue<T>(T normal, T extra, T defaultValue = default)
         {
@@ -880,6 +881,18 @@ namespace CoolerItemVisualEffect.Weapons
             }
 
             return defaultValue;
+        }
+        public override void RenderInfomation(ref (float M, float Intensity, float Range) useBloom, ref (float M, float Range, Vector2 director) useDistort, ref (Texture2D fillTex, Vector2 texSize, Color glowColor, Color boundColor, float tier1, float tier2, Vector2 offset, bool lightAsAlpha) useMask)
+        {
+            var config = Player.GetModPlayer<CoolerItemVisualEffectPlayer>().ConfigurationSwoosh;
+            useBloom = (0, config.luminosityFactor, 6);
+            useDistort = (0, config.distortSize, Rotation.ToRotationVector2() * -0.25f * config.distortFactor);
+        }
+        public override void VertexInfomation(ref bool additive, ref int indexOfGreyTex, ref float endAngle, ref bool useHeatMap)
+        {
+            var modplr = Player.GetModPlayer<CoolerItemVisualEffectPlayer>();
+            additive = modplr.hsl.Z >= modplr.ConfigurationSwoosh.isLighterDecider;
+            base.VertexInfomation(ref additive, ref indexOfGreyTex, ref endAngle, ref useHeatMap);
         }
     }
     public class SereStoneSword_Old : ModItem
