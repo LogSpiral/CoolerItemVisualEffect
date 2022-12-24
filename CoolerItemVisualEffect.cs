@@ -786,7 +786,7 @@ namespace CoolerItemVisualEffect
             orig(self, finalTexture, screenTarget1, screenTarget2, clearColor);
         }
 
-        static void DrawSwooshWithPlayer(Player drawPlayer)
+        internal static void DrawSwooshWithPlayer(Player drawPlayer)
         {
             var modPlayer = drawPlayer.GetModPlayer<CoolerItemVisualEffectPlayer>();
             if (modPlayer.UseSlash || modPlayer.SwooshActive)
@@ -898,7 +898,6 @@ namespace CoolerItemVisualEffect
                 DrawSwooshWithPlayer(drawPlayer);
 
         }
-
         //private void PlayerSegment_Draw_WD(On.Terraria.GameContent.Skies.CreditsRoll.Segments.PlayerSegment.orig_Draw orig, Segments.PlayerSegment self, ref CreditsRollInfo info)
         //{
         //    var _targetTime = (int)self.GetType().GetField("_targetTime", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(self);

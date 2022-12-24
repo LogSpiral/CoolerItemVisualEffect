@@ -74,7 +74,7 @@ namespace CoolerItemVisualEffect.Weapons
             Item.rare = 8;
         }
         public override void AddRecipes()
-        {
+        { 
             var recipe = CreateRecipe();
             recipe.AddIngredient<WitheredWoodSword>();
             recipe.AddIngredient(ItemID.BrokenHeroSword);
@@ -196,7 +196,7 @@ namespace CoolerItemVisualEffect.Weapons
             if (Charged && Player.CheckMana(50, true))
             {
                 var cen = projCenter - (CollidingCenter - DrawOrigin).RotatedBy(RealRotation) * new Vector2(Player.direction, 1) * 1.5f + new Vector2(0, -24);
-                Projectile.NewProjectile(projectile.GetSource_FromThis(), cen, default, ModContent.ProjectileType<WitheredTree>(), Projectile.damage * 3 / 2, Projectile.knockBack, Projectile.owner, UpgradeValue(1, 3));
+                Projectile.NewProjectile(projectile.GetSource_FromThis(), cen, default, ModContent.ProjectileType<WitheredTree>(), Projectile.damage * 4, Projectile.knockBack, Projectile.owner, UpgradeValue(1, 3));
                 for (int n = 0; n < 30; n++)
                 {
                     Dust.NewDustPerfect(cen, UpgradeValue(MyDustId.Wood, MyDustId.GreenGrass), (MathHelper.TwoPi / 30 * n).ToRotationVector2() * Main.rand.NextFloat(2, 8));
@@ -246,7 +246,7 @@ namespace CoolerItemVisualEffect.Weapons
             if (SACoolDown < 0 && Main.rand.NextBool(controlTier % 5 == 4 ? 2 : 5))
             {
                 var cen = target.Center + new Vector2(0, 24);
-                Projectile.NewProjectile(projectile.GetSource_FromThis(), cen, default, ModContent.ProjectileType<WitheredTree>(), Projectile.damage * 3 / 4, Projectile.knockBack, Projectile.owner, UpgradeValue(0, 2));
+                Projectile.NewProjectile(projectile.GetSource_FromThis(), cen, default, ModContent.ProjectileType<WitheredTree>(), Projectile.damage * 2, Projectile.knockBack, Projectile.owner, UpgradeValue(0, 2));
                 SACoolDown = 15;
                 for (int n = 0; n < 30; n++)
                 {
@@ -327,27 +327,28 @@ namespace CoolerItemVisualEffect.Weapons
         }
         public override void Kill(int timeLeft)
         {
-            foreach (var point in tree.keyPoints)
-            {
-                if (tree.rand() > .85f)
-                {
-                    var rand = (int)Projectile.ai[0] / 2 == 1 ? Main.rand.Next(4) : 0;
-                    int index = -1;
-                    if (rand != 0 && Main.rand.NextBool(3))
-                    {
-                        foreach (var npc in Main.npc)
-                        {
-                            if (npc.active && npc.CanBeChasedBy() && !npc.friendly && (npc.Center - point).Length() <= 768)
-                            {
-                                index = npc.whoAmI;
-                                break;
-                            }
-                        }
-                    }
-                    var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), point, new Vector2(tree.rand() * 2 - 1, 0) * 4, ModContent.ProjectileType<WitheredWood>(), Projectile.damage / 4, Projectile.knockBack * .5f, Projectile.owner, rand, index);
-                    proj.rotation = tree.rand() * MathHelper.TwoPi;
-                }
-            }
+            //foreach (var point in tree.keyPoints)
+            //{
+            //    if (tree.rand() > .85f)
+            //    {
+            //        var rand = (int)Projectile.ai[0] / 2 == 1 ? Main.rand.Next(4) : 0;
+            //        int index = -1;
+            //        if (rand != 0 && Main.rand.NextBool(3))
+            //        {
+            //            foreach (var npc in Main.npc)
+            //            {
+            //                if (npc.active && npc.CanBeChasedBy() && !npc.friendly && (npc.Center - point).Length() <= 768)
+            //                {
+            //                    index = npc.whoAmI;
+            //                    break;
+            //                }
+            //            }
+            //        }
+            //        var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), point, new Vector2(tree.rand() * 2 - 1, 0) * 4, ModContent.ProjectileType<WitheredWood>(), Projectile.damage / 4, Projectile.knockBack * .5f, Projectile.owner, rand, index);
+            //        proj.rotation = tree.rand() * MathHelper.TwoPi;
+            //    }
+            //}
+            tree.SpawnProjectile(Projectile, Projectile.Center, new Vector2(0, -1), tree.root, -.15f);
         }
         public override void AI()
         {
@@ -361,12 +362,18 @@ namespace CoolerItemVisualEffect.Weapons
         public override void OnSpawn(IEntitySource source)
         {
             tree = new LightTree(Main.rand);
-            tree.Generate(Projectile.Center, new Vector2(0, -.5f), new Vector2(0, -2048) + Projectile.Center, ((int)Projectile.ai[0] % 2 == 0 ? 64 : 128) * (tree.rand() * .25f + .75f));
+            tree.Generate(Projectile.Center, new Vector2(0, -.5f), new Vector2(0, -2048) + Projectile.Center, ((int)Projectile.ai[0] % 2 == 0 ? 64 : 128) * (tree.rand() * .25f + .75f), Projectile.ai[0] > 1);
         }
         public override bool PreDraw(ref Color lightColor)
         {
             //tree?.Draw(Main.spriteBatch, Projectile.Center - Main.screenPosition, new Vector2(0, -1), Projectile.ai[1] / 2f);//Projectile.ai[1] * Projectile.ai[1] / 3600f * 30
-            tree?.Draw(Main.spriteBatch, Projectile.ai[0] > 1 ? TextureAssets.TreeBranch[9].Value : null, Projectile.Center - Main.screenPosition, new Vector2(0, -1), Lighting.GetColor((Projectile.Center / 16f).ToPoint()), 16f, Projectile.ai[1] / 2f);
+            //tree?.Draw(Main.spriteBatch, Projectile.ai[0] > 1 ? TextureAssets.TreeBranch[9].Value : null, Projectile.Center - Main.screenPosition, new Vector2(0, -1), Lighting.GetColor((Projectile.Center / 16f).ToPoint()), 16f, Projectile.ai[1] / 2f);
+            //if (Projectile.ai[0] > 1)
+            //    tree?.Draw(Main.spriteBatch, Projectile.Center - Main.screenPosition, new Vector2(0, -1), Lighting.GetColor((Projectile.Center / 16f).ToPoint()), 16f, Projectile.ai[1] / 2f);
+            //else
+            //    tree?.Draw(Main.spriteBatch, null, Projectile.Center - Main.screenPosition, new Vector2(0, -1), Lighting.GetColor((Projectile.Center / 16f).ToPoint()), 16f, Projectile.ai[1] / 2f);
+            tree?.Draw(Main.spriteBatch, Projectile.Center - Main.screenPosition, new Vector2(0, -1), Lighting.GetColor((Projectile.Center / 16f).ToPoint()), 16f, Projectile.ai[1] / 2f);
+
             return false;
         }
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -389,12 +396,30 @@ namespace CoolerItemVisualEffect.Weapons
             Projectile.friendly = true;
             Projectile.aiStyle = -1;
             Projectile.ignoreWater = true;
-            Projectile.penetrate = 2;
+            Projectile.penetrate = 1;
             Projectile.tileCollide = false;
         }
+        public LightTree tree;
         public override void SetStaticDefaults()
         {
             base.SetStaticDefaults();
+        }
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+            if (tree?.Check(targetHitbox, Projectile.Center, Projectile.rotation.ToRotationVector2(), 10) == true)
+            {
+                if (Projectile.penetrate == 1)
+                {
+                    tree.SpawnDust(Projectile.Center, Projectile.rotation.ToRotationVector2());
+                    if (tree.rand() < .5f)
+                    {
+                        tree.SpawnProjectile(Projectile, Projectile.Center, Projectile.rotation.ToRotationVector2(), tree.root,.05f);
+                    }
+                }
+
+                return true;
+            }
+            return false;
         }
         public override void AI()
         {
@@ -403,7 +428,7 @@ namespace CoolerItemVisualEffect.Weapons
             {
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, (Main.npc[(int)Projectile.ai[1]].Center - Projectile.Center).SafeNormalize(default) * 32, .025f);
             }
-            Projectile.rotation += .5f;
+            Projectile.rotation += .05f;
             for (int n = 9; n > 0; n--)
             {
                 Projectile.oldPos[n] = Projectile.oldPos[n - 1];
@@ -414,32 +439,51 @@ namespace CoolerItemVisualEffect.Weapons
         }
         public override bool PreDraw(ref Color lightColor)
         {
-            Texture2D tex = (int)Projectile.ai[0] switch
-            {
-                0 or 1 => TextureAssets.Tile[5].Value,
-                2 => TextureAssets.TreeBranch[9].Value,
-                3 => TextureAssets.Gore[385].Value,
-                _ or 4 => TextureAssets.Gore[384].Value
-            };
-            Rectangle frame = (int)Projectile.ai[0] switch
-            {
-                0 or 1 => new Rectangle(66, 0, 22, 22),
-                2 => new Rectangle(42, 0, 42, 42),
-                3 => new Rectangle(0, 0, 36, 34),
-                _ or 4 => new Rectangle(0, 0, 40, 28)
-            };
-            Color color = (int)Projectile.ai[0] switch
-            {
-                0 or 1 => Color.Brown,
-                2 or 3 => Color.Green,
-                _ or 4 => Color.Pink
-            };
+            //try
+            //{
+            //    if (!TextureAssets.Tile[5].IsLoaded) Main.instance.LoadTiles(5);
+            //    if (!TextureAssets.Gore[385].IsLoaded) Main.instance.LoadGore(385);
+            //    if (!TextureAssets.Gore[384].IsLoaded) Main.instance.LoadGore(384);
+            //}
+            //catch { }
+
+            //Texture2D tex = (int)Projectile.ai[0] switch
+            //{
+            //    0 or 1 => TextureAssets.Tile[5].Value,
+            //    2 => TextureAssets.TreeBranch[9].Value,
+            //    3 => TextureAssets.Gore[385].Value,
+            //    _ or 4 => TextureAssets.Gore[384].Value
+            //};
+            //Rectangle frame = (int)Projectile.ai[0] switch
+            //{
+            //    0 or 1 => new Rectangle(66, 0, 22, 22),
+            //    2 => new Rectangle(42, 0, 42, 42),
+            //    3 => new Rectangle(0, 0, 36, 34),
+            //    _ or 4 => new Rectangle(0, 0, 40, 28)
+            //};
+            //Color color = (int)Projectile.ai[0] switch
+            //{
+            //    0 or 1 => Color.Brown,
+            //    2 or 3 => Color.Green,
+            //    _ or 4 => Color.Pink
+            //};
+            //for (int n = 9; n > -1; n--)
+            //{
+            //    var c = Lighting.GetColor((Projectile.Center / 16).ToPoint(), n == 0 ? Color.White : color);
+            //    if (n != 0) c = c with { A = 0 } * (1 - n * .1f) * .5f;
+            //    Main.EntitySpriteDraw(tex, Projectile.oldPos[n] - Main.screenPosition, frame, c, Projectile.oldRot[n], frame.Size() * .5f, (1 - n * .1f) * 1.5f, 0, 0);// * 1.5f//with { A = 0 } * (1 - n * .1f) * .5f)
+
+            //}
             for (int n = 9; n > -1; n--)
             {
-                var c = Lighting.GetColor((Projectile.Center / 16).ToPoint(), n == 0 ? Color.White : color);
-                if (n != 0) c = c with { A = 0 } * (1 - n * .1f) * .5f;
-                Main.EntitySpriteDraw(tex, Projectile.oldPos[n] - Main.screenPosition, frame, c, Projectile.oldRot[n], frame.Size() * .5f, (1 - n * .1f) * 1.5f, 0, 0);// * 1.5f//with { A = 0 } * (1 - n * .1f) * .5f)
-
+                var c = Lighting.GetColor((Projectile.Center / 16).ToPoint(), Color.White);// n == 0 ? Color.White : color
+                if (n != 0)
+                {
+                    var fac = (1 - n * .1f) * .5f;
+                    c = c * fac * fac;
+                    c.A = (byte)(c.A * (9 - n) / 9f);
+                }
+                tree?.Draw(Main.spriteBatch, Projectile.oldPos[n] - Main.screenPosition, Projectile.oldRot[n].ToRotationVector2(), c, 16f, 10);
             }
             return false;
         }
@@ -647,7 +691,7 @@ namespace CoolerItemVisualEffect.Weapons
             recipe.Register();
         }
     }
-    public class MossStoneSword : SereStoneSword
+    public class CrystalStoneSword : SereStoneSword
     {
         public override void SetDefaults()
         {
@@ -771,6 +815,7 @@ namespace CoolerItemVisualEffect.Weapons
             //        Dust.NewDustPerfect(cen, UpgradeValue(MyDustId.Wood, MyDustId.GreenGrass), (MathHelper.TwoPi / 30 * n).ToRotationVector2() * Main.rand.NextFloat(2, 8));
             //    }
             //}
+
         }
         public override void OnEndAttack()
         {
@@ -799,17 +844,37 @@ namespace CoolerItemVisualEffect.Weapons
             }
             projectile.friendly = projectile.ai[0] > when;
         }
+
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
             target.immune[projectile.owner] = 5;
             //TODO 枯石特殊攻击
             if (SACoolDown < 0 && Main.rand.NextBool(controlTier % 5 == 4 ? 2 : 5))
             {
+                var max = UpgradeValue(8, 12);
+                for (int n = 0; n < max; n++) 
+                {
+                    if (Main.rand.NextBool(UpgradeValue(3, 2))) 
+                    {
+                        projectile.damage *= 2;
+                        SereStoneSwordProj.ShootSharpTears(target.Center + new Vector2((n - max / 2f) * 8, 24), Player, projectile);
+                        projectile.damage /= 2;
+                    }
+                }
             }
             //base.OnHitNPC(target, damage, knockback, crit);
         }
         public override void OnRelease(bool charged, bool left)
         {
+            if (Charged && Player.CheckMana(5, true))
+            {
+                int max = UpgradeValue(1, 3);
+                for (int n = 0; n < max; n++)
+                {
+                    Vector2 pointPoisition2 = Player.Center + new Vector2(128 * Player.direction, 0) * ((projectile.ai[1] + (float)n / max) / MaxTimeLeft) * max;
+                    SereStoneSwordProj.ShootSharpTears(pointPoisition2, Player, projectile);
+                }
+            }
             base.OnRelease(charged, left);
         }
         public override T UpgradeValue<T>(T normal, T extra, T defaultValue = default)
@@ -821,7 +886,7 @@ namespace CoolerItemVisualEffect.Weapons
                 return normal;
             }
 
-            if (type == ModContent.ItemType<MossStoneSword>())
+            if (type == ModContent.ItemType<CrystalStoneSword>())
             {
                 return extra;
             }

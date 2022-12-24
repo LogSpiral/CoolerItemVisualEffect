@@ -1,9 +1,5 @@
 displayName = CoolerItemVisualEffect(更酷的物品视觉效果)
 author = 阿汪(向内延伸的对数螺线)
-version = 0.1.15.7
-hideResources = false
-hideCode = false
-includeSource = true
-includePDB = true
+version = 0.1.15.8
 homepage = https://github.com/LogarithmicSpiralThatExtendsInward
-buildIgnore = *.csproj, *.sln, obj\*, bin\*, *.suo, *.user, .git\*, .vs\*, Libraries\*
+includeSource = true

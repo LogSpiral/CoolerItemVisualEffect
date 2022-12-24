@@ -8,6 +8,7 @@ Mods:{
 			LivingWoodSword:灵木之刃
 			SereStoneSword:枯石之刃
 			MossStoneSword:苔石之刃
+			CrystalStoneSword:晶石之刃
 			RustySteelBlade:锈钢之刃
 			RefinedSteelBlade:精钢之刃
 			PureFractal:纯粹分形
@@ -300,6 +301,9 @@ Mods:{
 
 			33:近战碰撞修改模式
 			34:为了降低违和感
+
+			35:动作效果优化(未完成)
+			36:你一定看得出这个是低仿蔚蓝的对吧
 		}
 		ConfigurationServer:{
 			Label:游戏性设置

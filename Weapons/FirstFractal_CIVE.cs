@@ -1090,7 +1090,7 @@ namespace CoolerItemVisualEffect.Weapons
                 dust2.velocity.Y += -0.3f;
                 Dust dust = dust2;
                 dust.velocity += Projectile.velocity * 0.2f;
-                dust2.scale = 1f;
+                dust2.scale = .5f;
                 dust2.alpha = 100;
             }
         }
@@ -1114,13 +1114,13 @@ namespace CoolerItemVisualEffect.Weapons
         public override void AI()
         {
             int num = MyDustId.GreyStone;
-            float scaleFactor = 1f;
+            float scaleFactor = .75f;
             int num2 = 30;
             int num3 = 30;
             int num4 = 2;
             int num5 = 2;
             int maxValue = 6;
-
+            float dustScaler = .25f;
             bool flag = Projectile.ai[0] < 20;
             bool flag2 = Projectile.ai[0] >= 20;
             bool flag3 = Projectile.ai[0] >= 30;
@@ -1135,6 +1135,7 @@ namespace CoolerItemVisualEffect.Weapons
                     Dust dust = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(24f, 24f), num, Projectile.velocity * scaleFactor * MathHelper.Lerp(0.2f, 0.7f, Main.rand.NextFloat()));
                     dust.velocity += Main.rand.NextVector2Circular(0.5f, 0.5f);
                     dust.scale = 0.8f + Main.rand.NextFloat() * 0.5f;
+                    dust.scale *= dustScaler;
                 }
 
                 for (int j = 0; j < num3; j++)
@@ -1143,6 +1144,8 @@ namespace CoolerItemVisualEffect.Weapons
                     dust2.velocity += Main.rand.NextVector2Circular(0.5f, 0.5f);
                     dust2.scale = 0.8f + Main.rand.NextFloat() * 0.5f;
                     dust2.fadeIn = 1f;
+                    dust2.scale *= dustScaler;
+
                 }
 
                 SoundEngine.PlaySound(SoundID.Item60, Projectile.Center);
@@ -1158,7 +1161,10 @@ namespace CoolerItemVisualEffect.Weapons
                     dust3.velocity += Main.rand.NextVector2Circular(0.5f, 0.5f);
                     dust3.velocity *= 0.5f;
                     dust3.scale = 0.8f + Main.rand.NextFloat() * 0.5f;
+                    dust3.scale *= dustScaler;
+
                 }
+
             }
 
             if (flag2)
@@ -1170,7 +1176,10 @@ namespace CoolerItemVisualEffect.Weapons
                     dust4.velocity += Main.rand.NextVector2Circular(0.5f, 0.5f);
                     dust4.velocity *= 0.5f;
                     dust4.scale = 0.8f + Main.rand.NextFloat() * 0.5f;
+                    dust4.scale *= dustScaler;
+
                 }
+
             }
 
             if (flag3)

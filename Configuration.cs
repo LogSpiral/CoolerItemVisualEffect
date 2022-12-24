@@ -326,6 +326,11 @@ namespace CoolerItemVisualEffect
         [Label("$Mods.CoolerItemVisualEffect.Config.31")]
         [Tooltip("$Mods.CoolerItemVisualEffect.Config.32")]
         public bool TeleprotEffectActive { get; set; }
+
+        [DefaultValue(false)]
+        [Label("$Mods.CoolerItemVisualEffect.Config.35")]
+        [Tooltip("$Mods.CoolerItemVisualEffect.Config.36")]
+        public bool CelesteMoveAnimation { get; set; }
         public static ConfigurationNormal instance => ModContent.GetInstance<ConfigurationNormal>();
 
     }
