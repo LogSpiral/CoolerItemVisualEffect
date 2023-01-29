@@ -22,6 +22,8 @@ using Terraria.Graphics.Renderers;
 using MonoMod.Cil;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
+using System.ComponentModel;
+using MonoMod.RuntimeDetour.HookGen;
 
 namespace CoolerItemVisualEffect
 {
@@ -162,8 +164,22 @@ namespace CoolerItemVisualEffect
             }
             );
         }
+        //[EditorBrowsable(EditorBrowsableState.Never)]
+        //public delegate int orig_UnderworldLayer();
+
+        //[EditorBrowsable(EditorBrowsableState.Never)]
+        //public delegate int hook_UnderworldLayer(orig_UnderworldLayer orig);
+        //public int MyUnderLayer() 
+        //{
+        //    return 0;
+        //}
+        //public MethodBase targetMethod;
         public override void Load()
         {
+            //targetMethod = typeof(Main).GetMethod("get_UnderworldLayer", BindingFlags.Static | BindingFlags.Public);
+            //HookEndpointManager.Add<hook_UnderworldLayer>(targetMethod, MyUnderLayer);
+
+
             Instance = this;
             On.Terraria.DataStructures.PlayerDrawLayers.DrawPlayer_27_HeldItem += PlayerDrawLayers_DrawPlayer_27_HeldItem_WeaponDisplay;
             //On.Terraria.DataStructures.PlayerDrawLayers.drplayer
@@ -175,10 +191,14 @@ namespace CoolerItemVisualEffect
             //On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayerInternal += LegacyPlayerRenderer_DrawPlayerInternal_WD;
             //On.Terraria.GameContent.Skies.CreditsRoll.Segments.PlayerSegment.Draw += PlayerSegment_Draw_WD;
             //CreateRender();
-            Filters.Scene["CoolerItemVisualEffect:InvertGlass"] = new Filter(new ScreenShaderData(new Ref<Effect>(ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/InvertGlass", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value), "Invert"), EffectPriority.Medium);
+            Filters.Scene["CoolerItemVisualEffect:InvertGlass"] = new Filter(new ScreenShaderData(new Ref<Effect>(ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/ZenithGlass", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value), "Zenith"), EffectPriority.Medium);
             Filters.Scene["CoolerItemVisualEffect:InvertGlass"].Load();
         }
-
+        public override void Unload()
+        {
+            //HookEndpointManager.Remove<hook_UnderworldLayer>(targetMethod, MyUnderLayer);
+            Instance = null;
+        }
         private void Main_DrawProjectiles_CoolerSwoosh(On.Terraria.Main.orig_DrawProjectiles orig, Main self)
         {
             if (CanUseRender) goto _myLabel;
@@ -997,10 +1017,7 @@ namespace CoolerItemVisualEffect
         }
 
         public RenderTarget2D render_AirDistort;
-        public override void Unload()
-        {
-            Instance = null;
-        }
+
         public static Texture2D GetPureFractalProjTexs(int index)
         {
             if (Main.netMode == NetmodeID.Server) return CoolerItemVisualEffectMethods.GetTexture("FinalFractal");
@@ -2864,6 +2881,7 @@ namespace CoolerItemVisualEffect
         public static bool UseInvertGlass;
         public override void PreUpdateEntities()
         {
+            //UseInvertGlass = true;
             ControlScreenShader("CoolerItemVisualEffect:InvertGlass", UseInvertGlass);
         }
         private void ControlScreenShader(string name, bool state)
