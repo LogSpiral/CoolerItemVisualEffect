@@ -17,9 +17,10 @@ namespace CoolerItemVisualEffect
         public int squatCounter;
         public int jumpCounter;
         public bool jump;
+        public bool celesteMove => Player.GetModPlayer<CoolerItemVisualEffectPlayer>().ConfigurationSwoosh.CelesteMoveAnimation;
         public override void ResetEffects()
         {
-            if (!ConfigurationNormal.instance.CelesteMoveAnimation) return;
+            if (!celesteMove) return;
             if (Player.controlJump && Player.velocity.Y == 0)
             {
                 jump = true;
@@ -59,7 +60,7 @@ namespace CoolerItemVisualEffect
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
         {
             //drawInfo.Position += new Vector2(64);
-            if (!ConfigurationNormal.instance.CelesteMoveAnimation) return;
+            if (!celesteMove) return;
 
             bool flag = Player.itemAnimation > 0;
             flag &= Player.HeldItem.DamageType == DamageClass.Ranged && Player.HeldItem.useStyle == 5;
@@ -452,7 +453,7 @@ namespace CoolerItemVisualEffect
 
             var modplr = drawPlayer.GetModPlayer<TestDrawModifyPlayer>();
 
-            if (!headOnly && ConfigurationNormal.instance.CelesteMoveAnimation)
+            if (!headOnly && modplr.celesteMove)
             {
                 Vector2 scaler = new Vector2(1f - MathHelper.Clamp((Math.Abs(drawPlayer.velocity.Y) / 3f + (modplr.jumpCounter != 0 ? 9 - modplr.jumpCounter : 0)) / 45f, 0, .2f) * 1.5f
                     , modplr.squatCounter == 0 ? 1f : (modplr.squat ? 0.6f + modplr.squatCounter / 50f : 1 - modplr.squatCounter / 50f));

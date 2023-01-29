@@ -6,7 +6,7 @@ using System.Linq;
 using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using static CoolerItemVisualEffect.ConfigurationSwoosh_Advanced;
+using static CoolerItemVisualEffect.ConfigurationSwoosh;
 using Terraria.ID;
 
 namespace CoolerItemVisualEffect
@@ -37,14 +37,14 @@ namespace CoolerItemVisualEffect
     public class CoolerItemVisualEffectPlayer : ModPlayer
     {
         #region 基本量声明
-        ConfigurationSwoosh_Advanced configurationSwoosh;
-        public ConfigurationSwoosh_Advanced ConfigurationSwoosh
+        ConfigurationSwoosh configurationSwoosh;
+        public ConfigurationSwoosh ConfigurationSwoosh
         {
             get
             {
                 if (configurationSwoosh == null)
                 {
-                    configurationSwoosh = Main.myPlayer == player.whoAmI ? ConfigSwooshInstance : new ConfigurationSwoosh_Advanced();
+                    configurationSwoosh = Main.myPlayer == player.whoAmI ? ConfigSwooshInstance : new ConfigurationSwoosh();
                 }
                 return configurationSwoosh;
             }
@@ -119,8 +119,10 @@ namespace CoolerItemVisualEffect
         public override bool? CanHitNPC(Item item, NPC target)
         {
             //bool? modCanHit = CombinedHooks.CanPlayerHitNPCWithItem(this, sItem, Main.npc[i]);
-            var style = ConfigurationNormal.instance.hitBoxStyle;
-            if (style == 0 || style == ConfigurationNormal.HitBoxStyle.矩形Rectangle || ConfigurationSwoosh.coolerSwooshQuality == QualityType.关off || !UseSlash) return null;
+            var style = ConfigurationSwoosh.hitBoxStyle;
+            if (style == 0 || style == HitBoxStyle.矩形Rectangle || ConfigurationSwoosh.coolerSwooshQuality == QualityType.关off || !UseSlash) return null;
+            if (style == HitBoxStyle.弹幕Projectile && ConfigurationSwoosh.coolerSwooshQuality != QualityType.关off) return false;
+
             if (ConfigurationSwoosh.actionModifyEffect)
             {
                 if (player.itemAnimation > TimeToCutThem / 2f && (ConfigurationSwoosh.coolerSwooshQuality == QualityType.极限ultra ^ !SwooshActive))// && 
@@ -129,7 +131,7 @@ namespace CoolerItemVisualEffect
                     player.attackCD = 0;
             }
             var canHit = false;
-            if (style == ConfigurationNormal.HitBoxStyle.剑气UltraSwoosh)
+            if (style == HitBoxStyle.剑气UltraSwoosh)
             {
                 if (ConfigurationSwoosh.coolerSwooshQuality == QualityType.极限ultra)
                 {
@@ -154,7 +156,7 @@ namespace CoolerItemVisualEffect
                 }
                 goto mylabel;
             }
-            if (style == ConfigurationNormal.HitBoxStyle.线状AABBLine) goto mylabel;
+            if (style == HitBoxStyle.线状AABBLine) goto mylabel;
             return false;
 
         mylabel:
@@ -312,7 +314,7 @@ namespace CoolerItemVisualEffect
                     counter % 4 == 3 ? 2f : 1.25f,
                     //1.5f,
                     .75f,
-                    0.8f,
+                    0.6f,
                     2,
                     .9f
                 );
@@ -435,7 +437,7 @@ namespace CoolerItemVisualEffect
             {
                 kValue = _newKValue;
             }
-            if (!ConfigurationNormal.instance.DontChangeMyTitle)
+            if (!ConfigurationSwoosh.DontChangeMyTitle && player.whoAmI == Main.myPlayer)
                 Main.instance.Window.Title = Language.GetTextValue("Mods.CoolerItemVisualEffect.StrangeTitle." + Main.rand.Next(11));//"幻世边境：完了泰拉成替身了";//"{$Mods.CoolerItemVisualEffect.StrangeTitle." + Main.rand.Next(15)+"}"//15
 
             if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -649,6 +651,12 @@ namespace CoolerItemVisualEffect
         /// </summary>
         public override void PostUpdate()
         {
+            if (player.ownedProjectileCounts[ModContent.ProjectileType<HitAssistProj>()] == 0 &&
+                ConfigurationSwoosh.hitBoxStyle == HitBoxStyle.弹幕Projectile &&
+                Main.myPlayer == player.whoAmI && UseSlash)
+            {
+                Projectile.NewProjectile(player.GetSource_ItemUse_WithPotentialAmmo(player.HeldItem, 0), player.Center, default, ModContent.ProjectileType<HitAssistProj>(), 1, 1, player.whoAmI);
+            }
             //base.PostUpdate();
             if (ConfigurationSwoosh.actionModifyEffect && player.itemAnimation < TimeToCutThem)
             {
@@ -741,10 +749,12 @@ namespace CoolerItemVisualEffect
 
                             Dust dust = Dust.NewDustPerfect(player.Center + 128 * progress * unit, 278, -unit, 100, dustColor, 1f);
                             dust.scale = (0.4f + Main.rand.NextFloat(-0.1f, 0.1f)) * scaler;
+                            dust.scale *= .5f;
                             dust.fadeIn = 0.4f + Main.rand.NextFloat() * 0.3f;
-                            dust.fadeIn *= scaler;
+                            dust.fadeIn *= scaler * .5f;
                             dust.noGravity = true;
                             dust.velocity -= unit * (3f + Main.rand.NextFloat() * 4f) * .5f;
+                            dust.velocity *= .5f;
                         }
                     }
                 }
@@ -845,7 +855,7 @@ namespace CoolerItemVisualEffect
 
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
         {
-            if (ConfigurationNormal.instance.TeleprotEffectActive && player.HeldItem.type == ItemID.MagicMirror && player.ItemAnimationActive)
+            if (ConfigurationSwoosh.TeleprotEffectActive && player.HeldItem.type == ItemID.MagicMirror && player.ItemAnimationActive)
             {
                 var fac = player.itemAnimation / (float)player.itemAnimationMax;
                 var _fac = (fac * 2 % 1).HillFactor2() * (fac < .5f ? .5f : 1f);
@@ -878,9 +888,9 @@ namespace CoolerItemVisualEffect
             //HitboxPosition = Vector2.Zero;//重置
             //Main.spriteBatch.DrawString(FontAssets.MouseText.Value, player.isFirstFractalAfterImage.ToString(), Player.Center - new Vector2(0, 64) - Main.screenPosition, Color.Red);
             //这个写法可以让绘制的东西在人物旋转后保持原来与人物的相对位置(试做的武器显示)
-            if (ConfigurationNormal.instance.useWeaponDisplay && !drawInfo.headOnlyRender)
+            if (ConfigurationSwoosh.useWeaponDisplay && !drawInfo.headOnlyRender)
             {
-                if (Main.gameMenu && ConfigurationNormal.instance.firstWeaponDisplay)//
+                if (Main.gameMenu && ConfigurationSwoosh.firstWeaponDisplay)//
                 {
                     Item firstweapon = null;
                     //Main.NewText(WeaponDisplay.Instance._FirstInventoryItem == null);
@@ -942,7 +952,7 @@ namespace CoolerItemVisualEffect
             //drawInfo.DrawDataCache.Insert(0, new DrawData(TextureAssets.MagicPixel.Value, player.Center + new Vector2(3, -7) - Main.screenPosition, new Rectangle(0, 0, 1, 1), Color.Red, 0, new Vector2(0.5f), new Vector2(4, 2) * 10, 0, 0));//
             base.ModifyDrawInfo(ref drawInfo);
         }
-        public static void DrawWeapon(Player Player, Item holditem, PlayerDrawSet drawInfo)
+        public void DrawWeapon(Player Player, Item holditem, PlayerDrawSet drawInfo)
         {
 
             Texture2D texture = TextureAssets.Item[holditem.type].Value;
@@ -972,7 +982,7 @@ namespace CoolerItemVisualEffect
                 rectangle = animation.GetFrame(texture, -1);
                 origin = animation.GetFrame(texture).Size() * .5f;
             }
-            DrawData item = new DrawData(texture, value5, new Rectangle?(rectangle), drawInfo.colorArmorBody, rot, origin, ConfigurationNormal.instance.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
+            DrawData item = new DrawData(texture, value5, new Rectangle?(rectangle), drawInfo.colorArmorBody, rot, origin, ConfigurationSwoosh.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
             //switch (CoolerItemVisualEffect.Config.DyeUsed)
             //{
             //    case DyeSlot.None:
@@ -994,7 +1004,7 @@ namespace CoolerItemVisualEffect
             if (holditem.glowMask >= 0)
             {
                 Texture2D glow = TextureAssets.GlowMask[holditem.glowMask].Value;
-                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, ConfigurationNormal.instance.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
+                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, ConfigurationSwoosh.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
                 //switch (CoolerItemVisualEffect.Config.DyeUsed)
                 //{
                 //    case DyeSlot.None:
@@ -1017,7 +1027,7 @@ namespace CoolerItemVisualEffect
             if (holditem.ModItem != null && ModContent.HasAsset(holditem.ModItem.Texture + "_Glow"))
             {
                 Texture2D glow = ModContent.Request<Texture2D>(holditem.ModItem.Texture + "_Glow").Value;
-                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, ConfigurationNormal.instance.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
+                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, ConfigurationSwoosh.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
                 drawInfo.DrawDataCache.Add(itemglow);
             }
         }
@@ -1055,5 +1065,109 @@ namespace CoolerItemVisualEffect
             return flag;
         }
         #endregion
+
+    }
+    public class HitAssistProj : ModProjectile
+    {
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+            if (!effectPlayer.SwooshActive)
+            {
+                if (player.itemAnimation > effectPlayer.TimeToCutThem / 2f)
+                    return false;
+                if (player.itemAnimation == 0) return false;
+            }
+
+            foreach (var swoosh in effectPlayer.ultraSwooshes)
+            {
+                if (swoosh != null && swoosh.Active)
+                {
+                    float _point = 0f;
+                    Vector2 unit = swoosh.rotation.ToRotationVector2() * swoosh.scaler * swoosh.xScaler * 2;
+                    var num = 1 - swoosh.timeLeft / (float)swoosh.timeLeftMax;
+                    Vector2 adder = (unit * 0.25f + swoosh.rotation.ToRotationVector2() * effectPlayer.scaler * 4f) * (effectPlayer.ConfigurationSwoosh.IsOffestGrow ? num : 0);
+                    if (effectPlayer.ConfigurationSwoosh.growStyle == SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest) adder *= 0.25f;
+                    Vector2 center = swoosh.center + adder;
+                    if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), center - .5f * unit, center + unit, effectPlayer.scaler * 2, ref _point))
+                    {
+                        return true;
+                    }
+                }
+            }
+            float point = 0f;
+            if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), player.Center, effectPlayer.HitboxPosition + player.Center, 32, ref point))
+            {
+                //Main.NewText(effectPlayer.HitboxPosition);
+                return true;
+
+            }
+            return false;
+        }
+        Player player => Main.player[Projectile.owner];
+        CoolerItemVisualEffectPlayer effectPlayer => player.GetModPlayer<CoolerItemVisualEffectPlayer>();
+        public override void AI()
+        {
+            if (effectPlayer.ConfigurationSwoosh.hitBoxStyle == HitBoxStyle.弹幕Projectile && (effectPlayer.UseSlash || effectPlayer.SwooshActive))
+                Projectile.timeLeft = 4;
+            Projectile.damage = player.GetWeaponDamage(player.HeldItem);
+            Projectile.knockBack = player.GetWeaponKnockback(player.HeldItem) * effectPlayer.actionOffsetKnockBack;
+            Projectile.direction = player.direction;
+            Projectile.hide = true;
+            Projectile.penetrate = -1;
+            Projectile.friendly = player.itemAnimation == effectPlayer.TimeToCutThem / 2f;
+            Projectile.Center = player.Center;
+            Projectile.velocity = (Main.MouseWorld - player.Center).SafeNormalize(default);
+            if (effectPlayer.SwooshActive)
+            {
+                foreach (var swoosh in effectPlayer.ultraSwooshes)
+                {
+                    if (swoosh != null && swoosh.Active && swoosh.timeLeft == swoosh.timeLeftMax - 1 && !Projectile.friendly)
+                    {
+                        Projectile.friendly = true;
+                        break;
+                    }
+                }
+            }
+        }
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+            knockback = 0;
+            if (effectPlayer.ConfigurationSwoosh.actionModifyEffect)
+            {
+                damage = (int)(damage * effectPlayer.actionOffsetDamage);
+                effectPlayer.strengthOfShake = effectPlayer.actionOffsetDamage * Main.rand.NextFloat(0.85f, 1.15f);
+                var _crit = player.GetWeaponCrit(player.HeldItem);
+                _crit += effectPlayer.actionOffsetCritAdder;
+                _crit = (int)(_crit * effectPlayer.actionOffsetCritMultiplyer);
+                crit = Main.rand.Next(100) < _crit;
+            }
+        }
+        public override bool ShouldUpdatePosition()
+        {
+            return false;
+        }
+        public override void SetDefaults()
+        {
+            Projectile.aiStyle = -1;
+            Projectile.timeLeft = 20;
+            Projectile.width = Projectile.height = 1;
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.friendly = true;
+            Projectile.ignoreWater = true;
+            Projectile.tileCollide = false;
+        }
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+            if (target.type == NPCID.WallofFlesh || target.type == NPCID.WallofFleshEye || !target.CanBeChasedBy()) return;
+            var vec = effectPlayer.HitboxPosition;
+            vec = new Vector2(-vec.Y, vec.X) * (effectPlayer.negativeDir ? -1 : 1);
+            vec = (vec.SafeNormalize(default) + Projectile.velocity) * MathF.Sqrt(Projectile.knockBack * target.knockBackResist) * .5f;
+            if (!target.boss) vec *= 2;
+            if (crit) vec *= 1.5f;
+            target.velocity += vec * (crit ? 1.5f : 1f);
+            //Projectile.ai[0] = 1;
+            //NetMessage.SendData(MessageID.DamageNPC,)
+        }
+        public override string Texture => "Terraria/Images/Item_1";
     }
 }

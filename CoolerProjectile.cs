@@ -78,7 +78,7 @@ namespace CoolerItemVisualEffect
         }
         public override bool PreDraw(Projectile projectile, ref Color lightColor)
         {
-            if (!ConfigurationNormal.instance.VanillaProjectileDrawModifyActive) goto mylabel;
+            if (!ConfigurationSwoosh.ConfigSwooshInstance.VanillaProjectileDrawModifyActive) goto mylabel;
             SpriteBatch spriteBatch = Main.spriteBatch;
             switch (projectile.type)
             {
@@ -388,14 +388,14 @@ namespace CoolerItemVisualEffect
                             CoolerItemVisualEffect.ShaderSwooshEX.Parameters["gather"].SetValue(true);
                             CoolerItemVisualEffect.ShaderSwooshEX.Parameters["lightShift"].SetValue(0);
                             CoolerItemVisualEffect.ShaderSwooshEX.Parameters["distortScaler"].SetValue(0);
-                            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["alphaFactor"].SetValue(ConfigurationSwoosh_Advanced.ConfigSwooshInstance.alphaFactor);
-                            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(ConfigurationSwoosh_Advanced.ConfigSwooshInstance.alphaFactor == 0);
-                            var _v = ConfigurationSwoosh_Advanced.ConfigSwooshInstance.directOfHeatMap.ToRotationVector2();
+                            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["alphaFactor"].SetValue(ConfigurationSwoosh.ConfigSwooshInstance.alphaFactor);
+                            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(ConfigurationSwoosh.ConfigSwooshInstance.alphaFactor == 0);
+                            var _v = ConfigurationSwoosh.ConfigSwooshInstance.directOfHeatMap.ToRotationVector2();
                             CoolerItemVisualEffect.ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
                             //var par = CoolerItemVisualEffect.ShaderSwooshEX.Parameters["heatRotation"];
                             //var wht = (par.Annotations, par.ColumnCount, par.RowCount, par.ParameterType, par.Elements, par.Name, par.ParameterClass, par.Semantic, par.StructureMembers);
-                            Main.graphics.GraphicsDevice.Textures[0] = CoolerItemVisualEffect.GetWeaponDisplayImage("BaseTex_" + ConfigurationSwoosh_Advanced.ConfigSwooshInstance.ImageIndex);
-                            Main.graphics.GraphicsDevice.Textures[1] = CoolerItemVisualEffect.GetWeaponDisplayImage($"AniTex_{ConfigurationSwoosh_Advanced.ConfigSwooshInstance.AnimateIndex}");
+                            Main.graphics.GraphicsDevice.Textures[0] = CoolerItemVisualEffect.GetWeaponDisplayImage("BaseTex_" + ConfigurationSwoosh.ConfigSwooshInstance.ImageIndex);
+                            Main.graphics.GraphicsDevice.Textures[1] = CoolerItemVisualEffect.GetWeaponDisplayImage($"AniTex_{ConfigurationSwoosh.ConfigSwooshInstance.AnimateIndex}");
                             Main.graphics.GraphicsDevice.Textures[2] = ModContent.Request<Texture2D>("CoolerItemVisualEffect/Weapons/FirstZenithProj_5").Value;
                             Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
                             Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
@@ -474,19 +474,34 @@ namespace CoolerItemVisualEffect
                             mainColor *= MathHelper.Clamp((t - 1) / 30f, 0, 1);
                         }
                         #endregion
-                        for (int k = projectile.oldPos.Length - 1; k > 0; k--)
-                        {
-                            Vector2 drawPos = projectile.oldPos[k] - Main.screenPosition;
-                            var factor = 1 - k / (float)projectile.oldPos.Length;
-                            spriteBatch.Draw(projectileTexture, drawPos, null, mainColor with { A = 0 } * factor, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), (1 - 0.1f * k) * scaleVec, SpriteEffects.None, 0f);
-                        }
+                        //for (int k = projectile.oldPos.Length - 1; k > 0; k--)
+                        //{
+                        //    Vector2 drawPos = projectile.oldPos[k] - Main.screenPosition;
+                        //    var factor = 1 - k / (float)projectile.oldPos.Length;
+                        //    spriteBatch.Draw(projectileTexture, drawPos, null, mainColor with { A = 0 } * factor, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), (1 - 0.1f * k) * scaleVec, SpriteEffects.None, 0f);
+                        //}
+                        lightColor = lightColor with { A = 0 };
+                        projectile.alpha = 0;
+                        projectile.scale = 1;
                         var unit = (projectile.rotation - MathHelper.PiOver4).ToRotationVector2();
-                        spriteBatch.Draw(projectileTexture, projectile.Center - Main.screenPosition - unit * 24, null, mainColor with { A = 0 }, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), scaleVec * new Vector2(.75f, 1.5f), SpriteEffects.None, 0f);
-                        spriteBatch.Draw(projectileTexture, projectile.Center - Main.screenPosition - unit * 24, null, Color.White with { A = 0 }, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), scaleVec * new Vector2(.5f, 1), SpriteEffects.None, 0f);
+                        var center = projectile.Center - Main.screenPosition;
+                        spriteBatch.Draw(projectileTexture, center - unit * 24, null, mainColor with { A = 0 }, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), scaleVec * new Vector2(.75f, 1.5f), SpriteEffects.None, 0f);
+                        spriteBatch.Draw(projectileTexture, center - unit * 24, null, Color.White with { A = 0 }, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), scaleVec * new Vector2(.5f, 1), SpriteEffects.None, 0f);
                         spriteBatch.DrawQuadraticLaser_PassNormal(projectile.Center - unit * 16, -unit, mainColor, GetTexture("Style_10"), MathHelper.Clamp(length, 0, 16) * 4 + 36, 16);
                         //spriteBatch.DrawQuadraticLaser_PassHeatMap(projectile.Center, -unit, GetTexture("HeatMap_11"), GetTexture("Style_10"), MathHelper.Clamp(length, 0, 16) * 4 + 28, 24);
                         spriteBatch.DrawEffectLine(projectile.Center - unit * 24, projectile.velocity.SafeNormalize(default), mainColor, GetTexture("Light_0"), 1, 0, 96, 15);
                         //lightColor = lightColor with { A = 0};
+                        var projTex = TextureAssets.Projectile[projectile.type].Value;
+                        Rectangle? rect = projectile.type == ProjectileID.SkyFracture ? projTex.Frame(14, 1, projectile.frame, 0) : null;
+                        for (int n = 0; n < 4; n++)
+                        {
+                            var offset = Main.rand.NextVector2Unit() * Main.rand.NextFloat(Main.rand.NextFloat(12f)) - projectile.velocity * 3;
+                            spriteBatch.Draw(projTex, center + offset, rect, Color.White with { A = 0 } * .5f, projectile.rotation, (rect != null ? rect.Value.Size() : projTex.Size()) * .5f, 1f, 0, 0);
+                            //spriteBatch.Draw(projectileTexture, center - unit * 24 + offset, null, mainColor with { A = 0 } * .25f, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), scaleVec * new Vector2(.75f, 1.5f), SpriteEffects.None, 0f);
+                            //spriteBatch.Draw(projectileTexture, center - unit * 24 + offset, null, Color.White with { A = 0 } * .25f, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), scaleVec * new Vector2(.5f, 1), SpriteEffects.None, 0f);
+                        }
+                        spriteBatch.Draw(projTex, center - projectile.velocity * 3, rect, Color.White with { A = 0 }, projectile.rotation, (rect != null ? rect.Value.Size() : projTex.Size()) * .5f, 1f, 0, 0);
+
                         return false;//base.PreDraw(projectile,ref lightColor)
                     }
                 case ProjectileID.Meowmere:

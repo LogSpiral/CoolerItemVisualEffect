@@ -8,8 +8,8 @@ namespace CoolerItemVisualEffect
     {
         public override bool AppliesToEntity(Item item, bool lateInstantiation)
         {
-            bool useSlashEffect = item.useStyle == ItemUseStyleID.Swing && (CoolerItemVisualEffect.MeleeCheck(item.DamageType) || ConfigurationSwoosh_Advanced.ConfigSwooshInstance.ignoreDamageType);
-            if (ConfigurationSwoosh_Advanced.ConfigSwooshInstance.toolsNoUseNewSwooshEffect)
+            bool useSlashEffect = item.useStyle == ItemUseStyleID.Swing && (CoolerItemVisualEffect.MeleeCheck(item.DamageType) || ConfigurationSwoosh.ConfigSwooshInstance.ignoreDamageType);
+            if (ConfigurationSwoosh.ConfigSwooshInstance.toolsNoUseNewSwooshEffect)
             {
                 useSlashEffect = useSlashEffect && item.axe == 0 && item.hammer == 0 && item.pick == 0;
             }
@@ -26,7 +26,7 @@ namespace CoolerItemVisualEffect
         public override void UseItemHitbox(Item item, Player player, ref Rectangle hitbox, ref bool noHitbox)
         {
             var modPlayer = player.GetModPlayer<CoolerItemVisualEffectPlayer>();
-            if (!ConfigurationNormal.instance.UseHitbox || !player.GetModPlayer<CoolerItemVisualEffectPlayer>().UseSlash)
+            if (modPlayer.ConfigurationSwoosh.hitBoxStyle != ConfigurationSwoosh.HitBoxStyle.¾ØÐÎRectangle || !player.GetModPlayer<CoolerItemVisualEffectPlayer>().UseSlash)
             {
                 return;
             }

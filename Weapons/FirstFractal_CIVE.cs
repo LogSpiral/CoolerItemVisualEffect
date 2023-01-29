@@ -666,7 +666,7 @@ namespace CoolerItemVisualEffect.Weapons
             origin *= spriteEffects == 0 ? new Vector2(0.1f, 0.9f) : new Vector2(0.9f, 0.9f);
             var rot = projectile.oldRot[0] + MathHelper.PiOver4;
             rot += projectile.ai[0] < 0 ? MathHelper.Pi / 2 : 0;
-            Main.spriteBatch.Draw(texture2D4, projectile.oldPos[0] - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(rectangle29), color84, rot, origin, ConfigurationSwoosh_Advanced.ConfigSwooshInstance.onlyChangeSizeOfSwoosh ? 1 : ConfigurationSwoosh_Advanced.ConfigSwooshInstance.swooshSize, spriteEffects, 0);
+            Main.spriteBatch.Draw(texture2D4, projectile.oldPos[0] - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(rectangle29), color84, rot, origin, ConfigurationSwoosh.ConfigSwooshInstance.onlyChangeSizeOfSwoosh ? 1 : ConfigurationSwoosh.ConfigSwooshInstance.swooshSize, spriteEffects, 0);
         }
     }
     public class WitheredWoodSword_Old : ModItem

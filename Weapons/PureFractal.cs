@@ -12,7 +12,7 @@ using static Terraria.ModLoader.ModContent;
 using Terraria.DataStructures;
 using static CoolerItemVisualEffect.CoolerItemVisualEffectMethods;
 using static CoolerItemVisualEffect.CoolerItemVisualEffect;
-using static CoolerItemVisualEffect.ConfigurationSwoosh_Advanced;
+using static CoolerItemVisualEffect.ConfigurationSwoosh;
 using Terraria.GameContent;
 using CoolerItemVisualEffect;
 using System.IO;
@@ -621,7 +621,7 @@ namespace CoolerItemVisualEffect.Weapons
                 Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
                 Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
                 Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
-                switch (ConfigurationSwoosh_Advanced.ConfigSwooshInstance.swooshColorType)
+                switch (ConfigurationSwoosh.ConfigSwooshInstance.swooshColorType)
                 {
                     case SwooshColorType.热度图:
                         {

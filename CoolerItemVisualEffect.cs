@@ -15,7 +15,7 @@ using Terraria.GameContent;
 using Terraria.GameContent.Skies.CreditsRoll;
 using Terraria.UI;
 using static Terraria.GameContent.Skies.CreditsRoll.Segments.PlayerSegment;
-using static CoolerItemVisualEffect.ConfigurationSwoosh_Advanced;
+using static CoolerItemVisualEffect.ConfigurationSwoosh;
 using System.Linq;
 using Terraria.Localization;
 using Terraria.Graphics.Renderers;
@@ -27,6 +27,8 @@ using MonoMod.RuntimeDetour.HookGen;
 
 namespace CoolerItemVisualEffect
 {
+    //TODO List计划表
+    //
     public class CoolerItemVisualEffect : Mod
     {
         #region 基本量
@@ -205,7 +207,7 @@ namespace CoolerItemVisualEffect
             HeatMapFactorStyle.柔和分块SmoothFloor => (t * colorCount).SmoothFloor() / colorCount,
             _ => t
         };
-        public static void UpdateHeatMap(ref Texture2D texture, Vector3 hsl, ConfigurationSwoosh_Advanced config, Texture2D itemTexture)
+        public static void UpdateHeatMap(ref Texture2D texture, Vector3 hsl, ConfigurationSwoosh config, Texture2D itemTexture)
         {
             var colors = new Color[300];
             ref Vector3 _color = ref hsl;
@@ -547,7 +549,7 @@ namespace CoolerItemVisualEffect
                     case SwooshSamplerState.线性: sampler = SamplerState.LinearWrap; break;
                     case SwooshSamplerState.点: sampler = SamplerState.PointWrap; break;
                 }
-                switch (ConfigurationSwoosh_Advanced.ConfigSwooshInstance.swooshColorType)
+                switch (ConfigurationSwoosh.ConfigSwooshInstance.swooshColorType)
                 {
                     case SwooshColorType.热度图:
                         {
@@ -783,7 +785,7 @@ namespace CoolerItemVisualEffect
                     Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
                     Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
                     Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
-                    switch (ConfigurationSwoosh_Advanced.ConfigSwooshInstance.swooshColorType)
+                    switch (ConfigurationSwoosh.ConfigSwooshInstance.swooshColorType)
                     {
                         case SwooshColorType.热度图:
                             {
@@ -1093,7 +1095,7 @@ namespace CoolerItemVisualEffect
         /// <param name="array">顶点</param>
         /// <param name="distort">是否为了空气扭曲绘制</param>
         /// <param name="scaler">将大小再插值回来</param>
-        public static void DrawSwooshContent(CoolerItemVisualEffectPlayer modPlayer, Matrix result, ConfigurationSwoosh_Advanced instance, SamplerState sampler, Texture2D itemTex, float checkAirFactor, int passCount, CustomVertexInfo[] array, bool distort = false, float scaler = 1f)
+        public static void DrawSwooshContent(CoolerItemVisualEffectPlayer modPlayer, Matrix result, ConfigurationSwoosh instance, SamplerState sampler, Texture2D itemTex, float checkAirFactor, int passCount, CustomVertexInfo[] array, bool distort = false, float scaler = 1f)
         {
             var distortScaler = distort ? instance.distortSize : 1;
             ShaderSwooshEX.Parameters["uTransform"].SetValue(result);

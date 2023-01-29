@@ -1648,8 +1648,8 @@ namespace CoolerItemVisualEffect
             ShaderSwooshEX.Parameters["gather"].SetValue(false);
             ShaderSwooshEX.Parameters["lightShift"].SetValue(0);
             ShaderSwooshEX.Parameters["distortScaler"].SetValue(0);
-            ShaderSwooshEX.Parameters["alphaFactor"].SetValue(ConfigurationSwoosh_Advanced.ConfigSwooshInstance.alphaFactor);
-            ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(ConfigurationSwoosh_Advanced.ConfigSwooshInstance.alphaFactor == 0);
+            ShaderSwooshEX.Parameters["alphaFactor"].SetValue(ConfigurationSwoosh.ConfigSwooshInstance.alphaFactor);
+            ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(ConfigurationSwoosh.ConfigSwooshInstance.alphaFactor == 0);
 
             Main.graphics.GraphicsDevice.Textures[0] = baseTex;
             Main.graphics.GraphicsDevice.Textures[1] = aniTex;
@@ -2527,7 +2527,7 @@ namespace CoolerItemVisualEffect
             Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleArry, 0, 2);
             Main.graphics.GraphicsDevice.RasterizerState = originalState;
             spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
         public static void ShaderItemEffectInventory(this Item item, SpriteBatch spriteBatch, Vector2 position, Vector2 origin, Texture2D effectTex, Color c, float Scale, float light = 2)
         {
@@ -2588,7 +2588,7 @@ namespace CoolerItemVisualEffect
             Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleArry, 0, 2);
             Main.graphics.GraphicsDevice.RasterizerState = originalState;
             spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
         }
         public static float Lerp(this float t, float from, float to, bool clamp = false)
         {

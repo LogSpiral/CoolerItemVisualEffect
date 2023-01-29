@@ -205,7 +205,7 @@ namespace CoolerItemVisualEffect.Weapons
         }
         public override void OnEndAttack()
         {
-            if (ConfigurationSwoosh_Advanced.ConfigSwooshInstance.coolerSwooshQuality == ConfigurationSwoosh_Advanced.QualityType.极限ultra)
+            if (ConfigurationSwoosh.ConfigSwooshInstance.coolerSwooshQuality == ConfigurationSwoosh.QualityType.极限ultra)
             {
                 bool large = (controlState == 2 || controlTier % 5 == 4);
                 var modplr = Player.GetModPlayer<CoolerItemVisualEffectPlayer>();

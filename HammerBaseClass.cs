@@ -389,10 +389,10 @@ namespace CoolerItemVisualEffect
             var passCount = 0;
             switch (Player.GetModPlayer<CoolerItemVisualEffectPlayer>().ConfigurationSwoosh.swooshColorType)
             {
-                case ConfigurationSwoosh_Advanced.SwooshColorType.热度图: passCount = 2; break;
-                case ConfigurationSwoosh_Advanced.SwooshColorType.武器贴图对角线: passCount = 1; break;
-                case ConfigurationSwoosh_Advanced.SwooshColorType.单向渐变与对角线混合: passCount = 3; break;
-                case ConfigurationSwoosh_Advanced.SwooshColorType.单向渐变: passCount = 4; break;
+                case ConfigurationSwoosh.SwooshColorType.热度图: passCount = 2; break;
+                case ConfigurationSwoosh.SwooshColorType.武器贴图对角线: passCount = 1; break;
+                case ConfigurationSwoosh.SwooshColorType.单向渐变与对角线混合: passCount = 3; break;
+                case ConfigurationSwoosh.SwooshColorType.单向渐变: passCount = 4; break;
             }
             if ((useBloom.Range != 0 || useDistort.director != default || useMask.fillTex != null) && (Lighting.Mode == Terraria.Graphics.Light.LightMode.White || Lighting.Mode == Terraria.Graphics.Light.LightMode.Color) && Main.WaveQuality != 0)
             {
@@ -785,7 +785,7 @@ namespace CoolerItemVisualEffect
 
 
                 Main.graphics.GraphicsDevice.Textures[0] = GetTexture("BaseTex_" + indexOfGreyTex);
-                Main.graphics.GraphicsDevice.Textures[1] = GetTexture($"AniTex_{ConfigurationSwoosh_Advanced.ConfigSwooshInstance.AnimateIndex}");
+                Main.graphics.GraphicsDevice.Textures[1] = GetTexture($"AniTex_{ConfigurationSwoosh.ConfigSwooshInstance.AnimateIndex}");
                 Main.graphics.GraphicsDevice.Textures[2] = itemTex;
                 if (HeatMap != null && useHeatMap)
                     Main.graphics.GraphicsDevice.Textures[3] = HeatMap;
