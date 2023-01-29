@@ -9,6 +9,9 @@ using Terraria.GameContent;
 
 namespace CoolerItemVisualEffect
 {
+    /// <summary>
+    /// 部分弹幕绘制的修改
+    /// </summary>
     public class CoolerProjectile : GlobalProjectile
     {
         public override void PostAI(Projectile projectile)

@@ -4,6 +4,9 @@ using Terraria;
 
 namespace CoolerItemVisualEffect
 {
+    /// <summary>
+    /// 联机同步处理用类
+    /// </summary>
     internal class HandleNetwork
     {
         internal enum MessageType

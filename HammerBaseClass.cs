@@ -27,6 +27,7 @@ namespace CoolerItemVisualEffect
     }
     public abstract class HammerProj : ModProjectile, IHammerProj
     {
+
         public virtual Vector2 scale => new Vector2(1);
         public virtual Rectangle? frame => null;
         public virtual Vector2 projCenter => Player.Center + new Vector2(0, Player.gfxOffY);
