@@ -8,6 +8,8 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using static CoolerItemVisualEffect.ConfigurationSwoosh;
 using Terraria.ID;
+using System.Reflection;
+using Terraria.GameContent.Drawing;
 
 namespace CoolerItemVisualEffect
 {
@@ -592,7 +594,8 @@ namespace CoolerItemVisualEffect
         /// </summary>
         public void UpdateFactor()
         {
-            var _factor = (float)player.itemAnimation / (player.itemAnimationMax - 1);//物品挥动程度的插值，这里应该是从1到0
+            //Main.NewText((player.itemAnimation, player.itemAnimationMax));
+            var _factor = (float)player.itemAnimation / player.itemAnimationMax;//物品挥动程度的插值，这里应该是从1到0
             const float cValue = 3f;
             float fac;
             switch (ConfigurationSwoosh.swooshActionStyle)
@@ -611,15 +614,29 @@ namespace CoolerItemVisualEffect
                             }
                             else
                             {
-                                _factor = player.itemAnimation <= TimeToCutThem / 2f ? (player.itemAnimation / TimeToCutThem) : (((player.itemAnimation - TimeToCutThem / 2) / (player.itemAnimationMax - TimeToCutThem / 2) + 1f) / 2f);
-                                fac = 1 - (cValue - 1) * (1 - _factor) * (1 - _factor) - (2 - cValue) * (1 - _factor);
+                                //_factor = player.itemAnimation <= TimeToCutThem / 2f ? (player.itemAnimation / TimeToCutThem) : (((player.itemAnimation - TimeToCutThem / 2) / (player.itemAnimationMax - TimeToCutThem / 2) + 1f) / 2f);
+                                //fac = 1 - (cValue - 1) * (1 - _factor) * (1 - _factor) - (2 - cValue) * (1 - _factor);
+                                //↑旧版代码，有点小难受那种
+                                float k = TimeToCutThem / 2f;
+                                float max = player.itemAnimationMax;
+                                float t = player.itemAnimation;
+                                if (t >= k)
+                                {
+                                    fac = MathHelper.SmoothStep(1, 1.125f, Utils.GetLerpValue(max, k, t));
+                                }
+                                else 
+                                {
+                                    fac = MathHelper.SmoothStep(0, 1.125f, player.itemAnimation / k);
+                                }
                             }
                         }
                         else
                         {
-                            float n = player.itemAnimationMax / TimeToCutThem * 3f;
-                            if (n < 1) n = 1;
-                            fac = 1 - (n - 1) * (1 - _factor) * (1 - _factor) - (2 - n) * (1 - _factor);
+                            //float n = player.itemAnimationMax / TimeToCutThem * 3f;
+                            //if (n < 1) n = 1;
+                            //fac = 1 - (n - 1) * (1 - _factor) * (1 - _factor) - (2 - n) * (1 - _factor);
+                            fac = MathHelper.SmoothStep(0, 1.125f, _factor);
+
                         }
                     }
                     break;
@@ -733,7 +750,8 @@ namespace CoolerItemVisualEffect
                 player.itemRotation = direct - MathHelper.ToRadians(90f); // 别问为啥-90°，问re去
                 //Main.NewText("!!!!!");
                 player.SetCompositeArmFront(enabled: true, Player.CompositeArmStretchAmount.Full, player.itemRotation);
-
+                //player.direction = Math.Sign(Main.MouseWorld.X - player.Center.X);
+                player.direction = Math.Sign(MathF.Cos(rotationForShadow));
                 if (player.itemAnimation > TimeToCutThem && ConfigurationSwoosh.dustQuantity != 0)
                 {
                     var _flag = (byte)ConfigurationSwoosh.swooshActionStyle > 0 && (byte)ConfigurationSwoosh.swooshActionStyle < 9;
@@ -1158,6 +1176,62 @@ namespace CoolerItemVisualEffect
         }
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
+            player.HeldItem.ModItem?.OnHitNPC(player, target, damage, knockback, crit);
+            try
+            {
+                int num = Projectile.damage;
+                var sItem = player.HeldItem;
+                var itemRectangle = Utils.CenteredRectangle(player.Center + effectPlayer.HitboxPosition * .5f, new Vector2(Math.Abs(effectPlayer.HitboxPosition.X), Math.Abs(effectPlayer.HitboxPosition.Y)));
+                int num2 = Item.NPCtoBanner(target.BannerID());
+                if (num2 > 0 && player.HasNPCBannerBuff(num2))
+                    num = ((!Main.expertMode) ? ((int)((float)num * ItemID.Sets.BannerStrength[Item.BannerToItem(num2)].NormalDamageDealt)) : ((int)((float)num * ItemID.Sets.BannerStrength[Item.BannerToItem(num2)].ExpertDamageDealt)));
+
+                if (player.parryDamageBuff && sItem.DamageType.CountsAsClass(DamageClass.Melee))
+                {
+                    num *= 5;
+                    player.parryDamageBuff = false;
+                    player.ClearBuff(198);
+                }
+
+                if (sItem.type == 426 && (float)target.life >= (float)target.lifeMax * 0.9f)
+                    num = (int)((float)num * 2f);
+
+                if (sItem.type == 5096)
+                {
+                    int num3 = 0;
+                    if (player.FindBuffIndex(26) != -1)
+                        num3 = 1;
+
+                    if (player.FindBuffIndex(206) != -1)
+                        num3 = 2;
+
+                    if (player.FindBuffIndex(207) != -1)
+                        num3 = 3;
+
+                    float num4 = 1f + 0.05f * (float)num3;
+                    num = (int)((float)num * num4);
+                }
+
+                if (sItem.type == 671)
+                {
+                    float t = (float)target.life / (float)target.lifeMax;
+                    float lerpValue = Utils.GetLerpValue(1f, 0.1f, t, clamped: true);
+                    float num5 = 1.5f * lerpValue;
+                    num = (int)((float)num * (1f + num5));
+                    Vector2 point = itemRectangle.Center.ToVector2();
+                    Vector2 positionInWorld = target.Hitbox.ClosestPointInRect(point);
+                    ParticleOrchestrator.RequestParticleSpawn(clientOnly: false, ParticleOrchestraType.Keybrand, new ParticleOrchestraSettings
+                    {
+                        PositionInWorld = positionInWorld
+                    }, player.whoAmI);
+                }
+                typeof(Player).GetMethod("ApplyNPCOnHitEffects", BindingFlags.Instance | BindingFlags.NonPublic)?.Invoke(player, new object[] { player.HeldItem, itemRectangle, num, knockback, target.whoAmI, damage, damage });
+
+            }
+            catch
+            {
+                Main.NewText("炸了！");
+            }
             if (target.type == NPCID.WallofFlesh || target.type == NPCID.WallofFleshEye || !target.CanBeChasedBy()) return;
             var vec = effectPlayer.HitboxPosition;
             vec = new Vector2(-vec.Y, vec.X) * (effectPlayer.negativeDir ? -1 : 1);

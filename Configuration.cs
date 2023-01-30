@@ -1,18 +1,28 @@
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
+using Terraria.UI;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using Terraria.ModLoader.Config;
 using Terraria.ModLoader.Config.UI;
+using Terraria.GameContent;
+using Terraria.UI.Chat;
+using System.Reflection;
+using Terraria.ModLoader.UI;
+using System.Linq;
+using ReLogic.Graphics;
 
 namespace CoolerItemVisualEffect
 {
 
     [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.Label")]
+    [BackgroundColor(17, 17, 17, 127)]
     public class ConfigurationSwoosh : ModConfig
     {
+
         #region Basic
         public override ConfigScope Mode => ConfigScope.ClientSide;
         public static ConfigurationSwoosh ConfigSwooshInstance => ModContent.GetInstance<ConfigurationSwoosh>();
@@ -141,10 +151,64 @@ namespace CoolerItemVisualEffect
             config.TeleprotEffectActive = reader.ReadBoolean();
             config.CelesteMoveAnimation = reader.ReadBoolean();
         }
-        bool EqualValue(ConfigurationSwoosh config)
+        bool EqualValueForPreInstall(ConfigurationSwoosh config) //仅仅判定预设修改了的部分
         {
             return
-                CoolerSwooshActive == config.CoolerSwooshActive &&
+                coolerSwooshQuality == config.coolerSwooshQuality &&
+                //toolsNoUseNewSwooshEffect == config.toolsNoUseNewSwooshEffect &&
+                isLighterDecider == config.isLighterDecider &&
+                swooshColorType == config.swooshColorType &&
+                swooshSampler == config.swooshSampler &&
+                swooshFactorStyle == config.swooshFactorStyle &&
+                swooshActionStyle == config.swooshActionStyle &&
+                swooshSize == config.swooshSize &&
+                hueOffsetRange == config.hueOffsetRange &&
+                hueOffsetValue == config.hueOffsetValue &&
+                saturationScalar == config.saturationScalar &&
+                luminosityRange == config.luminosityRange &&
+                luminosityFactor == config.luminosityFactor &&
+                swingAttackTime == config.swingAttackTime &&
+                distortFactor == config.distortFactor &&
+                itemAdditive == config.itemAdditive &&
+                itemHighLight == config.itemHighLight &&
+                shake == config.shake &&
+                imageIndex == config.imageIndex &&
+                checkAir == config.checkAir &&
+                gather == config.gather &&
+                allowZenith == config.allowZenith &&
+                glowLight == config.glowLight &&
+                maxCount == config.maxCount &&
+                directOfHeatMap == config.directOfHeatMap &&
+                swooshTimeLeft == config.swooshTimeLeft &&
+                onlyChangeSizeOfSwoosh == config.onlyChangeSizeOfSwoosh &&
+                fadeStyle == config.fadeStyle &&
+                growStyle == config.growStyle &&
+                animateIndex == config.animateIndex &&
+                distortSize == config.distortSize &&
+                //showHeatMap == config.showHeatMap &&
+                actionOffsetSize == config.actionOffsetSize &&
+                actionOffsetSpeed == config.actionOffsetSpeed &&
+                actionModifyEffect == config.actionModifyEffect &&
+                //ignoreDamageType == config.ignoreDamageType &&
+                //heatMapColors.EqualValue(config.heatMapColors) &&
+                //alphaFactor == config.alphaFactor &&
+                //dustQuantity == config.dustQuantity &&
+                heatMapCreateStyle == config.heatMapCreateStyle && true;
+            //useWeaponDisplay == config.useWeaponDisplay &&
+            //firstWeaponDisplay == config.firstWeaponDisplay &&
+            //weaponScale == config.weaponScale &&
+            //hitBoxStyle == config.hitBoxStyle &&
+            //DontChangeMyTitle == config.DontChangeMyTitle &&
+            //ItemDropEffectActive == config.ItemDropEffectActive &&
+            //ItemInventoryEffectActive == config.ItemInventoryEffectActive &&
+            //VanillaProjectileDrawModifyActive == config.VanillaProjectileDrawModifyActive &&
+            //TeleprotEffectActive == config.TeleprotEffectActive &&
+            //CelesteMoveAnimation == config.CelesteMoveAnimation;
+        }
+        bool EqualValue(ConfigurationSwoosh config) //仅仅判定预设修改了的部分
+        {
+            return
+                coolerSwooshQuality == config.coolerSwooshQuality &&
                 toolsNoUseNewSwooshEffect == config.toolsNoUseNewSwooshEffect &&
                 isLighterDecider == config.isLighterDecider &&
                 swooshColorType == config.swooshColorType &&
@@ -183,17 +247,17 @@ namespace CoolerItemVisualEffect
                 heatMapColors.EqualValue(config.heatMapColors) &&
                 alphaFactor == config.alphaFactor &&
                 dustQuantity == config.dustQuantity &&
-                heatMapCreateStyle == config.heatMapCreateStyle && true;
-                //useWeaponDisplay == config.useWeaponDisplay &&
-                //firstWeaponDisplay == config.firstWeaponDisplay &&
-                //weaponScale == config.weaponScale &&
-                //hitBoxStyle == config.hitBoxStyle &&
-                //DontChangeMyTitle == config.DontChangeMyTitle &&
-                //ItemDropEffectActive == config.ItemDropEffectActive &&
-                //ItemInventoryEffectActive == config.ItemInventoryEffectActive &&
-                //VanillaProjectileDrawModifyActive == config.VanillaProjectileDrawModifyActive &&
-                //TeleprotEffectActive == config.TeleprotEffectActive &&
-                //CelesteMoveAnimation == config.CelesteMoveAnimation;
+                heatMapCreateStyle == config.heatMapCreateStyle && /* && true;*/
+                useWeaponDisplay == config.useWeaponDisplay &&
+                firstWeaponDisplay == config.firstWeaponDisplay &&
+                weaponScale == config.weaponScale &&
+                hitBoxStyle == config.hitBoxStyle &&
+                DontChangeMyTitle == config.DontChangeMyTitle &&
+                ItemDropEffectActive == config.ItemDropEffectActive &&
+                ItemInventoryEffectActive == config.ItemInventoryEffectActive &&
+                VanillaProjectileDrawModifyActive == config.VanillaProjectileDrawModifyActive &&
+                TeleprotEffectActive == config.TeleprotEffectActive &&
+                CelesteMoveAnimation == config.CelesteMoveAnimation;
         }
         #endregion
 
@@ -588,31 +652,31 @@ namespace CoolerItemVisualEffect
 
         #region 子页实例
         [SeparatePage]
-        [BackgroundColor(0, 255, 255, 127)]
+        [BackgroundColor(51, 51, 51, 127)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.Label1")]
         public MeleeSwooshConfigs meleeSwooshConfigs = new MeleeSwooshConfigs();
 
 
         [SeparatePage]
-        [BackgroundColor(0, 128, 255, 127)]
+        [BackgroundColor(68, 68, 68, 127)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.Label2")]
         public DrawConfigs drawConfigs = new DrawConfigs();
 
 
         [SeparatePage]
-        [BackgroundColor(0, 0, 255, 127)]
+        [BackgroundColor(85, 85, 85, 127)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.Label3")]
         public HeatMapConfigs heatMapConfigs = new HeatMapConfigs();
 
 
         [SeparatePage]
-        [BackgroundColor(128, 0, 255, 127)]
+        [BackgroundColor(102, 102, 102, 127)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.Label4")]
         public RenderConfigs renderConfigs = new RenderConfigs();
 
 
         [SeparatePage]
-        [BackgroundColor(255, 0, 255, 127)]
+        [BackgroundColor(119, 119, 119, 127)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.Label5")]
         public OtherConfigs otherConfigs = new OtherConfigs();
         #endregion
@@ -732,31 +796,37 @@ namespace CoolerItemVisualEffect
             [DefaultValue(true)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.3")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.4")]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(242, 0, 255, 255)] public bool toolsNoUseNewSwooshEffect = true;
 
             [DefaultValue(true)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.43")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.44")]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(236, 0, 255, 255)] public bool allowZenith = true;
 
             [DefaultValue(true)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.69")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.70")]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(230, 0, 255, 255)] public bool actionOffsetSize = true;
 
             [DefaultValue(true)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.73")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.74")]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(224, 0, 255, 255)] public bool actionOffsetSpeed = true;
 
             [DefaultValue(true)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.75")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.76")]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(218, 0, 255, 255)] public bool actionModifyEffect = true;
 
             [DefaultValue(true)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.41")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.42")]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(212, 0, 255, 255)] public bool gather = true;
             #endregion
 
@@ -804,19 +874,19 @@ namespace CoolerItemVisualEffect
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.16")]
             [BackgroundColor(176, 0, 255, 255)] public float swooshSize = 1f;
 
-            [DefaultValue(30f)]
+            [DefaultValue(10f)]
             [Range(0, 60f)]
             [Increment(1f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.55")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.56")]
-            [BackgroundColor(170, 0, 255, 255)] public float swooshTimeLeft = 30f;
+            [BackgroundColor(170, 0, 255, 255)] public float swooshTimeLeft = 10f;
 
             [Increment(0.05f)]
-            [DefaultValue(0f)]
+            [DefaultValue(0.1f)]
             [Range(0f, 1f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.35")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.36")]
-            [BackgroundColor(164, 0, 255, 255)] public float shake = 0f;
+            [BackgroundColor(164, 0, 255, 255)] public float shake = 0.1f;
             #endregion
 
             #region 细节设置
@@ -824,21 +894,22 @@ namespace CoolerItemVisualEffect
             [DefaultValue(true)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.39")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.40")]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(158, 0, 255, 255)] public bool checkAir = true;
 
             [Increment(1f)]
-            [DefaultValue(4f)]
+            [DefaultValue(8f)]
             [Range(2f, 10f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.89")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.90")]
-            [BackgroundColor(152, 0, 255, 255)] public float swingAttackTime = 3f;
+            [BackgroundColor(152, 0, 255, 255)] public float swingAttackTime = 8f;
 
             [Increment(0.05f)]
-            [DefaultValue(0f)]
+            [DefaultValue(0.1f)]
             [Range(0f, 1f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.45")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.46")]
-            [BackgroundColor(146, 0, 255, 255)] public float glowLight = 0f;
+            [BackgroundColor(146, 0, 255, 255)] public float glowLight = 0.1f;
             #endregion
 
             #region 试验性设置
@@ -846,12 +917,14 @@ namespace CoolerItemVisualEffect
             [DefaultValue(false)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.57")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.58")]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(140, 0, 255, 255)] public bool onlyChangeSizeOfSwoosh = false;
 
             [DefaultValue(false)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.77")]
             [BackgroundColor(134, 0, 255, 255)]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.78")]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool ignoreDamageType = false;
             #endregion
         }
@@ -903,12 +976,25 @@ namespace CoolerItemVisualEffect
             [DefaultValue(false)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.31")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.32")]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(32, 0, 255, 255)] public bool itemAdditive = false;
 
             [DefaultValue(false)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.33")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.34")]
-            [BackgroundColor(16, 0, 255, 255)] public bool itemHighLight = false;
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
+            [BackgroundColor(16, 0, 255, 255)]
+            public bool itemHighLight
+            {
+                get => highLight;
+                set
+                {
+                    highLight = value;
+                }
+            }
+            [JsonIgnore]
+            [DefaultValue(false)]
+            bool highLight = false;
             #endregion
         }
         public class HeatMapConfigs
@@ -975,6 +1061,7 @@ namespace CoolerItemVisualEffect
             [DefaultValue(false)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.67")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.68")]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(0, 116, 255, 255)] public bool showHeatMap = false;
             #endregion
         }
@@ -1017,13 +1104,15 @@ namespace CoolerItemVisualEffect
             [DefaultValue(true)]
             [Label("$Mods.CoolerItemVisualEffect.Config.Num1")]
             [Tooltip("$Mods.CoolerItemVisualEffect.Config.Num2")]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool useWeaponDisplay = true;
 
             [DefaultValue(true)]
             [Label("$Mods.CoolerItemVisualEffect.Config.Num3")]
             [Tooltip("$Mods.CoolerItemVisualEffect.Config.Num4")]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool firstWeaponDisplay = true;
 
             [Increment(0.05f)]
@@ -1032,51 +1121,57 @@ namespace CoolerItemVisualEffect
             [Label("$Mods.CoolerItemVisualEffect.Config.11")]
             [Tooltip("$Mods.CoolerItemVisualEffect.Config.12")]
             [Slider]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
             public float weaponScale = 1f;
 
             [DefaultValue(HitBoxStyle.弹幕Projectile)]
             [DrawTicks]
             [Label("$Mods.CoolerItemVisualEffect.Config.33")]
             [Tooltip("$Mods.CoolerItemVisualEffect.Config.34")]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
             public HitBoxStyle hitBoxStyle = HitBoxStyle.弹幕Projectile;
 
             [DefaultValue(true)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.49")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.50")]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool DontChangeMyTitle = true;
 
             [Header("$Mods.CoolerItemVisualEffect.Config.24")]
             [DefaultValue(false)]
             [Label("$Mods.CoolerItemVisualEffect.Config.25")]
             [Tooltip("$Mods.CoolerItemVisualEffect.Config.26")]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool ItemDropEffectActive = false;
 
             [DefaultValue(false)]
             [Label("$Mods.CoolerItemVisualEffect.Config.27")]
             [Tooltip("$Mods.CoolerItemVisualEffect.Config.28")]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool ItemInventoryEffectActive = false;
 
             [DefaultValue(true)]
             [Label("$Mods.CoolerItemVisualEffect.Config.29")]
             [Tooltip("$Mods.CoolerItemVisualEffect.Config.30")]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool VanillaProjectileDrawModifyActive = true;
 
             [DefaultValue(false)]
             [Label("$Mods.CoolerItemVisualEffect.Config.31")]
             [Tooltip("$Mods.CoolerItemVisualEffect.Config.32")]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool TeleprotEffectActive = false;
 
             [DefaultValue(false)]
             [Label("$Mods.CoolerItemVisualEffect.Config.35")]
             [Tooltip("$Mods.CoolerItemVisualEffect.Config.36")]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool CelesteMoveAnimation = false;
             #endregion
 
@@ -1087,192 +1182,213 @@ namespace CoolerItemVisualEffect
 
             [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.47")]
 
-            [Label("[i:4]普通Normal")]
+            [Label("[i:4] 普通Normal")]
             [DefaultValue(true)]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool NormalActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValue(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.普通Normal)); }
+                get
+                {
+                    if (configurationSwoosh == null)
+                        return false;
+                    return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.普通Normal));
+                }
                 set
                 {
                     if (configurationSwoosh != null && value)
                         SetCSValue(configurationSwoosh, PreInstallSwoosh.普通Normal);
                 }
             }
-            [Label("[i:3852]飓风Hurricane")]
+            [Label("[i:3852] 飓风Hurricane")]
             [DefaultValue(false)]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool HurricaneActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValue(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.飓风Hurricane)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.飓风Hurricane)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
                         SetCSValue(configurationSwoosh, PreInstallSwoosh.飓风Hurricane);
                 }
             }
-            [Label("[i:426]巨大Huge")]
+            [Label("[i:426] 巨大Huge")]
             [DefaultValue(false)]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool HugeActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValue(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.巨大Huge)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.巨大Huge)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
                         SetCSValue(configurationSwoosh, PreInstallSwoosh.巨大Huge);
                 }
             }
-            [Label("[i:4956]夸张Exaggerate")]
+            [Label("[i:4956] 夸张Exaggerate")]
             [DefaultValue(false)]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool ExaggerateActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValue(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.夸张Exaggerate)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.夸张Exaggerate)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
                         SetCSValue(configurationSwoosh, PreInstallSwoosh.夸张Exaggerate);
                 }
             }
-            [Label("[i:3768]明亮Bright")]
+            [Label("[i:3768] 明亮Bright")]
             [DefaultValue(false)]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool BrightActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValue(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.明亮Bright)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.明亮Bright)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
                         SetCSValue(configurationSwoosh, PreInstallSwoosh.明亮Bright);
                 }
             }
-            [Label("[i:1327]黑暗Dark")]
+            [Label("[i:1327] 黑暗Dark")]
             [DefaultValue(false)]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool DarkActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValue(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.黑暗Dark)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.黑暗Dark)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
                         SetCSValue(configurationSwoosh, PreInstallSwoosh.黑暗Dark);
                 }
             }
-            [Label("[i:3781]光滑Smooth")]
+            [Label("[i:3781] 光滑Smooth")]
             [DefaultValue(false)]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool SmoothActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValue(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.光滑Smooth)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.光滑Smooth)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
                         SetCSValue(configurationSwoosh, PreInstallSwoosh.光滑Smooth);
                 }
             }
-            [Label("[i:757]泰拉Terra_EspeciallyTerraBladeRecommended")]
+            [Label("[i:757] 泰拉Terra_EspeciallyTerraBladeRecommended")]
             [DefaultValue(false)]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool TerraActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValue(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.泰拉Terra_EspeciallyTerraBladeRecommended)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.泰拉Terra_EspeciallyTerraBladeRecommended)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
                         SetCSValue(configurationSwoosh, PreInstallSwoosh.泰拉Terra_EspeciallyTerraBladeRecommended);
                 }
             }
-            [Label("[i:674]神圣Holy_EspeciallyTrueExcaliburRecommended")]
+            [Label("[i:674] 神圣Holy_EspeciallyTrueExcaliburRecommended")]
             [DefaultValue(false)]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool HolyActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValue(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.神圣Holy_EspeciallyTrueExcaliburRecommended)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.神圣Holy_EspeciallyTrueExcaliburRecommended)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
                         SetCSValue(configurationSwoosh, PreInstallSwoosh.神圣Holy_EspeciallyTrueExcaliburRecommended);
                 }
             }
-            [Label("[i:675]永夜Evil_EspeciallyTrueNightsEdgeRecommended")]
+            [Label("[i:675] 永夜Evil_EspeciallyTrueNightsEdgeRecommended")]
             [DefaultValue(false)]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool EvilActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValue(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.永夜Evil_EspeciallyTrueNightsEdgeRecommended)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.永夜Evil_EspeciallyTrueNightsEdgeRecommended)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
                         SetCSValue(configurationSwoosh, PreInstallSwoosh.永夜Evil_EspeciallyTrueNightsEdgeRecommended);
                 }
             }
-            [Label("[i:3827]旧日OldOnes_EspeciallyFlyingDragonRecommended")]
+            [Label("[i:3827] 旧日OldOnes_EspeciallyFlyingDragonRecommended")]
             [DefaultValue(false)]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool OldOnesActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValue(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.旧日OldOnes_EspeciallyFlyingDragonRecommended)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.旧日OldOnes_EspeciallyFlyingDragonRecommended)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
                         SetCSValue(configurationSwoosh, PreInstallSwoosh.旧日OldOnes_EspeciallyFlyingDragonRecommended);
                 }
             }
-            [Label("[i:2880]波涌Influx_EspeciallyInfluxWaverRecommended")]
+            [Label("[i:2880] 波涌Influx_EspeciallyInfluxWaverRecommended")]
             [DefaultValue(false)]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool InfluxActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValue(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.波涌Influx_EspeciallyInfluxWaverRecommended)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.波涌Influx_EspeciallyInfluxWaverRecommended)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
                         SetCSValue(configurationSwoosh, PreInstallSwoosh.波涌Influx_EspeciallyInfluxWaverRecommended);
                 }
             }
-            [Label("[i:389]黑白Grey")]
+            [Label("[i:389] 黑白Grey")]
             [DefaultValue(false)]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool GreyActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValue(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.黑白Grey)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.黑白Grey)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
                         SetCSValue(configurationSwoosh, PreInstallSwoosh.黑白Grey);
                 }
             }
-            [Label("[i:1968]反相InverseHue")]
+            [Label("[i:1968] 反相InverseHue")]
             [DefaultValue(false)]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool InverseActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValue(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.反相InverseHue)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.反相InverseHue)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
                         SetCSValue(configurationSwoosh, PreInstallSwoosh.反相InverseHue);
                 }
             }
-            [Label("[i:3063]彩虹Rainbow")]
+            [Label("[i:3063] 彩虹Rainbow")]
             [DefaultValue(false)]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool RainbowActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValue(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.彩虹Rainbow)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.彩虹Rainbow)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
                         SetCSValue(configurationSwoosh, PreInstallSwoosh.彩虹Rainbow);
                 }
             }
-            [Label("[i:5005]超级彩虹UltraRainbow")]
+            [Label("[i:5005] 超级彩虹UltraRainbow")]
             [DefaultValue(false)]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool UltraRainbowActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValue(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.超级彩虹UltraRainbow)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.超级彩虹UltraRainbow)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
@@ -1288,16 +1404,155 @@ namespace CoolerItemVisualEffect
             [Range(0f, 1f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.85")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.86")]
-            [BackgroundColor(0, 255, 255, 255)] 
+            [BackgroundColor(0, 255, 255, 255)]
             public float dustQuantity = .75f;
             #endregion
 
             [JsonIgnore]
-            public ConfigurationSwoosh configurationSwoosh => ConfigurationSwoosh.ConfigSwooshInstance;
+            public ConfigurationSwoosh configurationSwoosh
+            {
+                get
+                {
+                    return (ConfigurationSwoosh)(UIModConfigType?.GetField("pendingConfig", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(uiModConfigInstance)) ?? ConfigSwooshInstance;
+                }
+            }
+        }
+        #endregion
+
+        #region Element类
+        public class CoolerBoolElement : ConfigElement<bool>
+        {
+            private Asset<Texture2D> activeTex;
+            private Asset<Texture2D> containerTex;
+            private int timer;
+            // TODO. Display status string? (right now only on/off texture, but True/False, Yes/No, Enabled/Disabled options)
+            public override void OnBind()
+            {
+                base.OnBind();
+                activeTex = ModContent.Request<Texture2D>("CoolerItemVisualEffect/ConfigTex/Active");
+                containerTex = ModContent.Request<Texture2D>("CoolerItemVisualEffect/ConfigTex/Container");
+                Height.Set(48f, 0);
+                OnClick += (ev, v) => Value = !Value;
+            }
+            protected override void DrawSelf(SpriteBatch spriteBatch)
+            {
+                #region Base
+                CalculatedStyle dimensions = GetDimensions();
+                float num = dimensions.Width - 1f;
+                Vector2 vector = new Vector2(dimensions.X, dimensions.Y);
+                Vector2 baseScale = new Vector2(0.8f);
+                Color baseColor = (base.IsMouseHovering ? Color.White : Color.White);
+                if (!MemberInfo.CanWrite)
+                {
+                    baseColor = Color.Gray;
+                }
+                Color mainColor = BackgroundColorAttribute.Color;
+
+                Color color = (base.IsMouseHovering ? mainColor : mainColor.MultiplyRGBA(new Color(180, 180, 180)));
+                Vector2 position = vector;
+                DrawPanel2(spriteBatch, position, TextureAssets.SettingsPanel.Value, num, dimensions.Height, color);
+                if (DrawLabel)
+                {
+                    position.X += 8f;
+                    position.Y += 8f;
+                    ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, TextDisplayFunction(), position, baseColor, 0f, Vector2.Zero, baseScale, num);
+                }
+
+
+                #endregion
+
+
+                //CalculatedStyle dimensions = base.GetDimensions();
+                timer += Value ? 1 : -1;
+                timer = (int)MathHelper.Clamp(timer, 0, 15);
+                Vector2 texVec = new Vector2(dimensions.X + dimensions.Width - 72, dimensions.Y + dimensions.Height * .5f);
+                float factor = MathHelper.SmoothStep(0, 1, timer / 15f);
+                Vector2 drawPosition = new Vector2(dimensions.X + dimensions.Width - 32f, dimensions.Y + dimensions.Height * .5f);
+                if (timer != 0)
+                {
+                    for (int n = 0; n < 4; n++)
+                        ChatManager.DrawColorCodedString(spriteBatch, FontAssets.ItemStack.Value, Value ? Lang.menu[126].Value : Lang.menu[124].Value, texVec + Main.rand.NextFloat(0, factor * 4) * Main.rand.NextVector2Unit(), mainColor with { A = 0 } * .25f * factor, 0f, Vector2.Zero, new Vector2(0.8f));
+                }
+                if (factor != 1)
+                {
+                    ChatManager.DrawColorCodedStringShadow(spriteBatch, FontAssets.ItemStack.Value, Value ? Lang.menu[126].Value : Lang.menu[124].Value, texVec, Color.Black * (1 - factor), 0f, Vector2.Zero, new Vector2(0.8f));
+                }
+                ChatManager.DrawColorCodedString(spriteBatch, FontAssets.ItemStack.Value, Value ? Lang.menu[126].Value : Lang.menu[124].Value, texVec, Color.White, 0f, Vector2.Zero, new Vector2(0.8f));
+                //ChatManager.DrawColorCodedString(spriteBatch, FontAssets.ItemStack.Value, flag.ToString(), texVec - new Vector2(96,0), Color.White, 0f, Vector2.Zero, new Vector2(0.8f));
+
+                spriteBatch.Draw(containerTex.Value, drawPosition, null, Color.White with { A = 0 }, Main.GlobalTimeWrappedHourly * MathHelper.Pi, containerTex.Size() * .5f, 128 / 3 / 236f, SpriteEffects.None, 0f);
+                if (timer != 0)
+                    spriteBatch.Draw(activeTex.Value, drawPosition, null, Color.White with { A = 0 } * factor, -Main.GlobalTimeWrappedHourly * MathHelper.TwoPi, activeTex.Size() * .5f, 64 / 400f, SpriteEffects.None, 0f);
+                //spriteBatch.Draw(TextureAssets.Item[4956].Value, new Vector2(960, drawPosition.Y) + (Main.GlobalTimeWrappedHourly).ToRotationVector2() * 256, Color.White);
+                //Parent.OverflowHidden = false;
+                if (IsMouseHovering && TooltipFunction != null)
+                {
+                    //UIModConfig.Tooltip = TooltipFunction();
+                    //Type uimodconfigType = typeof(ConfigElement).Assembly.GetType("UIModConfig");
+                    Type uimodconfigType = UIModConfigType;
+                    if (uimodconfigType != null)
+                    {
+                        var prop = uimodconfigType.GetProperty("Tooltip", BindingFlags.Static | BindingFlags.Public);
+                        if (prop != null)
+                        {
+                            var str = TooltipFunction();
+                            prop.SetValue(null, str);
+                        }
+                        else
+                        {
+                            _ = 0;
+                        }
+                    }
+                    else
+                    {
+                        //_ = 0;
+                        ChatManager.DrawColorCodedString(spriteBatch, FontAssets.ItemStack.Value, typeof(ConfigElement).Assembly.FullName, texVec - new Vector2(384, 0), Color.White, 0f, Vector2.Zero, new Vector2(0.8f));
+
+                    }
+                    //UICommon.DrawHoverStringInBounds(spriteBatch, TooltipFunction(), new Rectangle(0,0,1920,1120));
+
+                }
+            }
         }
         #endregion
 
         #region 其它函数
+        public static Type UIModConfigType
+        {
+            get
+            {
+                if (uiModConfigType == null || uiModConfigInstance == null)
+                {
+                    var assembly = typeof(ConfigElement).Assembly;
+                    Type[] types;
+                    Type Interface = null;
+                    try
+                    {
+                        types = assembly.GetTypes();
+                    }
+                    catch (ReflectionTypeLoadException e)
+                    {
+                        types = (from Type t in e.Types where t is not null select t).ToArray();
+                    }
+                    foreach (var type in types)
+                    {
+                        if (type.Name == "UIModConfig")
+                        {
+                            uiModConfigType = type;
+                        }
+                        if (type.Name == "Interface")
+                        {
+                            Interface = type;
+                        }
+                        if (uiModConfigType != null && Interface != null) break;
+                    }
+                    uiModConfigInstance = Interface.GetField("modConfig", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+                }
+                return uiModConfigType;
+            }
+        }
+        static Type uiModConfigType;
+        public static object uiModConfigInstance;
         public static ConfigurationSwoosh SetCSValue(ConfigurationSwoosh cs, PreInstallSwoosh preInstallSwoosh)
         {
             cs.coolerSwooshQuality = QualityType.极限ultra;
@@ -1314,19 +1569,19 @@ namespace CoolerItemVisualEffect
             cs.luminosityRange = 0.2f;
             cs.luminosityFactor = 0.2f;
             //cs.swingAttackTime = 3f;
-            cs.swingAttackTime = 4f;
+            cs.swingAttackTime = 8f;
             cs.distortFactor = 0.25f;
             cs.itemAdditive = false;
             cs.itemHighLight = false;
-            cs.shake = 0f;
+            cs.shake = 0.1f;
             cs.imageIndex = 7f;
             cs.checkAir = true;
             cs.gather = true;
             cs.allowZenith = true;
-            cs.glowLight = 0f;
+            cs.glowLight = 0.1f;
             cs.maxCount = 1;
             cs.directOfHeatMap = MathHelper.Pi;
-            cs.swooshTimeLeft = 30;
+            cs.swooshTimeLeft = 10;
             cs.onlyChangeSizeOfSwoosh = false;
             cs.fadeStyle = SwooshFadeStyle.全部Both;
             cs.growStyle = SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest;

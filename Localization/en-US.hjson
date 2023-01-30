@@ -210,7 +210,7 @@ Mods:{
 			Or " Blend "Gradient" And "Diagonal Color Of the Enabled Weapon" "
 			'''
 			55:LeftTime Of Swoosh[i:709]
-			56:The Default Is 30 Frame  Need "Ultra" Quality
+			56:The Default Is 10 Frame  Need "Ultra" Quality
 			57:Don't Change Size Of Item ItSelf[i:4923]
 			58:Only Change The Size Of SwooshEffect If It Is Yes, The Default Is No.
 			59:Fade Style Of Swoosh[i:3368]
