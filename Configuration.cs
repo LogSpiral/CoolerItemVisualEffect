@@ -809,7 +809,7 @@ namespace CoolerItemVisualEffect
             [DefaultValue(QualityType.极限ultra)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.1")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.2")]
-            //[CustomModConfigItem(typeof(CoolerEnumElement))]
+            [CustomModConfigItem(typeof(CoolerEnumElement))]
             [BackgroundColor(248, 0, 255, 255)] public QualityType coolerSwooshQuality = QualityType.极限ultra;
 
             [DefaultValue(true)]
@@ -925,12 +925,12 @@ namespace CoolerItemVisualEffect
             [BackgroundColor(158, 0, 255, 255)] public bool checkAir = true;
 
             [Increment(1f)]
-            [DefaultValue(8f)]
+            [DefaultValue(6f)]
             [Range(2f, 10f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.89")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.90")]
             [CustomModConfigItem(typeof(CoolerFloatElement))]
-            [BackgroundColor(152, 0, 255, 255)] public float swingAttackTime = 8f;
+            [BackgroundColor(152, 0, 255, 255)] public float swingAttackTime = 6f;
 
             [Increment(0.05f)]
             [DefaultValue(0.1f)]
@@ -994,12 +994,14 @@ namespace CoolerItemVisualEffect
             [DefaultValue(SwooshSamplerState.线性)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.9")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.10")]
+            [CustomModConfigItem(typeof(CoolerEnumElement))]
             [BackgroundColor(64, 0, 255, 255)] public SwooshSamplerState swooshSampler = SwooshSamplerState.线性;
 
             [DrawTicks]
             [DefaultValue(SwooshFactorStyle.每次开始时决定系数)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.11")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.12")]
+            [CustomModConfigItem(typeof(CoolerEnumElement))]
             [BackgroundColor(48, 0, 255, 255)] public SwooshFactorStyle swooshFactorStyle = SwooshFactorStyle.每次开始时决定系数;
             #endregion
 
@@ -1501,7 +1503,7 @@ namespace CoolerItemVisualEffect
                     if (!IsMouseHovering) return default;
                     Rectangle rect = GetDimensions().ToRectangle();
                     Vector2 target = (new Vector2(Main.mouseX, Main.mouseY) - rect.Center()) / new Vector2(rect.Width, rect.Height) * 2;
-                    Vector2 result = new Vector2(MathHelper.SmoothStep(0, 1, Math.Abs(target.X)) * Math.Sign(target.X), MathHelper.SmoothStep(0, 1, Math.Abs(target.Y))* Math.Sign(target.Y));
+                    Vector2 result = new Vector2(MathHelper.SmoothStep(0, 1, Math.Abs(target.X)) * Math.Sign(target.X), MathHelper.SmoothStep(0, 1, Math.Abs(target.Y)) * Math.Sign(target.Y));
                     result *= rect.Size();
                     result *= new Vector2(0.0625f, 0.25f);
                     //float right = (464f - rect.Width) / 2;
@@ -1558,7 +1560,7 @@ namespace CoolerItemVisualEffect
                     baseColor = Color.Gray;
                 }
                 Color mainColor = BackgroundColorAttribute.Color;
-                ConfigTexStyle configTexStyle = ConfigSwooshInstance.otherConfigs.texStyle;
+                ConfigTexStyle configTexStyle = currentStyle;
                 float factor = HoverCounter / 15f;
                 Color color = (mainColor * MathHelper.SmoothStep(0.705f, 1f, factor)) with { A = mainColor.A };
                 var rect = dimensions.ToRectangle();
@@ -1648,7 +1650,8 @@ namespace CoolerItemVisualEffect
                 Vector2 drawPosition = new Vector2(rectangle.X + rectangle.Width - 32f * scaler, rectangle.Y + rectangle.Height * .5f);
                 float angle = 0f;
                 //var resultVec = ChatManager.DrawColorCodedString(spriteBatch, font, text, texVec, Color.Transparent, angle, Vector2.Zero, new Vector2(0.8f) * scaler);
-                DrawCoolerTextBox(spriteBatch, currentStyleTex, font, text, texVec, Color.White, angle, default, scaler * new Vector2(0.8f), ConfigSwooshInstance.otherConfigs.texStyle);
+
+                DrawCoolerTextBox(spriteBatch, currentStyleTex, font, text, texVec, Color.White, angle, default, scaler * new Vector2(0.8f));
                 if (ActiveCounter != 0)
                 {
                     for (int n = 0; n < 4; n++)
@@ -1786,26 +1789,14 @@ namespace CoolerItemVisualEffect
                 var font = FontAssets.ItemStack.Value;
                 Vector2 texVec = new Vector2(rectangle.X + rectangle.Width + (-maxWidth - 64) * scaler, rectangle.Y + rectangle.Height * .5f);
                 var texture = currentStyleTex;
-                var style = ConfigSwooshInstance.otherConfigs.texStyle;
+                var style = currentStyle;
                 #region 底
-                //if (!KeepOrigin)
-                //{
-                //    Vector2 boxScaler = (new Vector2(maxWidth + 32, 120)) / new Vector2(16, 10) * scaler;
-                //    var boxVec = texVec + new Vector2(-16, -60) * scaler;
-                //    spriteBatch.Draw(texture, boxVec, new Rectangle(308, 0, 16, 40), Color.White, 0, new Vector2(0, 13.5f), boxScaler * new Vector2(0.875f, 1f), 0, 0);
-                //    spriteBatch.Draw(texture, boxVec, new Rectangle(294, 0, 14, 40), Color.White, 0, new Vector2(14, 13.5f), new Vector2(MathF.Sqrt(boxScaler.X), boxScaler.Y), 0, 0);
-                //    spriteBatch.Draw(texture, boxVec, new Rectangle(324, 0, 10, 40), Color.White, 0, new Vector2(-8 * MathF.Sqrt(boxScaler.X), 13.5f), new Vector2(MathF.Sqrt(boxScaler.X) * 1.75f, boxScaler.Y), 0, 0);
-                //}
-                //Vector2 boxScaler = (new Vector2(maxWidth + 40, 128)) / new Vector2(28) * scaler;
-                var boxVec = texVec + new Vector2(-20, -64) * scaler;
+                var boxVec = new Vector2(rectangle.X + rectangle.Width, rectangle.Y + rectangle.Height * .5f) - new Vector2(84 + maxWidth, 64) * scaler;
                 var mainColor = BackgroundColorAttribute.Color;
-                //spriteBatch.Draw(Main.Assets.Request<Texture2D>("Images/UI/HotbarRadial_1").Value, boxVec, new Rectangle(4, 4, 28, 28), mainColor with { A = 0 }, 0, default, boxScaler, 0, 0);
-                //boxScaler = (new Vector2(maxWidth + 48, 136)) / new Vector2(80) * scaler;
-                //boxVec = texVec + new Vector2(-24, -68) * scaler;
-                //spriteBatch.Draw(Main.Assets.Request<Texture2D>("Images/UI/Achievement_Borders_MouseHover").Value, boxVec, null, Color.Lerp(Color.White, mainColor, .5f) with { A = 0 }, 0, default, boxScaler, 0, 0);
-                Rectangle _rect = new Rectangle((int)boxVec.X, (int)boxVec.Y, (int)((maxWidth + 40) * scaler), (int)(128 * scaler));
-                DrawCoolerPanelForConfig(spriteBatch, ref _rect, Main.Assets.Request<Texture2D>("Images/UI/HotbarRadial_1").Value, new Rectangle(4, 4, 28, 28), new Vector2(28, 28), mainColor with { A = 0 }, Color.White, 1f);
-                //DrawCoolerPanel_BackGround(spriteBatch, Main.Assets.Request<Texture2D>("Images/UI/HotbarRadial_1").Value, _rect.TopLeft(), new Rectangle(4, 4, 28, 28),)
+                Rectangle _rect = new Rectangle((int)boxVec.X, (int)boxVec.Y, (int)maxWidth + 40, 128);
+                _rect.Offset((_rect.Size() * (scaler - 1) * .5f).ToPoint());
+                DrawCoolerPanelForConfig(spriteBatch, ref _rect, Main.Assets.Request<Texture2D>("Images/UI/HotbarRadial_1").Value, new Rectangle(4, 4, 28, 28), new Vector2(28, 28), mainColor with { A = 0 } * (.5f * ((scaler - 1) * 4 + 1)), Color.White, scaler, default, 0, currentStyle);
+                //spriteBatch.Draw(TextureAssets.MagicPixel.Value, boxVec, new Rectangle(0, 0, 1, 1), Color.Red, 0, new Vector2(.5f), 4f, 0, 0);
                 #endregion
                 for (int n = -2; n < 3; n++)
                 {
@@ -1820,24 +1811,29 @@ namespace CoolerItemVisualEffect
                     if (index < 0) index += max;
                     var scale = MathF.Sqrt(1 - offsetY * offsetY);
 
+
                     var position = texVec + offsetY * 72 * Vector2.UnitY * scaler;
                     var text = valueStrings[index];
-                    var size = new Vector2(maxWidth, font.MeasureString(text).Y);
                     var scalesqr = scale * scale;
-                    Vector2 _boxScaler = (size) / new Vector2(16, 10) * scaler * new Vector2(1f, scalesqr);
-                    var color = mainColor with { A = 0 } * scalesqr;
-                    spriteBatch.Draw(texture, position, new Rectangle(182, 0, 16, 40), color, 0, new Vector2(0, 13.5f), _boxScaler * new Vector2(0.875f, 1f), 0, 0);
-                    spriteBatch.Draw(texture, position, new Rectangle(172, 0, 14, 40), color, 0, new Vector2(14, 13.5f), new Vector2(MathF.Sqrt(_boxScaler.X), _boxScaler.Y), 0, 0);
-                    spriteBatch.Draw(texture, position, new Rectangle(198, 0, 10, 40), color, 0, new Vector2(-8 * MathF.Sqrt(_boxScaler.X), 13.5f), new Vector2(MathF.Sqrt(_boxScaler.X) * 1.75f, _boxScaler.Y), 0, 0);
+                    if (texture != null)
+                    {
+                        var size = new Vector2(maxWidth, font.MeasureString(text).Y);
+                        Vector2 _boxScaler = (size) / new Vector2(16, 10) * scaler * new Vector2(1f, scalesqr);
+                        var color = mainColor with { A = 0 } * scalesqr;
+                        spriteBatch.Draw(texture, position, new Rectangle(182, 0, 16, 40), color, 0, new Vector2(0, 13.5f), _boxScaler * new Vector2(0.875f, 1f), 0, 0);
+                        spriteBatch.Draw(texture, position, new Rectangle(172, 0, 14, 40), color, 0, new Vector2(14, 13.5f), new Vector2(MathF.Sqrt(_boxScaler.X), _boxScaler.Y), 0, 0);
+                        spriteBatch.Draw(texture, position, new Rectangle(198, 0, 10, 40), color, 0, new Vector2(-8 * MathF.Sqrt(_boxScaler.X), 13.5f), new Vector2(MathF.Sqrt(_boxScaler.X) * 1.75f, _boxScaler.Y), 0, 0);
+                    }
+
 
                     DrawCoolerColorCodedStringWithShadow(spriteBatch, texture, font, text, position, Color.White * scalesqr, Color.White * scalesqr, 0, default, new Vector2(.8f) * scaler * scale, style);
                     //spriteBatch.Draw(TextureAssets.MagicPixel.Value, texVec + offsetY * 72 * Vector2.UnitY * scaler, new Rectangle(0, 0, 1, 1), Color.Red, 0, new Vector2(.5f), 4f, 0, 0);
                 }
                 if (MemberInfo.Type.Equals(typeof(ConfigTexStyle)))
                 {
-                    ConfigSwooshInstance.otherConfigs.texStyle = (ConfigTexStyle)Value;
+                    currentStyle = (ConfigTexStyle)Value;
                 }
-                //DrawCoolerColorCodedStringWithShadow(spriteBatch, texture, font, (ConfigSwooshInstance.otherConfigs.texStyle, (Interface.modConfig.pendingConfig as ConfigurationSwoosh ?? ConfigSwooshInstance).otherConfigs.texStyle).ToString(), texVec + new Vector2(256 * scaler, 0), Color.White, Color.White, 0, default, Vector2.One * scaler, style); ;
+                //DrawCoolerColorCodedStringWithShadow(spriteBatch, texture, font, (currentStyle, (Interface.modConfig.pendingConfig as ConfigurationSwoosh ?? ConfigSwooshInstance).otherConfigs.texStyle).ToString(), texVec + new Vector2(256 * scaler, 0), Color.White, Color.White, 0, default, Vector2.One * scaler, style); ;
 
             }
         }
@@ -1866,12 +1862,15 @@ namespace CoolerItemVisualEffect
                 base.OnBind();
 
                 DrawTicks = Attribute.IsDefined(MemberInfo.MemberInfo, typeof(DrawTicksAttribute));
-                SliderColor = ConfigManager.GetCustomAttribute<SliderColorAttribute>(MemberInfo, Item, List)?.Color ?? Color.White;
+                SliderColor = ConfigManager.GetCustomAttribute<SliderColorAttribute>(MemberInfo, Item, List)?.Color ?? BackgroundColorAttribute.Color;
             }
 
             public float DrawValueBar(SpriteBatch sb, float scale, float perc, int lockState = 0, Utils.ColorLerpMethod colorMethod = null)
             {
                 perc = Utils.Clamp(perc, -.05f, 1.05f);
+
+                var color = BackgroundColorAttribute.Color;
+                if (colorMethod != null) color = colorMethod(perc);
 
                 if (colorMethod == null)
                     colorMethod = new Utils.ColorLerpMethod(Utils.ColorLerp_BlackToWhite);
@@ -1879,6 +1878,10 @@ namespace CoolerItemVisualEffect
                 Texture2D colorBarTexture = TextureAssets.ColorBar.Value;
                 Vector2 vector = new Vector2((float)colorBarTexture.Width, (float)colorBarTexture.Height) * scale;
                 IngameOptions.valuePosition.X -= (float)((int)vector.X);
+                var rect = new Rectangle((int)IngameOptions.valuePosition.X - 8, (int)(IngameOptions.valuePosition.Y - 8 - vector.Y * .5f), (int)vector.X + 16, (int)vector.Y + 16);
+
+                DrawCoolerPanelForConfig(sb, ref rect, Main.Assets.Request<Texture2D>("Images/UI/HotbarRadial_1").Value, new Rectangle(4, 4, 28, 28), new Vector2(28), color with { A = 0 } * .5f, color with { A = 0 }, 1, default, perc, currentStyle);
+
                 Rectangle rectangle = new Rectangle((int)IngameOptions.valuePosition.X, (int)IngameOptions.valuePosition.Y - (int)vector.Y / 2, (int)vector.X, (int)vector.Y);
                 Rectangle destinationRectangle = rectangle;
                 int num = 167;
@@ -1928,6 +1931,7 @@ namespace CoolerItemVisualEffect
                 var colorSlider = TextureAssets.ColorSlider.Value;
 
                 sb.Draw(colorSlider, new Vector2(num2 + 167f * scale * perc, num3 + 4f * scale), null, Color.White, 0f, colorSlider.Size() * 0.5f, scale, SpriteEffects.None, 0f);
+
 
                 if (Main.mouseX >= rectangle.X && Main.mouseX <= rectangle.X + rectangle.Width)
                 {
@@ -1988,7 +1992,7 @@ namespace CoolerItemVisualEffect
                 vector2.Y += 2f + num;
                 vector2.X -= 17f;
                 //TextureAssets.ColorBar.Value.Frame(1, 1, 0, 0);
-                vector2 = new Vector2(dimensions.X + dimensions.Width - 10f, dimensions.Y + 10f + num);
+                vector2 = new Vector2(dimensions.X + dimensions.Width - 32f, dimensions.Y + dimensions.Height * .5f);
                 IngameOptions.valuePosition = vector2;
                 float obj = DrawValueBar(spriteBatch, 1f, Proportion, num2, ColorMethod);
 
@@ -2089,7 +2093,7 @@ namespace CoolerItemVisualEffect
         #endregion
 
         #region 其它函数
-        public static bool KeepOrigin => ConfigSwooshInstance.otherConfigs.texStyle == 0;
+        public static bool KeepOrigin => currentStyle == 0;
         //public static Type UIModConfigType
         //{
         //    get
@@ -2365,7 +2369,13 @@ namespace CoolerItemVisualEffect
         //{
         //    otherConfigs.configurationSwoosh = this;
         //}
-        public static Texture2D currentStyleTex => ConfigSwooshInstance.otherConfigs.texStyle != 0 ? ModContent.Request<Texture2D>($"CoolerItemVisualEffect/ConfigTex/Template_{ConfigSwooshInstance.otherConfigs.texStyle}").Value : null;
+        public static ConfigTexStyle currentStyle
+        {
+            get => ConfigSwooshInstance.otherConfigs.texStyle;
+            set => ConfigSwooshInstance.otherConfigs.texStyle = value;
+        }
+        public static Texture2D GetConfigStyleTex(ConfigTexStyle configTexStyle) => ModContent.Request<Texture2D>($"CoolerItemVisualEffect/ConfigTex/Template_{configTexStyle}").Value;
+        public static Texture2D currentStyleTex => currentStyle != 0 ? GetConfigStyleTex(currentStyle) : null;
         public static void DrawCoolerPanel(SpriteBatch spriteBatch, Rectangle rectangle, Color color, float glowShakingStrength = 0f, ConfigTexStyle texStyle = ConfigTexStyle.Dark)
         {
             if (texStyle == 0)
@@ -2381,7 +2391,7 @@ namespace CoolerItemVisualEffect
                 var clampVec = Vector2.Clamp(scalerVec, default, Vector2.One);
                 bool flagX = scalerVec.X == clampVec.X;
                 bool flagY = scalerVec.Y == clampVec.Y;
-                Texture2D texture = currentStyleTex;
+                Texture2D texture = GetConfigStyleTex(texStyle);
                 float left = flagX ? center.X : rectangle.X + 32;
                 float top = flagY ? center.Y : rectangle.Y + 32;
                 float right = flagX ? center.X : rectangle.X + rectangle.Width - 32;
@@ -2423,7 +2433,7 @@ namespace CoolerItemVisualEffect
                 var clampVec = Vector2.Clamp(scalerVec, default, Vector2.One);
                 bool flagX = scalerVec.X == clampVec.X;
                 bool flagY = scalerVec.Y == clampVec.Y;
-                Texture2D texture = currentStyleTex;
+                Texture2D texture = GetConfigStyleTex(texStyle);
                 float left = flagX ? center.X : rectangle.X + 32;
                 float top = flagY ? center.Y : rectangle.Y + 32;
                 float right = flagX ? center.X : rectangle.X + rectangle.Width - 32;
@@ -2465,7 +2475,7 @@ namespace CoolerItemVisualEffect
                 var clampVec = Vector2.Clamp(scalerVec, default, Vector2.One);
                 bool flagX = scalerVec.X == clampVec.X;
                 bool flagY = scalerVec.Y == clampVec.Y;
-                Texture2D texture = currentStyleTex;
+                Texture2D texture = GetConfigStyleTex(texStyle);
                 float left = flagX ? center.X : rectangle.X + 32;
                 float top = flagY ? center.Y : rectangle.Y + 32;
                 float right = flagX ? center.X : rectangle.X + rectangle.Width - 32;
@@ -2491,7 +2501,7 @@ namespace CoolerItemVisualEffect
         }
         public static void DrawCoolerColorCodedStringWithShadow(SpriteBatch spriteBatch, Texture2D texture, DynamicSpriteFont font, string text, Vector2 position, Color boxColor, Color baseColor, float rotation, Vector2 origin, Vector2 baseScale, ConfigTexStyle texStyle = ConfigTexStyle.Dark, float maxWidth = -1f, float spread = 2f)
         {
-            DrawCoolerTextBox(spriteBatch, texture, font, text, position, boxColor, rotation, origin, baseScale, texStyle);
+            DrawCoolerTextBox(spriteBatch, texture, font, text, position, boxColor, rotation, origin, baseScale);
             ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, text, position, baseColor, rotation, origin, baseScale, maxWidth, spread);
         }
         public static (Vector2 O, Vector2 I, Vector2 J, Vector2 unitI, Vector2 unitJ) GetTextRectangle(DynamicSpriteFont font, string text, Vector2 position, float rotation, Vector2 origin, Vector2 scaler)
@@ -2517,10 +2527,11 @@ namespace CoolerItemVisualEffect
             values.unitJ = values.j.SafeNormalize(default);
             return values;
         }
-        public static void DrawCoolerTextBox(SpriteBatch spriteBatch, Texture2D texture, DynamicSpriteFont font, string text, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scaler, ConfigTexStyle texStyle = ConfigTexStyle.Dark)
+        public static void DrawCoolerTextBox(SpriteBatch spriteBatch, Texture2D texture, DynamicSpriteFont font, string text, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scaler)
         {
             //TODO:支持旋转，目前只能角度为0
-            if (texStyle != 0)
+            //if (texStyle != 0)
+            if (texture != null)
             {
                 position += new Vector2(0, -4);
                 var gd = Main.instance.GraphicsDevice;
@@ -2551,9 +2562,10 @@ namespace CoolerItemVisualEffect
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, gd.DepthStencilState, gd.RasterizerState, null, Main.UIScaleMatrix);
             }
         }
-        public static void DrawCoolerTextBox_Glass(SpriteBatch spriteBatch, Texture2D texture, DynamicSpriteFont font, string text, Vector2 position, Color boxColor, float rotation, Vector2 scaler, ConfigTexStyle texStyle = ConfigTexStyle.Dark)
+        public static void DrawCoolerTextBox_Glass(SpriteBatch spriteBatch, Texture2D texture, DynamicSpriteFont font, string text, Vector2 position, Color boxColor, float rotation, Vector2 scaler)
         {
-            if (texStyle != 0)
+            //if (texStyle != 0)
+            if (texture != null)
             {
                 position += new Vector2(0, -4);
                 var gd = Main.instance.GraphicsDevice;
@@ -2566,9 +2578,10 @@ namespace CoolerItemVisualEffect
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, gd.DepthStencilState, gd.RasterizerState, null, Main.UIScaleMatrix);
             }
         }
-        public static void DrawCoolerTextBox_Glass(SpriteBatch spriteBatch, Texture2D texture, DynamicSpriteFont font, string text, Vector2 position, Color boxColor, bool boxAdditive, float rotation, Vector2 scaler, ConfigTexStyle texStyle = ConfigTexStyle.Dark)
+        public static void DrawCoolerTextBox_Glass(SpriteBatch spriteBatch, Texture2D texture, DynamicSpriteFont font, string text, Vector2 position, Color boxColor, bool boxAdditive, float rotation, Vector2 scaler)
         {
-            if (texStyle != 0)
+            //if (texStyle != 0)
+            if (texture != null)
             {
                 position += new Vector2(0, -4);
                 var gd = Main.instance.GraphicsDevice;

@@ -1666,7 +1666,7 @@ namespace CoolerItemVisualEffect
         #endregion
     }
     public class CoolerSystem : ModSystem
-    {
+    { 
         public static int ModTime;
         public override void UpdateUI(GameTime gameTime)
         {
