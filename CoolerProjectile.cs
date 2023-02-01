@@ -480,9 +480,16 @@ namespace CoolerItemVisualEffect
                         //    var factor = 1 - k / (float)projectile.oldPos.Length;
                         //    spriteBatch.Draw(projectileTexture, drawPos, null, mainColor with { A = 0 } * factor, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), (1 - 0.1f * k) * scaleVec, SpriteEffects.None, 0f);
                         //}
-                        lightColor = lightColor with { A = 0 };
-                        projectile.alpha = 0;
-                        projectile.scale = 1;
+                        //lightColor = lightColor with { A = 0 };
+                        //if (projectile.type != ProjectileID.InfluxWaver)
+                        //{
+                        //    projectile.alpha = 0;
+                        //    projectile.scale = 1;
+                        //}
+                        //else 
+                        //{
+                        //    Main.NewText((projectile.alpha, projectile.scale));
+                        //}
                         var unit = (projectile.rotation - MathHelper.PiOver4).ToRotationVector2();
                         var center = projectile.Center - Main.screenPosition;
                         spriteBatch.Draw(projectileTexture, center - unit * 24, null, mainColor with { A = 0 }, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), scaleVec * new Vector2(.75f, 1.5f), SpriteEffects.None, 0f);
@@ -496,11 +503,11 @@ namespace CoolerItemVisualEffect
                         for (int n = 0; n < 4; n++)
                         {
                             var offset = Main.rand.NextVector2Unit() * Main.rand.NextFloat(Main.rand.NextFloat(12f)) - projectile.velocity * 3;
-                            spriteBatch.Draw(projTex, center + offset, rect, Color.White with { A = 0 } * .5f, projectile.rotation, (rect != null ? rect.Value.Size() : projTex.Size()) * .5f, 1f, 0, 0);
+                            spriteBatch.Draw(projTex, center + offset, rect, Color.White with { A = 0 } * .5f * (1 - projectile.alpha / 255f), projectile.rotation, (rect != null ? rect.Value.Size() : projTex.Size()) * .5f, projectile.scale, 0, 0);
                             //spriteBatch.Draw(projectileTexture, center - unit * 24 + offset, null, mainColor with { A = 0 } * .25f, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), scaleVec * new Vector2(.75f, 1.5f), SpriteEffects.None, 0f);
                             //spriteBatch.Draw(projectileTexture, center - unit * 24 + offset, null, Color.White with { A = 0 } * .25f, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), scaleVec * new Vector2(.5f, 1), SpriteEffects.None, 0f);
                         }
-                        spriteBatch.Draw(projTex, center - projectile.velocity * 3, rect, Color.White with { A = 0 }, projectile.rotation, (rect != null ? rect.Value.Size() : projTex.Size()) * .5f, 1f, 0, 0);
+                        spriteBatch.Draw(projTex, center - projectile.velocity * 3, rect, Color.White with { A = 0 } * (1 - projectile.alpha / 255f), projectile.rotation, (rect != null ? rect.Value.Size() : projTex.Size()) * .5f, projectile.scale, 0, 0);
 
                         return false;//base.PreDraw(projectile,ref lightColor)
                     }

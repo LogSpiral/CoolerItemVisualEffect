@@ -104,7 +104,7 @@ namespace CoolerItemVisualEffect
     }
     public class SkinModifyLayer : PlayerDrawLayer
     {
-        protected override void Draw(ref PlayerDrawSet drawInfo)
+        public override void Draw(ref PlayerDrawSet drawInfo)
         {
             return;
             Player player = drawInfo.drawPlayer;
@@ -255,7 +255,7 @@ namespace CoolerItemVisualEffect
             Main.PlayerRenderer = new CoolerPlayerRender();
             base.Load();
         }
-        protected override void Draw(ref PlayerDrawSet drawInfo)
+        public override void Draw(ref PlayerDrawSet drawInfo)
         {
             return;
             Player player = drawInfo.drawPlayer;

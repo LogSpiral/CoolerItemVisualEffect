@@ -14,6 +14,11 @@ using System.Reflection;
 using Terraria.ModLoader.UI;
 using System.Linq;
 using ReLogic.Graphics;
+using static Terraria.ModLoader.PlayerDrawLayer;
+using Terraria;
+using Humanizer;
+using Terraria.GameContent.UI.Elements;
+using Mono.Cecil;
 
 namespace CoolerItemVisualEffect
 {
@@ -780,6 +785,19 @@ namespace CoolerItemVisualEffect
             贴图生成,
             指定
         }
+        public enum ConfigTexStyle : byte
+        {
+            /*原始*/
+            Origin,
+            /*暗紫*/
+            DarkPurple,
+            /*深色金属*/
+            DarkMetal,
+            /*暗黑*/
+            Dark,
+            Silver,
+            Holy
+        }
         #endregion
 
         #region Config类
@@ -791,6 +809,7 @@ namespace CoolerItemVisualEffect
             [DefaultValue(QualityType.极限ultra)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.1")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.2")]
+            //[CustomModConfigItem(typeof(CoolerEnumElement))]
             [BackgroundColor(248, 0, 255, 255)] public QualityType coolerSwooshQuality = QualityType.极限ultra;
 
             [DefaultValue(true)]
@@ -836,6 +855,7 @@ namespace CoolerItemVisualEffect
             [DefaultValue(SwooshAction.左右横劈_后倾)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.13")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.14")]
+            [CustomModConfigItem(typeof(CoolerEnumElement))]
             [BackgroundColor(206, 0, 255, 255)] public SwooshAction swooshActionStyle = SwooshAction.左右横劈_后倾;
 
             [Increment(1f)]
@@ -843,6 +863,7 @@ namespace CoolerItemVisualEffect
             [Range(0, 11f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.37")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.38")]
+            [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(200, 0, 255, 255)] public float imageIndex = 7;
 
             [Increment(1f)]
@@ -850,18 +871,21 @@ namespace CoolerItemVisualEffect
             [Range(0, 5f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.63")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.64")]
+            [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(194, 0, 255, 255)] public float animateIndex = 3;
 
             [DrawTicks]
             [DefaultValue(SwooshFadeStyle.全部Both)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.59")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.60")]
+            [CustomModConfigItem(typeof(CoolerEnumElement))]
             [BackgroundColor(188, 0, 255, 255)] public SwooshFadeStyle fadeStyle = SwooshFadeStyle.全部Both;
 
             [DrawTicks]
             [DefaultValue(SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.61")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.62")]
+            [CustomModConfigItem(typeof(CoolerEnumElement))]
             [BackgroundColor(182, 0, 255, 255)] public SwooshGrowStyle growStyle = SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest;
             #endregion
 
@@ -872,6 +896,7 @@ namespace CoolerItemVisualEffect
             [Range(0.5f, 3f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.15")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.16")]
+            [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(176, 0, 255, 255)] public float swooshSize = 1f;
 
             [DefaultValue(10f)]
@@ -879,6 +904,7 @@ namespace CoolerItemVisualEffect
             [Increment(1f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.55")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.56")]
+            [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(170, 0, 255, 255)] public float swooshTimeLeft = 10f;
 
             [Increment(0.05f)]
@@ -886,6 +912,7 @@ namespace CoolerItemVisualEffect
             [Range(0f, 1f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.35")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.36")]
+            [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(164, 0, 255, 255)] public float shake = 0.1f;
             #endregion
 
@@ -902,6 +929,7 @@ namespace CoolerItemVisualEffect
             [Range(2f, 10f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.89")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.90")]
+            [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(152, 0, 255, 255)] public float swingAttackTime = 8f;
 
             [Increment(0.05f)]
@@ -909,6 +937,7 @@ namespace CoolerItemVisualEffect
             [Range(0f, 1f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.45")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.46")]
+            [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(146, 0, 255, 255)] public float glowLight = 0.1f;
             #endregion
 
@@ -936,6 +965,7 @@ namespace CoolerItemVisualEffect
             [DefaultValue(SwooshColorType.热度图)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.7")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.8")]
+            [CustomModConfigItem(typeof(CoolerEnumElement))]
             [BackgroundColor(112, 0, 255, 255)] public SwooshColorType swooshColorType = SwooshColorType.热度图;
             #endregion
 
@@ -946,6 +976,7 @@ namespace CoolerItemVisualEffect
             [Range(0f, 3f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.83")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.84")]
+            [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(96, 0, 255, 255)] public float alphaFactor = 1.5f;
 
             [Increment(0.05f)]
@@ -953,6 +984,7 @@ namespace CoolerItemVisualEffect
             [DefaultValue(0.2f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.5")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.6")]
+            [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(80, 0, 255, 255)] public float isLighterDecider = 0.2f;
             #endregion
 
@@ -1005,12 +1037,14 @@ namespace CoolerItemVisualEffect
             [DefaultValue(HeatMapCreateStyle.函数生成)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.87")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.88")]
+            [CustomModConfigItem(typeof(CoolerEnumElement))]
             [BackgroundColor(0, 13, 255, 255)] public HeatMapCreateStyle heatMapCreateStyle = HeatMapCreateStyle.函数生成;
 
             [DrawTicks]
             [DefaultValue(HeatMapFactorStyle.线性Linear)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.79")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.80")]
+            [CustomModConfigItem(typeof(CoolerEnumElement))]
             [BackgroundColor(0, 26, 255, 255)] public HeatMapFactorStyle heatMapFactorStyle = HeatMapFactorStyle.线性Linear;
             #endregion
 
@@ -1021,6 +1055,7 @@ namespace CoolerItemVisualEffect
             [Range(-1f, 1f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.17")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.18")]
+            [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(0, 39, 255, 255)] public float hueOffsetRange = 0.2f;
 
             [DefaultValue(0f)]
@@ -1028,6 +1063,7 @@ namespace CoolerItemVisualEffect
             [Range(0f, 1f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.19")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.20")]
+            [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(0, 42, 255, 255)] public float hueOffsetValue = 0f;
 
             [DefaultValue(5f)]
@@ -1035,6 +1071,7 @@ namespace CoolerItemVisualEffect
             [Range(0f, 5f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.21")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.22")]
+            [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(0, 64, 255, 255)] public float saturationScalar = 5f;
 
             [DefaultValue(0.2f)]
@@ -1042,6 +1079,7 @@ namespace CoolerItemVisualEffect
             [Range(0f, 1f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.23")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.24")]
+            [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(0, 77, 255, 255)] public float luminosityRange = 0.2f;
 
             [DefaultValue(3.1415f)]
@@ -1049,6 +1087,7 @@ namespace CoolerItemVisualEffect
             [Increment(0.05f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.53")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.54")]
+            [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(0, 90, 255, 255)] public float directOfHeatMap = MathHelper.Pi;
 
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.81")]
@@ -1074,6 +1113,7 @@ namespace CoolerItemVisualEffect
             [Range(0f, 1f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.25")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.26")]
+            [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(0, 153, 255, 255)] public float luminosityFactor = 0f;
 
             [Increment(0.05f)]
@@ -1081,6 +1121,7 @@ namespace CoolerItemVisualEffect
             [Range(-1f, 1f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.29")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.30")]
+            [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(0, 178, 255, 255)] public float distortFactor = 0.05f;
 
             [Increment(0.05f)]
@@ -1088,12 +1129,14 @@ namespace CoolerItemVisualEffect
             [Range(0.5f, 3f)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.65")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.66")]
+            [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(0, 203, 255, 255)] public float distortSize = 1.5f;
 
             [DefaultValue(1)]
             [Range(1, 10)]
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.51")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.52")]
+            [CustomModConfigItem(typeof(CoolerIntElement))]
             [BackgroundColor(0, 228, 255, 255)] public int maxCount = 1;
             #endregion
         }
@@ -1122,6 +1165,7 @@ namespace CoolerItemVisualEffect
             [Tooltip("$Mods.CoolerItemVisualEffect.Config.12")]
             [Slider]
             [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerFloatElement))]
             public float weaponScale = 1f;
 
             [DefaultValue(HitBoxStyle.弹幕Projectile)]
@@ -1129,6 +1173,7 @@ namespace CoolerItemVisualEffect
             [Label("$Mods.CoolerItemVisualEffect.Config.33")]
             [Tooltip("$Mods.CoolerItemVisualEffect.Config.34")]
             [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerEnumElement))]
             public HitBoxStyle hitBoxStyle = HitBoxStyle.弹幕Projectile;
 
             [DefaultValue(true)]
@@ -1177,8 +1222,11 @@ namespace CoolerItemVisualEffect
 
             #region 样式设置
             [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D2")]
-            [JsonIgnore]
-            int meanless;
+            [Label("设置样式ConfigStyle")]
+            [BackgroundColor(0, 255, 255, 255)]
+            [DefaultValue(ConfigTexStyle.Dark)]
+            [CustomModConfigItem(typeof(CoolerEnumElement))]
+            public ConfigTexStyle texStyle { get; set; } = ConfigTexStyle.Dark;
 
             [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.47")]
 
@@ -1405,6 +1453,7 @@ namespace CoolerItemVisualEffect
             [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.85")]
             [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.86")]
             [BackgroundColor(0, 255, 255, 255)]
+            [CustomModConfigItem(typeof(CoolerFloatElement))]
             public float dustQuantity = .75f;
             #endregion
 
@@ -1413,146 +1462,670 @@ namespace CoolerItemVisualEffect
             {
                 get
                 {
-                    return (ConfigurationSwoosh)(UIModConfigType?.GetField("pendingConfig", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(uiModConfigInstance)) ?? ConfigSwooshInstance;
+                    //if ((UIModConfigType?.GetField("pendingConfig", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(uiModConfigInstance)) is ConfigurationSwoosh configuration) return configuration;
+                    //externedTheList = false;
+                    //return ConfigSwooshInstance;
+                    return Interface.modConfig.pendingConfig as ConfigurationSwoosh ?? ConfigSwooshInstance;
                 }
             }
+            //[JsonIgnore]
+            //public static bool externedTheList;
         }
         #endregion
 
         #region Element类
-        public class CoolerBoolElement : ConfigElement<bool>
+        public class CoolerConfigElement : ConfigElement
         {
-            private Asset<Texture2D> activeTex;
-            private Asset<Texture2D> containerTex;
-            private int timer;
-            // TODO. Display status string? (right now only on/off texture, but True/False, Yes/No, Enabled/Disabled options)
             public override void OnBind()
             {
+                Height.Set(80, 0);
                 base.OnBind();
-                activeTex = ModContent.Request<Texture2D>("CoolerItemVisualEffect/ConfigTex/Active");
-                containerTex = ModContent.Request<Texture2D>("CoolerItemVisualEffect/ConfigTex/Container");
-                Height.Set(48f, 0);
-                OnClick += (ev, v) => Value = !Value;
             }
-            protected override void DrawSelf(SpriteBatch spriteBatch)
+            public int[] timers = new int[1];
+            public int HoverCounter
             {
-                #region Base
+                get => timers[0];
+                set => timers[0] = value;
+            }
+            public float Scaler => KeepOrigin ? 1f : OverrideScaler;
+            public virtual float OverrideScaler => MathHelper.SmoothStep(1, 1.2f, HoverCounter / 15f);
+            public virtual Color ModifyGlowColor(Color color)
+            {
+                return color;
+            }
+            public virtual float GlowShakingStrength => 0f;
+            public virtual Vector2 OverrideOffsetPosition
+            {
+                get
+                {
+                    if (!IsMouseHovering) return default;
+                    Rectangle rect = GetDimensions().ToRectangle();
+                    Vector2 target = (new Vector2(Main.mouseX, Main.mouseY) - rect.Center()) / new Vector2(rect.Width, rect.Height) * 2;
+                    Vector2 result = new Vector2(MathHelper.SmoothStep(0, 1, Math.Abs(target.X)) * Math.Sign(target.X), MathHelper.SmoothStep(0, 1, Math.Abs(target.Y))* Math.Sign(target.Y));
+                    result *= rect.Size();
+                    result *= new Vector2(0.0625f, 0.25f);
+                    //float right = (464f - rect.Width) / 2;
+                    //if (result.X > right) result.X = right;
+                    return result;
+                    //Vector2 result = rect.Center();
+                    //return (new Vector2(Main.mouseX, Main.mouseY) - result) * .0625f;
+                }
+            }
+            public Vector2 OffsetPosition
+            {
+                get
+                {
+                    if (KeepOrigin) return default;
+                    return currentOffset = Vector2.Lerp(currentOffset, OverrideOffsetPosition, 0.05f);
+                }
+            }
+            public Vector2 currentOffset
+            {
+                get;
+                private set;
+            }
+            public override void DrawSelf(SpriteBatch spriteBatch)
+            {
+                #region 魔改列表间距
+                //if (!OtherConfigs.externedTheList)
+                {
+                    var parent = Parent.Parent.Parent;
+                    if (parent != null)
+                    {
+                        if (parent is UIList list)
+                        {
+                            if (list != null)
+                            {
+                                CoolerItemVisualEffect.currentList = list;
+                                list.ListPadding = 16;
+                                list.Recalculate();
+                                list.RecalculateChildren();
+                                //OtherConfigs.externedTheList = true;
+                            }
+                        }
+                    }
+                }
+
+                #endregion
+                #region 框框和label的绘制
+                HoverCounter += IsMouseHovering ? 1 : -1;
+                HoverCounter = (int)MathHelper.Clamp(HoverCounter, 0, 15);
                 CalculatedStyle dimensions = GetDimensions();
-                float num = dimensions.Width - 1f;
-                Vector2 vector = new Vector2(dimensions.X, dimensions.Y);
-                Vector2 baseScale = new Vector2(0.8f);
-                Color baseColor = (base.IsMouseHovering ? Color.White : Color.White);
+                float width = dimensions.Width - 1f;
+                Color baseColor = (base.IsMouseHovering ? Color.White : Color.White * .9f);
                 if (!MemberInfo.CanWrite)
                 {
                     baseColor = Color.Gray;
                 }
                 Color mainColor = BackgroundColorAttribute.Color;
-
-                Color color = (base.IsMouseHovering ? mainColor : mainColor.MultiplyRGBA(new Color(180, 180, 180)));
-                Vector2 position = vector;
-                DrawPanel2(spriteBatch, position, TextureAssets.SettingsPanel.Value, num, dimensions.Height, color);
+                ConfigTexStyle configTexStyle = ConfigSwooshInstance.otherConfigs.texStyle;
+                float factor = HoverCounter / 15f;
+                Color color = (mainColor * MathHelper.SmoothStep(0.705f, 1f, factor)) with { A = mainColor.A };
+                var rect = dimensions.ToRectangle();
+                DrawCoolerPanelForConfig(spriteBatch, ref rect, KeepOrigin ? color : ModifyGlowColor(color), Scaler, OffsetPosition, GlowShakingStrength, configTexStyle);
                 if (DrawLabel)
                 {
-                    position.X += 8f;
-                    position.Y += 8f;
-                    ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, TextDisplayFunction(), position, baseColor, 0f, Vector2.Zero, baseScale, num);
+                    var position = rect.TopLeft() + new Vector2(32) * Scaler;
+                    DrawCoolerColorCodedStringWithShadow(spriteBatch, currentStyleTex, FontAssets.ItemStack.Value, TextDisplayFunction(), position, Color.White, baseColor, 0f, Vector2.Zero, Vector2.One * Scaler, configTexStyle, width);
                 }
-
-
                 #endregion
+                #region Tooltip
+                if (IsMouseHovering && TooltipFunction != null)//由于很迫真的原因，只能通过反射赋值了（感谢紫幽，这里可以直接赋值了\紫幽/\紫幽/\紫幽/\紫幽/\紫幽/\紫幽/\紫幽/
+                {
+                    UIModConfig.Tooltip = TooltipFunction();
+                    //Type uimodconfigType = UIModConfigType;
+                    //if (uimodconfigType != null)
+                    //{
+                    //    var prop = uimodconfigType.GetProperty("Tooltip", BindingFlags.Static | BindingFlags.Public);
+                    //    if (prop != null)
+                    //    {
+                    //        var str = TooltipFunction();
+                    //        prop.SetValue(null, str);
+                    //    }
+                    //    else
+                    //    {
+                    //        _ = 0;
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    Vector2 texVec = new Vector2(dimensions.X + dimensions.Width - 72, dimensions.Y + dimensions.Height * .5f);
+                    //    ChatManager.DrawColorCodedString(spriteBatch, FontAssets.ItemStack.Value, typeof(ConfigElement).Assembly.FullName, texVec - new Vector2(384, 0), Color.White, 0f, Vector2.Zero, new Vector2(0.8f));
+                    //}
+                }
+                #endregion
+            }
+        }
+        public class CoolerConfigElement<T> : CoolerConfigElement
+        {
+            protected virtual T Value
+            {
+                get => (T)GetObject();
+                set => SetObject(value);
+            }
+        }
+        public class CoolerBoolElement : CoolerConfigElement<bool>
+        {
+            private Asset<Texture2D> activeTex;
+            private Asset<Texture2D> containerTex;
+            public int ActiveCounter
+            {
+                get => timers[1];
+                set => timers[1] = value;
+            }
+            public float Factor => MathHelper.SmoothStep(0, 1, ActiveCounter / 15f);
+            public override Color ModifyGlowColor(Color color) => color with { A = 0 } * Factor;
+            public override float GlowShakingStrength => Factor;
+            public override Vector2 OverrideOffsetPosition => base.OverrideOffsetPosition;
+            public override float OverrideScaler => base.OverrideScaler;
+            public override void OnBind()
+            {
+                base.OnBind();
+                timers = new int[2];
+                activeTex = ModContent.Request<Texture2D>("CoolerItemVisualEffect/ConfigTex/Active");
+                containerTex = ModContent.Request<Texture2D>("CoolerItemVisualEffect/ConfigTex/Container");
+                OnClick += (ev, v) => Value = !Value;
+            }
+            public override void DrawSelf(SpriteBatch spriteBatch)
+            {
+                base.DrawSelf(spriteBatch);
 
 
+                CalculatedStyle dimensions = GetDimensions();
+                Rectangle rectangle = dimensions.ToRectangle();
+                rectangle.Offset(OffsetPosition.ToPoint());
+                float scaler = Scaler;
+                rectangle = Utils.CenteredRectangle(rectangle.Center(), rectangle.Size() * scaler);
+                Color mainColor = BackgroundColorAttribute.Color;
+                #region 开关文本绘制
                 //CalculatedStyle dimensions = base.GetDimensions();
-                timer += Value ? 1 : -1;
-                timer = (int)MathHelper.Clamp(timer, 0, 15);
-                Vector2 texVec = new Vector2(dimensions.X + dimensions.Width - 72, dimensions.Y + dimensions.Height * .5f);
-                float factor = MathHelper.SmoothStep(0, 1, timer / 15f);
-                Vector2 drawPosition = new Vector2(dimensions.X + dimensions.Width - 32f, dimensions.Y + dimensions.Height * .5f);
-                if (timer != 0)
+                ActiveCounter += Value ? 1 : -1;
+                ActiveCounter = (int)MathHelper.Clamp(ActiveCounter, 0, 15);
+                var font = FontAssets.ItemStack.Value;
+                var text = Value ? Lang.menu[126].Value : Lang.menu[124].Value;
+                Vector2 texVec = new Vector2(rectangle.X + rectangle.Width - 80 * scaler, rectangle.Y + rectangle.Height * .5f);
+                float factor = Factor;
+                Vector2 drawPosition = new Vector2(rectangle.X + rectangle.Width - 32f * scaler, rectangle.Y + rectangle.Height * .5f);
+                float angle = 0f;
+                //var resultVec = ChatManager.DrawColorCodedString(spriteBatch, font, text, texVec, Color.Transparent, angle, Vector2.Zero, new Vector2(0.8f) * scaler);
+                DrawCoolerTextBox(spriteBatch, currentStyleTex, font, text, texVec, Color.White, angle, default, scaler * new Vector2(0.8f), ConfigSwooshInstance.otherConfigs.texStyle);
+                if (ActiveCounter != 0)
                 {
                     for (int n = 0; n < 4; n++)
-                        ChatManager.DrawColorCodedString(spriteBatch, FontAssets.ItemStack.Value, Value ? Lang.menu[126].Value : Lang.menu[124].Value, texVec + Main.rand.NextFloat(0, factor * 4) * Main.rand.NextVector2Unit(), mainColor with { A = 0 } * .25f * factor, 0f, Vector2.Zero, new Vector2(0.8f));
+                        ChatManager.DrawColorCodedString(spriteBatch, font, text, texVec + Main.rand.NextFloat(0, factor * 4) * Main.rand.NextVector2Unit(), mainColor with { A = 0 } * .25f * factor, angle, Vector2.Zero, Vector2.One * scaler);
                 }
                 if (factor != 1)
                 {
-                    ChatManager.DrawColorCodedStringShadow(spriteBatch, FontAssets.ItemStack.Value, Value ? Lang.menu[126].Value : Lang.menu[124].Value, texVec, Color.Black * (1 - factor), 0f, Vector2.Zero, new Vector2(0.8f));
+                    ChatManager.DrawColorCodedStringShadow(spriteBatch, font, text, texVec, Color.Black * (1 - factor), angle, Vector2.Zero, Vector2.One * scaler);
                 }
-                ChatManager.DrawColorCodedString(spriteBatch, FontAssets.ItemStack.Value, Value ? Lang.menu[126].Value : Lang.menu[124].Value, texVec, Color.White, 0f, Vector2.Zero, new Vector2(0.8f));
-                //ChatManager.DrawColorCodedString(spriteBatch, FontAssets.ItemStack.Value, flag.ToString(), texVec - new Vector2(96,0), Color.White, 0f, Vector2.Zero, new Vector2(0.8f));
+                ChatManager.DrawColorCodedString(spriteBatch, font, text, texVec, Color.White, angle, Vector2.Zero, Vector2.One * scaler);
+                ////ChatManager.DrawColorCodedString(spriteBatch, FontAssets.ItemStack.Value, flag.ToString(), texVec - new Vector2(96, 0), Color.White, 0f, Vector2.Zero, new Vector2(0.8f));
 
-                spriteBatch.Draw(containerTex.Value, drawPosition, null, Color.White with { A = 0 }, Main.GlobalTimeWrappedHourly * MathHelper.Pi, containerTex.Size() * .5f, 128 / 3 / 236f, SpriteEffects.None, 0f);
-                if (timer != 0)
-                    spriteBatch.Draw(activeTex.Value, drawPosition, null, Color.White with { A = 0 } * factor, -Main.GlobalTimeWrappedHourly * MathHelper.TwoPi, activeTex.Size() * .5f, 64 / 400f, SpriteEffects.None, 0f);
+                #endregion
+                #region 开关特效绘制
+                if (currentStyleTex != null)
+                {
+                    spriteBatch.Draw(currentStyleTex, drawPosition, new Rectangle(84, 0, 40, 40), Color.White, 0, new Vector2(20), .8f * scaler, 0, 0);
+                }
+                spriteBatch.Draw(containerTex.Value, drawPosition, null, Color.White with { A = 0 }, Main.GlobalTimeWrappedHourly * MathHelper.Pi, containerTex.Size() * .5f, 128 / 3 / 236f * scaler, SpriteEffects.None, 0f);
+                var vec = new Vector2(1, 0);
+                for (int n = 0; n < 4; n++)
+                {
+                    spriteBatch.Draw(containerTex.Value, drawPosition + vec, null, mainColor with { A = 0 }, Main.GlobalTimeWrappedHourly * MathHelper.Pi, containerTex.Size() * .5f, 128 / 3 / 236f * scaler, SpriteEffects.None, 0f);
+                    vec = new Vector2(-vec.Y, vec.X);
+                }
+                if (ActiveCounter != 0)
+                {
+                    spriteBatch.Draw(activeTex.Value, drawPosition, null, Color.White with { A = 0 } * factor, -Main.GlobalTimeWrappedHourly * MathHelper.TwoPi, activeTex.Size() * .5f, 64 / 400f * scaler, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(activeTex.Value, drawPosition, null, mainColor with { A = 0 } * factor, -Main.GlobalTimeWrappedHourly * MathHelper.Pi * 3, activeTex.Size() * .5f, 56 / 400f * scaler, SpriteEffects.None, 0f);
+                }
+                #endregion
                 //spriteBatch.Draw(TextureAssets.Item[4956].Value, new Vector2(960, drawPosition.Y) + (Main.GlobalTimeWrappedHourly).ToRotationVector2() * 256, Color.White);
                 //Parent.OverflowHidden = false;
-                if (IsMouseHovering && TooltipFunction != null)
+            }
+        }
+        public class CoolerEnumElement : CoolerConfigElement
+        {
+            private string[] valueStrings;
+            private int max;
+            private float maxWidth;
+            private int Value
+            {
+                get
                 {
-                    //UIModConfig.Tooltip = TooltipFunction();
-                    //Type uimodconfigType = typeof(ConfigElement).Assembly.GetType("UIModConfig");
-                    Type uimodconfigType = UIModConfigType;
-                    if (uimodconfigType != null)
-                    {
-                        var prop = uimodconfigType.GetProperty("Tooltip", BindingFlags.Static | BindingFlags.Public);
-                        if (prop != null)
-                        {
-                            var str = TooltipFunction();
-                            prop.SetValue(null, str);
-                        }
-                        else
-                        {
-                            _ = 0;
-                        }
-                    }
-                    else
-                    {
-                        //_ = 0;
-                        ChatManager.DrawColorCodedString(spriteBatch, FontAssets.ItemStack.Value, typeof(ConfigElement).Assembly.FullName, texVec - new Vector2(384, 0), Color.White, 0f, Vector2.Zero, new Vector2(0.8f));
-
-                    }
-                    //UICommon.DrawHoverStringInBounds(spriteBatch, TooltipFunction(), new Rectangle(0,0,1920,1120));
-
+                    int result = Array.IndexOf(Enum.GetValues(MemberInfo.Type), MemberInfo.GetValue(Item)); ;
+                    return result;
                 }
+                set
+                {
+                    if (!MemberInfo.CanWrite)
+                        return;
+                    value %= max;
+                    if (value < 0) value += max;
+                    //int current = Value;
+                    //int hash = GetHashCode();
+                    MemberInfo.SetValue(Item, Enum.GetValues(MemberInfo.Type).GetValue(value));
+                    //current= Value;
+                    //_ = 0;
+                    Interface.modConfig.SetPendingChanges();
+                }
+            }
+            public override void OnBind()
+            {
+                base.OnBind();
+                Height.Set(160, 0);
+                timers = new int[2];
+                #region 获取所有枚举名
+                valueStrings = Enum.GetNames(MemberInfo.Type);
+                var font = FontAssets.ItemStack.Value;
+
+                for (int i = 0; i < valueStrings.Length; i++)
+                {
+                    var enumFieldMemberInfo = MemberInfo.Type.GetMember(valueStrings[i]).FirstOrDefault();
+                    if (enumFieldMemberInfo != null)
+                    {
+                        valueStrings[i] = ((LabelAttribute)Attribute.GetCustomAttribute(enumFieldMemberInfo, typeof(LabelAttribute)))?.Label ?? valueStrings[i];
+                    }
+                    var width = font.MeasureString(valueStrings[i]).X;
+                    if (width > maxWidth) maxWidth = width;
+                }
+                max = valueStrings.Length;
+                var currentLeft = GetDimensions().X;
+                var totalWidth = maxWidth + 192 + FontAssets.ItemStack.Value.MeasureString(TextDisplayFunction()).X;
+                if (totalWidth > 530)
+                {
+                    MaxWidth.Set(totalWidth, 0);
+                    Width.Set(totalWidth, 0);
+                    Left.Set(currentLeft - totalWidth + 530 + 20, 0);
+                }
+                #endregion
+                //OnClick += (ev, v) =>
+                //{
+                //    Value++;
+                //    timers[1] += 15;
+                //};
+                //OnRightClick += (ev, v) =>
+                //{
+                //    Value--;
+                //    timers[1] -= 15;
+                //};
+                OnUpdate += (a) =>
+                {
+                    if (timers[1] > 0) timers[1]--;
+                    if (timers[1] < 0) timers[1]++;
+                    if (IsMouseHovering)
+                    {
+                        if (PlayerInput.Triggers.Current.MouseLeft && timers[1] <= 0)
+                        {
+                            Value++;
+                            timers[1] += 15;
+                        }
+                        if (PlayerInput.Triggers.Current.MouseRight && timers[1] >= 0)
+                        {
+                            Value--;
+                            timers[1] -= 15;
+                        }
+                    }
+
+                };
+                //OnMouseDown += (ev, v) =>
+                //{
+                //    Value++;
+                //    timers[1] += 15;
+                //};
+            }
+
+            public override void DrawSelf(SpriteBatch spriteBatch)
+            {
+                base.DrawSelf(spriteBatch);
+                CalculatedStyle dimensions = GetDimensions();
+                Rectangle rectangle = dimensions.ToRectangle();
+                rectangle.Offset(OffsetPosition.ToPoint());
+                float scaler = Scaler;
+                rectangle = Utils.CenteredRectangle(rectangle.Center(), rectangle.Size() * scaler);
+                var font = FontAssets.ItemStack.Value;
+                Vector2 texVec = new Vector2(rectangle.X + rectangle.Width + (-maxWidth - 64) * scaler, rectangle.Y + rectangle.Height * .5f);
+                var texture = currentStyleTex;
+                var style = ConfigSwooshInstance.otherConfigs.texStyle;
+                #region 底
+                //if (!KeepOrigin)
+                //{
+                //    Vector2 boxScaler = (new Vector2(maxWidth + 32, 120)) / new Vector2(16, 10) * scaler;
+                //    var boxVec = texVec + new Vector2(-16, -60) * scaler;
+                //    spriteBatch.Draw(texture, boxVec, new Rectangle(308, 0, 16, 40), Color.White, 0, new Vector2(0, 13.5f), boxScaler * new Vector2(0.875f, 1f), 0, 0);
+                //    spriteBatch.Draw(texture, boxVec, new Rectangle(294, 0, 14, 40), Color.White, 0, new Vector2(14, 13.5f), new Vector2(MathF.Sqrt(boxScaler.X), boxScaler.Y), 0, 0);
+                //    spriteBatch.Draw(texture, boxVec, new Rectangle(324, 0, 10, 40), Color.White, 0, new Vector2(-8 * MathF.Sqrt(boxScaler.X), 13.5f), new Vector2(MathF.Sqrt(boxScaler.X) * 1.75f, boxScaler.Y), 0, 0);
+                //}
+                //Vector2 boxScaler = (new Vector2(maxWidth + 40, 128)) / new Vector2(28) * scaler;
+                var boxVec = texVec + new Vector2(-20, -64) * scaler;
+                var mainColor = BackgroundColorAttribute.Color;
+                //spriteBatch.Draw(Main.Assets.Request<Texture2D>("Images/UI/HotbarRadial_1").Value, boxVec, new Rectangle(4, 4, 28, 28), mainColor with { A = 0 }, 0, default, boxScaler, 0, 0);
+                //boxScaler = (new Vector2(maxWidth + 48, 136)) / new Vector2(80) * scaler;
+                //boxVec = texVec + new Vector2(-24, -68) * scaler;
+                //spriteBatch.Draw(Main.Assets.Request<Texture2D>("Images/UI/Achievement_Borders_MouseHover").Value, boxVec, null, Color.Lerp(Color.White, mainColor, .5f) with { A = 0 }, 0, default, boxScaler, 0, 0);
+                Rectangle _rect = new Rectangle((int)boxVec.X, (int)boxVec.Y, (int)((maxWidth + 40) * scaler), (int)(128 * scaler));
+                DrawCoolerPanelForConfig(spriteBatch, ref _rect, Main.Assets.Request<Texture2D>("Images/UI/HotbarRadial_1").Value, new Rectangle(4, 4, 28, 28), new Vector2(28, 28), mainColor with { A = 0 }, Color.White, 1f);
+                //DrawCoolerPanel_BackGround(spriteBatch, Main.Assets.Request<Texture2D>("Images/UI/HotbarRadial_1").Value, _rect.TopLeft(), new Rectangle(4, 4, 28, 28),)
+                #endregion
+                for (int n = -2; n < 3; n++)
+                {
+                    float factor = n + timers[1] / 15f;
+                    //factor %= 5;
+                    //if (factor < 0) factor += 5;
+                    //factor -= 2;
+                    if (factor > 2 || factor < -2) continue;
+                    var offsetY = MathF.Sin(factor / 2 * MathHelper.PiOver2);
+                    var index = Value + n;
+                    index %= max;
+                    if (index < 0) index += max;
+                    var scale = MathF.Sqrt(1 - offsetY * offsetY);
+
+                    var position = texVec + offsetY * 72 * Vector2.UnitY * scaler;
+                    var text = valueStrings[index];
+                    var size = new Vector2(maxWidth, font.MeasureString(text).Y);
+                    var scalesqr = scale * scale;
+                    Vector2 _boxScaler = (size) / new Vector2(16, 10) * scaler * new Vector2(1f, scalesqr);
+                    var color = mainColor with { A = 0 } * scalesqr;
+                    spriteBatch.Draw(texture, position, new Rectangle(182, 0, 16, 40), color, 0, new Vector2(0, 13.5f), _boxScaler * new Vector2(0.875f, 1f), 0, 0);
+                    spriteBatch.Draw(texture, position, new Rectangle(172, 0, 14, 40), color, 0, new Vector2(14, 13.5f), new Vector2(MathF.Sqrt(_boxScaler.X), _boxScaler.Y), 0, 0);
+                    spriteBatch.Draw(texture, position, new Rectangle(198, 0, 10, 40), color, 0, new Vector2(-8 * MathF.Sqrt(_boxScaler.X), 13.5f), new Vector2(MathF.Sqrt(_boxScaler.X) * 1.75f, _boxScaler.Y), 0, 0);
+
+                    DrawCoolerColorCodedStringWithShadow(spriteBatch, texture, font, text, position, Color.White * scalesqr, Color.White * scalesqr, 0, default, new Vector2(.8f) * scaler * scale, style);
+                    //spriteBatch.Draw(TextureAssets.MagicPixel.Value, texVec + offsetY * 72 * Vector2.UnitY * scaler, new Rectangle(0, 0, 1, 1), Color.Red, 0, new Vector2(.5f), 4f, 0, 0);
+                }
+                if (MemberInfo.Type.Equals(typeof(ConfigTexStyle)))
+                {
+                    ConfigSwooshInstance.otherConfigs.texStyle = (ConfigTexStyle)Value;
+                }
+                //DrawCoolerColorCodedStringWithShadow(spriteBatch, texture, font, (ConfigSwooshInstance.otherConfigs.texStyle, (Interface.modConfig.pendingConfig as ConfigurationSwoosh ?? ConfigSwooshInstance).otherConfigs.texStyle).ToString(), texVec + new Vector2(256 * scaler, 0), Color.White, Color.White, 0, default, Vector2.One * scaler, style); ;
+
+            }
+        }
+        public abstract class CoolerRangeElement : CoolerConfigElement
+        {
+            private static CoolerRangeElement rightLock;
+            private static CoolerRangeElement rightHover;
+
+            protected Color SliderColor { get; set; } = Color.White;
+            protected Utils.ColorLerpMethod ColorMethod { get; set; }
+
+            internal bool DrawTicks { get; set; }
+
+            public abstract int NumberTicks { get; }
+            public abstract float TickIncrement { get; }
+
+            protected abstract float Proportion { get; set; }
+
+            public CoolerRangeElement()
+            {
+                ColorMethod = new Utils.ColorLerpMethod((percent) => Color.Lerp(Color.Black, SliderColor, percent));
+            }
+
+            public override void OnBind()
+            {
+                base.OnBind();
+
+                DrawTicks = Attribute.IsDefined(MemberInfo.MemberInfo, typeof(DrawTicksAttribute));
+                SliderColor = ConfigManager.GetCustomAttribute<SliderColorAttribute>(MemberInfo, Item, List)?.Color ?? Color.White;
+            }
+
+            public float DrawValueBar(SpriteBatch sb, float scale, float perc, int lockState = 0, Utils.ColorLerpMethod colorMethod = null)
+            {
+                perc = Utils.Clamp(perc, -.05f, 1.05f);
+
+                if (colorMethod == null)
+                    colorMethod = new Utils.ColorLerpMethod(Utils.ColorLerp_BlackToWhite);
+
+                Texture2D colorBarTexture = TextureAssets.ColorBar.Value;
+                Vector2 vector = new Vector2((float)colorBarTexture.Width, (float)colorBarTexture.Height) * scale;
+                IngameOptions.valuePosition.X -= (float)((int)vector.X);
+                Rectangle rectangle = new Rectangle((int)IngameOptions.valuePosition.X, (int)IngameOptions.valuePosition.Y - (int)vector.Y / 2, (int)vector.X, (int)vector.Y);
+                Rectangle destinationRectangle = rectangle;
+                int num = 167;
+                float num2 = rectangle.X + 5f * scale;
+                float num3 = rectangle.Y + 4f * scale;
+
+                if (DrawTicks)
+                {
+                    int numTicks = NumberTicks;
+                    if (numTicks > 1)
+                    {
+                        for (int tick = 0; tick < numTicks; tick++)
+                        {
+                            float percent = tick * TickIncrement;
+
+                            if (percent <= 1f)
+                                sb.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)(num2 + num * percent * scale), rectangle.Y - 2, 2, rectangle.Height + 4), Color.White);
+                        }
+                    }
+                }
+
+                sb.Draw(colorBarTexture, rectangle, Color.White);
+
+                for (float num4 = 0f; num4 < (float)num; num4 += 1f)
+                {
+                    float percent = num4 / (float)num;
+                    sb.Draw(TextureAssets.ColorBlip.Value, new Vector2(num2 + num4 * scale, num3), null, colorMethod(percent), 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                }
+
+                rectangle.Inflate((int)(-5f * scale), 2);
+
+                //rectangle.X = (int)num2;
+                //rectangle.Y = (int)num3;
+
+                bool flag = rectangle.Contains(new Point(Main.mouseX, Main.mouseY));
+
+                if (lockState == 2)
+                {
+                    flag = false;
+                }
+
+                if (flag || lockState == 1)
+                {
+                    sb.Draw(TextureAssets.ColorHighlight.Value, destinationRectangle, Main.OurFavoriteColor);
+                }
+
+                var colorSlider = TextureAssets.ColorSlider.Value;
+
+                sb.Draw(colorSlider, new Vector2(num2 + 167f * scale * perc, num3 + 4f * scale), null, Color.White, 0f, colorSlider.Size() * 0.5f, scale, SpriteEffects.None, 0f);
+
+                if (Main.mouseX >= rectangle.X && Main.mouseX <= rectangle.X + rectangle.Width)
+                {
+                    IngameOptions.inBar = flag;
+                    return (Main.mouseX - rectangle.X) / (float)rectangle.Width;
+                }
+
+                IngameOptions.inBar = false;
+
+                if (rectangle.X >= Main.mouseX)
+                {
+                    return 0f;
+                }
+
+                return 1f;
+            }
+
+            public override void DrawSelf(SpriteBatch spriteBatch)
+            {
+                base.DrawSelf(spriteBatch);
+
+                float num = 6f;
+                int num2 = 0;
+
+                rightHover = null;
+
+                if (!Main.mouseLeft)
+                {
+                    rightLock = null;
+                }
+
+                if (rightLock == this)
+                {
+                    num2 = 1;
+                }
+                else if (rightLock != null)
+                {
+                    num2 = 2;
+                }
+
+                CalculatedStyle dimensions = GetDimensions();
+                float num3 = dimensions.Width + 1f;
+                Vector2 vector = new Vector2(dimensions.X, dimensions.Y);
+                bool flag2 = IsMouseHovering;
+
+                if (num2 == 1)
+                {
+                    flag2 = true;
+                }
+
+                if (num2 == 2)
+                {
+                    flag2 = false;
+                }
+
+                Vector2 vector2 = vector;
+                vector2.X += 8f;
+                vector2.Y += 2f + num;
+                vector2.X -= 17f;
+                //TextureAssets.ColorBar.Value.Frame(1, 1, 0, 0);
+                vector2 = new Vector2(dimensions.X + dimensions.Width - 10f, dimensions.Y + 10f + num);
+                IngameOptions.valuePosition = vector2;
+                float obj = DrawValueBar(spriteBatch, 1f, Proportion, num2, ColorMethod);
+
+                if (IngameOptions.inBar || rightLock == this)
+                {
+                    rightHover = this;
+                    if (PlayerInput.Triggers.Current.MouseLeft && rightLock == this)
+                    {
+                        Proportion = obj;
+                    }
+                }
+
+                if (rightHover != null && rightLock == null && PlayerInput.Triggers.JustPressed.MouseLeft)
+                {
+                    rightLock = rightHover;
+                }
+            }
+        }
+        public abstract class CoolerPrimitiveRangeElement<T> : CoolerRangeElement where T : IComparable<T>
+        {
+            public T Min { get; set; }
+            public T Max { get; set; }
+            public T Increment { get; set; }
+            public IList<T> TList { get; set; }
+
+            public override void OnBind()
+            {
+                base.OnBind();
+
+                TList = (IList<T>)List;
+                TextDisplayFunction = () => MemberInfo.Name + ": " + GetValue();
+
+                if (TList != null)
+                {
+                    TextDisplayFunction = () => Index + 1 + ": " + TList[Index];
+                }
+
+                if (LabelAttribute != null)
+                { // Problem with Lists using ModConfig Label.
+                    TextDisplayFunction = () => LabelAttribute.Label + ": " + GetValue();
+                }
+
+                if (RangeAttribute != null && RangeAttribute.Min is T && RangeAttribute.Max is T)
+                {
+                    Min = (T)RangeAttribute.Min;
+                    Max = (T)RangeAttribute.Max;
+                }
+                if (IncrementAttribute != null && IncrementAttribute.Increment is T)
+                {
+                    Increment = (T)IncrementAttribute.Increment;
+                }
+            }
+
+            protected virtual T GetValue() => (T)GetObject();
+
+            protected virtual void SetValue(object value)
+            {
+                if (value is T t)
+                    SetObject(Utils.Clamp(t, Min, Max));
+            }
+        }
+        public class CoolerFloatElement : CoolerPrimitiveRangeElement<float>
+        {
+            public override int NumberTicks => (int)((Max - Min) / Increment) + 1;
+            public override float TickIncrement => (Increment) / (Max - Min);
+
+            protected override float Proportion
+            {
+                get => (GetValue() - Min) / (Max - Min);
+                set => SetValue((float)Math.Round((value * (Max - Min) + Min) * (1 / Increment)) * Increment);
+            }
+
+            public CoolerFloatElement()
+            {
+                Min = 0;
+                Max = 1;
+                Increment = 0.01f;
+            }
+        }
+        public class CoolerIntElement : CoolerPrimitiveRangeElement<int>
+        {
+            public override int NumberTicks => (int)((Max - Min) / Increment) + 1;
+            public override float TickIncrement => (Increment) / (Max - Min);
+
+            protected override float Proportion
+            {
+                get => (GetValue() - Min) / (Max - Min);
+                set => SetValue((float)Math.Round((value * (Max - Min) + Min) * (1 / Increment)) * Increment);
+            }
+
+            public CoolerIntElement()
+            {
+                Min = 0;
+                Max = 1;
+                Increment = 1;
             }
         }
         #endregion
 
         #region 其它函数
-        public static Type UIModConfigType
-        {
-            get
-            {
-                if (uiModConfigType == null || uiModConfigInstance == null)
-                {
-                    var assembly = typeof(ConfigElement).Assembly;
-                    Type[] types;
-                    Type Interface = null;
-                    try
-                    {
-                        types = assembly.GetTypes();
-                    }
-                    catch (ReflectionTypeLoadException e)
-                    {
-                        types = (from Type t in e.Types where t is not null select t).ToArray();
-                    }
-                    foreach (var type in types)
-                    {
-                        if (type.Name == "UIModConfig")
-                        {
-                            uiModConfigType = type;
-                        }
-                        if (type.Name == "Interface")
-                        {
-                            Interface = type;
-                        }
-                        if (uiModConfigType != null && Interface != null) break;
-                    }
-                    uiModConfigInstance = Interface.GetField("modConfig", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
-                }
-                return uiModConfigType;
-            }
-        }
-        static Type uiModConfigType;
-        public static object uiModConfigInstance;
+        public static bool KeepOrigin => ConfigSwooshInstance.otherConfigs.texStyle == 0;
+        //public static Type UIModConfigType
+        //{
+        //    get
+        //    {
+        //        if (uiModConfigType == null || uiModConfigInstance == null)
+        //        {
+        //            var assembly = typeof(ConfigElement).Assembly;
+        //            Type[] types;
+        //            Type Interface = null;
+        //            try
+        //            {
+        //                types = assembly.GetTypes();
+        //            }
+        //            catch (ReflectionTypeLoadException e)
+        //            {
+        //                types = (from Type t in e.Types where t is not null select t).ToArray();
+        //            }
+        //            foreach (var type in types)
+        //            {
+        //                if (type.Name == "UIModConfig")
+        //                {
+        //                    uiModConfigType = type;
+        //                }
+        //                if (type.Name == "Interface")
+        //                {
+        //                    Interface = type;
+        //                }
+        //                if (uiModConfigType != null && Interface != null) break;
+        //            }
+        //            uiModConfigInstance = Interface.GetField("modConfig", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+        //        }
+        //        return uiModConfigType;
+        //    }
+        //}
+        //static Type uiModConfigType;
+        //public static object uiModConfigInstance;
         public static ConfigurationSwoosh SetCSValue(ConfigurationSwoosh cs, PreInstallSwoosh preInstallSwoosh)
         {
             cs.coolerSwooshQuality = QualityType.极限ultra;
@@ -1792,6 +2365,343 @@ namespace CoolerItemVisualEffect
         //{
         //    otherConfigs.configurationSwoosh = this;
         //}
+        public static Texture2D currentStyleTex => ConfigSwooshInstance.otherConfigs.texStyle != 0 ? ModContent.Request<Texture2D>($"CoolerItemVisualEffect/ConfigTex/Template_{ConfigSwooshInstance.otherConfigs.texStyle}").Value : null;
+        public static void DrawCoolerPanel(SpriteBatch spriteBatch, Rectangle rectangle, Color color, float glowShakingStrength = 0f, ConfigTexStyle texStyle = ConfigTexStyle.Dark)
+        {
+            if (texStyle == 0)
+            {
+                ConfigElement.DrawPanel2(spriteBatch, rectangle.TopLeft(), TextureAssets.SettingsPanel.Value, rectangle.Width, rectangle.Height, color);
+            }
+            else
+            {
+                #region 参数准备
+                //ConfigElement.DrawPanel2(spriteBatch, rectangle.TopLeft(), TextureAssets.SettingsPanel.Value, rectangle.Width, rectangle.Height, color);
+                Vector2 center = rectangle.Center();
+                Vector2 scalerVec = rectangle.Size() / new Vector2(64);
+                var clampVec = Vector2.Clamp(scalerVec, default, Vector2.One);
+                bool flagX = scalerVec.X == clampVec.X;
+                bool flagY = scalerVec.Y == clampVec.Y;
+                Texture2D texture = currentStyleTex;
+                float left = flagX ? center.X : rectangle.X + 32;
+                float top = flagY ? center.Y : rectangle.Y + 32;
+                float right = flagX ? center.X : rectangle.X + rectangle.Width - 32;
+                float bottom = flagY ? center.Y : rectangle.Y + rectangle.Height - 32;
+                #endregion
+                #region 背景
+                //spriteBatch.Draw(texture, rectangle, new Rectangle(210, 0, 40, 40), Color.White);
+                DrawCoolerPanel_BackGround(spriteBatch, texture, rectangle);
+                #endregion
+                #region 四个边框
+                DrawCoolerPanel_Bound(spriteBatch, texture, new Vector2(left - 28 * clampVec.X, center.Y), rectangle.Height - 24, clampVec.X, -MathHelper.PiOver2, color, glowShakingStrength);
+                DrawCoolerPanel_Bound(spriteBatch, texture, new Vector2(right + 28 * clampVec.Y, center.Y), rectangle.Height - 24, clampVec.X, MathHelper.PiOver2, color, glowShakingStrength);
+                DrawCoolerPanel_Bound(spriteBatch, texture, new Vector2(center.X, top - 28 * clampVec.Y), rectangle.Width - 24, clampVec.Y, 0, color, glowShakingStrength);
+                DrawCoolerPanel_Bound(spriteBatch, texture, new Vector2(center.X, bottom + 28 * clampVec.Y), rectangle.Width - 24, clampVec.Y, MathHelper.Pi, color, glowShakingStrength);
+                #endregion
+                #region 四个角落
+                spriteBatch.Draw(texture, new Vector2(left, top), new Rectangle(0, 0, 40, 40), Color.White, 0, new Vector2(40), clampVec, 0, 0);
+                spriteBatch.Draw(texture, new Vector2(left, bottom), new Rectangle(42, 0, 40, 40), Color.White, 0, new Vector2(40, 0), clampVec, SpriteEffects.FlipVertically, 0);
+                spriteBatch.Draw(texture, new Vector2(right, bottom), new Rectangle(42, 0, 40, 40), Color.White, MathHelper.Pi, new Vector2(40), clampVec, 0, 0);
+                spriteBatch.Draw(texture, new Vector2(right, top), new Rectangle(42, 0, 40, 40), Color.White, 0, new Vector2(0, 40), clampVec, SpriteEffects.FlipHorizontally, 0);
+                #endregion
+            }
+        }
+        public static void DrawCoolerPanelForConfig(SpriteBatch spriteBatch, ref Rectangle rectangle, Color color, float scaler = 1f, Vector2 offset = default, float glowShakingStrength = 0f, ConfigTexStyle texStyle = ConfigTexStyle.Dark)
+        {
+            //和上面那个唯一的不同是宽固定
+            if (texStyle == 0)
+            {
+                ConfigElement.DrawPanel2(spriteBatch, rectangle.TopLeft(), TextureAssets.SettingsPanel.Value, rectangle.Width, rectangle.Height, color);
+            }
+            else
+            {
+                rectangle.Offset(offset.ToPoint());
+                rectangle = Utils.CenteredRectangle(rectangle.Center(), rectangle.Size() * scaler);
+                #region 参数准备
+                //ConfigElement.DrawPanel2(spriteBatch, rectangle.TopLeft(), TextureAssets.SettingsPanel.Value, rectangle.Width, rectangle.Height, color);
+                Vector2 center = rectangle.Center();
+                Vector2 scalerVec = rectangle.Size() / new Vector2(64);
+                var clampVec = Vector2.Clamp(scalerVec, default, Vector2.One);
+                bool flagX = scalerVec.X == clampVec.X;
+                bool flagY = scalerVec.Y == clampVec.Y;
+                Texture2D texture = currentStyleTex;
+                float left = flagX ? center.X : rectangle.X + 32;
+                float top = flagY ? center.Y : rectangle.Y + 32;
+                float right = flagX ? center.X : rectangle.X + rectangle.Width - 32;
+                float bottom = flagY ? center.Y : rectangle.Y + rectangle.Height - 32;
+                #endregion
+                #region 背景
+                //spriteBatch.Draw(texture, rectangle, new Rectangle(210, 0, 40, 40), Color.White);
+                DrawCoolerPanel_BackGround(spriteBatch, texture, rectangle, 40 * scaler, 40 * scaler);
+                #endregion
+                #region 四个边框
+                DrawCoolerPanel_Bound(spriteBatch, texture, new Vector2(left - 28 * clampVec.X, center.Y), rectangle.Height - 24, clampVec.X, -MathHelper.PiOver2, color, glowShakingStrength);
+                DrawCoolerPanel_Bound(spriteBatch, texture, new Vector2(right + 28 * clampVec.Y, center.Y), rectangle.Height - 24, clampVec.X, MathHelper.PiOver2, color, glowShakingStrength);
+                DrawCoolerPanel_Bound(spriteBatch, texture, new Vector2(center.X, top - 28 * clampVec.Y), rectangle.Width - 24, clampVec.Y, 0, color, glowShakingStrength, 3);
+                DrawCoolerPanel_Bound(spriteBatch, texture, new Vector2(center.X, bottom + 28 * clampVec.Y), rectangle.Width - 24, clampVec.Y, MathHelper.Pi, color, glowShakingStrength, 3);
+                #endregion
+                #region 四个角落
+                spriteBatch.Draw(texture, new Vector2(left, top), new Rectangle(0, 0, 40, 40), Color.White, 0, new Vector2(40), clampVec, 0, 0);
+                spriteBatch.Draw(texture, new Vector2(left, bottom), new Rectangle(42, 0, 40, 40), Color.White, 0, new Vector2(40, 0), clampVec, SpriteEffects.FlipVertically, 0);
+                spriteBatch.Draw(texture, new Vector2(right, bottom), new Rectangle(42, 0, 40, 40), Color.White, MathHelper.Pi, new Vector2(40), clampVec, 0, 0);
+                spriteBatch.Draw(texture, new Vector2(right, top), new Rectangle(42, 0, 40, 40), Color.White, 0, new Vector2(0, 40), clampVec, SpriteEffects.FlipHorizontally, 0);
+                #endregion
+            }
+        }
+        public static void DrawCoolerPanelForConfig(SpriteBatch spriteBatch, ref Rectangle rectangle, Texture2D backGroundTex, Rectangle frameBG, Vector2 unitSizeBG, Color BGColor, Color color, float scaler = 1f, Vector2 offset = default, float glowShakingStrength = 0f, ConfigTexStyle texStyle = ConfigTexStyle.Dark)
+        {
+            //和上面那个唯一的不同是宽固定
+            if (texStyle == 0)
+            {
+                ConfigElement.DrawPanel2(spriteBatch, rectangle.TopLeft(), TextureAssets.SettingsPanel.Value, rectangle.Width, rectangle.Height, color);
+            }
+            else
+            {
+                rectangle.Offset(offset.ToPoint());
+                rectangle = Utils.CenteredRectangle(rectangle.Center(), rectangle.Size() * scaler);
+                #region 参数准备
+                //ConfigElement.DrawPanel2(spriteBatch, rectangle.TopLeft(), TextureAssets.SettingsPanel.Value, rectangle.Width, rectangle.Height, color);
+                Vector2 center = rectangle.Center();
+                Vector2 scalerVec = rectangle.Size() / new Vector2(64);
+                var clampVec = Vector2.Clamp(scalerVec, default, Vector2.One);
+                bool flagX = scalerVec.X == clampVec.X;
+                bool flagY = scalerVec.Y == clampVec.Y;
+                Texture2D texture = currentStyleTex;
+                float left = flagX ? center.X : rectangle.X + 32;
+                float top = flagY ? center.Y : rectangle.Y + 32;
+                float right = flagX ? center.X : rectangle.X + rectangle.Width - 32;
+                float bottom = flagY ? center.Y : rectangle.Y + rectangle.Height - 32;
+                #endregion
+                #region 背景
+                //spriteBatch.Draw(texture, rectangle, new Rectangle(210, 0, 40, 40), Color.White);
+                DrawCoolerPanel_BackGround(spriteBatch, backGroundTex, rectangle, frameBG, unitSizeBG * scaler, BGColor);
+                #endregion
+                #region 四个边框
+                DrawCoolerPanel_Bound(spriteBatch, texture, new Vector2(left - 28 * clampVec.X, center.Y), rectangle.Height - 24, clampVec.X, -MathHelper.PiOver2, color, glowShakingStrength);
+                DrawCoolerPanel_Bound(spriteBatch, texture, new Vector2(right + 28 * clampVec.Y, center.Y), rectangle.Height - 24, clampVec.X, MathHelper.PiOver2, color, glowShakingStrength);
+                DrawCoolerPanel_Bound(spriteBatch, texture, new Vector2(center.X, top - 28 * clampVec.Y), rectangle.Width - 24, clampVec.Y, 0, color, glowShakingStrength, 3);
+                DrawCoolerPanel_Bound(spriteBatch, texture, new Vector2(center.X, bottom + 28 * clampVec.Y), rectangle.Width - 24, clampVec.Y, MathHelper.Pi, color, glowShakingStrength, 3);
+                #endregion
+                #region 四个角落
+                spriteBatch.Draw(texture, new Vector2(left, top), new Rectangle(0, 0, 40, 40), Color.White, 0, new Vector2(40), clampVec, 0, 0);
+                spriteBatch.Draw(texture, new Vector2(left, bottom), new Rectangle(42, 0, 40, 40), Color.White, 0, new Vector2(40, 0), clampVec, SpriteEffects.FlipVertically, 0);
+                spriteBatch.Draw(texture, new Vector2(right, bottom), new Rectangle(42, 0, 40, 40), Color.White, MathHelper.Pi, new Vector2(40), clampVec, 0, 0);
+                spriteBatch.Draw(texture, new Vector2(right, top), new Rectangle(42, 0, 40, 40), Color.White, 0, new Vector2(0, 40), clampVec, SpriteEffects.FlipHorizontally, 0);
+                #endregion
+            }
+        }
+        public static void DrawCoolerColorCodedStringWithShadow(SpriteBatch spriteBatch, Texture2D texture, DynamicSpriteFont font, string text, Vector2 position, Color boxColor, Color baseColor, float rotation, Vector2 origin, Vector2 baseScale, ConfigTexStyle texStyle = ConfigTexStyle.Dark, float maxWidth = -1f, float spread = 2f)
+        {
+            DrawCoolerTextBox(spriteBatch, texture, font, text, position, boxColor, rotation, origin, baseScale, texStyle);
+            ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, text, position, baseColor, rotation, origin, baseScale, maxWidth, spread);
+        }
+        public static (Vector2 O, Vector2 I, Vector2 J, Vector2 unitI, Vector2 unitJ) GetTextRectangle(DynamicSpriteFont font, string text, Vector2 position, float rotation, Vector2 origin, Vector2 scaler)
+        {
+            //        O——————→I
+            //        |
+            //        |    ·origin
+            //        |
+            //       ↓
+            //        J
+            var size = font.MeasureString(text);
+            (Vector2 o, Vector2 i, Vector2 j, Vector2 unitI, Vector2 unitJ) values = new();
+            values.o = -origin;
+            values.i = values.o + size.X * Vector2.UnitX;
+            values.j = values.o + size.Y * Vector2.UnitY;
+            values.o *= scaler;
+            values.i *= scaler;
+            values.j *= scaler;
+            values.o = values.o.RotatedBy(rotation) + position;
+            values.i = values.i.RotatedBy(rotation);
+            values.j = values.j.RotatedBy(rotation);
+            values.unitI = values.i.SafeNormalize(default);
+            values.unitJ = values.j.SafeNormalize(default);
+            return values;
+        }
+        public static void DrawCoolerTextBox(SpriteBatch spriteBatch, Texture2D texture, DynamicSpriteFont font, string text, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scaler, ConfigTexStyle texStyle = ConfigTexStyle.Dark)
+        {
+            //TODO:支持旋转，目前只能角度为0
+            if (texStyle != 0)
+            {
+                position += new Vector2(0, -4);
+                var gd = Main.instance.GraphicsDevice;
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, gd.DepthStencilState, gd.RasterizerState, null, Main.UIScaleMatrix);
+                var size = font.MeasureString(text) * 1.125f;
+                #region 旧版
+                //spriteBatch.Draw(texture, position + new Vector2(-4), new Rectangle(294, 0, 40, 40), Color.White, rotation, new Vector2(12), (size + new Vector2(8, 4)) / new Vector2(26, 12) * scaler, 0, 0);
+                //spriteBatch.Draw(texture, position, new Rectangle(252, 0, 40, 40), Color.White, rotation, new Vector2(16), scaler, 0, 0);
+                #endregion
+                //(Vector2 O, Vector2 I, Vector2 J, Vector2 unitI, Vector2 unitJ) = GetTextRectangle(font, text, position, rotation, origin, scaler);
+                #region 主体
+                Vector2 boxScaler = (size) / new Vector2(16, 10) * scaler;
+                spriteBatch.Draw(texture, position, new Rectangle(308, 0, 16, 40), color, rotation, origin + new Vector2(0, 13.5f), boxScaler * new Vector2(0.875f, 1f), 0, 0);
+                spriteBatch.Draw(texture, position, new Rectangle(294, 0, 14, 40), color, rotation, origin + new Vector2(14, 13.5f), new Vector2(MathF.Sqrt(boxScaler.X), boxScaler.Y), 0, 0);
+                spriteBatch.Draw(texture, position, new Rectangle(324, 0, 10, 40), color, rotation, origin + new Vector2(-8 * MathF.Sqrt(boxScaler.X), 13.5f), new Vector2(MathF.Sqrt(boxScaler.X) * 1.75f, boxScaler.Y), 0, 0);
+
+                #endregion
+
+                #region 上框
+                //spriteBatch.DrawString(font, text, position, color, rotation, origin, scaler, 0, 0);
+                spriteBatch.Draw(texture, position, new Rectangle(276, 0, 16, 24), color, rotation, origin + new Vector2(0, 16), new Vector2(MathF.Sqrt(boxScaler.X) * 2, MathF.Sqrt(boxScaler.Y)), 0, 0);
+                spriteBatch.Draw(texture, position, new Rectangle(252, 0, 24, 24), color, rotation, origin + new Vector2(16), MathF.Sqrt(boxScaler.Y), 0, 0);
+                #endregion
+                //spriteBatch.Draw(texture, position + new Vector2(-4), new Rectangle(294, 0, 40, 40), Color.White, rotation, new Vector2(12), (size + new Vector2(8, 4)) / new Vector2(26, 12) * scaler, 0, 0);
+                //spriteBatch.Draw(texture, position, new Rectangle(252, 0, 40, 40), Color.White, rotation, new Vector2(16), (size + new Vector2(8, 4)) / new Vector2(26, 12) * scaler, 0, 0);
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, gd.DepthStencilState, gd.RasterizerState, null, Main.UIScaleMatrix);
+            }
+        }
+        public static void DrawCoolerTextBox_Glass(SpriteBatch spriteBatch, Texture2D texture, DynamicSpriteFont font, string text, Vector2 position, Color boxColor, float rotation, Vector2 scaler, ConfigTexStyle texStyle = ConfigTexStyle.Dark)
+        {
+            if (texStyle != 0)
+            {
+                position += new Vector2(0, -4);
+                var gd = Main.instance.GraphicsDevice;
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, gd.DepthStencilState, gd.RasterizerState, null, Main.UIScaleMatrix);
+                var size = font.MeasureString(text) * 1.125f;
+                spriteBatch.Draw(texture, position + new Vector2(-4), new Rectangle(168, 0, 40, 40), boxColor, rotation, new Vector2(12), (size + new Vector2(8, 4)) / new Vector2(26, 12) * scaler, 0, 0);
+                spriteBatch.Draw(texture, position, new Rectangle(126, 0, 40, 40), boxColor, rotation, new Vector2(16), scaler, 0, 0);
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, gd.DepthStencilState, gd.RasterizerState, null, Main.UIScaleMatrix);
+            }
+        }
+        public static void DrawCoolerTextBox_Glass(SpriteBatch spriteBatch, Texture2D texture, DynamicSpriteFont font, string text, Vector2 position, Color boxColor, bool boxAdditive, float rotation, Vector2 scaler, ConfigTexStyle texStyle = ConfigTexStyle.Dark)
+        {
+            if (texStyle != 0)
+            {
+                position += new Vector2(0, -4);
+                var gd = Main.instance.GraphicsDevice;
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, gd.DepthStencilState, gd.RasterizerState, null, Main.UIScaleMatrix);
+                var size = font.MeasureString(text) * 1.125f;
+                spriteBatch.Draw(texture, position + new Vector2(-6, -4), new Rectangle(168, 0, 40, 40), boxColor with { A = boxAdditive ? default : boxColor.A }, rotation, new Vector2(10, 12), (size + new Vector2(8, 4)) / new Vector2(26, 12) * scaler, 0, 0);
+                spriteBatch.Draw(texture, position, new Rectangle(126, 0, 40, 40), boxColor, rotation, new Vector2(16), scaler, 0, 0);
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, gd.DepthStencilState, gd.RasterizerState, null, Main.UIScaleMatrix);
+            }
+        }
+        public static void DrawCoolerPanel_Bound(SpriteBatch spriteBatch, Texture2D texture, Vector2 center, float length, float widthScaler, float rotation)
+        {
+            int count = (int)(length / 192f) + 1;
+            Vector2 start = rotation.ToRotationVector2() * length * .5f;
+            Vector2 end = center + start;
+            start = end - 2 * start;
+            float lengthScaler = length / 192f / count;
+            for (int n = 0; n < count; n++)
+            {
+                spriteBatch.Draw(texture, Vector2.Lerp(start, end, (n + .5f) / count), new Rectangle(336, 0, 192, 40), Color.White, rotation, new Vector2(96, 18), new Vector2(lengthScaler, widthScaler), 0, 0);
+            }
+
+        }
+        public static void DrawCoolerPanel_Bound(SpriteBatch spriteBatch, Texture2D texture, Vector2 center, float length, float widthScaler, float rotation, Color glowLight)
+        {
+            int count = (int)(length / 192f) + 1;
+            Vector2 start = rotation.ToRotationVector2() * length * .5f;
+            Vector2 end = center + start;
+            start = end - 2 * start;
+            float lengthScaler = length / 192f / count;
+            for (int n = 0; n < count; n++)
+            {
+                spriteBatch.Draw(texture, Vector2.Lerp(start, end, (n + .5f) / count), new Rectangle(336, 0, 192, 40), Color.White, rotation, new Vector2(96, 18), new Vector2(lengthScaler, widthScaler), 0, 0);
+                spriteBatch.Draw(texture, Vector2.Lerp(start, end, (n + .5f) / count), new Rectangle(530, 0, 192, 40), glowLight, rotation, new Vector2(96, 18), new Vector2(lengthScaler, widthScaler), 0, 0);
+            }
+        }
+        public static void DrawCoolerPanel_Bound(SpriteBatch spriteBatch, Texture2D texture, Vector2 center, float length, float widthScaler, float rotation, Color glowLight, float glowShakingStrength)
+        {
+            int count = (int)(length / 192f) + 1;
+            Vector2 start = rotation.ToRotationVector2() * length * .5f;
+            Vector2 end = center + start;
+            start = end - 2 * start;
+            float lengthScaler = length / 192f / count;
+            for (int n = 0; n < count; n++)
+            {
+                spriteBatch.Draw(texture, Vector2.Lerp(start, end, (n + .5f) / count), new Rectangle(336, 0, 192, 40), Color.White, rotation, new Vector2(96, 18), new Vector2(lengthScaler, widthScaler), 0, 0);
+                if (glowShakingStrength == 0)
+                    spriteBatch.Draw(texture, Vector2.Lerp(start, end, (n + .5f) / count), new Rectangle(530, 0, 192, 40), glowLight, rotation, new Vector2(96, 18), new Vector2(lengthScaler, widthScaler), 0, 0);
+                else
+                    for (int k = 0; k < 4; k++)
+                        spriteBatch.Draw(texture, Vector2.Lerp(start, end, (n + .5f) / count) + Main.rand.NextVector2Unit() * Main.rand.NextFloat(0, Main.rand.NextFloat(4f * glowShakingStrength)), new Rectangle(530, 0, 192, 40), ModifyHueByRandom(glowLight, .2f), rotation, new Vector2(96, 18), new Vector2(lengthScaler, widthScaler), 0, 0);
+
+            }
+        }
+        public static void DrawCoolerPanel_Bound(SpriteBatch spriteBatch, Texture2D texture, Vector2 center, float length, float widthScaler, float rotation, Color glowLight, float glowShakingStrength, int count)
+        {
+            Vector2 start = rotation.ToRotationVector2() * length * .5f;
+            Vector2 end = center + start;
+            start = end - 2 * start;
+            float lengthScaler = length / 192f / count;
+            for (int n = 0; n < count; n++)
+            {
+                spriteBatch.Draw(texture, Vector2.Lerp(start, end, (n + .5f) / count), new Rectangle(336, 0, 192, 40), Color.White, rotation, new Vector2(96, 18), new Vector2(lengthScaler, widthScaler), 0, 0);
+                if (glowShakingStrength == 0)
+                    spriteBatch.Draw(texture, Vector2.Lerp(start, end, (n + .5f) / count), new Rectangle(530, 0, 192, 40), glowLight, rotation, new Vector2(96, 18), new Vector2(lengthScaler, widthScaler), 0, 0);
+                else
+                    for (int k = 0; k < 4; k++)
+                        spriteBatch.Draw(texture, Vector2.Lerp(start, end, (n + .5f) / count) + Main.rand.NextVector2Unit() * Main.rand.NextFloat(0, Main.rand.NextFloat(4f * glowShakingStrength)), new Rectangle(530, 0, 192, 40), ModifyHueByRandom(glowLight, .2f), rotation, new Vector2(96, 18), new Vector2(lengthScaler, widthScaler), 0, 0);
+
+            }
+        }
+
+        public static Color ModifyHueByRandom(Color color, float range)
+        {
+            var alpha = color.A;
+            var vec = Main.rgbToHsl(color);
+            vec.X += Main.rand.NextFloat(-range, range);
+            while (vec.X < 0) vec.X++;
+            vec.X %= 1;
+            return Main.hslToRgb(vec) with { A = alpha };
+        }
+        /// <summary>
+        /// 使用config材质
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="texture"></param>
+        /// <param name="rectangle"></param>
+        /// <param name="sizeX"></param>
+        /// <param name="sizeY"></param>
+        public static void DrawCoolerPanel_BackGround(SpriteBatch spriteBatch, Texture2D texture, Rectangle rectangle, float sizeX = 40, float sizeY = 40)
+        {
+            int countX = (int)(rectangle.Width / sizeX) + 1;
+            int countY = (int)(rectangle.Height / sizeY) + 1;
+            float width = 40;
+            for (int i = 0; i < countX; i++)
+            {
+                if (i == countX - 1) width = (rectangle.Width - i * sizeX) / sizeX * 40;
+                float height = 40;
+                for (int j = 0; j < countY; j++)
+                {
+                    if (j == countY - 1) height = (rectangle.Height - j * sizeY) / sizeY * 40;
+                    spriteBatch.Draw(texture, rectangle.TopLeft() + new Vector2(i * sizeX, j * sizeY), new Rectangle(210, 0, (int)width, (int)height), Color.White, 0, default, new Vector2(sizeX, sizeY) / 40f * 1.025f, 0, 0);
+                }
+            }
+        }
+        /// <summary>
+        /// 指定背景图
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="texture"></param>
+        /// <param name="destination"></param>
+        /// <param name="frame"></param>
+        /// <param name="size"></param>
+        /// <param name="color"></param>
+        public static void DrawCoolerPanel_BackGround(SpriteBatch spriteBatch, Texture2D texture, Rectangle destination, Rectangle frame, Vector2 size, Color color)
+        {
+            (float sizeX, float sizeY) = (size.X, size.Y);
+            int countX = (int)(destination.Width / sizeX) + 1;
+            int countY = (int)(destination.Height / sizeY) + 1;
+            float width = frame.Width;
+            for (int i = 0; i < countX; i++)
+            {
+                if (i == countX - 1) width = (destination.Width - i * sizeX) / sizeX * width;
+                float height = frame.Height;
+                for (int j = 0; j < countY; j++)
+                {
+                    if (j == countY - 1) height = (destination.Height - j * sizeY) / sizeY * height;
+                    spriteBatch.Draw(texture, destination.TopLeft() + new Vector2(i * sizeX, j * sizeY), new Rectangle(frame.X, frame.Y, (int)width, (int)height), color, 0, default, new Vector2(sizeX, sizeY) / frame.Size() * 1.025f, 0, 0);
+                }
+            }
+        }
         #endregion
     }
 }

@@ -610,7 +610,7 @@ namespace CoolerItemVisualEffect
                             if ((negativeDir == oldNegativeDir && swingCount > 0) && player.itemAnimation > TimeToCutThem / 2f)//
                             {
                                 var tangent1 = 1f / TimeToCutThem / (player.itemAnimationMax - TimeToCutThem * .5f);
-                                fac = MathHelper.Hermite(1, tangent1, 160 / 99f, 0f, Utils.GetLerpValue(TimeToCutThem / 2f, player.itemAnimationMax, player.itemAnimation, true));
+                                fac = MathHelper.Hermite(1.125f, tangent1, 160 / 99f, 0f, Utils.GetLerpValue(TimeToCutThem / 2f, player.itemAnimationMax, player.itemAnimation, true));
                             }
                             else
                             {
@@ -624,7 +624,7 @@ namespace CoolerItemVisualEffect
                                 {
                                     fac = MathHelper.SmoothStep(1, 1.125f, Utils.GetLerpValue(max, k, t));
                                 }
-                                else 
+                                else
                                 {
                                     fac = MathHelper.SmoothStep(0, 1.125f, player.itemAnimation / k);
                                 }
@@ -1174,11 +1174,15 @@ namespace CoolerItemVisualEffect
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
         }
+        //public static MethodBase ApplyNPCOnHitEffects;
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            player.HeldItem.ModItem?.OnHitNPC(player, target, damage, knockback, crit);
+            //player.HeldItem.ModItem?.OnHitNPC(player, target, damage, knockback, crit);
+            ItemLoader.OnHitNPC(player.HeldItem, player, target, damage, knockback, crit);
+
             try
             {
+                #region *复杂的伤害计算*
                 int num = Projectile.damage;
                 var sItem = player.HeldItem;
                 var itemRectangle = Utils.CenteredRectangle(player.Center + effectPlayer.HitboxPosition * .5f, new Vector2(Math.Abs(effectPlayer.HitboxPosition.X), Math.Abs(effectPlayer.HitboxPosition.Y)));
@@ -1225,7 +1229,10 @@ namespace CoolerItemVisualEffect
                         PositionInWorld = positionInWorld
                     }, player.whoAmI);
                 }
-                typeof(Player).GetMethod("ApplyNPCOnHitEffects", BindingFlags.Instance | BindingFlags.NonPublic)?.Invoke(player, new object[] { player.HeldItem, itemRectangle, num, knockback, target.whoAmI, damage, damage });
+                #endregion
+                player.ApplyNPCOnHitEffects(player.HeldItem, itemRectangle, num, knockback, target.whoAmI, damage, damage);
+                //(ApplyNPCOnHitEffects ??= typeof(Player).GetMethod(nameof(ApplyNPCOnHitEffects), BindingFlags.Instance | BindingFlags.NonPublic))
+                //    ?.Invoke(player, new object[] { player.HeldItem, itemRectangle, num, knockback, target.whoAmI, damage, damage });
 
             }
             catch

@@ -10,7 +10,6 @@ using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using Terraria.GameContent;
 using Terraria.GameContent.Skies.CreditsRoll;
 using Terraria.UI;
@@ -458,6 +457,7 @@ namespace CoolerItemVisualEffect
         public override void Load()
         {
             Instance = this;
+            On.Terraria.UI.UIElement.GetClippingRectangle += UIElement_GetClippingRectangle;
             On.Terraria.DataStructures.PlayerDrawLayers.DrawPlayer_27_HeldItem += PlayerDrawLayers_DrawPlayer_27_HeldItem_WeaponDisplay;
             Main.OnResolutionChanged += Main_OnResolutionChanged;
             On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayerInternal += LegacyPlayerRenderer_DrawPlayerInternal;
@@ -466,6 +466,15 @@ namespace CoolerItemVisualEffect
             Filters.Scene["CoolerItemVisualEffect:InvertGlass"] = new Filter(new ScreenShaderData(new Ref<Effect>(ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/ZenithGlass", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value), "Zenith"), EffectPriority.Medium);
             Filters.Scene["CoolerItemVisualEffect:InvertGlass"].Load();
         }
+        public static UIElement currentList;
+        private Rectangle UIElement_GetClippingRectangle(On.Terraria.UI.UIElement.orig_GetClippingRectangle orig, UIElement self, SpriteBatch spriteBatch)
+        {
+            var origin = orig.Invoke(self, spriteBatch);
+            if (currentList == null || self.GetHashCode() != currentList.GetHashCode()) return origin;
+            var rect = Main.instance.GraphicsDevice.ScissorRectangle;
+            return rect with { Y = origin.Y, Height = origin.Height };
+        }
+
         public override void Unload()
         {
             //HookEndpointManager.Remove<hook_UnderworldLayer>(targetMethod, MyUnderLayer);
@@ -1683,6 +1692,7 @@ namespace CoolerItemVisualEffect
         }
         public override void PostDrawInterface(SpriteBatch spriteBatch)
         {
+            //ConfigurationSwoosh.DrawCoolerColorCodedStringWithShadow(spriteBatch, currentStyleTex, FontAssets.MouseText.Value, Language.GetTextValue("Mods.CoolerItemVisualEffect.ConfigSwoosh.2"), new Vector2(512, 512), Color.White, Color.White, 0, default, Vector2.One);
             //取消注释看好康的
             //var list = new List<VertexTriangle>();
             //spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle(0, 0, 1920*4, 1120*4), Color.Black);
