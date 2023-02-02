@@ -1,6 +1,29 @@
-Mods:{
-	CoolerItemVisualEffect:{
-		ItemName:{
+Mods:
+{
+	CoolerItemVisualEffect:
+	{
+	    ConfigSLer: 
+		{
+			Refresh: 刷新
+			TooManySameName: '''///存储失败！/// 兄啊你同名的也太多了(而且还都是默认名)，请整理并且重命名一下吧'''
+			SameDefault: '''///注意！/// 现在存储出的都是默认名，我帮你加了序号作为区分，记得及时整理'''
+			SavedAs: 结构已存储为文件 
+			DefaultName: 自定义设置
+			LoadThisConfig: 将目前的配置设为这个
+			Path: 文件路径: 
+			RenameTip: 
+			{
+				Exists: 已经存在一个相同名称的文件
+				TooLong: 名称不能超过40个字符
+				Illegal: '''文件名不能包含以下字符: \\、/、:、*、?、\"、<、>、|'''
+			}
+			NotFinishYet:此页面施工中......
+			Successed:'''\加载成功/！！'''
+			Failed:'''/加载失败\'''
+        }
+		ItemName:
+		{
+			ConfigSLer:设置读写器
 			旧日支配者:旧日支配者
 			真旧日支配者:真▪旧日支配者
 			FirstFractal_CIVE:最初分形
@@ -32,7 +55,13 @@ Mods:{
 			'''
 			IDTKNOW:Pls Use This Weapon With A Correct Name.
 		}
-		ItemTooltip:{
+		ItemTooltip:
+		{
+			ConfigSLer:
+			'''
+			左键存入当前设置
+			右键打开界面以选择或编辑
+			'''
 			旧日支配者:"这股力量还未完全苏醒"
 			FirstFractal_CIVE:否定，忘却，尘封......终有一天其将破土而出。
 			WitheredWoodSword_Old:右键蓄力后冲刺并释放荆棘
@@ -254,7 +283,8 @@ Mods:{
 			89:斩击用时上限[i:561]
 			90:单位为帧，之前是9，现在下调至6。
 		}
-		Config:{
+		Config:
+		{
 			Label:视觉效果设置
 			head1:武器背显
 			Num1:武器背显开关
@@ -305,7 +335,8 @@ Mods:{
 			35:动作效果优化(未完成)
 			36:你一定看得出这个是低仿蔚蓝的对吧
 		}
-		ConfigurationServer:{
+		ConfigurationServer:
+		{
 			Label:游戏性设置
 			
 			SlashSettings:挥砍效果（仅影响实际判定，不影响视觉效果）

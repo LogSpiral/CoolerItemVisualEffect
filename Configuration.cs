@@ -156,7 +156,7 @@ namespace CoolerItemVisualEffect
             config.TeleprotEffectActive = reader.ReadBoolean();
             config.CelesteMoveAnimation = reader.ReadBoolean();
         }
-        bool EqualValueForPreInstall(ConfigurationSwoosh config) //仅仅判定预设修改了的部分
+        bool EqualValueForPreset(ConfigurationSwoosh config) //仅仅判定预设修改了的部分
         {
             return
                 coolerSwooshQuality == config.coolerSwooshQuality &&
@@ -687,7 +687,7 @@ namespace CoolerItemVisualEffect
         #endregion
 
         #region 枚举
-        public enum PreInstallSwoosh
+        public enum PresetSwoosh
         {
             普通Normal,
             飓风Hurricane,
@@ -795,6 +795,7 @@ namespace CoolerItemVisualEffect
             DarkMetal,
             /*暗黑*/
             Dark,
+            Purple,
             Silver,
             Holy
         }
@@ -1226,9 +1227,9 @@ namespace CoolerItemVisualEffect
             [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D2")]
             [Label("设置样式ConfigStyle")]
             [BackgroundColor(0, 255, 255, 255)]
-            [DefaultValue(ConfigTexStyle.Dark)]
+            [DefaultValue(ConfigTexStyle.DarkPurple)]
             [CustomModConfigItem(typeof(CoolerEnumElement))]
-            public ConfigTexStyle texStyle { get; set; } = ConfigTexStyle.Dark;
+            public ConfigTexStyle texStyle { get; set; } = ConfigTexStyle.DarkPurple;
 
             [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.47")]
 
@@ -1242,12 +1243,12 @@ namespace CoolerItemVisualEffect
                 {
                     if (configurationSwoosh == null)
                         return false;
-                    return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.普通Normal));
+                    return configurationSwoosh.EqualValueForPreset(SetCSValue(new ConfigurationSwoosh(), PresetSwoosh.普通Normal));
                 }
                 set
                 {
                     if (configurationSwoosh != null && value)
-                        SetCSValue(configurationSwoosh, PreInstallSwoosh.普通Normal);
+                        SetCSValue(configurationSwoosh, PresetSwoosh.普通Normal);
                 }
             }
             [Label("[i:3852] 飓风Hurricane")]
@@ -1256,11 +1257,11 @@ namespace CoolerItemVisualEffect
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool HurricaneActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.飓风Hurricane)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreset(SetCSValue(new ConfigurationSwoosh(), PresetSwoosh.飓风Hurricane)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
-                        SetCSValue(configurationSwoosh, PreInstallSwoosh.飓风Hurricane);
+                        SetCSValue(configurationSwoosh, PresetSwoosh.飓风Hurricane);
                 }
             }
             [Label("[i:426] 巨大Huge")]
@@ -1269,11 +1270,11 @@ namespace CoolerItemVisualEffect
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool HugeActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.巨大Huge)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreset(SetCSValue(new ConfigurationSwoosh(), PresetSwoosh.巨大Huge)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
-                        SetCSValue(configurationSwoosh, PreInstallSwoosh.巨大Huge);
+                        SetCSValue(configurationSwoosh, PresetSwoosh.巨大Huge);
                 }
             }
             [Label("[i:4956] 夸张Exaggerate")]
@@ -1282,11 +1283,11 @@ namespace CoolerItemVisualEffect
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool ExaggerateActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.夸张Exaggerate)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreset(SetCSValue(new ConfigurationSwoosh(), PresetSwoosh.夸张Exaggerate)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
-                        SetCSValue(configurationSwoosh, PreInstallSwoosh.夸张Exaggerate);
+                        SetCSValue(configurationSwoosh, PresetSwoosh.夸张Exaggerate);
                 }
             }
             [Label("[i:3768] 明亮Bright")]
@@ -1295,11 +1296,11 @@ namespace CoolerItemVisualEffect
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool BrightActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.明亮Bright)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreset(SetCSValue(new ConfigurationSwoosh(), PresetSwoosh.明亮Bright)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
-                        SetCSValue(configurationSwoosh, PreInstallSwoosh.明亮Bright);
+                        SetCSValue(configurationSwoosh, PresetSwoosh.明亮Bright);
                 }
             }
             [Label("[i:1327] 黑暗Dark")]
@@ -1308,11 +1309,11 @@ namespace CoolerItemVisualEffect
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool DarkActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.黑暗Dark)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreset(SetCSValue(new ConfigurationSwoosh(), PresetSwoosh.黑暗Dark)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
-                        SetCSValue(configurationSwoosh, PreInstallSwoosh.黑暗Dark);
+                        SetCSValue(configurationSwoosh, PresetSwoosh.黑暗Dark);
                 }
             }
             [Label("[i:3781] 光滑Smooth")]
@@ -1321,11 +1322,11 @@ namespace CoolerItemVisualEffect
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool SmoothActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.光滑Smooth)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreset(SetCSValue(new ConfigurationSwoosh(), PresetSwoosh.光滑Smooth)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
-                        SetCSValue(configurationSwoosh, PreInstallSwoosh.光滑Smooth);
+                        SetCSValue(configurationSwoosh, PresetSwoosh.光滑Smooth);
                 }
             }
             [Label("[i:757] 泰拉Terra_EspeciallyTerraBladeRecommended")]
@@ -1334,11 +1335,11 @@ namespace CoolerItemVisualEffect
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool TerraActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.泰拉Terra_EspeciallyTerraBladeRecommended)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreset(SetCSValue(new ConfigurationSwoosh(), PresetSwoosh.泰拉Terra_EspeciallyTerraBladeRecommended)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
-                        SetCSValue(configurationSwoosh, PreInstallSwoosh.泰拉Terra_EspeciallyTerraBladeRecommended);
+                        SetCSValue(configurationSwoosh, PresetSwoosh.泰拉Terra_EspeciallyTerraBladeRecommended);
                 }
             }
             [Label("[i:674] 神圣Holy_EspeciallyTrueExcaliburRecommended")]
@@ -1347,11 +1348,11 @@ namespace CoolerItemVisualEffect
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool HolyActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.神圣Holy_EspeciallyTrueExcaliburRecommended)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreset(SetCSValue(new ConfigurationSwoosh(), PresetSwoosh.神圣Holy_EspeciallyTrueExcaliburRecommended)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
-                        SetCSValue(configurationSwoosh, PreInstallSwoosh.神圣Holy_EspeciallyTrueExcaliburRecommended);
+                        SetCSValue(configurationSwoosh, PresetSwoosh.神圣Holy_EspeciallyTrueExcaliburRecommended);
                 }
             }
             [Label("[i:675] 永夜Evil_EspeciallyTrueNightsEdgeRecommended")]
@@ -1360,11 +1361,11 @@ namespace CoolerItemVisualEffect
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool EvilActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.永夜Evil_EspeciallyTrueNightsEdgeRecommended)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreset(SetCSValue(new ConfigurationSwoosh(), PresetSwoosh.永夜Evil_EspeciallyTrueNightsEdgeRecommended)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
-                        SetCSValue(configurationSwoosh, PreInstallSwoosh.永夜Evil_EspeciallyTrueNightsEdgeRecommended);
+                        SetCSValue(configurationSwoosh, PresetSwoosh.永夜Evil_EspeciallyTrueNightsEdgeRecommended);
                 }
             }
             [Label("[i:3827] 旧日OldOnes_EspeciallyFlyingDragonRecommended")]
@@ -1373,11 +1374,11 @@ namespace CoolerItemVisualEffect
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool OldOnesActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.旧日OldOnes_EspeciallyFlyingDragonRecommended)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreset(SetCSValue(new ConfigurationSwoosh(), PresetSwoosh.旧日OldOnes_EspeciallyFlyingDragonRecommended)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
-                        SetCSValue(configurationSwoosh, PreInstallSwoosh.旧日OldOnes_EspeciallyFlyingDragonRecommended);
+                        SetCSValue(configurationSwoosh, PresetSwoosh.旧日OldOnes_EspeciallyFlyingDragonRecommended);
                 }
             }
             [Label("[i:2880] 波涌Influx_EspeciallyInfluxWaverRecommended")]
@@ -1386,11 +1387,11 @@ namespace CoolerItemVisualEffect
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool InfluxActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.波涌Influx_EspeciallyInfluxWaverRecommended)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreset(SetCSValue(new ConfigurationSwoosh(), PresetSwoosh.波涌Influx_EspeciallyInfluxWaverRecommended)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
-                        SetCSValue(configurationSwoosh, PreInstallSwoosh.波涌Influx_EspeciallyInfluxWaverRecommended);
+                        SetCSValue(configurationSwoosh, PresetSwoosh.波涌Influx_EspeciallyInfluxWaverRecommended);
                 }
             }
             [Label("[i:389] 黑白Grey")]
@@ -1399,11 +1400,11 @@ namespace CoolerItemVisualEffect
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool GreyActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.黑白Grey)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreset(SetCSValue(new ConfigurationSwoosh(), PresetSwoosh.黑白Grey)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
-                        SetCSValue(configurationSwoosh, PreInstallSwoosh.黑白Grey);
+                        SetCSValue(configurationSwoosh, PresetSwoosh.黑白Grey);
                 }
             }
             [Label("[i:1968] 反相InverseHue")]
@@ -1412,11 +1413,11 @@ namespace CoolerItemVisualEffect
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool InverseActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.反相InverseHue)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreset(SetCSValue(new ConfigurationSwoosh(), PresetSwoosh.反相InverseHue)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
-                        SetCSValue(configurationSwoosh, PreInstallSwoosh.反相InverseHue);
+                        SetCSValue(configurationSwoosh, PresetSwoosh.反相InverseHue);
                 }
             }
             [Label("[i:3063] 彩虹Rainbow")]
@@ -1425,11 +1426,11 @@ namespace CoolerItemVisualEffect
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool RainbowActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.彩虹Rainbow)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreset(SetCSValue(new ConfigurationSwoosh(), PresetSwoosh.彩虹Rainbow)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
-                        SetCSValue(configurationSwoosh, PreInstallSwoosh.彩虹Rainbow);
+                        SetCSValue(configurationSwoosh, PresetSwoosh.彩虹Rainbow);
                 }
             }
             [Label("[i:5005] 超级彩虹UltraRainbow")]
@@ -1438,11 +1439,11 @@ namespace CoolerItemVisualEffect
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool UltraRainbowActive
             {
-                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreInstall(SetCSValue(new ConfigurationSwoosh(), PreInstallSwoosh.超级彩虹UltraRainbow)); }
+                get { if (configurationSwoosh == null) return false; return configurationSwoosh.EqualValueForPreset(SetCSValue(new ConfigurationSwoosh(), PresetSwoosh.超级彩虹UltraRainbow)); }
                 set
                 {
                     if (configurationSwoosh != null && value)
-                        SetCSValue(configurationSwoosh, PreInstallSwoosh.超级彩虹UltraRainbow);
+                        SetCSValue(configurationSwoosh, PresetSwoosh.超级彩虹UltraRainbow);
                 }
             }
             #endregion
@@ -2130,7 +2131,7 @@ namespace CoolerItemVisualEffect
         //}
         //static Type uiModConfigType;
         //public static object uiModConfigInstance;
-        public static ConfigurationSwoosh SetCSValue(ConfigurationSwoosh cs, PreInstallSwoosh preInstallSwoosh)
+        public static ConfigurationSwoosh SetCSValue(ConfigurationSwoosh cs, PresetSwoosh presetSwoosh)
         {
             cs.coolerSwooshQuality = QualityType.极限ultra;
             //cs.toolsNoUseNewSwooshEffect = false;
@@ -2178,13 +2179,13 @@ namespace CoolerItemVisualEffect
             //cs.VanillaProjectileDrawModifyActive = true;
             //cs.TeleprotEffectActive = false;
             //cs.CelesteMoveAnimation = false;
-            switch (preInstallSwoosh)
+            switch (presetSwoosh)
             {
                 //case PreInstallSwoosh.普通Normal: 
                 //	{
                 //		break; 
                 //	}
-                case PreInstallSwoosh.飓风Hurricane:
+                case PresetSwoosh.飓风Hurricane:
                     {
                         cs.coolerSwooshQuality = QualityType.极限ultra;
                         cs.shake = 0.3f;
@@ -2195,12 +2196,12 @@ namespace CoolerItemVisualEffect
                         cs.luminosityFactor = 0.4f;
                         break;
                     }
-                case PreInstallSwoosh.巨大Huge:
+                case PresetSwoosh.巨大Huge:
                     {
                         cs.swooshSize = 3f;
                         break;
                     }
-                case PreInstallSwoosh.夸张Exaggerate:
+                case PresetSwoosh.夸张Exaggerate:
                     {
                         cs.coolerSwooshQuality = QualityType.极限ultra;
                         cs.swooshSize = 3f;
@@ -2212,7 +2213,7 @@ namespace CoolerItemVisualEffect
                         cs.luminosityFactor = 1f;
                         break;
                     }
-                case PreInstallSwoosh.明亮Bright:
+                case PresetSwoosh.明亮Bright:
                     {
                         cs.coolerSwooshQuality = QualityType.极限ultra;
                         cs.isLighterDecider = 0;
@@ -2222,20 +2223,20 @@ namespace CoolerItemVisualEffect
                         cs.glowLight = 1;
                         break;
                     }
-                case PreInstallSwoosh.黑暗Dark:
+                case PresetSwoosh.黑暗Dark:
                     {
                         cs.isLighterDecider = 1f;
                         cs.heatMapFactorStyle = HeatMapFactorStyle.二次Quadratic;
                         cs.luminosityRange = 1f;
                         break;
                     }
-                case PreInstallSwoosh.光滑Smooth:
+                case PresetSwoosh.光滑Smooth:
                     {
                         cs.swooshColorType = SwooshColorType.单向渐变;
                         cs.imageIndex = 0f;
                         break;
                     }
-                case PreInstallSwoosh.泰拉Terra_EspeciallyTerraBladeRecommended:
+                case PresetSwoosh.泰拉Terra_EspeciallyTerraBladeRecommended:
                     {
                         cs.coolerSwooshQuality = QualityType.极限ultra;
                         cs.swooshColorType = SwooshColorType.热度图;
@@ -2251,7 +2252,7 @@ namespace CoolerItemVisualEffect
                         cs.heatMapFactorStyle = HeatMapFactorStyle.平方根SquareRoot;
                         break;
                     }
-                case PreInstallSwoosh.神圣Holy_EspeciallyTrueExcaliburRecommended:
+                case PresetSwoosh.神圣Holy_EspeciallyTrueExcaliburRecommended:
                     {
                         cs.coolerSwooshQuality = QualityType.极限ultra;
                         cs.swooshColorType = SwooshColorType.热度图;
@@ -2266,7 +2267,7 @@ namespace CoolerItemVisualEffect
                         cs.maxCount = 2;
                         break;
                     }
-                case PreInstallSwoosh.永夜Evil_EspeciallyTrueNightsEdgeRecommended:
+                case PresetSwoosh.永夜Evil_EspeciallyTrueNightsEdgeRecommended:
                     {
                         cs.coolerSwooshQuality = QualityType.极限ultra;
                         cs.swooshColorType = SwooshColorType.热度图;
@@ -2281,7 +2282,7 @@ namespace CoolerItemVisualEffect
                         cs.maxCount = 2;
                         break;
                     }
-                case PreInstallSwoosh.旧日OldOnes_EspeciallyFlyingDragonRecommended:
+                case PresetSwoosh.旧日OldOnes_EspeciallyFlyingDragonRecommended:
                     {
                         cs.coolerSwooshQuality = QualityType.极限ultra;
                         cs.swooshColorType = SwooshColorType.热度图;
@@ -2297,7 +2298,7 @@ namespace CoolerItemVisualEffect
                         cs.heatMapFactorStyle = HeatMapFactorStyle.平方根SquareRoot;
                         break;
                     }
-                case PreInstallSwoosh.波涌Influx_EspeciallyInfluxWaverRecommended:
+                case PresetSwoosh.波涌Influx_EspeciallyInfluxWaverRecommended:
                     {
                         cs.coolerSwooshQuality = QualityType.极限ultra;
                         cs.swooshColorType = SwooshColorType.热度图;
@@ -2314,25 +2315,25 @@ namespace CoolerItemVisualEffect
 
                         break;
                     }
-                case PreInstallSwoosh.黑白Grey:
+                case PresetSwoosh.黑白Grey:
                     {
                         cs.swooshColorType = SwooshColorType.单向渐变;
                         cs.saturationScalar = 0;
                         break;
                     }
-                case PreInstallSwoosh.反相InverseHue:
+                case PresetSwoosh.反相InverseHue:
                     {
                         cs.swooshColorType = SwooshColorType.单向渐变;
                         cs.hueOffsetValue = 0.5f;
                         break;
                     }
-                case PreInstallSwoosh.彩虹Rainbow:
+                case PresetSwoosh.彩虹Rainbow:
                     {
                         cs.swooshColorType = SwooshColorType.单向渐变;
                         cs.hueOffsetRange = 1f;
                         break;
                     }
-                case PreInstallSwoosh.超级彩虹UltraRainbow:
+                case PresetSwoosh.超级彩虹UltraRainbow:
                     {
                         cs.coolerSwooshQuality = QualityType.极限ultra;
                         cs.swooshColorType = SwooshColorType.单向渐变;

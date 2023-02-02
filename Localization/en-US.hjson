@@ -1,6 +1,30 @@
-Mods:{
-	CoolerItemVisualEffect:{
-		ItemName:{
+
+Mods:
+{
+	CoolerItemVisualEffect:
+	{
+		ConfigSLer: 
+		{
+			Refresh: Refresh
+			TooManySameName: '''///Failed!/// Hey bro, the file share the default name is toooo many! Please rename Them in time.'''
+			SameDefault: '''///Notice!/// Now the saved files are all the default names. I added the serial number for you to distinguish. Remember to tidy up in time'''
+			SavedAs: Current config has been saved as 
+			DefaultName: UserDefinedConfig
+			LoadThisConfig: Set the current configuration to this
+			Path: File path: 
+			RenameTip: 
+			{
+				Exists: A file with the same name already exists
+				TooLong: File name must not exceed 40 characters
+				Illegal: '''File name must not include following characterts: \\, /, :, *, ?, \", <, > or |'''
+			}
+			NotFinishYet:This page is being worked in progress......
+			Successed:'''\Load successed/！！'''
+			Failed:'''/Load failed\'''
+        }
+		ItemName:
+		{
+			ConfigSLer:Config Reader/Writer
 			旧日支配者:Great Old Ones
 			真旧日支配者:True Great Old Ones
 			FirstFractal_CIVE:First Fractal
@@ -32,7 +56,13 @@ Mods:{
 			'''
 			IDTKNOW:Pls Use This Weapon With A Correct Name.
 		}
-		ItemTooltip:{
+		ItemTooltip:
+		{
+			ConfigSLer:
+			'''
+			Left Click To Save Current Config.
+			Right Click To Show The UI And Choose Or Edit.
+			'''
 			旧日支配者:"This power has not fully awakened"
 			FirstFractal_CIVE:Denied，forgotten，faded......It will return finally。
 			PureFractal_Old:The Edge of Zenith Which Upgraded by the Ancient and Pure NaturalMagic.Show it, Your first Power.
@@ -254,7 +284,8 @@ Mods:{
 			89:Max Time Of Cut Down[i:561]
 			90:The Unit Is Frame. It Was 9 Before And Now It Is 6.
 		}
-		Config:{
+		Config:
+		{
 			Label:Visual Settings
 			head1:Weapon Display
 			Num1:Weapon display switch
@@ -280,7 +311,7 @@ Mods:{
 			15:Slashing effect color
 			16:Yes, associate the slashing effect color with the diagonal color of the enabled weapon map, no, use a single color. Default is Yes
 			17:Weapon and weapon swing effects are translucent and highlighted
-			18:阿汪:I think this is weird but someone wants this
+			18:Log_Spiral:I think this is weird but someone wants this
 			19:Cancel the effect of the new slashing effect on tools
 			20:Yes, to cancel the effect of the new slashing effect on the tool, No, not cancel, the default is No
 			23:The type of Item light effect in world
@@ -305,7 +336,8 @@ Mods:{
 			5:Improve Movement And Its Animation(WIP)
 			36:You Must Know That This One Is Imitating Celeste, Right? 
 		}
-		ConfigurationServer:{
+		ConfigurationServer:
+		{
 			Label:Gameplay Settings
 			
 			SlashSettings:Slash Gameplay Effect (affects only the gameplay, not the visual effect)
