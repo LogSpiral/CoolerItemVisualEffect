@@ -23,6 +23,7 @@ using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using System.ComponentModel;
 using MonoMod.RuntimeDetour.HookGen;
+using CoolerItemVisualEffect.ConfigSLer;
 
 namespace CoolerItemVisualEffect
 {
@@ -470,9 +471,15 @@ namespace CoolerItemVisualEffect
         private Rectangle UIElement_GetClippingRectangle(On.Terraria.UI.UIElement.orig_GetClippingRectangle orig, UIElement self, SpriteBatch spriteBatch)
         {
             var origin = orig.Invoke(self, spriteBatch);
-            if (currentList == null || self.GetHashCode() != currentList.GetHashCode()) return origin;
-            var rect = Main.instance.GraphicsDevice.ScissorRectangle;
-            return rect with { Y = origin.Y, Height = origin.Height };
+            //var rect = Main.instance.GraphicsDevice.ScissorRectangle;
+            //return rect with { Y = origin.Y, Height = origin.Height };
+            if ((currentList != null && self.GetHashCode() == currentList.GetHashCode()) || self.GetHashCode() == ConfigSLSystem.Instance.configSLUI.UIList.GetHashCode())
+            {
+                var rect = Main.instance.GraphicsDevice.ScissorRectangle;
+                return rect with { Y = origin.Y, Height = origin.Height };
+            }
+
+            return origin;
         }
 
         public override void Unload()
@@ -1666,7 +1673,7 @@ namespace CoolerItemVisualEffect
         #endregion
     }
     public class CoolerSystem : ModSystem
-    { 
+    {
         public static int ModTime;
         public override void UpdateUI(GameTime gameTime)
         {
@@ -1692,6 +1699,15 @@ namespace CoolerItemVisualEffect
         }
         public override void PostDrawInterface(SpriteBatch spriteBatch)
         {
+            //var info = new CoolerPanelInfo();
+            //info.configTexStyle = currentStyle;
+            //info.destination = new Rectangle(960, 560, 200, 200);
+            //info.scaler = 1f;
+            //info.origin = new Vector2(100);
+            //info.backgroundColor = Color.Purple * .5f;
+            //info.glowEffectColor = Color.White;
+            //info.DrawCoolerPanel(spriteBatch);
+            //DrawCoolerTextBox_Combine(spriteBatch, currentStyleTex, new Rectangle(960, 560, 36, 36), Color.Red with { A = 0 } * .5f);
             //ConfigurationSwoosh.DrawCoolerColorCodedStringWithShadow(spriteBatch, currentStyleTex, FontAssets.MouseText.Value, Language.GetTextValue("Mods.CoolerItemVisualEffect.ConfigSwoosh.2"), new Vector2(512, 512), Color.White, Color.White, 0, default, Vector2.One);
             //取消注释看好康的
             //var list = new List<VertexTriangle>();
