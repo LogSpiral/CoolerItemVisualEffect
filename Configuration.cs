@@ -1227,9 +1227,9 @@ namespace CoolerItemVisualEffect
             [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D2")]
             [Label("设置样式ConfigStyle")]
             [BackgroundColor(0, 255, 255, 255)]
-            [DefaultValue(ConfigTexStyle.DarkPurple)]
+            [DefaultValue(ConfigTexStyle.Origin)]
             [CustomModConfigItem(typeof(CoolerEnumElement))]
-            public ConfigTexStyle texStyle { get; set; } = ConfigTexStyle.DarkPurple;
+            public ConfigTexStyle texStyle { get; set; } = ConfigTexStyle.Origin;
 
             [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.47")]
 
