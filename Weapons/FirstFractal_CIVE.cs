@@ -18,7 +18,7 @@ namespace CoolerItemVisualEffect.Weapons
         //}
         public override void SetDefaults()
         {
-            Item.useStyle = 5;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.width = 24;
             Item.height = 24;
             Item.noUseGraphic = true;
@@ -34,7 +34,7 @@ namespace CoolerItemVisualEffect.Weapons
             Item.knockBack = 6.5f;
             Item.value = Item.sellPrice(0, 0, 0, 0);
             Item.crit = 10;
-            Item.rare = 10;
+            Item.rare = ItemRarityID.Red;
             Item.shoot = ProjectileID.FirstFractal;
             Item.glowMask = 271;
             //Item.CloneDefaults(ItemID.FirstFractal);
@@ -173,7 +173,7 @@ namespace CoolerItemVisualEffect.Weapons
         //}
         public override void SetDefaults()
         {
-            Item.useStyle = 5;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.width = 58;
             Item.height = 64;
             Item.noUseGraphic = true;
@@ -650,7 +650,7 @@ namespace CoolerItemVisualEffect.Weapons
             }
             SpriteEffects spriteEffects = projectile.ai[0] > 0 ? 0 : SpriteEffects.FlipHorizontally;
             Vector2 vector71 = projectile.position + new Vector2((float)projectile.width, (float)projectile.height) / 2f + Vector2.UnitY * projectile.gfxOffY - Main.screenPosition;
-            projectile.DrawProjWithStarryTrail(Main.spriteBatch, drawColor, Color.White, spriteEffects);
+            projectile.DrawProjWithStarryTrail(Main.spriteBatch, drawColor, Color.White);
             var color84 = Color.White * projectile.Opacity * 0.9f;
             color84.A /= 2;
             projectile.DrawPrettyStarSparkle(Main.spriteBatch, spriteEffects, vector71, color84, Main.hslToRgb(drawColor, 1f, 0.5f));
@@ -680,11 +680,11 @@ namespace CoolerItemVisualEffect.Weapons
             item.DamageType = DamageClass.Melee;
             item.width = 50;
             item.height = 66;
-            item.rare = 4;
+            item.rare = ItemRarityID.LightRed;
             item.useTime = 30;
             item.useAnimation = 30;
             item.knockBack = 6;
-            item.useStyle = 1;
+            item.useStyle = ItemUseStyleID.Swing;
             item.autoReuse = true;
         }
         public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -706,7 +706,7 @@ namespace CoolerItemVisualEffect.Weapons
             }
             else
             {
-                item.shoot = 0;
+                item.shoot = ProjectileID.None;
                 item.shootSpeed = 0;
                 item.noUseGraphic = false;
                 item.noMelee = false;
@@ -753,7 +753,7 @@ namespace CoolerItemVisualEffect.Weapons
             }
             else
             {
-                item.shoot = 0;
+                item.shoot = ProjectileID.None;
                 item.shootSpeed = 0;
                 item.noUseGraphic = false;
                 item.noMelee = false;
@@ -770,7 +770,7 @@ namespace CoolerItemVisualEffect.Weapons
             Item.useTime = 20;
             Item.useAnimation = 20;
             Item.damage = 60;
-            Item.rare = 8;
+            Item.rare = ItemRarityID.Yellow;
         }
         public override void AddRecipes()
         {
@@ -905,11 +905,11 @@ namespace CoolerItemVisualEffect.Weapons
             item.DamageType = DamageClass.Melee;
             item.width = 48;
             item.height = 48;
-            item.rare = 5;
+            item.rare = ItemRarityID.Pink;
             item.useTime = 25;
             item.useAnimation = 25;
             item.knockBack = 8;
-            item.useStyle = 1;
+            item.useStyle = ItemUseStyleID.Swing;
             item.autoReuse = true;
         }
         public override bool CanUseItem(Player player)
@@ -924,7 +924,7 @@ namespace CoolerItemVisualEffect.Weapons
             }
             else
             {
-                item.shoot = 0;
+                item.shoot = ProjectileID.None;
                 item.shootSpeed = 0;
                 item.noUseGraphic = false;
                 item.noMelee = false;
@@ -977,7 +977,7 @@ namespace CoolerItemVisualEffect.Weapons
             base.SetDefaults();
             item.damage = 70;
             item.width = 50;
-            item.rare = 8;
+            item.rare = ItemRarityID.Yellow;
             item.useTime = 18;
             item.useAnimation = 18;
         }
@@ -993,7 +993,7 @@ namespace CoolerItemVisualEffect.Weapons
             }
             else
             {
-                item.shoot = 0;
+                item.shoot = ProjectileID.None;
                 item.shootSpeed = 0;
                 item.noUseGraphic = false;
                 item.noMelee = false;
@@ -1206,11 +1206,11 @@ namespace CoolerItemVisualEffect.Weapons
             item.DamageType = DamageClass.Melee;
             item.width = 66;
             item.height = 74;
-            item.rare = 6;
+            item.rare = ItemRarityID.LightPurple;
             item.useTime = 21;
             item.useAnimation = 21;
             item.knockBack = 8;
-            item.useStyle = 1;
+            item.useStyle = ItemUseStyleID.Swing;
             item.autoReuse = true;
         }
         public override bool CanUseItem(Player player)
@@ -1225,7 +1225,7 @@ namespace CoolerItemVisualEffect.Weapons
             }
             else
             {
-                item.shoot = 0;
+                item.shoot = ProjectileID.None;
                 item.shootSpeed = 0;
                 item.noUseGraphic = false;
                 item.noMelee = false;
@@ -1282,7 +1282,7 @@ namespace CoolerItemVisualEffect.Weapons
         {
             base.SetDefaults();
             item.damage = 90;
-            item.rare = 8;
+            item.rare = ItemRarityID.Yellow;
             item.useTime = 15;
             item.useAnimation = 15;
         }

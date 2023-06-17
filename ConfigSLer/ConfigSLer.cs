@@ -44,10 +44,10 @@ namespace CoolerItemVisualEffect.ConfigSLer
         public override void OnInitialize()
         {
             #region 贴图加载
-            var saveTexture = GetTexture("UI/Construct/Save");
-            var loadTexture = GetTexture("UI/Construct/Load");
-            var explodeAndPlaceTexture = GetTexture("UI/Construct/ExplodeAndPlace");
-            var placeOnlyTexture = GetTexture("UI/Construct/PlaceOnly");
+            //var saveTexture = GetTexture("UI/Construct/Save");
+            //var loadTexture = GetTexture("UI/Construct/Load");
+            //var explodeAndPlaceTexture = GetTexture("UI/Construct/ExplodeAndPlace");
+            //var placeOnlyTexture = GetTexture("UI/Construct/PlaceOnly");
             RefreshTexture = GetTexture("UI/Construct/Refresh");
             BackTexture = GetTexture("UI/Construct/Back");
             ButtonBackgroundTexture = Main.Assets.Request<Texture2D>("Images/UI/CharCreation/CategoryPanel");

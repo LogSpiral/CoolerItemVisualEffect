@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Terraria.GameContent;
 using Terraria.Graphics;
 using Terraria.Graphics.Renderers;
+using Terraria.ID;
 
 namespace CoolerItemVisualEffect
 {
@@ -63,7 +64,7 @@ namespace CoolerItemVisualEffect
             if (!celesteMove) return;
 
             bool flag = Player.itemAnimation > 0;
-            flag &= Player.HeldItem.DamageType == DamageClass.Ranged && Player.HeldItem.useStyle == 5;
+            flag &= Player.HeldItem.DamageType == DamageClass.Ranged && Player.HeldItem.useStyle == ItemUseStyleID.Shoot;
             if (squat)
             {
                 var fac = squatCounter == 0 ? 1f : (squat ? 0.6f + squatCounter / 50f : 1 - squatCounter / 50f);

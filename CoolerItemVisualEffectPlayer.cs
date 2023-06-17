@@ -686,14 +686,14 @@ namespace CoolerItemVisualEffect
                 if (ConfigurationSwoosh.allowZenith && ConfigurationSwoosh.CoolerSwooshActive)
                 {
                     Player.HeldItem.noUseGraphic = false;
-                    Player.HeldItem.useStyle = 1;
+                    Player.HeldItem.useStyle = ItemUseStyleID.Swing;
                     Player.HeldItem.channel = false;
                     Player.HeldItem.noMelee = false;
                 }
                 else
                 {
                     Player.HeldItem.noUseGraphic = true;
-                    Player.HeldItem.useStyle = 5;
+                    Player.HeldItem.useStyle = ItemUseStyleID.Shoot;
                     Player.HeldItem.channel = true;
                     Player.HeldItem.noMelee = true;
 
@@ -826,6 +826,48 @@ namespace CoolerItemVisualEffect
         #endregion
 
         #region 辅助函数
+        public static void ChangeItemTex(Player player, bool airCheck = false)
+        {
+            CoolerItemVisualEffectPlayer modPlayer = player.GetModPlayer<CoolerItemVisualEffectPlayer>();
+            if (!TextureAssets.Item[player.HeldItem.type].IsLoaded) TextureAssets.Item[player.HeldItem.type] = Main.Assets.Request<Texture2D>("Images/Item_" + player.HeldItem.type, ReLogic.Content.AssetRequestMode.AsyncLoad);
+            var texture = TextureAssets.Item[player.HeldItem.type].Value;
+            if (modPlayer.colorInfo.type != player.HeldItem.type)
+            {
+                var w = texture.Width;
+                var h = texture.Height;
+                var cs = new Color[w * h];
+
+                texture.GetData(cs);
+                Vector4 vcolor = default;
+                float count = 0;
+                modPlayer.colorInfo.checkAirFactor = 1;
+                Color target = default;
+
+                for (int n = 0; n < cs.Length; n++)
+                {
+                    if (cs[n] != default && (n - w < 0 || cs[n - w] != default) && (n - 1 < 0 || cs[n - 1] != default) && (n + w >= cs.Length || cs[n + w] != default) && (n + 1 >= cs.Length || cs[n + 1] != default))
+                    {
+                        var weight = (float)((n + 1) % w * (h - n / w)) / w / h;
+                        vcolor += cs[n].ToVector4() * weight;
+                        count += weight;
+                    }
+                    Vector2 coord = new Vector2(n % w, n / w);
+                    coord /= new Vector2(w, h);
+                    if (airCheck)
+                        if (modPlayer.ConfigurationSwoosh.checkAir && Math.Abs(1 - coord.X - coord.Y) * 0.7071067811f < 0.05f && cs[n] != default && target == default)
+                        {
+                            target = cs[n];
+                            modPlayer.colorInfo.checkAirFactor = coord.X;
+                        }
+                }
+                vcolor /= count;
+                var newColor = modPlayer.colorInfo.color = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
+                modPlayer.hsl = Main.rgbToHsl(newColor);
+            }
+
+
+        }
+
         /// <summary>
         /// 生成新的剑气
         /// </summary>
@@ -916,7 +958,7 @@ namespace CoolerItemVisualEffect
                     {
                         Item weapon = Player.inventory[num2];//num2 == 0 ? WeaponDisplay.Instance._FirstInventoryItem : 
                         if (weapon == null) continue;
-                        if (weapon.stack > 0 && (weapon.damage > 0 || weapon.type == 905) && weapon.useAnimation > 0 && weapon.useTime > 0 && !weapon.consumable && weapon.ammo == 0 && Player.itemAnimation == 0 && Player.ItemTimeIsZero && CheckItemCanUse(weapon, Player) && weapon.holdStyle == 0 && weapon.type != ItemID.FlareGun && weapon.type != ItemID.MagicalHarp && weapon.type != ItemID.NebulaBlaze && weapon.type != ItemID.NebulaArcanum && weapon.type != ItemID.TragicUmbrella && weapon.type != ItemID.CombatWrench && weapon.type != ItemID.FairyQueenMagicItem && weapon.type != ItemID.BouncingShield && weapon.type != ItemID.SparkleGuitar)
+                        if (weapon.stack > 0 && (weapon.damage > 0 || weapon.type == ItemID.CoinGun) && weapon.useAnimation > 0 && weapon.useTime > 0 && !weapon.consumable && weapon.ammo == 0 && Player.itemAnimation == 0 && Player.ItemTimeIsZero && CheckItemCanUse(weapon, Player) && weapon.holdStyle == 0 && weapon.type != ItemID.FlareGun && weapon.type != ItemID.MagicalHarp && weapon.type != ItemID.NebulaBlaze && weapon.type != ItemID.NebulaArcanum && weapon.type != ItemID.TragicUmbrella && weapon.type != ItemID.CombatWrench && weapon.type != ItemID.FairyQueenMagicItem && weapon.type != ItemID.BouncingShield && weapon.type != ItemID.SparkleGuitar)
                         {
                             firstweapon = weapon;
                             break;
@@ -957,7 +999,7 @@ namespace CoolerItemVisualEffect
                     //}
                 }
                 Item holditem = Player.inventory[Player.selectedItem];
-                if (Player.active && !Player.dead && holditem.stack > 0 && (holditem.damage > 0 || holditem.type == 905) && holditem.useAnimation > 0 && holditem.useTime > 0 && !holditem.consumable && holditem.ammo == 0 && Player.itemAnimation == 0 && Player.ItemTimeIsZero && CheckItemCanUse(holditem, Player))
+                if (Player.active && !Player.dead && holditem.stack > 0 && (holditem.damage > 0 || holditem.type == ItemID.CoinGun) && holditem.useAnimation > 0 && holditem.useTime > 0 && !holditem.consumable && holditem.ammo == 0 && Player.itemAnimation == 0 && Player.ItemTimeIsZero && CheckItemCanUse(holditem, Player))
                 {
                     if (holditem.holdStyle == 0 && holditem.type != ItemID.FlareGun && holditem.type != ItemID.MagicalHarp && holditem.type != ItemID.NebulaBlaze && holditem.type != ItemID.NebulaArcanum && holditem.type != ItemID.TragicUmbrella && holditem.type != ItemID.CombatWrench && holditem.type != ItemID.FairyQueenMagicItem && holditem.type != ItemID.BouncingShield && holditem.type != ItemID.SparkleGuitar)
                     {
@@ -1197,10 +1239,10 @@ namespace CoolerItemVisualEffect
                     player.ClearBuff(198);
                 }
 
-                if (sItem.type == 426 && (float)target.life >= (float)target.lifeMax * 0.9f)
+                if (sItem.type == ItemID.BreakerBlade && (float)target.life >= (float)target.lifeMax * 0.9f)
                     num = (int)((float)num * 2f);
 
-                if (sItem.type == 5096)
+                if (sItem.type == ItemID.HamBat)
                 {
                     int num3 = 0;
                     if (player.FindBuffIndex(26) != -1)
@@ -1216,7 +1258,7 @@ namespace CoolerItemVisualEffect
                     num = (int)((float)num * num4);
                 }
 
-                if (sItem.type == 671)
+                if (sItem.type == ItemID.Keybrand)
                 {
                     float t = (float)target.life / (float)target.lifeMax;
                     float lerpValue = Utils.GetLerpValue(1f, 0.1f, t, clamped: true);

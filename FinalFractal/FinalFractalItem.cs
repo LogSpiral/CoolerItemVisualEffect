@@ -165,7 +165,7 @@ namespace CoolerItemVisualEffect.FinalFractal
             item.DamageType = DamageClass.Melee;
             item.width = 64;
             item.height = 74;
-            item.rare = 11;
+            item.rare = ItemRarityID.Purple;
             item.useTime = 12;
             item.useAnimation = 12;
             item.knockBack = 8;

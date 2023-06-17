@@ -10,6 +10,7 @@ using static Terraria.ModLoader.ModContent;
 using Terraria.DataStructures;
 using static CoolerItemVisualEffect.CoolerItemVisualEffectMethods;
 using static CoolerItemVisualEffect.CoolerItemVisualEffect;
+
 namespace CoolerItemVisualEffect.Weapons
 {
     public class WitheredWoodSword : ModItem
@@ -23,11 +24,11 @@ namespace CoolerItemVisualEffect.Weapons
             Item.crit = 21;
             Item.width = 50;
             Item.height = 54;
-            Item.rare = 4;
+            Item.rare = ItemRarityID.LightRed;
             Item.useTime = 30;
             Item.useAnimation = 30;
             Item.knockBack = 6;
-            Item.useStyle = 1;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.autoReuse = true;
             Item.noUseGraphic = true;
             Item.DamageType = DamageClass.Melee;
@@ -71,10 +72,10 @@ namespace CoolerItemVisualEffect.Weapons
             Item.useTime = 20;
             Item.useAnimation = 20;
             Item.damage = 60;
-            Item.rare = 8;
+            Item.rare = ItemRarityID.Yellow;
         }
         public override void AddRecipes()
-        { 
+        {
             var recipe = CreateRecipe();
             recipe.AddIngredient<WitheredWoodSword>();
             recipe.AddIngredient(ItemID.BrokenHeroSword);
@@ -273,36 +274,7 @@ namespace CoolerItemVisualEffect.Weapons
             {
                 Main.RunOnMainThread(() => modplr.colorInfo.tex = new Texture2D(Main.graphics.GraphicsDevice, 300, 1));
             }
-            if (!TextureAssets.Item[Player.HeldItem.type].IsLoaded) TextureAssets.Item[Player.HeldItem.type] = Main.Assets.Request<Texture2D>("Images/Item_" + Player.HeldItem.type, ReLogic.Content.AssetRequestMode.AsyncLoad);
-            var itemTex = TextureAssets.Item[Player.HeldItem.type].Value;
-            if (modplr.colorInfo.type != Player.HeldItem.type)
-            {
-                var w = itemTex.Width;
-                var h = itemTex.Height;
-                var cs = new Color[w * h];
-
-                itemTex.GetData(cs);
-                Vector4 vcolor = default;
-                float count = 0;
-
-                for (int n = 0; n < cs.Length; n++)
-                {
-                    if (cs[n] != default && (n - w < 0 || cs[n - w] != default) && (n - 1 < 0 || cs[n - 1] != default) && (n + w >= cs.Length || cs[n + w] != default) && (n + 1 >= cs.Length || cs[n + 1] != default))
-                    {
-                        var weight = (float)((n + 1) % w * (h - n / w)) / w / h;
-                        vcolor += cs[n].ToVector4() * weight;
-                        count += weight;
-                    }
-                    Vector2 coord = new Vector2(n % w, n / w);
-                    coord /= new Vector2(w, h);
-                }
-                vcolor /= count;
-                var newColor = modplr.colorInfo.color = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
-                /*var hslVec = */
-                modplr.hsl = Main.rgbToHsl(newColor);
-                //if (hslVec.Z < modPlayer.ConfigurationSwoosh.isLighterDecider) { modPlayer.colorInfo.color = Main.hslToRgb(hslVec with { Z = 0 }); }//MathHelper.Clamp(hslVec.Z * .25f, 0, 1)
-            }
-
+            CoolerItemVisualEffectPlayer.ChangeItemTex(Player);
             CoolerItemVisualEffect.UpdateHeatMap(ref modplr.colorInfo.tex, modplr.hsl, modplr.ConfigurationSwoosh, TextureAssets.Item[Player.HeldItem.type].Value);
             base.OnSpawn(source);
         }
@@ -413,7 +385,7 @@ namespace CoolerItemVisualEffect.Weapons
                     tree.SpawnDust(Projectile.Center, Projectile.rotation.ToRotationVector2());
                     if (tree.rand() < .5f)
                     {
-                        tree.SpawnProjectile(Projectile, Projectile.Center, Projectile.rotation.ToRotationVector2(), tree.root,.05f);
+                        tree.SpawnProjectile(Projectile, Projectile.Center, Projectile.rotation.ToRotationVector2(), tree.root, .05f);
                     }
                 }
 
@@ -655,11 +627,11 @@ namespace CoolerItemVisualEffect.Weapons
             item.DamageType = DamageClass.Melee;
             item.width = 48;
             item.height = 48;
-            item.rare = 5;
+            item.rare = ItemRarityID.Pink;
             item.useTime = 25;
             item.useAnimation = 25;
             item.knockBack = 8;
-            item.useStyle = 1;
+            item.useStyle = ItemUseStyleID.Swing;
             item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<SereStoneSword_Blade>();
 
@@ -698,7 +670,7 @@ namespace CoolerItemVisualEffect.Weapons
             base.SetDefaults();
             item.damage = 70;
             item.width = 50;
-            item.rare = 8;
+            item.rare = ItemRarityID.Yellow;
             item.useTime = 18;
             item.useAnimation = 18;
         }
@@ -852,9 +824,9 @@ namespace CoolerItemVisualEffect.Weapons
             if (SACoolDown < 0 && Main.rand.NextBool(controlTier % 5 == 4 ? 2 : 5))
             {
                 var max = UpgradeValue(8, 12);
-                for (int n = 0; n < max; n++) 
+                for (int n = 0; n < max; n++)
                 {
-                    if (Main.rand.NextBool(UpgradeValue(3, 2))) 
+                    if (Main.rand.NextBool(UpgradeValue(3, 2)))
                     {
                         projectile.damage *= 2;
                         SereStoneSwordProj.ShootSharpTears(target.Center + new Vector2((n - max / 2f) * 8, 24), Player, projectile);
@@ -904,11 +876,11 @@ namespace CoolerItemVisualEffect.Weapons
             item.DamageType = DamageClass.Melee;
             item.width = 66;
             item.height = 74;
-            item.rare = 6;
+            item.rare = ItemRarityID.LightPurple;
             item.useTime = 21;
             item.useAnimation = 21;
             item.knockBack = 8;
-            item.useStyle = 1;
+            item.useStyle = ItemUseStyleID.Swing;
             item.autoReuse = true;
         }
         public override void AddRecipes()
@@ -948,7 +920,7 @@ namespace CoolerItemVisualEffect.Weapons
         {
             base.SetDefaults();
             item.damage = 90;
-            item.rare = 8;
+            item.rare = ItemRarityID.Yellow;
             item.useTime = 15;
             item.useAnimation = 15;
         }
@@ -1015,7 +987,7 @@ namespace CoolerItemVisualEffect.Weapons
         }
         public override void SetDefaults()
         {
-            Item.useStyle = 1;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.width = 58;
             Item.height = 64;
             Item.noUseGraphic = true;
@@ -1127,10 +1099,200 @@ namespace CoolerItemVisualEffect.Weapons
         public override void OnChargedShoot()
         {
             //CoolerSystem.UseInvertGlass = !CoolerSystem.UseInvertGlass;
-            //Projectile.NewProjectile(projectile.GetSource_FromThis(), Player.Center, default, ModContent.ProjectileType<VectorField>(), 0, 0, Player.whoAmI);//(Main.MouseWorld - Player.Center).SafeNormalize(default) * 6
+            Projectile.NewProjectile(projectile.GetSource_FromThis(), Player.Center, default, ModContent.ProjectileType<VectorField_Ultra>(), 0, 0, Player.whoAmI);//(Main.MouseWorld - Player.Center).SafeNormalize(default) * 6
         }
     }
 
+
+    public class VectorField : ModProjectile
+    {
+        public override void SetDefaults()
+        {
+            IHat = new Vector2(1, 1) * 4;
+            JHat = new Vector2(-1, 1) * 4;
+            Projectile.timeLeft = 1200;
+            Projectile.tileCollide = false;
+        }
+        public override void Load()
+        {
+            vectorTex = GetTexture("Vector");
+        }
+        public Texture2D vectorTex;
+        public override string Texture => ModContent.GetInstance<FirstZenith>().Texture;
+        public Vector2 IHat
+        {
+            //((float)Main.time / 30f).ToRotationVector2() * 2f
+            //(MathF.Sin((float)Main.time / 60f) * MathHelper.PiOver2 + MathHelper.Pi).ToRotationVector2() * 2f
+            get => new Vector2(-1, 1);
+            set => iHat = value;
+        }
+        public Vector2 iHat;
+        public Vector2 JHat
+        {
+            get => new Vector2(-1, 0);// new Vector2(-IHat.Y, IHat.X)
+            set => jHat = value;
+        }
+        public Vector2 jHat;
+
+        public Vector2[,] flows = new Vector2[120, 30];
+        public bool[] flowActive = new bool[120];
+        public float[] flowFade = new float[120];
+        public Vector2 Transform(Vector2 vec) => new Vector2(vec.X * IHat.X + vec.Y * JHat.X, vec.X * IHat.Y + vec.Y * JHat.Y);
+        public override void SetStaticDefaults()
+        {
+            base.SetStaticDefaults();
+        }
+        public override void AI()
+        {
+            for (int n = 0; n < 120; n++)
+            {
+                if (!flowActive[n])
+                {
+                    if (Main.rand.NextBool(120))
+                    {
+                        flowActive[n] = true;
+                        flows[n, 0] = Main.rand.NextVector2Unit() * Main.rand.NextFloat(512, 1024) + Projectile.Center;
+                        for (int i = 1; i < 30; i++)
+                        {
+                            flows[n, i] = flows[n, 0];
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 29; i > 0; i--)
+                    {
+                        flows[n, i] = flows[n, i - 1];
+                    }
+                    if ((flows[n, 0] - Projectile.Center).Length() < 8f || (flows[n, 0] - Projectile.Center).Length() > 1440)
+                    {
+                        flowFade[n] = flowFade[n] * .9f;
+                        if ((flows[n, 29] - Projectile.Center).Length() < 8f || (flows[n, 29] - Projectile.Center).Length() > 1440)
+                        {
+                            flowActive[n] = false;
+                            flowFade[n] = 0;
+                        }
+                    }
+                    else
+                    {
+                        flowFade[n] = flowFade[n] * .95f + .05f;
+                        var vec = Transform(flows[n, 0] - Projectile.Center);
+                        if ((Projectile.velocity - vec / 60f).Length() < 2f) //Math.Abs(Projectile.velocity.Length() - vec.Length() / 60f)
+                        {
+                            flowActive[n] = false;
+                            flowFade[n] = 0;
+                        }
+                        flows[n, 0] += vec / 60f;
+                    }
+                }
+            }
+            IHat += Transform(IHat) / 60f;
+            JHat += Transform(JHat) / 60f;
+        }
+        public override bool PreDraw(ref Color lightColor)
+        {
+            if (vectorTex == null)
+            {
+                vectorTex = GetTexture("Vector");
+                return false;
+            }
+
+            float stepLength = 64f;
+            var fieldCen = Projectile.Center - Main.screenPosition - new Vector2(stepLength * 60);
+            fieldCen = new Vector2((int)(fieldCen.X / stepLength) * stepLength, (int)(fieldCen.Y / stepLength) * stepLength);
+            var sb = Main.spriteBatch;
+            sb.Draw(TextureAssets.MagicPixel.Value, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Black);
+            for (int n = 0; n < 120; n++)
+            {
+                for (int i = 0; i < 120; i++)
+                {
+                    var drawCen = fieldCen + new Vector2(stepLength * n, stepLength * i);
+                    var target = Transform(drawCen - Projectile.Center + Main.screenPosition);
+                    if (vectorTex == null) vectorTex = GetTexture("Vector");
+                    sb.Draw(vectorTex, drawCen, null, Color.Lerp(Color.Cyan, Color.Red, target.Length() / 1024f), target.ToRotation(), new Vector2(0, 11), .5f, 0, 0);
+                }
+            }
+
+
+            if (ShaderSwooshEffect == null) return false;
+            var trans = Main.GameViewMatrix != null ? Main.GameViewMatrix.TransformationMatrix : Matrix.Identity;
+            var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
+            var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
+            Matrix result = model * trans * projection;
+
+            List<CustomVertexInfo> vertexInfos = new List<CustomVertexInfo>();
+
+            for (int n = 0; n < 120; n++)
+            {
+                if (!flowActive[n]) continue;
+                var current = flows[n, 0];
+                int max = 30;
+                for (int i = 1; i < 30; i++)
+                {
+                    if (current == flows[n, i])
+                    {
+                        max = i;
+                        break;
+                    }
+                    else
+                    {
+                        current = flows[n, i];
+                    }
+                }
+                if (max < 2) { continue; }//Main.NewText("??");
+                CustomVertexInfo[] infos = new CustomVertexInfo[max * 2];
+                for (int i = 0; i < max; i++)
+                {
+                    float factor = i / (max - 1f);
+                    var unit = i == 0 ? flows[n, 0] - flows[n, 1] : flows[n, i - 1] - flows[n, i];
+                    unit = new Vector2(-unit.Y, unit.X).SafeNormalize(default) * ((1 - (float)Math.Cos(MathHelper.TwoPi * factor)) * 0.5f) * 16;
+                    infos[2 * i] = new CustomVertexInfo(flows[n, i] + unit, Color.White with { A = (byte)(flowFade[n] * 255) }, new Vector3(factor, 0, flowFade[n]));
+                    infos[2 * i + 1] = new CustomVertexInfo(flows[n, i] - unit, Color.White with { A = (byte)(flowFade[n] * 255) }, new Vector3(factor, 1, flowFade[n]));
+                }
+                for (int i = 0; i < max * 2 - 2; i += 2)
+                {
+                    //if (i == 28) continue;
+                    vertexInfos.Add(infos[i]);
+                    vertexInfos.Add(infos[i + 2]);
+                    vertexInfos.Add(infos[i + 1]);
+                    vertexInfos.Add(infos[i + 1]);
+                    vertexInfos.Add(infos[i + 2]);
+                    vertexInfos.Add(infos[i + 3]);
+                }
+            }
+            //for (int n = 0; n < vertexInfos.Count - 1; n++)
+            //{
+            //    sb.DrawLine(vertexInfos[n].Position, vertexInfos[n + 1].Position, Color.Red, 4, false, -Main.screenPosition);
+            //}
+            sb.End();
+            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicWrap, DepthStencilState.None, RasterizerState.CullNone, null, trans);
+            ShaderSwooshEX.Parameters["uTransform"].SetValue(result);
+            ShaderSwooshEX.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
+            ShaderSwooshEX.Parameters["checkAir"].SetValue(false);
+            ShaderSwooshEX.Parameters["airFactor"].SetValue(1);
+            ShaderSwooshEX.Parameters["gather"].SetValue(false);
+            ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity);
+            ShaderSwooshEX.Parameters["lightShift"].SetValue(0);
+            ShaderSwooshEX.Parameters["distortScaler"].SetValue(1);
+            ShaderSwooshEX.Parameters["alphaFactor"].SetValue(1);
+            ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(false);
+            Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_8");
+            Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("Style_10");
+            Main.graphics.GraphicsDevice.Textures[2] = TextureAssets.MagicPixel.Value;
+            Main.graphics.GraphicsDevice.Textures[3] = GetTexture("greyBar");
+            Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.AnisotropicWrap;
+            Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.AnisotropicWrap;
+            Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.AnisotropicWrap;
+            Main.graphics.GraphicsDevice.SamplerStates[3] = SamplerState.AnisotropicClamp;
+            ShaderSwooshEX.CurrentTechnique.Passes[2].Apply();
+            Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, vertexInfos.ToArray(), 0, vertexInfos.Count / 3);
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, trans);
+            sb.Draw(vectorTex, Projectile.Center - Main.screenPosition, null, Color.Purple, IHat.ToRotation(), new Vector2(0, 11), new Vector2(IHat.Length() * 4 / 78f, MathF.Sqrt(IHat.Length()) / 11f) * 4, 0, 0);
+            sb.Draw(vectorTex, Projectile.Center - Main.screenPosition, null, Color.Pink, JHat.ToRotation(), new Vector2(0, 11), new Vector2(JHat.Length() * 4 / 78f, MathF.Sqrt(JHat.Length()) / 11f) * 4, 0, 0);
+            return false;
+        }
+    }
     public class VectorField_EX : ModProjectile
     {
         public int tier;
@@ -1417,14 +1579,24 @@ namespace CoolerItemVisualEffect.Weapons
             return false;
         }
     }
-    public class VectorField : ModProjectile
+    public class VectorField_Ultra : ModProjectile
     {
+        public class Flow
+        {
+            public bool active;
+            public float fade;
+            public Vector2[] position = new Vector2[30];
+            public Vector2 velocity;
+        }
         public override void SetDefaults()
         {
-            IHat = new Vector2(1, 1) * 4;
-            JHat = new Vector2(-1, 1) * 4;
             Projectile.timeLeft = 1200;
             Projectile.tileCollide = false;
+            flows = new Flow[flowCount];
+            for (int n = 0; n < flowCount; n++)
+            {
+                flows[n] = new Flow();
+            }
         }
         public override void Load()
         {
@@ -1432,23 +1604,10 @@ namespace CoolerItemVisualEffect.Weapons
         }
         public Texture2D vectorTex;
         public override string Texture => ModContent.GetInstance<FirstZenith>().Texture;
-        public Vector2 IHat
-        {
-            get => ((float)Main.time / 30f).ToRotationVector2() * 2f;//new Vector2(-1, 1)//(MathF.Sin((float)Main.time / 60f) * MathHelper.PiOver2 + MathHelper.Pi).ToRotationVector2() * 2f
-            set => iHat = value;
-        }
-        public Vector2 iHat;
-        public Vector2 JHat
-        {
-            get => new Vector2(-IHat.Y, IHat.X);// new Vector2(-1, 0)
-            set => jHat = value;
-        }
-        public Vector2 jHat;
-
-        public Vector2[,] flows = new Vector2[120, 30];
-        public bool[] flowActive = new bool[120];
-        public float[] flowFade = new float[120];
-        public Vector2 Transform(Vector2 vec) => new Vector2(vec.X * IHat.X + vec.Y * JHat.X, vec.X * IHat.Y + vec.Y * JHat.Y);
+        public Flow[] flows;
+        public int flowCount => 120;
+        public Vector2 ElectricField(Vector2 vec) => new Vector2(vec.Y, MathF.Sin(vec.X) * 512);//new Vector2(vec.X * vec.X - vec.Y * vec.Y, 2 * vec.X * vec.Y) * .2f + new Vector2(-vec.Y,vec.X) * .8f
+        public float MagneticField(Vector2 vec) => -1;//(MathF.Cos(vec.X / 60f * MathHelper.TwoPi) + MathF.Cos(vec.Y / 60f * MathHelper.TwoPi)) * 2
         public override void SetStaticDefaults()
         {
             base.SetStaticDefaults();
@@ -1457,15 +1616,17 @@ namespace CoolerItemVisualEffect.Weapons
         {
             for (int n = 0; n < 120; n++)
             {
-                if (!flowActive[n])
+                var flow = flows[n];
+                if (!flows[n].active)
                 {
                     if (Main.rand.NextBool(120))
                     {
-                        flowActive[n] = true;
-                        flows[n, 0] = Main.rand.NextVector2Unit() * Main.rand.NextFloat(512, 1024) + Projectile.Center;
+                        flow.active = true;
+                        flow.position[0] = Main.rand.NextVector2Unit() * Main.rand.NextFloat(0, 16) + Projectile.Center - new Vector2(256, 0);//Main.rand.NextVector2Unit() * Main.rand.NextFloat(512, 1024)
+                        flow.velocity = new Vector2(60, 0);
                         for (int i = 1; i < 30; i++)
                         {
-                            flows[n, i] = flows[n, 0];
+                            flow.position[i] = flow.position[0];
                         }
                     }
                 }
@@ -1473,32 +1634,29 @@ namespace CoolerItemVisualEffect.Weapons
                 {
                     for (int i = 29; i > 0; i--)
                     {
-                        flows[n, i] = flows[n, i - 1];
+                        flow.position[i] = flow.position[i - 1];
                     }
-                    if ((flows[n, 0] - Projectile.Center).Length() < 8f || (flows[n, 0] - Projectile.Center).Length() > 1440)
+                    if ((flow.position[0] - Projectile.Center).Length() < 8f || (flow.position[0] - Projectile.Center).Length() > 1440)
                     {
-                        flowFade[n] = flowFade[n] * .9f;
-                        if ((flows[n, 29] - Projectile.Center).Length() < 8f || (flows[n, 29] - Projectile.Center).Length() > 1440)
+                        flow.fade *= .9f;
+                        if ((flow.position[29] - Projectile.Center).Length() < 8f || (flow.position[29] - Projectile.Center).Length() > 1440)
                         {
-                            flowActive[n] = false;
-                            flowFade[n] = 0;
+                            flow.active = false;
+                            flow.fade = 0;
                         }
                     }
                     else
                     {
-                        flowFade[n] = flowFade[n] * .95f + .05f;
-                        var vec = Transform(flows[n, 0] - Projectile.Center);
-                        if ((Projectile.velocity - vec / 60f).Length() < 2f) //Math.Abs(Projectile.velocity.Length() - vec.Length() / 60f)
-                        {
-                            flowActive[n] = false;
-                            flowFade[n] = 0;
-                        }
-                        flows[n, 0] += vec / 60f;
+                        flow.fade = flow.fade * .95f + .05f;
+                        var realPosition = flow.position[0] - Projectile.Center;
+                        var acceleration_E = ElectricField(realPosition);
+                        var acceleration_M = MagneticField(realPosition) * new Vector2(-flow.velocity.Y, flow.velocity.X);
+                        flow.velocity += (acceleration_E + acceleration_M) / 60f;
+                        flow.position[0] += flow.velocity / 60f;
+
                     }
                 }
             }
-            IHat += Transform(IHat) / 60f;
-            JHat += Transform(JHat) / 60f;
         }
         public override bool PreDraw(ref Color lightColor)
         {
@@ -1507,18 +1665,29 @@ namespace CoolerItemVisualEffect.Weapons
                 vectorTex = GetTexture("Vector");
                 return false;
             }
+
             float stepLength = 64f;
             var fieldCen = Projectile.Center - Main.screenPosition - new Vector2(stepLength * 60);
             fieldCen = new Vector2((int)(fieldCen.X / stepLength) * stepLength, (int)(fieldCen.Y / stepLength) * stepLength);
             var sb = Main.spriteBatch;
+            sb.Draw(TextureAssets.MagicPixel.Value, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Black);
             for (int n = 0; n < 120; n++)
             {
                 for (int i = 0; i < 120; i++)
                 {
                     var drawCen = fieldCen + new Vector2(stepLength * n, stepLength * i);
-                    var target = Transform(drawCen - Projectile.Center + Main.screenPosition);
-                    if (vectorTex == null) vectorTex = GetTexture("Vector");
-                    sb.Draw(vectorTex, drawCen, null, Color.Lerp(Color.Cyan, Color.Red, target.Length() / 1024f), target.ToRotation(), new Vector2(0, 11), .5f, 0, 0);
+                    var target = ElectricField(drawCen - Projectile.Center + Main.screenPosition);
+                    if (target.Length() != 0)
+                    {
+                        if (vectorTex == null) vectorTex = GetTexture("Vector");
+                        sb.Draw(vectorTex, drawCen, null, Color.Lerp(Color.Cyan, Color.Red, target.Length() / 1024f), target.ToRotation(), new Vector2(0, 11), .5f, 0, 0);
+                    }
+
+
+                    var B = MagneticField(drawCen - Projectile.Center + Main.screenPosition);
+                    if (B == 0) continue;
+                    sb.Draw(GetTexture("MagneticMark"), drawCen, new Rectangle((Math.Sign(B) + 1) / 2 * 32, 0, 32, 32), Color.Lerp(Color.LimeGreen, Color.DarkGreen, Math.Abs(B) / 4f), 0, new Vector2(16), .5f, 0, 0);
+
                 }
             }
 
@@ -1533,19 +1702,20 @@ namespace CoolerItemVisualEffect.Weapons
 
             for (int n = 0; n < 120; n++)
             {
-                if (!flowActive[n]) continue;
-                var current = flows[n, 0];
+                var flow = flows[n];
+                if (!flow.active) continue;
+                var current = flow.position[0];
                 int max = 30;
                 for (int i = 1; i < 30; i++)
                 {
-                    if (current == flows[n, i])
+                    if (current == flow.position[i])
                     {
                         max = i;
                         break;
                     }
                     else
                     {
-                        current = flows[n, i];
+                        current = flow.position[i];
                     }
                 }
                 if (max < 2) { continue; }//Main.NewText("??");
@@ -1553,10 +1723,10 @@ namespace CoolerItemVisualEffect.Weapons
                 for (int i = 0; i < max; i++)
                 {
                     float factor = i / (max - 1f);
-                    var unit = i == 0 ? flows[n, 0] - flows[n, 1] : flows[n, i - 1] - flows[n, i];
+                    var unit = i == 0 ? flow.position[0] - flow.position[1] : flow.position[i - 1] - flow.position[i];
                     unit = new Vector2(-unit.Y, unit.X).SafeNormalize(default) * ((1 - (float)Math.Cos(MathHelper.TwoPi * factor)) * 0.5f) * 16;
-                    infos[2 * i] = new CustomVertexInfo(flows[n, i] + unit, Color.White with { A = (byte)(flowFade[n] * 255) }, new Vector3(factor, 0, flowFade[n]));
-                    infos[2 * i + 1] = new CustomVertexInfo(flows[n, i] - unit, Color.White with { A = (byte)(flowFade[n] * 255) }, new Vector3(factor, 1, flowFade[n]));
+                    infos[2 * i] = new CustomVertexInfo(flow.position[i] + unit, Color.White with { A = (byte)(flow.fade * 255) } * .5f, new Vector3(factor, 0, flow.fade));
+                    infos[2 * i + 1] = new CustomVertexInfo(flow.position[i] - unit, Color.White with { A = (byte)(flow.fade * 255) } * .5f, new Vector3(factor, 1, flow.fade));
                 }
                 for (int i = 0; i < max * 2 - 2; i += 2)
                 {
@@ -1569,7 +1739,7 @@ namespace CoolerItemVisualEffect.Weapons
                     vertexInfos.Add(infos[i + 3]);
                 }
             }
-            //for (int n = 0; n < vertexInfos.Count - 1; n++) 
+            //for (int n = 0; n < vertexInfos.Count - 1; n++)
             //{
             //    sb.DrawLine(vertexInfos[n].Position, vertexInfos[n + 1].Position, Color.Red, 4, false, -Main.screenPosition);
             //}
@@ -1597,8 +1767,8 @@ namespace CoolerItemVisualEffect.Weapons
             Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, vertexInfos.ToArray(), 0, vertexInfos.Count / 3);
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, trans);
-            sb.Draw(vectorTex, Projectile.Center - Main.screenPosition, null, Color.Purple, IHat.ToRotation(), new Vector2(0, 11), new Vector2(IHat.Length() * 4 / 78f, MathF.Sqrt(IHat.Length()) / 11f) * 4, 0, 0);
-            sb.Draw(vectorTex, Projectile.Center - Main.screenPosition, null, Color.Pink, JHat.ToRotation(), new Vector2(0, 11), new Vector2(JHat.Length() * 4 / 78f, MathF.Sqrt(JHat.Length()) / 11f) * 4, 0, 0);
+            //sb.Draw(vectorTex, Projectile.Center - Main.screenPosition, null, Color.Purple, IHat.ToRotation(), new Vector2(0, 11), new Vector2(IHat.Length() * 4 / 78f, MathF.Sqrt(IHat.Length()) / 11f) * 4, 0, 0);
+            //sb.Draw(vectorTex, Projectile.Center - Main.screenPosition, null, Color.Pink, JHat.ToRotation(), new Vector2(0, 11), new Vector2(JHat.Length() * 4 / 78f, MathF.Sqrt(JHat.Length()) / 11f) * 4, 0, 0);
             return false;
         }
     }
@@ -1631,7 +1801,7 @@ namespace CoolerItemVisualEffect.Weapons
             item.DamageType = DamageClass.Melee;
             item.width = 64;
             item.height = 74;
-            item.rare = 11;
+            item.rare = ItemRarityID.Purple;
             item.useTime = 12;
             item.useAnimation = 12;
             item.knockBack = 8;

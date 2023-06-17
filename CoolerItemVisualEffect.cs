@@ -5,6 +5,7 @@ global using Terraria.DataStructures;
 global using Terraria.GameInput;
 global using Terraria.ID;
 global using Terraria.ModLoader;
+global using LogSpiralLibrary.CodeLibrary;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -69,6 +70,8 @@ namespace CoolerItemVisualEffect
         internal static Effect shaderSwooshEffect;//第一代刀光effect
         internal static Effect shaderSwooshEX;//第二代
         //↑但是很不幸的是，都丢失.fx了，等阿汪做出第三代吧
+        internal static Effect shaderSwooshUL;//第三代
+
         internal static Effect distortEffect;
         internal static Effect finalFractalTailEffect;
         internal static Effect colorfulEffect;
@@ -76,6 +79,7 @@ namespace CoolerItemVisualEffect
         internal static Effect ItemEffect => itemEffect ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/ItemGlowEffect").Value;
         internal static Effect ShaderSwooshEffect => shaderSwooshEffect ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/ShaderSwooshEffect").Value;
         internal static Effect ShaderSwooshEX => shaderSwooshEX ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/ShaderSwooshEffectEX").Value;
+        internal static Effect ShaderSwooshUL => shaderSwooshUL ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/ShaderSwooshEffectUL").Value;
         internal static Effect DistortEffect => distortEffect ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/DistortEffect").Value;
         internal static Effect FinalFractalTailEffect => finalFractalTailEffect ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/FinalFractalTailEffect").Value;
         internal static Effect ColorfulEffect => colorfulEffect ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/ColorfulEffect").Value;
@@ -277,7 +281,7 @@ namespace CoolerItemVisualEffect
                                 {
                                     for (int n = 0; n < 300; n++)
                                     {
-                                        colors[n] = (n / 299f).GetLerpArrayValue(currentColor);
+                                        colors[n] = (n / 299f).ArrayLerp(currentColor);
                                     }
                                     break;
                                 }
@@ -295,7 +299,7 @@ namespace CoolerItemVisualEffect
                                     {
                                         var fac = n / 299f;
                                         fac *= fac;
-                                        colors[n] = fac.GetLerpArrayValue(currentColor);
+                                        colors[n] = fac.ArrayLerp(currentColor);
                                     }
                                     break;
                                 }
@@ -303,7 +307,7 @@ namespace CoolerItemVisualEffect
                                 {
                                     for (int n = 0; n < 300; n++)
                                     {
-                                        colors[n] = MathF.Sqrt(n / 299f).GetLerpArrayValue(currentColor);
+                                        colors[n] = MathF.Sqrt(n / 299f).ArrayLerp(currentColor);
                                     }
                                     break;
                                 }
@@ -311,7 +315,7 @@ namespace CoolerItemVisualEffect
                                 {
                                     for (int n = 0; n < 300; n++)
                                     {
-                                        colors[n] = ((n / 299f * 5).SmoothFloor() / 5f).GetLerpArrayValue(currentColor);
+                                        colors[n] = ((n / 299f * 5).SmoothFloor() / 5f).ArrayLerp(currentColor);
                                     }
                                     break;
                                 }
@@ -356,7 +360,7 @@ namespace CoolerItemVisualEffect
                                     var array = list.ToArray();
                                     for (int i = 0; i < 300; i++)
                                     {
-                                        colors[i] = GetHeatMapFactor(i / 299f, list.Count, config.heatMapFactorStyle).GetLerpArrayValue(array);
+                                        colors[i] = GetHeatMapFactor(i / 299f, list.Count, config.heatMapFactorStyle).ArrayLerp(array);
                                     }
                                     break;
                                 }
@@ -1114,17 +1118,21 @@ namespace CoolerItemVisualEffect
         public static void DrawSwooshContent(CoolerItemVisualEffectPlayer modPlayer, Matrix result, ConfigurationSwoosh instance, SamplerState sampler, Texture2D itemTex, float checkAirFactor, int passCount, CustomVertexInfo[] array, bool distort = false, float scaler = 1f)
         {
             var distortScaler = distort ? instance.distortSize : 1;
-            ShaderSwooshEX.Parameters["uTransform"].SetValue(result);
-            ShaderSwooshEX.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
-            ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);
-            ShaderSwooshEX.Parameters["airFactor"].SetValue(checkAirFactor);
-            ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather && !distort);
+            bool flag = ConfigurationUltraTest.ConfigSwooshUltraInstance.useUltraEffect;
+            Effect effect = flag ? ShaderSwooshUL : ShaderSwooshEX;
+            if (flag)
+                effect.Parameters["AlphaVector"].SetValue(ConfigurationUltraTest.ConfigSwooshUltraInstance.AlphaVector);
+            effect.Parameters["uTransform"].SetValue(result);
+            effect.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
+            effect.Parameters["checkAir"].SetValue(instance.checkAir);
+            effect.Parameters["airFactor"].SetValue(checkAirFactor);
+            effect.Parameters["gather"].SetValue(instance.gather && !distort);
             var _v = modPlayer.ConfigurationSwoosh.directOfHeatMap.ToRotationVector2();
-            ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
-            ShaderSwooshEX.Parameters["lightShift"].SetValue(0);
-            ShaderSwooshEX.Parameters["distortScaler"].SetValue(distortScaler * scaler);
-            ShaderSwooshEX.Parameters["alphaFactor"].SetValue(instance.alphaFactor);
-            ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(instance.alphaFactor == 0);
+            effect.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
+            effect.Parameters["lightShift"].SetValue(0);
+            effect.Parameters["distortScaler"].SetValue(distortScaler * scaler);
+            effect.Parameters["alphaFactor"].SetValue(instance.alphaFactor);
+            effect.Parameters["heatMapAlpha"].SetValue(instance.alphaFactor == 0);
             Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + instance.ImageIndex);
             Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage($"AniTex_{modPlayer.ConfigurationSwoosh.AnimateIndex}");
             Main.graphics.GraphicsDevice.Textures[2] = itemTex;
@@ -1143,7 +1151,7 @@ namespace CoolerItemVisualEffect
             Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
             if (modPlayer.UseSlash)// && ((instance.swooshActionStyle != SwooshAction.向后倾一定角度后重击 && instance.swooshActionStyle != SwooshAction.两次普通斩击一次高速旋转) || modPlayer.Player.itemAnimation < 18)
             {
-                ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+                effect.CurrentTechnique.Passes[flag ? 2 : passCount].Apply();
                 Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, CreateTriList(array, modPlayer.Player.Center, distortScaler), 0, 88);
             }
             if (modPlayer.SwooshActive)
@@ -1165,11 +1173,11 @@ namespace CoolerItemVisualEffect
                 {
                     if (ultraSwoosh != null && ultraSwoosh.Active)
                     {
-                        ShaderSwooshEX.Parameters["airFactor"].SetValue(ultraSwoosh.checkAirFactor);
+                        effect.Parameters["airFactor"].SetValue(ultraSwoosh.checkAirFactor);
                         Main.graphics.GraphicsDevice.Textures[2] = TextureAssets.Item[ultraSwoosh.type].Value;
                         Main.graphics.GraphicsDevice.Textures[3] = ultraSwoosh.heatMap;
-                        ShaderSwooshEX.Parameters["lightShift"].SetValue(instance.IsDarkFade ? (ultraSwoosh.timeLeft / (float)ultraSwoosh.timeLeftMax) - 1f : 0);
-                        ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+                        effect.Parameters["lightShift"].SetValue(instance.IsDarkFade ? (ultraSwoosh.timeLeft / (float)ultraSwoosh.timeLeftMax) - 1f : 0);
+                        effect.CurrentTechnique.Passes[flag ? 2 : passCount].Apply();
                         Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, CreateTriList(ultraSwoosh.vertexInfos, ultraSwoosh.center, distortScaler, true), 0, 58);
                     }
                 }
@@ -1184,6 +1192,7 @@ namespace CoolerItemVisualEffect
         public static void DrawSwoosh(Player drawPlayer)
         {
             if (ShaderSwooshEX == null) return;
+            if (ShaderSwooshUL == null) return;
             if (ItemEffect == null) return;
             if (DistortEffect == null) return;
             if (Main.GameViewMatrix == null) return;
@@ -1260,7 +1269,7 @@ namespace CoolerItemVisualEffect
                     //Main.graphics.GraphicsDevice.Textures[3] = TextureAssets.GlowMask[g].Value;
                     Main.graphics.GraphicsDevice.Textures[3] = TextureAssets.GlowMask[g].Value;
                 }
-                if (drawPlayer.HeldItem.type == 3823)
+                if (drawPlayer.HeldItem.type == ItemID.DD2SquireDemonSword)
                 {
                     //Main.graphics.GraphicsDevice.Textures[1] = TextureAssets.ItemFlame[3823].Value;
                     Main.graphics.GraphicsDevice.Textures[3] = ModContent.Request<Texture2D>("CoolerItemVisualEffect/Shader/ItemFlame_3823").Value;
@@ -1456,42 +1465,7 @@ namespace CoolerItemVisualEffect
             var modPlayer = drawPlayer.GetModPlayer<CoolerItemVisualEffectPlayer>();
             if (modPlayer.UseSlash || modPlayer.SwooshActive)
             {
-                if (!TextureAssets.Item[drawPlayer.HeldItem.type].IsLoaded) TextureAssets.Item[drawPlayer.HeldItem.type] = Main.Assets.Request<Texture2D>("Images/Item_" + drawPlayer.HeldItem.type, ReLogic.Content.AssetRequestMode.AsyncLoad);
-                var itemTex = TextureAssets.Item[drawPlayer.HeldItem.type].Value;
-                if (modPlayer.colorInfo.type != drawPlayer.HeldItem.type)
-                {
-                    var w = itemTex.Width;
-                    var h = itemTex.Height;
-                    var cs = new Color[w * h];
-
-                    itemTex.GetData(cs);
-                    Vector4 vcolor = default;
-                    float count = 0;
-                    modPlayer.colorInfo.checkAirFactor = 1;
-                    Color target = default;
-
-                    for (int n = 0; n < cs.Length; n++)
-                    {
-                        if (cs[n] != default && (n - w < 0 || cs[n - w] != default) && (n - 1 < 0 || cs[n - 1] != default) && (n + w >= cs.Length || cs[n + w] != default) && (n + 1 >= cs.Length || cs[n + 1] != default))
-                        {
-                            var weight = (float)((n + 1) % w * (h - n / w)) / w / h;
-                            vcolor += cs[n].ToVector4() * weight;
-                            count += weight;
-                        }
-                        Vector2 coord = new Vector2(n % w, n / w);
-                        coord /= new Vector2(w, h);
-                        if (modPlayer.ConfigurationSwoosh.checkAir && Math.Abs(1 - coord.X - coord.Y) * 0.7071067811f < 0.05f && cs[n] != default && target == default)
-                        {
-                            target = cs[n];
-                            modPlayer.colorInfo.checkAirFactor = coord.X;
-                        }
-                    }
-                    vcolor /= count;
-                    var newColor = modPlayer.colorInfo.color = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
-                    /*var hslVec = */
-                    modPlayer.hsl = Main.rgbToHsl(newColor);
-                    //if (hslVec.Z < modPlayer.ConfigurationSwoosh.isLighterDecider) { modPlayer.colorInfo.color = Main.hslToRgb(hslVec with { Z = 0 }); }//MathHelper.Clamp(hslVec.Z * .25f, 0, 1)
-                }
+                CoolerItemVisualEffectPlayer.ChangeItemTex(drawPlayer, true);
                 try
                 {
                     DrawSwoosh(drawPlayer);
@@ -1772,7 +1746,7 @@ namespace CoolerItemVisualEffect
         {
             Item.width = Item.height = 32;
             Item.value = 1;
-            Item.rare = 11;
+            Item.rare = ItemRarityID.Purple;
             Item.maxStack = 114514;
         }
         public virtual string ReturnName => "我不知道啊啊啊啊啊啊";

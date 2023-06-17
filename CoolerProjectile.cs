@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using static CoolerItemVisualEffect.CoolerItemVisualEffectMethods;
 using Terraria.GameContent;
+using LogSpiralLibrary.CodeLibrary;
+using System.Reflection;
 
 namespace CoolerItemVisualEffect
 {
@@ -14,6 +16,22 @@ namespace CoolerItemVisualEffect
     /// </summary>
     public class CoolerProjectile : GlobalProjectile
     {
+        public override void OnSpawn(Projectile projectile, IEntitySource source)
+        {
+            if (projectile.ModProjectile is LogSpiralLibrary.CodeLibrary.VertexHammerProj vertexHammer)
+            {
+                var player = vertexHammer.Player;
+                var modplr = player.GetModPlayer<CoolerItemVisualEffectPlayer>();
+                if (modplr.colorInfo.tex == null)
+                {
+                    Main.RunOnMainThread(() => modplr.colorInfo.tex = new Texture2D(Main.graphics.GraphicsDevice, 300, 1));
+                }
+                CoolerItemVisualEffectPlayer.ChangeItemTex(player);
+                CoolerItemVisualEffect.UpdateHeatMap(ref modplr.colorInfo.tex, modplr.hsl, modplr.ConfigurationSwoosh, TextureAssets.Item[player.HeldItem.type].Value);
+                vertexHammer.heatMap = modplr.colorInfo.tex;
+            }
+            base.OnSpawn(projectile, source);
+        }
         public override void PostAI(Projectile projectile)
         {
             switch (projectile.type)

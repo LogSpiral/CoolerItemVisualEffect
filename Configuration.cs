@@ -1602,7 +1602,8 @@ namespace CoolerItemVisualEffect
         {
             public override void OnBind()
             {
-                Height.Set(80, 0);
+                if (!KeepOrigin)
+                    Height.Set(80, 0);
                 base.OnBind();
             }
             public int[] timers = new int[1];
@@ -1650,8 +1651,16 @@ namespace CoolerItemVisualEffect
             }
             public override void DrawSelf(SpriteBatch spriteBatch)
             {
+
+                if (KeepOrigin)
+                {
+                    base.DrawSelf(spriteBatch);
+                    return;
+                }
+
                 #region 魔改列表间距
                 //if (!OtherConfigs.externedTheList)
+                if (!KeepOrigin)
                 {
                     var parent = Parent.Parent.Parent;
                     if (parent != null)
@@ -1690,7 +1699,10 @@ namespace CoolerItemVisualEffect
                 if (DrawLabel)
                 {
                     var position = rect.TopLeft() + new Vector2(32) * Scaler;
-                    DrawCoolerColorCodedStringWithShadow(spriteBatch, currentStyleTex, FontAssets.ItemStack.Value, TextDisplayFunction(), position, Color.White, baseColor, 0f, Vector2.Zero, Vector2.One * Scaler, configTexStyle, width);
+                    var str = TextDisplayFunction();
+                    DrawCoolerColorCodedStringWithShadow(spriteBatch, currentStyleTex, FontAssets.ItemStack.Value, str, position, Color.White, baseColor, 0f, Vector2.Zero, Vector2.One * Scaler, configTexStyle, width);
+                    //DrawCoolerColorCodedStringWithShadow(spriteBatch, currentStyleTex, FontAssets.ItemStack.Value, TextDisplayFunction(), new Vector2(20, position.Y), Color.White, baseColor, 0f, Vector2.Zero, Vector2.One, configTexStyle, width);
+                    //ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, TextDisplayFunction(), new Vector2(20, 260), baseColor, 0, default, Vector2.One);
                 }
                 #endregion
                 #region Tooltip
@@ -1754,57 +1766,70 @@ namespace CoolerItemVisualEffect
             {
                 base.DrawSelf(spriteBatch);
 
-
-                CalculatedStyle dimensions = GetDimensions();
-                Rectangle rectangle = dimensions.ToRectangle();
-                rectangle.Offset(OffsetPosition.ToPoint());
-                float scaler = Scaler;
-                rectangle = Utils.CenteredRectangle(rectangle.Center(), rectangle.Size() * scaler);
-                Color mainColor = BackgroundColorAttribute.Color;
-                #region 开关文本绘制
-                //CalculatedStyle dimensions = base.GetDimensions();
-                ActiveCounter += Value ? 1 : -1;
-                ActiveCounter = (int)MathHelper.Clamp(ActiveCounter, 0, 15);
-                var font = FontAssets.ItemStack.Value;
-                var text = Value ? Lang.menu[126].Value : Lang.menu[124].Value;
-                Vector2 texVec = new Vector2(rectangle.X + rectangle.Width - 80 * scaler, rectangle.Y + rectangle.Height * .5f);
-                float factor = Factor;
-                Vector2 drawPosition = new Vector2(rectangle.X + rectangle.Width - 32f * scaler, rectangle.Y + rectangle.Height * .5f);
-                float angle = 0f;
-                //var resultVec = ChatManager.DrawColorCodedString(spriteBatch, font, text, texVec, Color.Transparent, angle, Vector2.Zero, new Vector2(0.8f) * scaler);
-
-                DrawCoolerTextBox(spriteBatch, currentStyleTex, font, text, texVec, Color.White, angle, default, scaler * new Vector2(0.8f));
-                if (ActiveCounter != 0)
+                if (KeepOrigin)
                 {
+                    var _toggleTexture = Main.Assets.Request<Texture2D>("Images/UI/Settings_Toggle");
+                    CalculatedStyle dimensions = base.GetDimensions();
+                    // "Yes" and "No" since no "True" and "False" translation available
+                    Terraria.UI.Chat.ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, Value ? Lang.menu[126].Value : Lang.menu[124].Value, new Vector2(dimensions.X + dimensions.Width - 60, dimensions.Y + 8f), Color.White, 0f, Vector2.Zero, new Vector2(0.8f));
+                    Rectangle sourceRectangle = new Rectangle(Value ? ((_toggleTexture.Width() - 2) / 2 + 2) : 0, 0, (_toggleTexture.Width() - 2) / 2, _toggleTexture.Height());
+                    Vector2 drawPosition = new Vector2(dimensions.X + dimensions.Width - sourceRectangle.Width - 10f, dimensions.Y + 8f);
+                    spriteBatch.Draw(_toggleTexture.Value, drawPosition, sourceRectangle, Color.White, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
+                }
+                else
+                {
+                    CalculatedStyle dimensions = GetDimensions();
+                    Rectangle rectangle = dimensions.ToRectangle();
+                    rectangle.Offset(OffsetPosition.ToPoint());
+                    float scaler = Scaler;
+                    rectangle = Utils.CenteredRectangle(rectangle.Center(), rectangle.Size() * scaler);
+                    Color mainColor = BackgroundColorAttribute.Color;
+                    #region 开关文本绘制
+                    //CalculatedStyle dimensions = base.GetDimensions();
+                    ActiveCounter += Value ? 1 : -1;
+                    ActiveCounter = (int)MathHelper.Clamp(ActiveCounter, 0, 15);
+                    var font = FontAssets.ItemStack.Value;
+                    var text = Value ? Lang.menu[126].Value : Lang.menu[124].Value;
+                    Vector2 texVec = new Vector2(rectangle.X + rectangle.Width - 80 * scaler, rectangle.Y + rectangle.Height * .5f);
+                    float factor = Factor;
+                    Vector2 drawPosition = new Vector2(rectangle.X + rectangle.Width - 32f * scaler, rectangle.Y + rectangle.Height * .5f);
+                    float angle = 0f;
+                    //var resultVec = ChatManager.DrawColorCodedString(spriteBatch, font, text, texVec, Color.Transparent, angle, Vector2.Zero, new Vector2(0.8f) * scaler);
+
+                    DrawCoolerTextBox(spriteBatch, currentStyleTex, font, text, texVec, Color.White, angle, default, scaler * new Vector2(0.8f));
+                    if (ActiveCounter != 0)
+                    {
+                        for (int n = 0; n < 4; n++)
+                            ChatManager.DrawColorCodedString(spriteBatch, font, text, texVec + Main.rand.NextFloat(0, factor * 4) * Main.rand.NextVector2Unit(), mainColor with { A = 0 } * .25f * factor, angle, Vector2.Zero, Vector2.One * scaler);
+                    }
+                    if (factor != 1)
+                    {
+                        ChatManager.DrawColorCodedStringShadow(spriteBatch, font, text, texVec, Color.Black * (1 - factor), angle, Vector2.Zero, Vector2.One * scaler);
+                    }
+                    ChatManager.DrawColorCodedString(spriteBatch, font, text, texVec, Color.White, angle, Vector2.Zero, Vector2.One * scaler);
+                    ////ChatManager.DrawColorCodedString(spriteBatch, FontAssets.ItemStack.Value, flag.ToString(), texVec - new Vector2(96, 0), Color.White, 0f, Vector2.Zero, new Vector2(0.8f));
+
+                    #endregion
+                    #region 开关特效绘制
+                    if (currentStyleTex != null)
+                    {
+                        spriteBatch.Draw(currentStyleTex, drawPosition, new Rectangle(84, 0, 40, 40), Color.White, 0, new Vector2(20), .8f * scaler, 0, 0);
+                    }
+                    spriteBatch.Draw(containerTex.Value, drawPosition, null, Color.White with { A = 0 }, Main.GlobalTimeWrappedHourly * MathHelper.Pi, containerTex.Size() * .5f, 128 / 3 / 236f * scaler, SpriteEffects.None, 0f);
+                    var vec = new Vector2(1, 0);
                     for (int n = 0; n < 4; n++)
-                        ChatManager.DrawColorCodedString(spriteBatch, font, text, texVec + Main.rand.NextFloat(0, factor * 4) * Main.rand.NextVector2Unit(), mainColor with { A = 0 } * .25f * factor, angle, Vector2.Zero, Vector2.One * scaler);
+                    {
+                        spriteBatch.Draw(containerTex.Value, drawPosition + vec, null, mainColor with { A = 0 }, Main.GlobalTimeWrappedHourly * MathHelper.Pi, containerTex.Size() * .5f, 128 / 3 / 236f * scaler, SpriteEffects.None, 0f);
+                        vec = new Vector2(-vec.Y, vec.X);
+                    }
+                    if (ActiveCounter != 0)
+                    {
+                        spriteBatch.Draw(activeTex.Value, drawPosition, null, Color.White with { A = 0 } * factor, -Main.GlobalTimeWrappedHourly * MathHelper.TwoPi, activeTex.Size() * .5f, 64 / 400f * scaler, SpriteEffects.None, 0f);
+                        spriteBatch.Draw(activeTex.Value, drawPosition, null, mainColor with { A = 0 } * factor, -Main.GlobalTimeWrappedHourly * MathHelper.Pi * 3, activeTex.Size() * .5f, 56 / 400f * scaler, SpriteEffects.None, 0f);
+                    }
+                    #endregion
                 }
-                if (factor != 1)
-                {
-                    ChatManager.DrawColorCodedStringShadow(spriteBatch, font, text, texVec, Color.Black * (1 - factor), angle, Vector2.Zero, Vector2.One * scaler);
-                }
-                ChatManager.DrawColorCodedString(spriteBatch, font, text, texVec, Color.White, angle, Vector2.Zero, Vector2.One * scaler);
-                ////ChatManager.DrawColorCodedString(spriteBatch, FontAssets.ItemStack.Value, flag.ToString(), texVec - new Vector2(96, 0), Color.White, 0f, Vector2.Zero, new Vector2(0.8f));
 
-                #endregion
-                #region 开关特效绘制
-                if (currentStyleTex != null)
-                {
-                    spriteBatch.Draw(currentStyleTex, drawPosition, new Rectangle(84, 0, 40, 40), Color.White, 0, new Vector2(20), .8f * scaler, 0, 0);
-                }
-                spriteBatch.Draw(containerTex.Value, drawPosition, null, Color.White with { A = 0 }, Main.GlobalTimeWrappedHourly * MathHelper.Pi, containerTex.Size() * .5f, 128 / 3 / 236f * scaler, SpriteEffects.None, 0f);
-                var vec = new Vector2(1, 0);
-                for (int n = 0; n < 4; n++)
-                {
-                    spriteBatch.Draw(containerTex.Value, drawPosition + vec, null, mainColor with { A = 0 }, Main.GlobalTimeWrappedHourly * MathHelper.Pi, containerTex.Size() * .5f, 128 / 3 / 236f * scaler, SpriteEffects.None, 0f);
-                    vec = new Vector2(-vec.Y, vec.X);
-                }
-                if (ActiveCounter != 0)
-                {
-                    spriteBatch.Draw(activeTex.Value, drawPosition, null, Color.White with { A = 0 } * factor, -Main.GlobalTimeWrappedHourly * MathHelper.TwoPi, activeTex.Size() * .5f, 64 / 400f * scaler, SpriteEffects.None, 0f);
-                    spriteBatch.Draw(activeTex.Value, drawPosition, null, mainColor with { A = 0 } * factor, -Main.GlobalTimeWrappedHourly * MathHelper.Pi * 3, activeTex.Size() * .5f, 56 / 400f * scaler, SpriteEffects.None, 0f);
-                }
-                #endregion
                 //spriteBatch.Draw(TextureAssets.Item[4956].Value, new Vector2(960, drawPosition.Y) + (Main.GlobalTimeWrappedHourly).ToRotationVector2() * 256, Color.White);
                 //Parent.OverflowHidden = false;
             }
@@ -1838,11 +1863,12 @@ namespace CoolerItemVisualEffect
             public override void OnBind()
             {
                 base.OnBind();
-                Height.Set(160, 0);
+                Height.Set(KeepOrigin ? 80 : 160, 0);
                 timers = new int[2];
                 #region 获取所有枚举名
                 valueStrings = Enum.GetNames(MemberInfo.Type);
                 var font = FontAssets.ItemStack.Value;
+                max = valueStrings.Length;
 
                 for (int i = 0; i < valueStrings.Length; i++)
                 {
@@ -1854,14 +1880,16 @@ namespace CoolerItemVisualEffect
                     var width = font.MeasureString(valueStrings[i]).X;
                     if (width > maxWidth) maxWidth = width;
                 }
-                max = valueStrings.Length;
-                var currentLeft = GetDimensions().X;
-                var totalWidth = maxWidth + 192 + FontAssets.ItemStack.Value.MeasureString(TextDisplayFunction()).X;
-                if (totalWidth > 530)
+                if (!KeepOrigin)
                 {
-                    MaxWidth.Set(totalWidth, 0);
-                    Width.Set(totalWidth, 0);
-                    Left.Set(currentLeft - totalWidth + 530 + 20, 0);
+                    var currentLeft = GetDimensions().X;
+                    var totalWidth = maxWidth + 192 + FontAssets.ItemStack.Value.MeasureString(TextDisplayFunction()).X;
+                    if (totalWidth > 530)
+                    {
+                        MaxWidth.Set(totalWidth, 0);
+                        Width.Set(totalWidth, 0);
+                        Left.Set(currentLeft - totalWidth + 530 + 20, 0);
+                    }
                 }
                 #endregion
                 //OnClick += (ev, v) =>
@@ -1913,9 +1941,9 @@ namespace CoolerItemVisualEffect
                 var texture = currentStyleTex;
                 var style = currentStyle;
                 #region 底
-                var boxVec = new Vector2(rectangle.X + rectangle.Width, rectangle.Y + rectangle.Height * .5f) - new Vector2(84 + maxWidth, 64) * scaler;
+                var boxVec = new Vector2(rectangle.X + rectangle.Width, rectangle.Y + rectangle.Height * .5f) - new Vector2(84 + maxWidth, KeepOrigin ? 32 : 64) * scaler;
                 var mainColor = BackgroundColorAttribute.Color;
-                Rectangle _rect = new Rectangle((int)boxVec.X, (int)boxVec.Y, (int)maxWidth + 40, 128);
+                Rectangle _rect = new Rectangle((int)boxVec.X, (int)boxVec.Y, (int)maxWidth + 40, KeepOrigin ? 64 : 128);
                 _rect.Offset((_rect.Size() * (scaler - 1) * .5f).ToPoint());
                 DrawCoolerPanel(spriteBatch, ref _rect, Main.Assets.Request<Texture2D>("Images/UI/HotbarRadial_1").Value, new Rectangle(4, 4, 28, 28), new Vector2(28, 28), mainColor with { A = 0 } * (.5f * ((scaler - 1) * 4 + 1)), currentStyle == 0 ? mainColor : Color.White, scaler, default, 0, currentStyle);
                 //spriteBatch.Draw(TextureAssets.MagicPixel.Value, boxVec, new Rectangle(0, 0, 1, 1), Color.Red, 0, new Vector2(.5f), 4f, 0, 0);
@@ -1934,7 +1962,7 @@ namespace CoolerItemVisualEffect
                     var scale = MathF.Sqrt(1 - offsetY * offsetY);
 
 
-                    var position = texVec + offsetY * 72 * Vector2.UnitY * scaler;
+                    var position = texVec + offsetY * 72 * Vector2.UnitY * scaler * (KeepOrigin ? .5f : 1f);
                     var text = valueStrings[index];
                     var scalesqr = scale * scale;
                     if (texture != null)
@@ -2002,7 +2030,8 @@ namespace CoolerItemVisualEffect
                 IngameOptions.valuePosition.X -= (float)((int)vector.X);
                 var rect = new Rectangle((int)IngameOptions.valuePosition.X - 8, (int)(IngameOptions.valuePosition.Y - 8 - vector.Y * .5f), (int)vector.X + 16, (int)vector.Y + 16);
 
-                DrawCoolerPanel(sb, ref rect, Main.Assets.Request<Texture2D>("Images/UI/HotbarRadial_1").Value, new Rectangle(4, 4, 28, 28), new Vector2(28), color with { A = 0 } * .5f, color with { A = 0 }, 1, default, perc, currentStyle);
+                if (!KeepOrigin)
+                    DrawCoolerPanel(sb, ref rect, Main.Assets.Request<Texture2D>("Images/UI/HotbarRadial_1").Value, new Rectangle(4, 4, 28, 28), new Vector2(28), color with { A = 0 } * .5f, color with { A = 0 }, 1, default, perc, currentStyle);
 
                 Rectangle rectangle = new Rectangle((int)IngameOptions.valuePosition.X, (int)IngameOptions.valuePosition.Y - (int)vector.Y / 2, (int)vector.X, (int)vector.Y);
                 Rectangle destinationRectangle = rectangle;
@@ -2884,5 +2913,37 @@ namespace CoolerItemVisualEffect
             }
         }
         #endregion
+    }
+
+    public class ConfigurationUltraTest : ModConfig 
+    {
+        public static ConfigurationUltraTest ConfigSwooshUltraInstance => ModContent.GetInstance<ConfigurationUltraTest>();
+
+        public override ConfigScope Mode => ConfigScope.ClientSide;
+        public bool useUltraEffect;
+        [Range(0, 1f)]
+        public float mapColorAlpha;
+        [Range(0, 1f)]
+        public float weaponColorAlpha;
+        [Range(0, 1f)]
+        public float heatMapAlpha;
+        public bool normalize;
+        public Vector3 AlphaVector 
+        {
+            get 
+            {
+                var result = new Vector3(mapColorAlpha, weaponColorAlpha, heatMapAlpha);
+                if (normalize)
+                {
+                    float sum = Vector3.Dot(Vector3.One, result);
+                    if (sum == 0) return Vector3.One * .33f;
+                    return result / sum;
+                }
+                else 
+                {
+                    return result;
+                }
+            }
+        }
     }
 }

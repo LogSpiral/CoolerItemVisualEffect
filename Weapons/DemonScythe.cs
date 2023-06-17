@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.ID;
 
 namespace CoolerItemVisualEffect.Weapons
 {
@@ -16,11 +17,11 @@ namespace CoolerItemVisualEffect.Weapons
             Item.crit = 21;
             Item.width = 50;
             Item.height = 66;
-            Item.rare = 4;
+            Item.rare = ItemRarityID.LightRed;
             Item.useTime = 30;
             Item.useAnimation = 30;
             Item.knockBack = 6;
-            Item.useStyle = 1;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.autoReuse = true;
             Item.noUseGraphic = true;
             Item.DamageType = DamageClass.Melee;

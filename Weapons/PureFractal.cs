@@ -323,6 +323,7 @@ namespace CoolerItemVisualEffect.Weapons
 
             #region 快乐顶点绘制_1(在原来的基础上叠加，亮瞎了)
             if (ShaderSwooshEX == null) return;//false
+            if (ShaderSwooshUL == null) return;
             if (DistortEffect == null) return;
             if (Main.GameViewMatrix == null) return;
             //var drawPlayer = Main.player[Projectile.owner];
