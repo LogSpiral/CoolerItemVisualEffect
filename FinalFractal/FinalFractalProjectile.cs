@@ -111,7 +111,7 @@ namespace CoolerItemVisualEffect.FinalFractal
         }
         public override bool PreDraw(ref Color lightColor)
         {
-            if (CoolerItemVisualEffect.FinalFractalTailEffect == null) return false; if (CoolerItemVisualEffect.ColorfulEffect == null) return false;
+            if (CoolerItemVisualEffectMod.FinalFractalTailEffect == null) return false; if (CoolerItemVisualEffectMod.ColorfulEffect == null) return false;
 
             SpriteBatch spriteBatch = Main.spriteBatch;
             var tex = TextureAssets.Projectile[projectile.type].Value;
@@ -152,7 +152,7 @@ namespace CoolerItemVisualEffect.FinalFractal
             //    spriteBatch.Draw(value108, vector57, null, alpha8, num319, origin17, vector58, spriteEffects, 0);
 
             //}
-            if (CoolerItemVisualEffect.FinalFractalTailEffect != null)
+            if (CoolerItemVisualEffectMod.FinalFractalTailEffect != null)
             {
                 List<CustomVertexInfo> bars = new List<CustomVertexInfo>();
 
@@ -210,8 +210,8 @@ namespace CoolerItemVisualEffect.FinalFractal
                     var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
 
                     // 把变换和所需信息丢给shader
-                    CoolerItemVisualEffect.FinalFractalTailEffect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
-                    CoolerItemVisualEffect.FinalFractalTailEffect.Parameters["uTime"].SetValue(-(float)Main.time * 0.03f);
+                    CoolerItemVisualEffectMod.FinalFractalTailEffect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
+                    CoolerItemVisualEffectMod.FinalFractalTailEffect.Parameters["uTime"].SetValue(-(float)Main.time * 0.03f);
                     //CoolerItemVisualEffect.ColorfulEffect.Parameters["defaultColor"].SetValue(Main.hslToRgb(drawColor, 1f, 0.5f).ToVector4());
                     Main.graphics.GraphicsDevice.Textures[0] = GetTexture("HeatMap_7");
                     Main.graphics.GraphicsDevice.Textures[1] = GetTexture("Light_1");
@@ -226,7 +226,7 @@ namespace CoolerItemVisualEffect.FinalFractal
      {
          CoolerItemVisualEffect.CleverEffect.CurrentTechnique.Passes["Clever"].Apply();
      }*/
-                    CoolerItemVisualEffect.FinalFractalTailEffect.CurrentTechnique.Passes[0].Apply();
+                    CoolerItemVisualEffectMod.FinalFractalTailEffect.CurrentTechnique.Passes[0].Apply();
 
 
                     Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList.ToArray(), 0, triangleList.Count / 3);
@@ -440,7 +440,7 @@ namespace CoolerItemVisualEffect.FinalFractal
         }
         public override bool PreDraw(ref Color lightColor)
         {
-            if (CoolerItemVisualEffect.FinalFractalTailEffect == null) return false; if (CoolerItemVisualEffect.ColorfulEffect == null) return false;
+            if (CoolerItemVisualEffectMod.FinalFractalTailEffect == null) return false; if (CoolerItemVisualEffectMod.ColorfulEffect == null) return false;
 
             SpriteBatch spriteBatch = Main.spriteBatch;
 
@@ -539,8 +539,8 @@ namespace CoolerItemVisualEffect.FinalFractal
                     // 把变换和所需信息丢给shader
                     if (Main.player[projectile.owner].name == "FFT")
                     {
-                        CoolerItemVisualEffect.FinalFractalTailEffect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
-                        CoolerItemVisualEffect.FinalFractalTailEffect.Parameters["uTime"].SetValue(-(float)Main.time * 0.03f);
+                        CoolerItemVisualEffectMod.FinalFractalTailEffect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
+                        CoolerItemVisualEffectMod.FinalFractalTailEffect.Parameters["uTime"].SetValue(-(float)Main.time * 0.03f);
                         //CoolerItemVisualEffect.ColorfulEffect.Parameters["defaultColor"].SetValue(Main.hslToRgb(drawColor, 1f, 0.5f).ToVector4());
                         Main.graphics.GraphicsDevice.Textures[0] = GetTexture("HeatMap_7");
                         Main.graphics.GraphicsDevice.Textures[1] = GetTexture("Light_1");
@@ -555,13 +555,13 @@ namespace CoolerItemVisualEffect.FinalFractal
                         {
                             CoolerItemVisualEffect.CleverEffect.CurrentTechnique.Passes["Clever"].Apply();
                         }*/
-                        CoolerItemVisualEffect.FinalFractalTailEffect.CurrentTechnique.Passes[0].Apply();
+                        CoolerItemVisualEffectMod.FinalFractalTailEffect.CurrentTechnique.Passes[0].Apply();
                     }
                     else
                     {
-                        CoolerItemVisualEffect.ColorfulEffect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
-                        CoolerItemVisualEffect.ColorfulEffect.Parameters["uTime"].SetValue(-(float)Main.time * 0.03f);
-                        CoolerItemVisualEffect.ColorfulEffect.Parameters["defaultColor"].SetValue(Main.hslToRgb(drawColor, 1f, 0.5f).ToVector4());
+                        CoolerItemVisualEffectMod.ColorfulEffect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
+                        CoolerItemVisualEffectMod.ColorfulEffect.Parameters["uTime"].SetValue(-(float)Main.time * 0.03f);
+                        CoolerItemVisualEffectMod.ColorfulEffect.Parameters["defaultColor"].SetValue(Main.hslToRgb(drawColor, 1f, 0.5f).ToVector4());
                         Main.graphics.GraphicsDevice.Textures[0] = GetTexture("HeatMap_7");
                         Main.graphics.GraphicsDevice.Textures[1] = GetTexture("Light_1");
                         Main.graphics.GraphicsDevice.Textures[2] = GetTexture("Style_4");
@@ -575,7 +575,7 @@ namespace CoolerItemVisualEffect.FinalFractal
                         {
                             CoolerItemVisualEffect.CleverEffect.CurrentTechnique.Passes["Clever"].Apply();
                         }*/
-                        CoolerItemVisualEffect.ColorfulEffect.CurrentTechnique.Passes[0].Apply();
+                        CoolerItemVisualEffectMod.ColorfulEffect.CurrentTechnique.Passes[0].Apply();
                     }
 
 
@@ -837,7 +837,7 @@ namespace CoolerItemVisualEffect.FinalFractal
         }
         public override bool PreDraw(ref Color lightColor)
         {
-            if (CoolerItemVisualEffect.FinalFractalTailEffect == null) return false; if (CoolerItemVisualEffect.ColorfulEffect == null) return false;
+            if (CoolerItemVisualEffectMod.FinalFractalTailEffect == null) return false; if (CoolerItemVisualEffectMod.ColorfulEffect == null) return false;
 
             SpriteBatch spriteBatch = Main.spriteBatch;
             SpriteEffects spriteEffects = SpriteEffects.None;
@@ -915,8 +915,8 @@ namespace CoolerItemVisualEffect.FinalFractal
                     var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
 
                     // 把变换和所需信息丢给shader
-                    CoolerItemVisualEffect.FinalFractalTailEffect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
-                    CoolerItemVisualEffect.FinalFractalTailEffect.Parameters["uTime"].SetValue(-(float)Main.time * 0.03f);
+                    CoolerItemVisualEffectMod.FinalFractalTailEffect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
+                    CoolerItemVisualEffectMod.FinalFractalTailEffect.Parameters["uTime"].SetValue(-(float)Main.time * 0.03f);
                     //CoolerItemVisualEffect.FinalFractalTailEffect.Parameters["defaultColor"].SetValue(new Vector4(finalFractalProfile.trailColor.ToVector3(), finalFractalProfile.trailColor.A));
                     Main.graphics.GraphicsDevice.Textures[0] = GetTexture("HeatMap_7");
                     Main.graphics.GraphicsDevice.Textures[1] = GetTexture("Light_1");
@@ -931,7 +931,7 @@ namespace CoolerItemVisualEffect.FinalFractal
 					{
 						CoolerItemVisualEffect.CleverEffect.CurrentTechnique.Passes["Clever"].Apply();
 					}*/
-                    CoolerItemVisualEffect.FinalFractalTailEffect.CurrentTechnique.Passes[0].Apply();
+                    CoolerItemVisualEffectMod.FinalFractalTailEffect.CurrentTechnique.Passes[0].Apply();
 
 
                     Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList.ToArray(), 0, triangleList.Count / 3);
@@ -999,9 +999,9 @@ namespace CoolerItemVisualEffect.FinalFractal
                     var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
 
                     // 把变换和所需信息丢给shader
-                    CoolerItemVisualEffect.ColorfulEffect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
-                    CoolerItemVisualEffect.ColorfulEffect.Parameters["uTime"].SetValue(-(float)Main.time * 0.03f);
-                    CoolerItemVisualEffect.ColorfulEffect.Parameters["defaultColor"].SetValue(Main.hslToRgb(drawColor, 1f, 0.5f).ToVector4());
+                    CoolerItemVisualEffectMod.ColorfulEffect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
+                    CoolerItemVisualEffectMod.ColorfulEffect.Parameters["uTime"].SetValue(-(float)Main.time * 0.03f);
+                    CoolerItemVisualEffectMod.ColorfulEffect.Parameters["defaultColor"].SetValue(Main.hslToRgb(drawColor, 1f, 0.5f).ToVector4());
                     Main.graphics.GraphicsDevice.Textures[0] = GetTexture("HeatMap_7");
                     Main.graphics.GraphicsDevice.Textures[1] = GetTexture("Light_1");
                     Main.graphics.GraphicsDevice.Textures[2] = GetTexture("Style_4");
@@ -1015,7 +1015,7 @@ namespace CoolerItemVisualEffect.FinalFractal
                     {
                         CoolerItemVisualEffect.CleverEffect.CurrentTechnique.Passes["Clever"].Apply();
                     }*/
-                    CoolerItemVisualEffect.ColorfulEffect.CurrentTechnique.Passes[0].Apply();
+                    CoolerItemVisualEffectMod.ColorfulEffect.CurrentTechnique.Passes[0].Apply();
 
 
                     Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList.ToArray(), 0, triangleList.Count / 3);
@@ -1285,7 +1285,7 @@ namespace CoolerItemVisualEffect.FinalFractal
         }
         public override bool PreDraw(ref Color lightColor)
         {
-            if (CoolerItemVisualEffect.FinalFractalTailEffect == null) return false; if (CoolerItemVisualEffect.ColorfulEffect == null) return false;
+            if (CoolerItemVisualEffectMod.FinalFractalTailEffect == null) return false; if (CoolerItemVisualEffectMod.ColorfulEffect == null) return false;
 
             SpriteBatch spriteBatch = Main.spriteBatch;
             /*spriteBatch.Draw(TextureAssets.Projectile[projectile.type].Value,
@@ -1410,7 +1410,7 @@ namespace CoolerItemVisualEffect.FinalFractal
         }
         public override bool PreDraw(ref Color lightColor)
         {
-            if (CoolerItemVisualEffect.FinalFractalTailEffect == null) return false; if (CoolerItemVisualEffect.ColorfulEffect == null) return false;
+            if (CoolerItemVisualEffectMod.FinalFractalTailEffect == null) return false; if (CoolerItemVisualEffectMod.ColorfulEffect == null) return false;
 
             SpriteBatch spriteBatch = Main.spriteBatch;
 
@@ -1620,7 +1620,7 @@ namespace CoolerItemVisualEffect.FinalFractal
         }
         public override bool PreDraw(ref Color lightColor)
         {
-            if (CoolerItemVisualEffect.FinalFractalTailEffect == null) return false; if (CoolerItemVisualEffect.ColorfulEffect == null) return false;
+            if (CoolerItemVisualEffectMod.FinalFractalTailEffect == null) return false; if (CoolerItemVisualEffectMod.ColorfulEffect == null) return false;
 
             SpriteBatch spriteBatch = Main.spriteBatch;
             //{
@@ -1781,7 +1781,7 @@ namespace CoolerItemVisualEffect.FinalFractal
         }
         public override bool PreDraw(ref Color lightColor)
         {
-            if (CoolerItemVisualEffect.FinalFractalTailEffect == null) return false; if (CoolerItemVisualEffect.ColorfulEffect == null) return false;
+            if (CoolerItemVisualEffectMod.FinalFractalTailEffect == null) return false; if (CoolerItemVisualEffectMod.ColorfulEffect == null) return false;
 
             SpriteBatch spriteBatch = Main.spriteBatch;
             var tex = TextureAssets.Projectile[projectile.type].Value;

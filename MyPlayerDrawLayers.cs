@@ -488,7 +488,7 @@ namespace CoolerItemVisualEffect
             }
         mylabel:
             if (!drawPlayer.isFirstFractalAfterImage && shadow == 0f && !headOnly)
-                CoolerItemVisualEffect.DrawSwooshWithPlayer(drawPlayer);
+                CoolerItemVisualEffectMod.DrawSwooshWithPlayer(drawPlayer);
         }
 
         private void DrawPlayerFull(Camera camera, Player drawPlayer)

@@ -8,7 +8,7 @@ namespace CoolerItemVisualEffect
     {
         public override bool AppliesToEntity(Item item, bool lateInstantiation)
         {
-            bool useSlashEffect = item.useStyle == ItemUseStyleID.Swing && (CoolerItemVisualEffect.MeleeCheck(item.DamageType) || ConfigurationSwoosh.ConfigSwooshInstance.ignoreDamageType);
+            bool useSlashEffect = item.useStyle == ItemUseStyleID.Swing && (CoolerItemVisualEffectMod.MeleeCheck(item.DamageType) || ConfigurationSwoosh.ConfigSwooshInstance.ignoreDamageType);
             if (ConfigurationSwoosh.ConfigSwooshInstance.toolsNoUseNewSwooshEffect)
             {
                 useSlashEffect = useSlashEffect && item.axe == 0 && item.hammer == 0 && item.pick == 0;

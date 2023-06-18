@@ -444,7 +444,7 @@ namespace CoolerItemVisualEffect.ConfigSLer
                 //Main.NewText((config as ConfigurationSwoosh).hueOffsetValue, Color.Yellow);
                 //Main.NewText(ConfigurationSwoosh.ConfigSwooshInstance.hueOffsetValue, Color.Yellow);
                 //ConfigManager.Save(ConfigurationSwoosh.ConfigSwooshInstance);
-                CoolerItemVisualEffect.WhenConfigSwooshChange();
+                CoolerItemVisualEffectMod.WhenConfigSwooshChange();
                 SoundEngine.PlaySound(SoundID.Unlock);
             }
             catch (Exception e) when (jsonFileExists && (e is JsonReaderException || e is JsonSerializationException))

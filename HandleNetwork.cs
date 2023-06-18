@@ -65,7 +65,7 @@ namespace CoolerItemVisualEffect
                             modPlayer.actionOffsetCritMultiplyer = offsetCritMultiplyer;
                             modPlayer.oldNegativeDir = oldNegativeDir;
 
-                            ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
+                            ModPacket packet = CoolerItemVisualEffectMod.Instance.GetPacket();
                             packet.Write((byte)MessageType.BasicStats);
                             packet.Write(negativeDir);
                             packet.Write(rotationForShadow);
@@ -88,7 +88,7 @@ namespace CoolerItemVisualEffect
                         {
                             var offsetSpeed = reader.ReadSingle();
                             Main.player[whoAmI].GetModPlayer<CoolerItemVisualEffectPlayer>().actionOffsetSpeed = offsetSpeed;
-                            ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
+                            ModPacket packet = CoolerItemVisualEffectMod.Instance.GetPacket();
                             packet.Write((byte)MessageType.ActionOffsetSpeed);
                             packet.Write((byte)whoAmI);
                             packet.Write(offsetSpeed);
@@ -101,7 +101,7 @@ namespace CoolerItemVisualEffect
                             CoolerItemVisualEffectPlayer modPlayer = Main.player[whoAmI].GetModPlayer<CoolerItemVisualEffectPlayer>();
                             modPlayer.HitboxPosition = HitboxPosition;
 
-                            ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
+                            ModPacket packet = CoolerItemVisualEffectMod.Instance.GetPacket();
                             packet.Write((byte)MessageType.Hitbox);
                             packet.WritePackedVector2(HitboxPosition);
                             packet.Write((byte)whoAmI);
@@ -119,7 +119,7 @@ namespace CoolerItemVisualEffect
                             modPlayer.HitboxPosition = HitboxPosition;
 
 
-                            ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
+                            ModPacket packet = CoolerItemVisualEffectMod.Instance.GetPacket();
                             packet.Write((byte)MessageType.rotationDirect);
                             packet.Write(direct);
                             packet.WritePackedVector2(HitboxPosition);
@@ -143,7 +143,7 @@ namespace CoolerItemVisualEffect
                             var who = reader.ReadInt16();
                             var frame = reader.ReadByte();
                             Main.projectile[who].frame = frame;
-                            ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
+                            ModPacket packet = CoolerItemVisualEffectMod.Instance.GetPacket();
                             packet.Write(who);
                             packet.Write(frame);
                             packet.Send(-1, whoAmI);
@@ -162,7 +162,7 @@ namespace CoolerItemVisualEffect
                             finalFractalPlayer.usedFinalFractal = usedFinalFractal;
                             finalFractalPlayer.waitingFinalFractal = waitingFinalFractal; 
                             finalFractalPlayer.finalFractalTier = finalFractalTier;
-                            ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
+                            ModPacket packet = CoolerItemVisualEffectMod.Instance.GetPacket();
                             packet.Write((byte)MessageType.FinalFractalPlayer);
                             packet.Write((byte)whoAmI);
                             packet.Write(holdingFinalFractal);
@@ -182,7 +182,7 @@ namespace CoolerItemVisualEffect
                         //        return;
                         //    }
                 }
-                CoolerItemVisualEffect.Instance.Logger.Debug($"Unknown Message type: {msgType}, Please contact the mod developers");
+                CoolerItemVisualEffectMod.Instance.Logger.Debug($"Unknown Message type: {msgType}, Please contact the mod developers");
                 return;
             }
             else
@@ -277,7 +277,7 @@ namespace CoolerItemVisualEffect
                         //        return;
                         //    }
                 }
-                CoolerItemVisualEffect.Instance.Logger.Debug($"Unknown Message type: {msgType}, Please contact the mod developers");
+                CoolerItemVisualEffectMod.Instance.Logger.Debug($"Unknown Message type: {msgType}, Please contact the mod developers");
                 return;
             }
         }

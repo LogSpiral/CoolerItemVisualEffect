@@ -25,67 +25,33 @@ using Terraria.Graphics.Shaders;
 using System.ComponentModel;
 using MonoMod.RuntimeDetour.HookGen;
 using CoolerItemVisualEffect.ConfigSLer;
+using LogSpiralLibrary;
 
 namespace CoolerItemVisualEffect
 {
     //TODO List计划表
     //
-    public class CoolerItemVisualEffect : Mod
+    public class CoolerItemVisualEffectMod : Mod
     {
         #region 基本量
-        internal static CoolerItemVisualEffect Instance;
-        public static int ModTime => CoolerSystem.ModTime;
+        internal static CoolerItemVisualEffectMod Instance;
+        public static int ModTime => (int)LogSpiralLibrarySystem.ModTime;
         public static Texture2D emptyTex;
-        public RenderTarget2D Render
-        {
-            get => render ??= new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth == 0 ? 1920 : Main.screenWidth, Main.screenHeight == 0 ? 1120 : Main.screenHeight);
-            set
-            {
-                render = value;
-            }
-        }
+        public RenderTarget2D Render => LogSpiralLibraryMod.Instance.Render;
+        public RenderTarget2D Render_AirDistort => LogSpiralLibraryMod.Instance.Render_AirDistort;
 
-        public RenderTarget2D render;
-        public RenderTarget2D Render_AirDistort
-        {
-            get => render_AirDistort ??= new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth == 0 ? 1920 : Main.screenWidth, Main.screenHeight == 0 ? 1120 : Main.screenHeight);
-            set
-            {
-                render_AirDistort = value;
-            }
-        }
-
-        public RenderTarget2D render_AirDistort;
-
-        public static BlendState AllOne;
-        public CoolerItemVisualEffect()
-        {
-            AllOne = new BlendState();
-            AllOne.ColorDestinationBlend = AllOne.AlphaDestinationBlend = AllOne.ColorSourceBlend = AllOne.AlphaSourceBlend = Blend.One;
-        }
-        public static bool CanUseRender => Lighting.Mode != Terraria.Graphics.Light.LightMode.Retro && Lighting.Mode != Terraria.Graphics.Light.LightMode.Trippy && Main.WaveQuality != 0 && (byte)ConfigSwooshInstance.coolerSwooshQuality > 1;
+        public static BlendState AllOne => LogSpiralLibraryMod.AllOne;
+        public static bool CanUseRender => LogSpiralLibraryMod.CanUseRender && (byte)ConfigSwooshInstance.coolerSwooshQuality > 1;
         #endregion
         #region Effects
-        internal static Effect itemEffect;
-        internal static Effect shaderSwooshEffect;//第一代刀光effect
-        internal static Effect shaderSwooshEX;//第二代
-        //↑但是很不幸的是，都丢失.fx了，等阿汪做出第三代吧
-        internal static Effect shaderSwooshUL;//第三代
-
-        internal static Effect distortEffect;
-        internal static Effect finalFractalTailEffect;
-        internal static Effect colorfulEffect;
-        internal static Effect eightTrigramsFurnaceEffect;
-        internal static Effect ItemEffect => itemEffect ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/ItemGlowEffect").Value;
-        internal static Effect ShaderSwooshEffect => shaderSwooshEffect ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/ShaderSwooshEffect").Value;
-        internal static Effect ShaderSwooshEX => shaderSwooshEX ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/ShaderSwooshEffectEX").Value;
-        internal static Effect ShaderSwooshUL => shaderSwooshUL ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/ShaderSwooshEffectUL").Value;
-        internal static Effect DistortEffect => distortEffect ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/DistortEffect").Value;
-        internal static Effect FinalFractalTailEffect => finalFractalTailEffect ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/FinalFractalTailEffect").Value;
-        internal static Effect ColorfulEffect => colorfulEffect ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/ColorfulEffect").Value;
-        internal static Effect EightTrigramsFurnaceEffect => eightTrigramsFurnaceEffect ??= ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/EightTrigramsFurnaceEffect").Value;
-
-
+        internal static Effect ItemEffect => LogSpiralLibraryMod.ItemEffect;
+        internal static Effect ShaderSwooshEffect => LogSpiralLibraryMod.ShaderSwooshEffect;
+        internal static Effect ShaderSwooshEX => LogSpiralLibraryMod.ShaderSwooshEX;
+        internal static Effect ShaderSwooshUL => LogSpiralLibraryMod.ShaderSwooshUL;
+        internal static Effect DistortEffect => LogSpiralLibraryMod.DistortEffect;
+        internal static Effect FinalFractalTailEffect => LogSpiralLibraryMod.FinalFractalTailEffect;
+        internal static Effect ColorfulEffect => LogSpiralLibraryMod.ColorfulEffect;
+        internal static Effect EightTrigramsFurnaceEffect => LogSpiralLibraryMod.EightTrigramsFurnaceEffect;
         #endregion
         #region 更新函数
         public static void ChangeAllPureHeatMap()
@@ -464,11 +430,10 @@ namespace CoolerItemVisualEffect
             Instance = this;
             On.Terraria.UI.UIElement.GetClippingRectangle += UIElement_GetClippingRectangle;
             On.Terraria.DataStructures.PlayerDrawLayers.DrawPlayer_27_HeldItem += PlayerDrawLayers_DrawPlayer_27_HeldItem_WeaponDisplay;
-            Main.OnResolutionChanged += Main_OnResolutionChanged;
             On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayerInternal += LegacyPlayerRenderer_DrawPlayerInternal;
             On.Terraria.Graphics.Effects.FilterManager.EndCapture += FilterManager_EndCapture_CoolerSwoosh;
             On.Terraria.Main.DrawProjectiles += Main_DrawProjectiles_CoolerSwoosh;
-            Filters.Scene["CoolerItemVisualEffect:InvertGlass"] = new Filter(new ScreenShaderData(new Ref<Effect>(ModContent.Request<Effect>("CoolerItemVisualEffect/Shader/ZenithGlass", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value), "Zenith"), EffectPriority.Medium);
+            Filters.Scene["CoolerItemVisualEffect:InvertGlass"] = new Filter(new ScreenShaderData(new Ref<Effect>(ModContent.Request<Effect>("LogSpiralLibrary/Effects/Xnbs/ZenithGlass", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value), "Zenith"), EffectPriority.Medium);
             Filters.Scene["CoolerItemVisualEffect:InvertGlass"].Load();
         }
         public static UIElement currentList;
@@ -1120,8 +1085,8 @@ namespace CoolerItemVisualEffect
             var distortScaler = distort ? instance.distortSize : 1;
             bool flag = ConfigurationUltraTest.ConfigSwooshUltraInstance.useUltraEffect;
             Effect effect = flag ? ShaderSwooshUL : ShaderSwooshEX;
-            if (flag)
-                effect.Parameters["AlphaVector"].SetValue(ConfigurationUltraTest.ConfigSwooshUltraInstance.AlphaVector);
+            //if (flag)
+            //    effect.Parameters["AlphaVector"].SetValue(ConfigurationUltraTest.ConfigSwooshUltraInstance.AlphaVector);
             effect.Parameters["uTransform"].SetValue(result);
             effect.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
             effect.Parameters["checkAir"].SetValue(instance.checkAir);
@@ -1249,13 +1214,13 @@ namespace CoolerItemVisualEffect
                 //Main.spriteBatch.DrawLine(u + v + drawPlayer.Center, drawPlayer.Center, Color.Red);
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, instance.itemAdditive ? BlendState.Additive : BlendState.AlphaBlend, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
-                itemEffect.Parameters["uTransform"].SetValue(model * trans * projection);
+                ItemEffect.Parameters["uTransform"].SetValue(model * trans * projection);
                 //将变换矩阵作用在正交投影矩阵上，具体结果以及意义我下次再想想
                 //半年前就问过零群各位大佬，他们都说没必要搞懂，tr图像变换矩阵而已。
-                itemEffect.Parameters["uTime"].SetValue(CoolerSystem.ModTime / 60f % 1);//传入时间偏移量
-                itemEffect.Parameters["uItemColor"].SetValue(instance.itemHighLight ? Vector4.One : Lighting.GetColor((drawPlayer.Center / 16).ToPoint().X, (drawPlayer.Center / 16).ToPoint().Y).ToVector4());
+                ItemEffect.Parameters["uTime"].SetValue(CoolerSystem.ModTime / 60f % 1);//传入时间偏移量
+                ItemEffect.Parameters["uItemColor"].SetValue(instance.itemHighLight ? Vector4.One : Lighting.GetColor((drawPlayer.Center / 16).ToPoint().X, (drawPlayer.Center / 16).ToPoint().Y).ToVector4());
                 //传入顶点绘制出的物品的颜色，这里采用环境光，和sb.Draw的那个color参数差不多(吧
-                itemEffect.Parameters["uItemGlowColor"].SetValue(new Color(250, 250, 250, drawPlayer.HeldItem.alpha).ToVector4());
+                ItemEffect.Parameters["uItemGlowColor"].SetValue(new Color(250, 250, 250, drawPlayer.HeldItem.alpha).ToVector4());
 
                 Main.graphics.GraphicsDevice.Textures[0] = itemTex;//传入物品贴图
                 Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("Style_12");//传入因时间而x纹理坐标发生偏移的灰度图，这里其实并不明显，你可以参考我mod里的无间之钟在黑暗环境下的效果
@@ -1283,7 +1248,7 @@ namespace CoolerItemVisualEffect
                 Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
                 Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
 
-                itemEffect.CurrentTechnique.Passes[2].Apply();//这里是第三个pass，可以直接写下标不必写pass名(
+                ItemEffect.CurrentTechnique.Passes[2].Apply();//这里是第三个pass，可以直接写下标不必写pass名(
                 Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, c, 0, 2);
                 Main.graphics.GraphicsDevice.RasterizerState = originalState;
                 modPlayer.direct = (u + v).ToRotation();
@@ -1493,17 +1458,6 @@ namespace CoolerItemVisualEffect
         #region 辅助函数
         public const string ImagePath = "CoolerItemVisualEffect/Shader/";
         public static Texture2D GetWeaponDisplayImage(string name) => ModContent.Request<Texture2D>(ImagePath + name).Value;
-        private void Main_OnResolutionChanged(Vector2 obj)//在分辨率更改时，重建render防止某些bug
-        {
-            CreateRender();
-        }
-        public void CreateRender()
-        {
-            if (Render != null) Render.Dispose();
-            Render = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth == 0 ? 1920 : Main.screenWidth, Main.screenHeight == 0 ? 1120 : Main.screenHeight);
-            if (Render_AirDistort != null) Render_AirDistort.Dispose();
-            Render_AirDistort = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth == 0 ? 1920 : Main.screenWidth, Main.screenHeight == 0 ? 1120 : Main.screenHeight);
-        }
         public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
             HandleNetwork.HandlePacket(reader, whoAmI);

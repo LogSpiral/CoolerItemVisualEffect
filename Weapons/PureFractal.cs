@@ -11,7 +11,7 @@ using System.Linq;
 using static Terraria.ModLoader.ModContent;
 using Terraria.DataStructures;
 using static CoolerItemVisualEffect.CoolerItemVisualEffectMethods;
-using static CoolerItemVisualEffect.CoolerItemVisualEffect;
+using static CoolerItemVisualEffect.CoolerItemVisualEffectMod;
 using static CoolerItemVisualEffect.ConfigurationSwoosh;
 using Terraria.GameContent;
 using CoolerItemVisualEffect;

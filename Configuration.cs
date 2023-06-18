@@ -36,7 +36,7 @@ namespace CoolerItemVisualEffect
         #region 同步 字段比较等
         public void SendData(int? whoami = null, int ignoreCilent = -1, int toCilent = -1, bool enter = false)
         {
-            ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
+            ModPacket packet = CoolerItemVisualEffectMod.Instance.GetPacket();
             packet.Write((byte)(enter ? HandleNetwork.MessageType.EnterWorld : HandleNetwork.MessageType.Configs));
             if (whoami != null) packet.Write(whoami.Value);
             packet.Write((byte)coolerSwooshQuality);
@@ -1669,7 +1669,7 @@ namespace CoolerItemVisualEffect
                         {
                             if (list != null)
                             {
-                                CoolerItemVisualEffect.currentList = list;
+                                CoolerItemVisualEffectMod.currentList = list;
                                 list.ListPadding = 16;
                                 list.Recalculate();
                                 list.RecalculateChildren();
@@ -2513,7 +2513,7 @@ namespace CoolerItemVisualEffect
         }
         public override void OnChanged()
         {
-            CoolerItemVisualEffect.WhenConfigSwooshChange();
+            CoolerItemVisualEffectMod.WhenConfigSwooshChange();
             if (Main.netMode == NetmodeID.MultiplayerClient) SendData();
         }
         //public ConfigurationSwoosh()

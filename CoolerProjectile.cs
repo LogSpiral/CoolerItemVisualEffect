@@ -27,7 +27,7 @@ namespace CoolerItemVisualEffect
                     Main.RunOnMainThread(() => modplr.colorInfo.tex = new Texture2D(Main.graphics.GraphicsDevice, 300, 1));
                 }
                 CoolerItemVisualEffectPlayer.ChangeItemTex(player);
-                CoolerItemVisualEffect.UpdateHeatMap(ref modplr.colorInfo.tex, modplr.hsl, modplr.ConfigurationSwoosh, TextureAssets.Item[player.HeldItem.type].Value);
+                CoolerItemVisualEffectMod.UpdateHeatMap(ref modplr.colorInfo.tex, modplr.hsl, modplr.ConfigurationSwoosh, TextureAssets.Item[player.HeldItem.type].Value);
                 vertexHammer.heatMap = modplr.colorInfo.tex;
             }
             base.OnSpawn(projectile, source);
@@ -132,7 +132,7 @@ namespace CoolerItemVisualEffect
                         //    projectile.oldPos[0] = projectile.Center;
                         //    projectile.oldRot[0] = projectile.rotation;
                         //}
-                        if (CoolerItemVisualEffect.DistortEffect == null || CoolerItemVisualEffect.ShaderSwooshEX == null) goto mylabel;
+                        if (CoolerItemVisualEffectMod.DistortEffect == null || CoolerItemVisualEffectMod.ShaderSwooshEX == null) goto mylabel;
                         //goto mylabel;
                         var bars = new List<CustomVertexInfo>();
                         var max = projectile.oldPos.Length;
@@ -398,29 +398,29 @@ namespace CoolerItemVisualEffect
                                 }
                                 goto theLabel;
                             }
-                            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
+                            CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
                             //ShaderSwooshEX.Parameters["uLighter"].SetValue(ConfigSwooshInstance.luminosityFactor);
-                            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
-                            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["checkAir"].SetValue(false);
-                            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["airFactor"].SetValue(1);
-                            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["gather"].SetValue(true);
-                            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["lightShift"].SetValue(0);
-                            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["distortScaler"].SetValue(0);
-                            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["alphaFactor"].SetValue(ConfigurationSwoosh.ConfigSwooshInstance.alphaFactor);
-                            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(ConfigurationSwoosh.ConfigSwooshInstance.alphaFactor == 0);
+                            CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
+                            CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["checkAir"].SetValue(false);
+                            CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["airFactor"].SetValue(1);
+                            CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["gather"].SetValue(true);
+                            CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["lightShift"].SetValue(0);
+                            CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["distortScaler"].SetValue(0);
+                            CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["alphaFactor"].SetValue(ConfigurationSwoosh.ConfigSwooshInstance.alphaFactor);
+                            CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(ConfigurationSwoosh.ConfigSwooshInstance.alphaFactor == 0);
                             var _v = ConfigurationSwoosh.ConfigSwooshInstance.directOfHeatMap.ToRotationVector2();
-                            CoolerItemVisualEffect.ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
+                            CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
                             //var par = CoolerItemVisualEffect.ShaderSwooshEX.Parameters["heatRotation"];
                             //var wht = (par.Annotations, par.ColumnCount, par.RowCount, par.ParameterType, par.Elements, par.Name, par.ParameterClass, par.Semantic, par.StructureMembers);
-                            Main.graphics.GraphicsDevice.Textures[0] = CoolerItemVisualEffect.GetWeaponDisplayImage("BaseTex_" + ConfigurationSwoosh.ConfigSwooshInstance.ImageIndex);
-                            Main.graphics.GraphicsDevice.Textures[1] = CoolerItemVisualEffect.GetWeaponDisplayImage($"AniTex_{ConfigurationSwoosh.ConfigSwooshInstance.AnimateIndex}");
+                            Main.graphics.GraphicsDevice.Textures[0] = CoolerItemVisualEffectMod.GetWeaponDisplayImage("BaseTex_" + ConfigurationSwoosh.ConfigSwooshInstance.ImageIndex);
+                            Main.graphics.GraphicsDevice.Textures[1] = CoolerItemVisualEffectMod.GetWeaponDisplayImage($"AniTex_{ConfigurationSwoosh.ConfigSwooshInstance.AnimateIndex}");
                             Main.graphics.GraphicsDevice.Textures[2] = ModContent.Request<Texture2D>("CoolerItemVisualEffect/Weapons/FirstZenithProj_5").Value;
                             Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
                             Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
                             Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
                             Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
                             //Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
-                            CoolerItemVisualEffect.ShaderSwooshEX.CurrentTechnique.Passes[0].Apply();
+                            CoolerItemVisualEffectMod.ShaderSwooshEX.CurrentTechnique.Passes[0].Apply();
                             Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, _triangleList.ToArray(), 0, _triangleList.Count / 3);
                             //Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
 

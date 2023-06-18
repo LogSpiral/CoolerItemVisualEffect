@@ -61,7 +61,7 @@ namespace CoolerItemVisualEffect
         /// 该玩家是否使用斩击特效，为了联机同步写的
         /// </summary>
         public bool UseSlash;
-        public bool IsMeleeBroadSword => CoolerItemVisualEffect.MeleeCheck(player.HeldItem.DamageType) || ConfigurationSwoosh.ignoreDamageType;
+        public bool IsMeleeBroadSword => CoolerItemVisualEffectMod.MeleeCheck(player.HeldItem.DamageType) || ConfigurationSwoosh.ignoreDamageType;
         public float TimeToCutThem => ConfigurationSwoosh.swingAttackTime * 2;//8f
         /// <summary>
         /// 剑气是否可用
@@ -242,7 +242,7 @@ namespace CoolerItemVisualEffect
             }
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
-                ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
+                ModPacket packet = CoolerItemVisualEffectMod.Instance.GetPacket();
                 packet.Write((byte)HandleNetwork.MessageType.ActionOffsetSpeed);
                 packet.Write(actionOffsetSpeed);
                 packet.Send(-1, -1); // 发包到服务器上 再由服务器转发到其他客户端
@@ -444,7 +444,7 @@ namespace CoolerItemVisualEffect
 
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
-                ModPacket packet = CoolerItemVisualEffect.Instance.GetPacket();
+                ModPacket packet = CoolerItemVisualEffectMod.Instance.GetPacket();
                 packet.Write((byte)HandleNetwork.MessageType.BasicStats);
                 packet.Write(negativeDir);
                 packet.Write(rotationForShadow);
@@ -585,7 +585,7 @@ namespace CoolerItemVisualEffect
             {
                 if (us != null && us.Active)
                 {
-                    CoolerItemVisualEffect.UpdateHeatMap(ref us.heatMap, us.hsl, ConfigurationSwoosh, TextureAssets.Item[us.type].Value);
+                    CoolerItemVisualEffectMod.UpdateHeatMap(ref us.heatMap, us.hsl, ConfigurationSwoosh, TextureAssets.Item[us.type].Value);
                 }
             }
         }

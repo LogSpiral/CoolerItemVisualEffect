@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Terraria.GameContent;
 using Terraria.ModLoader.Config;
 using Terraria.Utilities;
-using static CoolerItemVisualEffect.CoolerItemVisualEffect;
+using static CoolerItemVisualEffect.CoolerItemVisualEffectMod;
 using static Terraria.Utils;
 namespace CoolerItemVisualEffect
 {
