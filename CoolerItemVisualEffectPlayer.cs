@@ -10,6 +10,7 @@ using static CoolerItemVisualEffect.ConfigurationSwoosh;
 using Terraria.ID;
 using System.Reflection;
 using Terraria.GameContent.Drawing;
+using LogSpiralLibrary;
 
 namespace CoolerItemVisualEffect
 {
@@ -920,9 +921,9 @@ namespace CoolerItemVisualEffect
                 var fac = player.itemAnimation / (float)player.itemAnimationMax;
                 var _fac = (fac * 2 % 1).HillFactor2() * (fac < .5f ? .5f : 1f);
                 var yscaler = (.25f + fac * (fac - 1)) * 1.5f;
-                Main.spriteBatch.Draw(CoolerItemVisualEffectMethods.GetTexture("MagicZone/MagicZone_2"), player.Center + new Vector2(0, -128 + 256 * fac) - Main.screenPosition, null, Color.Cyan with { A = 0 } * _fac, 0, new Vector2(150), new Vector2(1, yscaler) * _fac, 0, 0);
+                Main.spriteBatch.Draw(LogSpiralLibraryMod.MagicZone[2].Value, player.Center + new Vector2(0, -128 + 256 * fac) - Main.screenPosition, null, Color.Cyan with { A = 0 } * _fac, 0, new Vector2(150), new Vector2(1, yscaler) * _fac, 0, 0);
 
-                Main.spriteBatch.Draw(CoolerItemVisualEffectMethods.GetTexture("MagicZone/MagicZone_2"), player.Center + new Vector2(0, 128 - 256 * fac) - Main.screenPosition, null, Color.Cyan with { A = 0 } * _fac, 0, new Vector2(150), new Vector2(1, yscaler) * _fac, 0, 0);
+                Main.spriteBatch.Draw(LogSpiralLibraryMod.MagicZone[2].Value, player.Center + new Vector2(0, 128 - 256 * fac) - Main.screenPosition, null, Color.Cyan with { A = 0 } * _fac, 0, new Vector2(150), new Vector2(1, yscaler) * _fac, 0, 0);
             }
             //foreach (var projectile in Main.projectile) 
             //{

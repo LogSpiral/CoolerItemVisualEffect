@@ -11,6 +11,7 @@ using static CoolerItemVisualEffect.CoolerItemVisualEffectMethods;
 using static Terraria.Utils;
 using Terraria.GameContent;
 using System.IO;
+using LogSpiralLibrary;
 
 namespace CoolerItemVisualEffect.FinalFractal
 {
@@ -213,9 +214,9 @@ namespace CoolerItemVisualEffect.FinalFractal
                     CoolerItemVisualEffectMod.FinalFractalTailEffect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
                     CoolerItemVisualEffectMod.FinalFractalTailEffect.Parameters["uTime"].SetValue(-(float)Main.time * 0.03f);
                     //CoolerItemVisualEffect.ColorfulEffect.Parameters["defaultColor"].SetValue(Main.hslToRgb(drawColor, 1f, 0.5f).ToVector4());
-                    Main.graphics.GraphicsDevice.Textures[0] = GetTexture("HeatMap_7");
-                    Main.graphics.GraphicsDevice.Textures[1] = GetTexture("Light_1");
-                    Main.graphics.GraphicsDevice.Textures[2] = GetTexture("Style_4");
+                    Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.HeatMap[7].Value;
+                    Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.BaseTex[13].Value;
+                    Main.graphics.GraphicsDevice.Textures[2] = LogSpiralLibraryMod.AniTex[5].Value;
                     Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
                     Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;
                     Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.PointWrap;
@@ -269,7 +270,7 @@ namespace CoolerItemVisualEffect.FinalFractal
             num *= num3;
             var scale = num5 * num3;
             Vector2 value2 = projectile.Center + vector;
-            Texture2D value4 = GetTexture("FinalFractalTail3");
+            Texture2D value4 = LogSpiralLibraryMod.Misc[16].Value;
             Rectangle rectangle = value4.Frame(1, 1, 0, 0, 0, 0);
             Vector2 origin2 = new Vector2(rectangle.Width / 2f, 10f);
             Vector2 value5 = new Vector2(0f, projectile.gfxOffY);
@@ -300,7 +301,7 @@ namespace CoolerItemVisualEffect.FinalFractal
             {
                 float rotation = projectile.rotation + projectile.localAI[1];
                 Vector2 position = projectile.Center - Main.screenPosition;
-                Texture2D value9 = GetTexture("FinalFractalTail2");
+                Texture2D value9 = LogSpiralLibraryMod.Misc[15].Value;
                 Rectangle rectangle2 = value9.Frame(1, 8, 0, 0, 0, 0);
                 Vector2 origin3 = rectangle2.Size() / 2f;
                 spriteBatch.Draw(value9, position, new Rectangle?(rectangle2), color, rotation, origin3, projectile.scale, SpriteEffects.None, 0);
@@ -542,9 +543,9 @@ namespace CoolerItemVisualEffect.FinalFractal
                         CoolerItemVisualEffectMod.FinalFractalTailEffect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
                         CoolerItemVisualEffectMod.FinalFractalTailEffect.Parameters["uTime"].SetValue(-(float)Main.time * 0.03f);
                         //CoolerItemVisualEffect.ColorfulEffect.Parameters["defaultColor"].SetValue(Main.hslToRgb(drawColor, 1f, 0.5f).ToVector4());
-                        Main.graphics.GraphicsDevice.Textures[0] = GetTexture("HeatMap_7");
-                        Main.graphics.GraphicsDevice.Textures[1] = GetTexture("Light_1");
-                        Main.graphics.GraphicsDevice.Textures[2] = GetTexture("Style_4");
+                        Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.HeatMap[7].Value;
+                        Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.BaseTex[13].Value;
+                        Main.graphics.GraphicsDevice.Textures[2] = LogSpiralLibraryMod.AniTex[5].Value;
                         Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
                         Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;
                         Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.PointWrap;
@@ -562,9 +563,9 @@ namespace CoolerItemVisualEffect.FinalFractal
                         CoolerItemVisualEffectMod.ColorfulEffect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
                         CoolerItemVisualEffectMod.ColorfulEffect.Parameters["uTime"].SetValue(-(float)Main.time * 0.03f);
                         CoolerItemVisualEffectMod.ColorfulEffect.Parameters["defaultColor"].SetValue(Main.hslToRgb(drawColor, 1f, 0.5f).ToVector4());
-                        Main.graphics.GraphicsDevice.Textures[0] = GetTexture("HeatMap_7");
-                        Main.graphics.GraphicsDevice.Textures[1] = GetTexture("Light_1");
-                        Main.graphics.GraphicsDevice.Textures[2] = GetTexture("Style_4");
+                        Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.HeatMap[7].Value;
+                        Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.BaseTex[13].Value;
+                        Main.graphics.GraphicsDevice.Textures[2] = LogSpiralLibraryMod.AniTex[5].Value;
                         Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
                         Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;
                         Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.PointWrap;
@@ -622,7 +623,7 @@ namespace CoolerItemVisualEffect.FinalFractal
             num *= num3;
             var scale = num5 * num3;
             Vector2 value2 = projectile.Center + vector;
-            Texture2D value4 = GetTexture("FinalFractalTail3");
+            Texture2D value4 = LogSpiralLibraryMod.Misc[16].Value;
             Rectangle rectangle = value4.Frame(1, 1, 0, 0, 0, 0);
             Vector2 origin2 = new Vector2(rectangle.Width / 2f, 10f);
             Vector2 value5 = new Vector2(0f, projectile.gfxOffY);
@@ -656,7 +657,7 @@ namespace CoolerItemVisualEffect.FinalFractal
             {
                 float rotation = projectile.rotation + projectile.localAI[1];
                 Vector2 position = projectile.Center - Main.screenPosition;
-                Texture2D value9 = GetTexture("FinalFractalTail2");
+                Texture2D value9 = LogSpiralLibraryMod.Misc[15].Value;
                 Rectangle rectangle2 = value9.Frame(1, 8, 0, 0, 0, 0);
                 Vector2 origin3 = rectangle2.Size() / 2f;
                 spriteBatch.Draw(value9, position, new Rectangle?(rectangle2), color, rotation, origin3, projectile.scale, SpriteEffects.None, 0);
@@ -850,12 +851,12 @@ namespace CoolerItemVisualEffect.FinalFractal
             Rectangle rectangle29 = texture2D4.Frame(25, 1, 0, projectile.frame, 0, 0);
             Color color84 = Color.White;
             Vector2 origin21 = rectangle29.Size() / 2f;
-            DrawProjWithStarryTrail(spriteBatch, Color.White, spriteEffects);
+            projectile.DrawProjWithStarryTrail(spriteBatch, Color.White, spriteEffects);
             color84 = Color.White * projectile.Opacity * 0.9f;
             color84.A /= 2;
             rectangle29 = texture2D4.Frame(25, 1, projectile.frame, 0, 0, 0);
             origin21 = rectangle29.Size() / 2f;
-            DrawPrettyStarSparkle(spriteBatch, spriteEffects, vector71, color84, Main.hslToRgb(drawColor, 1f, 0.5f));
+            projectile.DrawPrettyStarSparkle(spriteBatch, spriteEffects, vector71, color84, Main.hslToRgb(drawColor, 1f, 0.5f));
             spriteBatch.Draw(texture2D4, vector71, new Microsoft.Xna.Framework.Rectangle?(rectangle29), color84, projectile.rotation, origin21, projectile.scale, spriteEffects, 0);
             if (Main.player[projectile.owner].name == "FFT")
             {
@@ -918,9 +919,9 @@ namespace CoolerItemVisualEffect.FinalFractal
                     CoolerItemVisualEffectMod.FinalFractalTailEffect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
                     CoolerItemVisualEffectMod.FinalFractalTailEffect.Parameters["uTime"].SetValue(-(float)Main.time * 0.03f);
                     //CoolerItemVisualEffect.FinalFractalTailEffect.Parameters["defaultColor"].SetValue(new Vector4(finalFractalProfile.trailColor.ToVector3(), finalFractalProfile.trailColor.A));
-                    Main.graphics.GraphicsDevice.Textures[0] = GetTexture("HeatMap_7");
-                    Main.graphics.GraphicsDevice.Textures[1] = GetTexture("Light_1");
-                    Main.graphics.GraphicsDevice.Textures[2] = GetTexture("Style_4");
+                    Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.HeatMap[7].Value;
+                    Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.BaseTex[13].Value;
+                    Main.graphics.GraphicsDevice.Textures[2] = LogSpiralLibraryMod.AniTex[5].Value;
                     Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
                     Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;
                     Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.PointWrap;
@@ -1002,9 +1003,9 @@ namespace CoolerItemVisualEffect.FinalFractal
                     CoolerItemVisualEffectMod.ColorfulEffect.Parameters["uTransform"].SetValue(model * Main.GameViewMatrix.TransformationMatrix * projection);
                     CoolerItemVisualEffectMod.ColorfulEffect.Parameters["uTime"].SetValue(-(float)Main.time * 0.03f);
                     CoolerItemVisualEffectMod.ColorfulEffect.Parameters["defaultColor"].SetValue(Main.hslToRgb(drawColor, 1f, 0.5f).ToVector4());
-                    Main.graphics.GraphicsDevice.Textures[0] = GetTexture("HeatMap_7");
-                    Main.graphics.GraphicsDevice.Textures[1] = GetTexture("Light_1");
-                    Main.graphics.GraphicsDevice.Textures[2] = GetTexture("Style_4");
+                    Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.HeatMap[7].Value;
+                    Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.BaseTex[13].Value;
+                    Main.graphics.GraphicsDevice.Textures[2] = LogSpiralLibraryMod.AniTex[5].Value;
                     Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
                     Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;
                     Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.PointWrap;
@@ -1026,118 +1027,6 @@ namespace CoolerItemVisualEffect.FinalFractal
                 }
             }
             return false;
-        }
-        private void DrawPrettyStarSparkle(SpriteBatch spriteBatch, SpriteEffects dir, Vector2 drawpos, Color drawColor, Color shineColor)
-        {
-            Texture2D value = GetTexture("FinalFractalLight");
-            Color color = shineColor * projectile.Opacity * 0.5f;
-            color.A = 0;
-            Vector2 origin = value.Size() / 2f;
-            Color color2 = drawColor * 0.5f;
-            float num = GetLerpValue(15f, 30f, projectile.localAI[0], true) * GetLerpValue(45f, 30f, projectile.localAI[0], true);
-            Vector2 vector = new Vector2(0.5f, 5f) * num;
-            Vector2 vector2 = new Vector2(0.5f, 2f) * num;
-            color *= num;
-            color2 *= num;
-            spriteBatch.Draw(value, drawpos, null, color, 1.57079637f, origin, vector, dir, 0);
-            spriteBatch.Draw(value, drawpos, null, color, 0f, origin, vector2, dir, 0);
-            spriteBatch.Draw(value, drawpos, null, color2, 1.57079637f, origin, vector * 0.6f, dir, 0);
-            spriteBatch.Draw(value, drawpos, null, color2, 0f, origin, vector2 * 0.6f, dir, 0);
-        }
-        private void DrawProjWithStarryTrail(SpriteBatch spriteBatch, Color projectileColor, SpriteEffects dir)
-        {
-            //GameTime gameTime = new GameTime();
-            Color color = new Color(255, 255, 255, (int)projectileColor.A - projectile.alpha);
-            Vector2 vector = projectile.velocity;
-            Color value = Color.Blue * 0.1f;
-            Vector2 spinningpoint = new Vector2(0f, -4f);
-            float num = 0f;
-            float t = vector.Length();
-            float scale = GetLerpValue(3f, 5f, t, true);
-            bool flag = true;
-            vector = projectile.position - projectile.oldPos[1];
-            float num2 = vector.Length();
-            if (num2 == 0f)
-            {
-                vector = Vector2.UnitY;
-            }
-            else
-            {
-                vector *= 5f / num2;
-            }
-            Vector2 origin = new Vector2(projectile.ai[0], projectile.ai[1]);
-            Vector2 center = Main.player[projectile.owner].Center;
-            float num3 = GetLerpValue(0f, 120f, Vector2.Distance(origin, center), true);
-            float num4 = 90f;
-            num4 = 60f;
-            flag = false;
-            float num5 = GetLerpValue(num4, num4 * 0.8333333f, projectile.localAI[0], true);
-            float lerpValue = GetLerpValue(0f, 120f, Vector2.Distance(projectile.Center, center), true);
-            num3 *= lerpValue;
-            num5 *= GetLerpValue(0f, 15f, projectile.localAI[0], true);
-            value = Color.HotPink * 0.15f * (num5 * num3);
-            value = Main.hslToRgb(drawColor, 1f, 0.5f) * 0.15f * (num5 * num3);
-            spinningpoint = new Vector2(0f, -2f);
-            float num6 = GetLerpValue(num4, num4 * 0.6666667f, projectile.localAI[0], true);
-            num6 *= GetLerpValue(0f, 20f, projectile.localAI[0], true);
-            num = -0.3f * (1f - num6);
-            num += -1f * GetLerpValue(15f, 0f, projectile.localAI[0], true);
-            num *= num3;
-            scale = num5 * num3;
-            Vector2 value2 = projectile.Center + vector;
-            Texture2D value3 = TextureAssets.Projectile[projectile.type].Value;
-            //new Microsoft.Xna.Framework.Rectangle(0, 0, value3.Width, value3.Height).Size() /= 2f;
-            Texture2D value4 = GetTexture("FinalFractalTail");
-            Rectangle rectangle = value4.Frame(1, 1, 0, 0, 0, 0);
-            Vector2 origin2 = new Vector2(rectangle.Width / 2f, 10f);
-            //Microsoft.Xna.Framework.Color.Cyan * 0.5f * scale;
-            Vector2 value5 = new Vector2(0f, projectile.gfxOffY);
-            float num7 = (float)Main.time / 60f;
-            Vector2 value6 = value2 + vector * 0.5f;
-            Color value7 = Color.White * 0.5f * scale;
-            value7.A = 0;
-            Color color2 = value * scale;
-            color2.A = 0;
-            Color color3 = value * scale;
-            color3.A = 0;
-            Color color4 = value * scale;
-            color4.A = 0;
-            float num8 = vector.ToRotation();
-            spriteBatch.Draw(value4, value6 - Main.screenPosition + value5 + spinningpoint.RotatedBy((double)(6.28318548f * num7), default(Vector2)), new Microsoft.Xna.Framework.Rectangle?(rectangle), color2, projectile.velocity.ToRotation() + 1.57079637f, origin2, 1.5f + num, SpriteEffects.None, 0);
-            spriteBatch.Draw(value4, value6 - Main.screenPosition + value5 + spinningpoint.RotatedBy((double)(6.28318548f * num7 + 2.09439516f), default(Vector2)), new Microsoft.Xna.Framework.Rectangle?(rectangle), color3, projectile.velocity.ToRotation() + 1.57079637f, origin2, 1.1f + num, SpriteEffects.None, 0);
-            spriteBatch.Draw(value4, value6 - Main.screenPosition + value5 + spinningpoint.RotatedBy((double)(6.28318548f * num7 + 4.18879032f), default(Vector2)), new Microsoft.Xna.Framework.Rectangle?(rectangle), color4, projectile.velocity.ToRotation() + 1.57079637f, origin2, 1.3f + num, SpriteEffects.None, 0);
-            Vector2 value8 = value2 - vector * 0.5f;
-            for (float num9 = 0f; num9 < 1f; num9 += 0.5f)
-            {
-                float num10 = num7 % 0.5f / 0.5f;
-                num10 = (num10 + num9) % 1f;
-                float num11 = num10 * 2f;
-                if (num11 > 1f)
-                {
-                    num11 = 2f - num11;
-                }
-                spriteBatch.Draw(value4, value8 - Main.screenPosition + value5, new Microsoft.Xna.Framework.Rectangle?(rectangle), Color.White * num11, projectile.velocity.ToRotation() + 1.57079637f, origin2, 0.3f + num10 * 0.5f, SpriteEffects.None, 0);
-            }
-            if (flag)
-            {
-                float rotation = projectile.rotation + projectile.localAI[1];
-                //float num12 = (float)Main.time / 240f;
-                //float globalTimeWrappedHourly = (float)(gameTime.TotalGameTime.TotalSeconds % 3600.0);
-                /*float num13 = (float)(gameTime.TotalGameTime.TotalSeconds % 3600.0);
-                num13 %= 5f;
-                num13 /= 2.5f;
-                if (num13 >= 1f)
-                {
-                    num13 = 2f - num13;
-                }
-                num13 = num13 * 0.5f + 0.5f;*/
-                Vector2 position = projectile.Center - Main.screenPosition;
-                //Main.instance.LoadItem(75);
-                Texture2D value9 = GetTexture("FinalFractalTail2");
-                Rectangle rectangle2 = value9.Frame(1, 8, 0, 0, 0, 0);
-                Vector2 origin3 = rectangle2.Size() / 2f;
-                spriteBatch.Draw(value9, position, new Rectangle?(rectangle2), color, rotation, origin3, projectile.scale, SpriteEffects.None, 0);
-            }
         }
     }
     public class FinalFractalDimensionalSwoosh2 : ModProjectile
@@ -1485,7 +1374,7 @@ namespace CoolerItemVisualEffect.FinalFractal
             num *= num3;
             var scale = num5 * num3;
             Vector2 value2 = projectile.Center + vector;
-            Texture2D value4 = GetTexture("FinalFractalTail4");
+            Texture2D value4 = LogSpiralLibraryMod.Misc[17].Value;
             Rectangle rectangle = value4.Frame(1, 1, 0, 0, 0, 0);
             Vector2 origin2 = new Vector2(rectangle.Width / 2f, 10f);
             Vector2 value5 = new Vector2(0f, projectile.gfxOffY);
@@ -1516,7 +1405,7 @@ namespace CoolerItemVisualEffect.FinalFractal
             {
                 float rotation = projectile.rotation + projectile.localAI[1];
                 Vector2 position = projectile.Center - Main.screenPosition;
-                Texture2D value9 = GetTexture("FinalFractalTail2");
+                Texture2D value9 = LogSpiralLibraryMod.Misc[15].Value;
                 Rectangle rectangle2 = value9.Frame(1, 8, 0, 0, 0, 0);
                 Vector2 origin3 = rectangle2.Size() / 2f;
                 spriteBatch.Draw(value9, position, new Rectangle?(rectangle2), color, rotation, origin3, projectile.scale, SpriteEffects.None, 0);
@@ -1694,7 +1583,7 @@ namespace CoolerItemVisualEffect.FinalFractal
             num *= num3;
             var scale = num5 * num3;
             Vector2 value2 = projectile.Center + vector;
-            Texture2D value4 = GetTexture("FinalFractalTail4");
+            Texture2D value4 = LogSpiralLibraryMod.Misc[17].Value;
             Rectangle rectangle = value4.Frame(1, 1, 0, 0, 0, 0);
             Vector2 origin2 = new Vector2(rectangle.Width / 2f, 10f);
             Vector2 value5 = new Vector2(0f, projectile.gfxOffY);
@@ -1725,7 +1614,7 @@ namespace CoolerItemVisualEffect.FinalFractal
             {
                 float rotation = projectile.rotation + projectile.localAI[1];
                 Vector2 position = projectile.Center - Main.screenPosition;
-                Texture2D value9 = GetTexture("FinalFractalTail2");
+                Texture2D value9 = LogSpiralLibraryMod.Misc[15].Value;
                 Rectangle rectangle2 = value9.Frame(1, 8, 0, 0, 0, 0);
                 Vector2 origin3 = rectangle2.Size() / 2f;
                 spriteBatch.Draw(value9, position, new Rectangle?(rectangle2), color, rotation, origin3, projectile.scale, SpriteEffects.None, 0);
@@ -1824,7 +1713,7 @@ namespace CoolerItemVisualEffect.FinalFractal
             num *= num3;
             var scale = num5 * num3;
             Vector2 value2 = projectile.Center + vector;
-            Texture2D value4 = GetTexture("FinalFractalTail4");
+            Texture2D value4 = LogSpiralLibraryMod.Misc[17].Value;
             Rectangle rectangle = value4.Frame(1, 1, 0, 0, 0, 0);
             Vector2 origin2 = new Vector2(rectangle.Width / 2f, 10f);
             Vector2 value5 = new Vector2(0f, projectile.gfxOffY);
@@ -1855,7 +1744,7 @@ namespace CoolerItemVisualEffect.FinalFractal
             {
                 float rotation = projectile.rotation + projectile.localAI[1];
                 Vector2 position = projectile.Center - Main.screenPosition;
-                Texture2D value9 = GetTexture("FinalFractalTail2");
+                Texture2D value9 = LogSpiralLibraryMod.Misc[15].Value;
                 Rectangle rectangle2 = value9.Frame(1, 8, 0, 0, 0, 0);
                 Vector2 origin3 = rectangle2.Size() / 2f;
                 spriteBatch.Draw(value9, position, new Rectangle?(rectangle2), color, rotation, origin3, projectile.scale, SpriteEffects.None, 0);

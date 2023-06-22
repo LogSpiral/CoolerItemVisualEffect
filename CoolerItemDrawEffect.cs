@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using LogSpiralLibrary;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +38,7 @@ namespace CoolerItemVisualEffect
                 vcolor /= count;
                 mainColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
             }
-            item.ShaderItemEffectInventory(spriteBatch, position, origin, CoolerItemVisualEffectMethods.GetTexture("IMBellTex"), mainColor, scale);
+            item.ShaderItemEffectInventory(spriteBatch, position, origin, LogSpiralLibraryMod.Misc[0].Value, mainColor, scale);
         mylabel:
             base.PostDrawInInventory(item, spriteBatch, position, frame, drawColor, itemColor, origin, scale);
         }
@@ -66,7 +67,7 @@ namespace CoolerItemVisualEffect
                 vcolor /= count;
                 mainColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
             }
-            item.ShaderItemEffectInWorld(spriteBatch, CoolerItemVisualEffectMethods.GetTexture("IMBellTex"), mainColor, rotation);
+            item.ShaderItemEffectInWorld(spriteBatch, LogSpiralLibraryMod.Misc[0].Value, mainColor, rotation);
         mylabel:
             base.PostDrawInWorld(item, spriteBatch, lightColor, alphaColor, rotation, scale, whoAmI);
         }

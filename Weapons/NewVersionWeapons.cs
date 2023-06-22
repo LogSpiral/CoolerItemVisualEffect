@@ -10,6 +10,7 @@ using static Terraria.ModLoader.ModContent;
 using Terraria.DataStructures;
 using static CoolerItemVisualEffect.CoolerItemVisualEffectMethods;
 using static CoolerItemVisualEffect.CoolerItemVisualEffectMod;
+using LogSpiralLibrary;
 
 namespace CoolerItemVisualEffect.Weapons
 {
@@ -1276,8 +1277,8 @@ namespace CoolerItemVisualEffect.Weapons
             ShaderSwooshEX.Parameters["distortScaler"].SetValue(1);
             ShaderSwooshEX.Parameters["alphaFactor"].SetValue(1);
             ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(false);
-            Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_8");
-            Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("Style_10");
+            Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.BaseTex[8].Value;
+            Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.AniTex[10].Value;
             Main.graphics.GraphicsDevice.Textures[2] = TextureAssets.MagicPixel.Value;
             Main.graphics.GraphicsDevice.Textures[3] = GetTexture("greyBar");
             Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.AnisotropicWrap;
@@ -1562,8 +1563,8 @@ namespace CoolerItemVisualEffect.Weapons
             ShaderSwooshEX.Parameters["distortScaler"].SetValue(1);
             ShaderSwooshEX.Parameters["alphaFactor"].SetValue(1);
             ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(false);
-            Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_8");
-            Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("Style_10");
+            Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.BaseTex[8].Value;
+            Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.AniTex[10].Value;
             Main.graphics.GraphicsDevice.Textures[2] = TextureAssets.MagicPixel.Value;
             Main.graphics.GraphicsDevice.Textures[3] = GetTexture("greyBar");
             Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.AnisotropicWrap;
@@ -1755,8 +1756,8 @@ namespace CoolerItemVisualEffect.Weapons
             ShaderSwooshEX.Parameters["distortScaler"].SetValue(1);
             ShaderSwooshEX.Parameters["alphaFactor"].SetValue(1);
             ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(false);
-            Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_8");
-            Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("Style_10");
+            Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.BaseTex[8].Value;
+            Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.AniTex[10].Value;
             Main.graphics.GraphicsDevice.Textures[2] = TextureAssets.MagicPixel.Value;
             Main.graphics.GraphicsDevice.Textures[3] = GetTexture("greyBar");
             Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.AnisotropicWrap;

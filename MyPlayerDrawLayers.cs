@@ -250,11 +250,17 @@ namespace CoolerItemVisualEffect
                 drawinfo.DrawDataCache.Add(item);
             }
         }
+        public static IPlayerRenderer originPlrRenderer;
         public override void Load()
         {
-
+            originPlrRenderer = Main.PlayerRenderer;
             Main.PlayerRenderer = new CoolerPlayerRender();
             base.Load();
+        }
+        public override void Unload()
+        {
+            Main.PlayerRenderer = originPlrRenderer;
+            base.Unload();
         }
         public override void Draw(ref PlayerDrawSet drawInfo)
         {

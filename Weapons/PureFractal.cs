@@ -16,6 +16,7 @@ using static CoolerItemVisualEffect.ConfigurationSwoosh;
 using Terraria.GameContent;
 using CoolerItemVisualEffect;
 using System.IO;
+using LogSpiralLibrary;
 
 namespace CoolerItemVisualEffect.Weapons
 {
@@ -44,11 +45,11 @@ namespace CoolerItemVisualEffect.Weapons
         public Texture2D tex => TextureAssets.Item[item.type].Value;
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
-            item.ShaderItemEffectInventory(spriteBatch, position, origin, GetTexture("ItemEffectTex_0"), Color.Lerp(new Color(0, 162, 232), new Color(34, 177, 76), (float)Math.Sin(MathHelper.Pi / 60 * ModTime) / 2 + 0.5f), scale);
+            item.ShaderItemEffectInventory(spriteBatch, position, origin, LogSpiralLibraryMod.Misc[1].Value, Color.Lerp(new Color(0, 162, 232), new Color(34, 177, 76), (float)Math.Sin(MathHelper.Pi / 60 * ModTime) / 2 + 0.5f), scale);
         }
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
         {
-            item.ShaderItemEffectInWorld(spriteBatch, GetTexture("ItemEffectTex_0"), Color.Lerp(new Color(0, 162, 232), new Color(34, 177, 76), (float)Math.Sin(MathHelper.Pi / 60 * ModTime) / 2 + 0.5f), rotation);
+            item.ShaderItemEffectInWorld(spriteBatch, LogSpiralLibraryMod.Misc[1].Value, Color.Lerp(new Color(0, 162, 232), new Color(34, 177, 76), (float)Math.Sin(MathHelper.Pi / 60 * ModTime) / 2 + 0.5f), rotation);
         }
         public override void SetDefaults()
         {
@@ -268,11 +269,11 @@ namespace CoolerItemVisualEffect.Weapons
                 var _color = newColor * _fac;//newColor 
                 _color.A = 0;
                 Main.spriteBatch.Draw(currentTex, projectile.oldPos[n - 1] - Main.screenPosition, null, _color * multiValue, projectile.oldRot[n - 1] - MathHelper.PiOver4 + (spEffect == 0 ? 0 : MathHelper.PiOver2), currentTex.Size() * new Vector2(spEffect == 0 ? 0 : 1, 1), size, spEffect, 0);
-                DrawPrettyStarSparkle(projectile, 0, projectile.oldPos[n - 1] + (projectile.oldRot[n - 1] - MathHelper.PiOver2).ToRotationVector2() * _scaler * size - Main.screenPosition, Color.White, _color, Main.spriteBatch);
+                projectile.DrawPrettyStarSparkle(Main.spriteBatch, 0, projectile.oldPos[n - 1] + (projectile.oldRot[n - 1] - MathHelper.PiOver2).ToRotationVector2() * _scaler * size - Main.screenPosition, Color.White, _color);
 
             }
             Main.spriteBatch.Draw(currentTex, projectile.oldPos[0] - Main.screenPosition, null, Color.White * multiValue, projectile.oldRot[0] - MathHelper.PiOver4 + (spEffect == 0 ? 0 : MathHelper.PiOver2), currentTex.Size() * new Vector2(spEffect == 0 ? 0 : 1, 1), size, spEffect, 0);
-            DrawPrettyStarSparkle(projectile, 0, projectile.oldPos[0] + (projectile.oldRot[0] - MathHelper.PiOver2).ToRotationVector2() * _scaler * size - Main.screenPosition, Color.White, newColor, Main.spriteBatch);
+            projectile.DrawPrettyStarSparkle(projectile, 0, projectile.oldPos[0] + (projectile.oldRot[0] - MathHelper.PiOver2).ToRotationVector2() * _scaler * size - Main.screenPosition, Color.White, newColor);
         }
         public void DrawSwoosh()
         {
@@ -615,14 +616,14 @@ namespace CoolerItemVisualEffect.Weapons
                 ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
                 ShaderSwooshEX.Parameters["lightShift"].SetValue(0);
                 ShaderSwooshEX.Parameters["distortScaler"].SetValue(0);
-                Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + ConfigSwooshInstance.ImageIndex);
-                Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage($"AniTex_{ConfigSwooshInstance.AnimateIndex}");
+                Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.BaseTex[ConfigSwooshInstance.ImageIndex].Value;
+                Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.AniTex[ConfigSwooshInstance.AnimateIndex + 11].Value;
                 Main.graphics.GraphicsDevice.Textures[2] = currentTex;
                 Main.graphics.GraphicsDevice.Textures[3] = GetPureFractalHeatMaps(Projectile.frame);//if (ConfigSwooshInstance.swooshColorType == SwooshColorType.函数生成热度图)
                 Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
                 Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
                 Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
-                switch (ConfigurationSwoosh.ConfigSwooshInstance.swooshColorType)
+                switch (ConfigSwooshInstance.swooshColorType)
                 {
                     case SwooshColorType.热度图:
                         {
@@ -667,23 +668,6 @@ namespace CoolerItemVisualEffect.Weapons
         {
 
             return false;
-        }
-        private void DrawPrettyStarSparkle(Projectile proj, SpriteEffects dir, Vector2 drawpos, Color drawColor, Color shineColor, SpriteBatch spriteBatch)
-        {
-            Texture2D value = GetTexture("FinalFractalLight");
-            Color color = shineColor * proj.Opacity * 0.5f;
-            color.A = 0;
-            Vector2 origin = value.Size() / 2f;
-            Color color2 = drawColor * 0.5f;
-            float num = Utils.GetLerpValue(15f, 30f, proj.localAI[0], true) * Utils.GetLerpValue(45f, 30f, proj.localAI[0], true);
-            Vector2 vector = new Vector2(0.5f, 5f) * num * ConfigSwooshInstance.swooshSize;
-            Vector2 vector2 = new Vector2(0.5f, 2f) * num * ConfigSwooshInstance.swooshSize;
-            color *= num;
-            color2 *= num;
-            spriteBatch.Draw(value, drawpos, null, color, 1.57079637f, origin, vector, dir, 0);
-            spriteBatch.Draw(value, drawpos, null, color, 0f, origin, vector2, dir, 0);
-            spriteBatch.Draw(value, drawpos, null, color2, 1.57079637f, origin, vector * 0.6f, dir, 0);
-            spriteBatch.Draw(value, drawpos, null, color2, 0f, origin, vector2 * 0.6f, dir, 0);
         }
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {

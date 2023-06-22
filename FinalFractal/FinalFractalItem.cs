@@ -11,6 +11,7 @@ using CoolerItemVisualEffect.Weapons;
 using Terraria.GameContent;
 using System.IO;
 using Terraria.Localization;
+using LogSpiralLibrary;
 
 namespace CoolerItemVisualEffect.FinalFractal
 {
@@ -153,11 +154,11 @@ namespace CoolerItemVisualEffect.FinalFractal
 
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
-            item.ShaderItemEffectInventory(spriteBatch, position, origin, CoolerItemVisualEffectMethods.GetTexture("IMBellTex"), Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffectMod.ModTime) / 2 + 0.5f), scale);
+            item.ShaderItemEffectInventory(spriteBatch, position, origin, LogSpiralLibraryMod.Misc[0].Value, Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffectMod.ModTime) / 2 + 0.5f), scale);
         }
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
         {
-            item.ShaderItemEffectInWorld(spriteBatch, CoolerItemVisualEffectMethods.GetTexture("IMBellTex"), Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffectMod.ModTime) / 2 + 0.5f), rotation);
+            item.ShaderItemEffectInWorld(spriteBatch, LogSpiralLibraryMod.Misc[0].Value, Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffectMod.ModTime) / 2 + 0.5f), rotation);
         }
         public override void SetDefaults()
         {

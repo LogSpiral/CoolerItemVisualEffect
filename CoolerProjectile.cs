@@ -8,6 +8,8 @@ using static CoolerItemVisualEffect.CoolerItemVisualEffectMethods;
 using Terraria.GameContent;
 using LogSpiralLibrary.CodeLibrary;
 using System.Reflection;
+using LogSpiralLibrary;
+using Terraria.ModLoader;
 
 namespace CoolerItemVisualEffect
 {
@@ -411,9 +413,9 @@ namespace CoolerItemVisualEffect
                             var _v = ConfigurationSwoosh.ConfigSwooshInstance.directOfHeatMap.ToRotationVector2();
                             CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
                             //var par = CoolerItemVisualEffect.ShaderSwooshEX.Parameters["heatRotation"];
-                            //var wht = (par.Annotations, par.ColumnCount, par.RowCount, par.ParameterType, par.Elements, par.Name, par.ParameterClass, par.Semantic, par.StructureMembers);
-                            Main.graphics.GraphicsDevice.Textures[0] = CoolerItemVisualEffectMod.GetWeaponDisplayImage("BaseTex_" + ConfigurationSwoosh.ConfigSwooshInstance.ImageIndex);
-                            Main.graphics.GraphicsDevice.Textures[1] = CoolerItemVisualEffectMod.GetWeaponDisplayImage($"AniTex_{ConfigurationSwoosh.ConfigSwooshInstance.AnimateIndex}");
+                            //var wht = (par.Annotations, par.ColumnCount, par.RowCount, par.ParameterType, par.Elements, par.Name, par.ParameterClass, par.Semantic, par.StructureMembers);            Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.BaseTex[instance.ImageIndex].Value;
+                            Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.BaseTex[ConfigurationSwoosh.ConfigSwooshInstance.ImageIndex].Value;
+                            Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.AniTex[ConfigurationSwoosh.ConfigSwooshInstance.AnimateIndex + 11].Value;
                             Main.graphics.GraphicsDevice.Textures[2] = ModContent.Request<Texture2D>("CoolerItemVisualEffect/Weapons/FirstZenithProj_5").Value;
                             Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
                             Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
@@ -439,7 +441,7 @@ namespace CoolerItemVisualEffect
                 case ProjectileID.InfluxWaver:
                 case ProjectileID.SkyFracture:
                     {
-                        Texture2D projectileTexture = GetTexture("FinalFractalLight");//GetTexture("TerraShard");
+                        Texture2D projectileTexture = LogSpiralLibraryMod.Misc[13].Value;//GetTexture("TerraShard");
                         var length = projectile.velocity.Length();
                         var scaleVec = new Vector2(projectile.scale * 3 + 1f + MathHelper.Clamp(length / 4f, 0, 2), projectile.scale * 2);
                         scaleVec = new Vector2(scaleVec.Y, scaleVec.X / 3f);
@@ -512,9 +514,9 @@ namespace CoolerItemVisualEffect
                         var center = projectile.Center - Main.screenPosition;
                         spriteBatch.Draw(projectileTexture, center - unit * 24, null, mainColor with { A = 0 }, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), scaleVec * new Vector2(.75f, 1.5f), SpriteEffects.None, 0f);
                         spriteBatch.Draw(projectileTexture, center - unit * 24, null, Color.White with { A = 0 }, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), scaleVec * new Vector2(.5f, 1), SpriteEffects.None, 0f);
-                        spriteBatch.DrawQuadraticLaser_PassNormal(projectile.Center - unit * 16, -unit, mainColor, GetTexture("Style_10"), MathHelper.Clamp(length, 0, 16) * 4 + 36, 16);
+                        spriteBatch.DrawQuadraticLaser_PassNormal(projectile.Center - unit * 16, -unit, mainColor, LogSpiralLibraryMod.AniTex[10].Value, MathHelper.Clamp(length, 0, 16) * 4 + 36, 16);
                         //spriteBatch.DrawQuadraticLaser_PassHeatMap(projectile.Center, -unit, GetTexture("HeatMap_11"), GetTexture("Style_10"), MathHelper.Clamp(length, 0, 16) * 4 + 28, 24);
-                        spriteBatch.DrawEffectLine(projectile.Center - unit * 24, projectile.velocity.SafeNormalize(default), mainColor, GetTexture("Light_0"), 1, 0, 96, 15);
+                        spriteBatch.DrawEffectLine(projectile.Center - unit * 24, projectile.velocity.SafeNormalize(default), mainColor, LogSpiralLibraryMod.BaseTex[12].Value, 1, 0, 96, 15);
                         //lightColor = lightColor with { A = 0};
                         var projTex = TextureAssets.Projectile[projectile.type].Value;
                         Rectangle? rect = projectile.type == ProjectileID.SkyFracture ? projTex.Frame(14, 1, projectile.frame, 0) : null;
@@ -643,7 +645,7 @@ namespace CoolerItemVisualEffect
                                     break;
                                 }
                         }
-                        spriteBatch.DrawShaderTail(projectile, GetTexture("BaseTex_8"), GetTexture("Style_3"), GetTexture("Light_0"), width, offset, alpha, true, false, mainColor);
+                        spriteBatch.DrawShaderTail(projectile, LogSpiralLibraryMod.BaseTex[8].Value, LogSpiralLibraryMod.AniTex[2].Value, LogSpiralLibraryMod.BaseTex[12].Value, width, offset, alpha, true, false, mainColor);
                         goto mylabel;
                     }
             }
