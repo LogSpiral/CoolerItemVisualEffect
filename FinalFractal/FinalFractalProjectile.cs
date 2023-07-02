@@ -74,7 +74,7 @@ namespace CoolerItemVisualEffect.FinalFractal
                     drawColor = Main.rgbToHsl(new Color(100, 203, 189)).X;
                     break;
                 default:
-                    
+
                     break;
             }
             float num = projectile.light;
@@ -398,7 +398,7 @@ namespace CoolerItemVisualEffect.FinalFractal
                     drawColor = Main.rgbToHsl(new Color(100, 203, 189)).X;
                     break;
                 default:
-                    
+
                     break;
             }
             timer++;
@@ -793,7 +793,7 @@ namespace CoolerItemVisualEffect.FinalFractal
                     drawColor = 0.6319444f;
                     break;
                 default:
-                    
+
                     break;
             }
             timer++;
@@ -851,7 +851,7 @@ namespace CoolerItemVisualEffect.FinalFractal
             Rectangle rectangle29 = texture2D4.Frame(25, 1, 0, projectile.frame, 0, 0);
             Color color84 = Color.White;
             Vector2 origin21 = rectangle29.Size() / 2f;
-            projectile.DrawProjWithStarryTrail(spriteBatch, Color.White, spriteEffects);
+            projectile.DrawProjWithStarryTrail(spriteBatch, drawColor, Color.White);
             color84 = Color.White * projectile.Opacity * 0.9f;
             color84.A /= 2;
             rectangle29 = texture2D4.Frame(25, 1, projectile.frame, 0, 0, 0);
@@ -1244,7 +1244,7 @@ namespace CoolerItemVisualEffect.FinalFractal
                     drawColor = Main.rgbToHsl(new Color(100, 203, 189)).X;
                     break;
                 default:
-                    
+
                     break;
             }
             float num = projectile.light;
@@ -1476,7 +1476,7 @@ namespace CoolerItemVisualEffect.FinalFractal
                     drawColor = Main.rgbToHsl(new Color(100, 203, 189)).X;
                     break;
                 default:
-                    
+
                     break;
             }
             float num = projectile.light;
@@ -1835,7 +1835,7 @@ namespace CoolerItemVisualEffect.FinalFractal
                     drawColor = 0.6319444f;
                     break;
                 default:
-                    
+
                     break;
             }
             float[] array = projectile.localAI;

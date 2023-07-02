@@ -98,7 +98,7 @@ namespace CoolerItemVisualEffect
         }
         public static void SetData(BinaryReader reader, int whoami)
         {
-            if (whoami < 0 || whoami > 255) throw new System.Exception("我抄，超范围辣");
+            if (whoami < 0 || whoami > 255) throw new Exception("我抄，超范围辣");
             var config = Main.player[whoami].GetModPlayer<CoolerItemVisualEffectPlayer>().ConfigurationSwoosh;
             config.coolerSwooshQuality = (QualityType)reader.ReadByte();
             config.toolsNoUseNewSwooshEffect = reader.ReadBoolean();

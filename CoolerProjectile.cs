@@ -20,7 +20,7 @@ namespace CoolerItemVisualEffect
     {
         public override void OnSpawn(Projectile projectile, IEntitySource source)
         {
-            if (projectile.ModProjectile is LogSpiralLibrary.CodeLibrary.VertexHammerProj vertexHammer)
+            if (projectile.ModProjectile is VertexHammerProj vertexHammer)
             {
                 var player = vertexHammer.Player;
                 var modplr = player.GetModPlayer<CoolerItemVisualEffectPlayer>();

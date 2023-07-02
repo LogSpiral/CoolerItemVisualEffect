@@ -57,7 +57,7 @@ namespace CoolerItemVisualEffect.Weapons
         public override string Texture => base.Texture.Replace("_Proj", "");
         public override string HammerName => "恶魔之镰";
         public override float MaxTime => controlState == 1 ? 30 : 48;
-        public override float factor => ((projectile.ai[0] % MaxTime == 0 && projectile.ai[0] > 0 ? MaxTime - 1 : projectile.ai[0] % MaxTime)) / MaxTime;
+        public override float Factor => ((projectile.ai[0] % MaxTime == 0 && projectile.ai[0] > 0 ? MaxTime - 1 : projectile.ai[0] % MaxTime)) / MaxTime;
         public override Vector2 CollidingSize => base.CollidingSize;
         //public override Vector2 projCenter => base.projCenter + new Vector2(Player.direction * 16, -16);
         public override Vector2 CollidingCenter => base.CollidingCenter;//new Vector2(projTex.Size().X / 3 - 16, 16)
@@ -70,17 +70,17 @@ namespace CoolerItemVisualEffect.Weapons
             get
             {
                 //Main.NewText(timeCount);
-                float theta = ((float)Math.Pow(factor, 2)).Lerp(MathHelper.Pi / 8 * 3, -MathHelper.PiOver2 - MathHelper.Pi / 8);
+                float theta = ((float)Math.Pow(Factor, 2)).Lerp(MathHelper.Pi / 8 * 3, -MathHelper.PiOver2 - MathHelper.Pi / 8);
                 if (Player.controlUseItem)
                 {
-                    theta = -MathHelper.Pi / 8 * (3 + 2 * (1 - factor).HillFactor2());
+                    theta = -MathHelper.Pi / 8 * (3 + 2 * (1 - Factor).HillFactor2());
                 }
                 if (projectile.ai[1] > 0)
                 {
                     if (Charged)
                     {
                         //Main.NewText(projectile.ai[1] / MaxTimeLeft / factor);
-                        theta = (projectile.ai[1] / MaxTimeLeft / factor).Lerp(theta, MathHelper.Pi / 8 * 3);
+                        theta = (projectile.ai[1] / MaxTimeLeft / Factor).Lerp(theta, MathHelper.Pi / 8 * 3);
                         //return player.direction == -1 ? MathHelper.Pi * 1.5f - theta : theta;
                     }
                     else
@@ -93,7 +93,7 @@ namespace CoolerItemVisualEffect.Weapons
                 {
                     if (projectile.ai[0] > MaxTime)
                     {
-                        theta = ((float)Math.Pow(factor, 2)).Lerp(MathHelper.Pi / 8 * 3, MathHelper.Pi / 8 * 11);
+                        theta = ((float)Math.Pow(Factor, 2)).Lerp(MathHelper.Pi / 8 * 3, MathHelper.Pi / 8 * 11);
                     }
                     //else if (Player.controlUseItem)
                     //{
@@ -156,7 +156,7 @@ namespace CoolerItemVisualEffect.Weapons
                 }
             }
             projectile.ai[1]++;
-            if (projectile.ai[1] > (Charged ? (MaxTimeLeft * factor) : timeCount % MaxTime))
+            if (projectile.ai[1] > (Charged ? (MaxTimeLeft * Factor) : timeCount % MaxTime))
             {
                 if (left && Player.controlUseItem)
                 {

@@ -511,7 +511,7 @@ namespace CoolerItemVisualEffect
     }
     public static class CoolerItemVisualEffectMethods
     {
-        public static bool SpecialCheck(this int type) => new int[] { ItemID.Zenith, ModContent.ItemType<Weapons.FirstFractal_CIVE>(), ModContent.ItemType<Weapons.PureFractal_Old>(), ModContent.ItemType<Weapons.FirstZenith_Old>() }.Contains(type);
+        public static bool SpecialCheck(this int type) => new int[] { ItemID.Zenith, ModContent.ItemType<FirstFractal_CIVE>(), ModContent.ItemType<PureFractal_Old>(), ModContent.ItemType<FirstZenith_Old>() }.Contains(type);
         public static Texture2D GetTexture(string path, bool autoPath = true) => ModContent.Request<Texture2D>((autoPath ? "CoolerItemVisualEffect/Shader/" : "") + path).Value;
         public static void QuickSpawnItem(this Player player, IEntitySource source, params int[] ingredients)
         {

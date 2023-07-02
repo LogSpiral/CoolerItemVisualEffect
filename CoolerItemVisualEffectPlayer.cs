@@ -916,6 +916,12 @@ namespace CoolerItemVisualEffect
 
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
         {
+            //int height = 0;
+            //foreach (var item in LogSpiralLibraryMod.ShaderSwooshUL.CurrentTechnique.Passes) 
+            //{
+            //    Main.spriteBatch.DrawString(FontAssets.MouseText.Value, $"{item.Name},{height / 40}", new Vector2(200, 200 + height), Color.White);
+            //    height += 40;
+            //}
             if (ConfigurationSwoosh.TeleprotEffectActive && player.HeldItem.type == ItemID.MagicMirror && player.ItemAnimationActive)
             {
                 var fac = player.itemAnimation / (float)player.itemAnimationMax;

@@ -504,7 +504,7 @@ namespace CoolerItemVisualEffect.Weapons
         public override string Texture => base.Texture.Replace("_Blade_GivenUp", "Proj");
         public override string HammerName => "WitheredWoodSword";
         public override float MaxTime => 16;
-        public override float factor => ((projectile.ai[0] % MaxTime == 0 && projectile.ai[0] > 0 ? MaxTime - 1 : projectile.ai[0] % MaxTime)) / MaxTime;
+        public override float Factor => ((projectile.ai[0] % MaxTime == 0 && projectile.ai[0] > 0 ? MaxTime - 1 : projectile.ai[0] % MaxTime)) / MaxTime;
         public override Vector2 CollidingSize => base.CollidingSize;
         //public override Vector2 projCenter => base.projCenter + new Vector2(Player.direction * 16, -16);
         public override Vector2 CollidingCenter => base.CollidingCenter;//new Vector2(projTex.Size().X / 3 - 16, 16)
@@ -516,12 +516,12 @@ namespace CoolerItemVisualEffect.Weapons
         {
             get
             {
-                var theta = ((float)Math.Pow(factor, 2)).Lerp(MathHelper.Pi / 8 * 3 * (projectile.ai[0] > MaxTime ? -1 : 1), -MathHelper.PiOver2 - MathHelper.Pi / 8);
+                var theta = ((float)Math.Pow(Factor, 2)).Lerp(MathHelper.Pi / 8 * 3 * (projectile.ai[0] > MaxTime ? -1 : 1), -MathHelper.PiOver2 - MathHelper.Pi / 8);
                 if (projectile.ai[1] > 0)
                 {
                     if (Charged)
                     {
-                        theta = (projectile.ai[1] / MaxTimeLeft / factor).Lerp(theta, MathHelper.Pi / 8 * 3);
+                        theta = (projectile.ai[1] / MaxTimeLeft / Factor).Lerp(theta, MathHelper.Pi / 8 * 3);
                     }
                     else
                     {
@@ -582,7 +582,7 @@ namespace CoolerItemVisualEffect.Weapons
                 }
             }
             projectile.ai[1]++;
-            if (projectile.ai[1] > (Charged ? (MaxTimeLeft * factor) : timeCount % MaxTime))
+            if (projectile.ai[1] > (Charged ? (MaxTimeLeft * Factor) : timeCount % MaxTime))
             {
                 if (left && Player.controlUseItem)
                 {
@@ -939,11 +939,11 @@ namespace CoolerItemVisualEffect.Weapons
     {
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
-            item.ShaderItemEffectInventory(spriteBatch, position, origin, GetTexture("ItemEffectTex_0"), Color.Lerp(new Color(0, 162, 232), new Color(34, 177, 76), (float)Math.Sin(MathHelper.Pi / 60 * ModTime) / 2 + 0.5f), scale);
+            item.ShaderItemEffectInventory(spriteBatch, position, origin, LogSpiralLibraryMod.Misc[1].Value, Color.Lerp(new Color(0, 162, 232), new Color(34, 177, 76), (float)Math.Sin(MathHelper.Pi / 60 * ModTime) / 2 + 0.5f), scale);
         }
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
         {
-            item.ShaderItemEffectInWorld(spriteBatch, GetTexture("ItemEffectTex_0"), Color.Lerp(new Color(0, 162, 232), new Color(34, 177, 76), (float)Math.Sin(MathHelper.Pi / 60 * ModTime) / 2 + 0.5f), rotation);
+            item.ShaderItemEffectInWorld(spriteBatch, LogSpiralLibraryMod.Misc[1].Value, Color.Lerp(new Color(0, 162, 232), new Color(34, 177, 76), (float)Math.Sin(MathHelper.Pi / 60 * ModTime) / 2 + 0.5f), rotation);
         }
         public override void SetDefaults()
         {
@@ -980,11 +980,11 @@ namespace CoolerItemVisualEffect.Weapons
     {
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
-            Item.ShaderItemEffectInventory(spriteBatch, position, origin, CoolerItemVisualEffectMethods.GetTexture("IMBellTex"), Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffectMod.ModTime) / 2 + 0.5f), scale);
+            Item.ShaderItemEffectInventory(spriteBatch, position, origin, LogSpiralLibraryMod.Misc[0].Value, Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffectMod.ModTime) / 2 + 0.5f), scale);
         }
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
         {
-            Item.ShaderItemEffectInWorld(spriteBatch, CoolerItemVisualEffectMethods.GetTexture("IMBellTex"), Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffectMod.ModTime) / 2 + 0.5f), rotation);
+            Item.ShaderItemEffectInWorld(spriteBatch, LogSpiralLibraryMod.Misc[0].Value, Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffectMod.ModTime) / 2 + 0.5f), rotation);
         }
         public override void SetDefaults()
         {
@@ -1039,7 +1039,7 @@ namespace CoolerItemVisualEffect.Weapons
         public override string Texture => base.Texture.Replace("_Blade", "_Old");
         public override string HammerName => "初源峰巅";
         public override float MaxTime => 12;
-        public override float factor => base.factor;
+        public override float Factor => base.Factor;
         public override Vector2 CollidingSize => base.CollidingSize;
         //public override Vector2 projCenter => base.projCenter + new Vector2(Player.direction * 16, -16);
         public override Vector2 CollidingCenter => base.CollidingCenter;//new Vector2(projTex.Size().X / 3 - 16, 16)
@@ -1116,7 +1116,8 @@ namespace CoolerItemVisualEffect.Weapons
         }
         public override void Load()
         {
-            vectorTex = GetTexture("Vector");
+            if (Main.netMode == NetmodeID.Server) return;
+            vectorTex = LogSpiralLibraryMod.Misc[4].Value;
         }
         public Texture2D vectorTex;
         public override string Texture => ModContent.GetInstance<FirstZenith>().Texture;
@@ -1194,7 +1195,7 @@ namespace CoolerItemVisualEffect.Weapons
         {
             if (vectorTex == null)
             {
-                vectorTex = GetTexture("Vector");
+                vectorTex = LogSpiralLibraryMod.Misc[4].Value;
                 return false;
             }
 
@@ -1209,7 +1210,7 @@ namespace CoolerItemVisualEffect.Weapons
                 {
                     var drawCen = fieldCen + new Vector2(stepLength * n, stepLength * i);
                     var target = Transform(drawCen - Projectile.Center + Main.screenPosition);
-                    if (vectorTex == null) vectorTex = GetTexture("Vector");
+                    if (vectorTex == null) vectorTex = LogSpiralLibraryMod.Misc[4].Value;
                     sb.Draw(vectorTex, drawCen, null, Color.Lerp(Color.Cyan, Color.Red, target.Length() / 1024f), target.ToRotation(), new Vector2(0, 11), .5f, 0, 0);
                 }
             }
@@ -1373,7 +1374,9 @@ namespace CoolerItemVisualEffect.Weapons
         }
         public override void Load()
         {
-            vectorTex = GetTexture("Vector");
+            if (Main.netMode == NetmodeID.Server) return;
+
+            vectorTex = LogSpiralLibraryMod.Misc[4].Value;
         }
         public Texture2D vectorTex;
         public int realFlow => 120;
@@ -1474,7 +1477,7 @@ namespace CoolerItemVisualEffect.Weapons
         {
             if (vectorTex == null)
             {
-                vectorTex = GetTexture("Vector");
+                vectorTex = LogSpiralLibraryMod.Misc[4].Value;
                 return false;
             }
             var sb = Main.spriteBatch;
@@ -1489,7 +1492,7 @@ namespace CoolerItemVisualEffect.Weapons
                 var flow = flows[n + realFlow];
                 var drawCen = flow.vectorInfos[0] + Projectile.Center - Main.screenPosition;// + Main.screenPosition
                 var size = 0.7f;
-                if (vectorTex == null) vectorTex = GetTexture("Vector");
+                if (vectorTex == null) vectorTex = LogSpiralLibraryMod.Misc[4].Value;
                 for (int m = 0; m < tier; m++)
                 {
                     var target = flow.vectorInfos[m + 1];
@@ -1601,7 +1604,9 @@ namespace CoolerItemVisualEffect.Weapons
         }
         public override void Load()
         {
-            vectorTex = GetTexture("Vector");
+            if (Main.netMode == NetmodeID.Server) return;
+
+            vectorTex = LogSpiralLibraryMod.Misc[4].Value;
         }
         public Texture2D vectorTex;
         public override string Texture => ModContent.GetInstance<FirstZenith>().Texture;
@@ -1663,7 +1668,7 @@ namespace CoolerItemVisualEffect.Weapons
         {
             if (vectorTex == null)
             {
-                vectorTex = GetTexture("Vector");
+                vectorTex = LogSpiralLibraryMod.Misc[4].Value;
                 return false;
             }
 
@@ -1680,14 +1685,14 @@ namespace CoolerItemVisualEffect.Weapons
                     var target = ElectricField(drawCen - Projectile.Center + Main.screenPosition);
                     if (target.Length() != 0)
                     {
-                        if (vectorTex == null) vectorTex = GetTexture("Vector");
+                        if (vectorTex == null) vectorTex = LogSpiralLibraryMod.Misc[4].Value;
                         sb.Draw(vectorTex, drawCen, null, Color.Lerp(Color.Cyan, Color.Red, target.Length() / 1024f), target.ToRotation(), new Vector2(0, 11), .5f, 0, 0);
                     }
 
 
                     var B = MagneticField(drawCen - Projectile.Center + Main.screenPosition);
                     if (B == 0) continue;
-                    sb.Draw(GetTexture("MagneticMark"), drawCen, new Rectangle((Math.Sign(B) + 1) / 2 * 32, 0, 32, 32), Color.Lerp(Color.LimeGreen, Color.DarkGreen, Math.Abs(B) / 4f), 0, new Vector2(16), .5f, 0, 0);
+                    sb.Draw(LogSpiralLibraryMod.Misc[5].Value, drawCen, new Rectangle((Math.Sign(B) + 1) / 2 * 32, 0, 32, 32), Color.Lerp(Color.LimeGreen, Color.DarkGreen, Math.Abs(B) / 4f), 0, new Vector2(16), .5f, 0, 0);
 
                 }
             }
@@ -1782,11 +1787,11 @@ namespace CoolerItemVisualEffect.Weapons
         }
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
-            item.ShaderItemEffectInventory(spriteBatch, position, origin, CoolerItemVisualEffectMethods.GetTexture("IMBellTex"), Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffectMod.ModTime) / 2 + 0.5f), scale);
+            item.ShaderItemEffectInventory(spriteBatch, position, origin, LogSpiralLibraryMod.Misc[0].Value, Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffectMod.ModTime) / 2 + 0.5f), scale);
         }
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
         {
-            item.ShaderItemEffectInWorld(spriteBatch, CoolerItemVisualEffectMethods.GetTexture("IMBellTex"), Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffectMod.ModTime) / 2 + 0.5f), rotation);
+            item.ShaderItemEffectInWorld(spriteBatch, LogSpiralLibraryMod.Misc[0].Value, Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffectMod.ModTime) / 2 + 0.5f), rotation);
         }
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {

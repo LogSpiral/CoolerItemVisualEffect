@@ -491,7 +491,9 @@ namespace CoolerItemVisualEffect
             effect.Parameters["lightShift"].SetValue(0);
             effect.Parameters["distortScaler"].SetValue(distortScaler * scaler);
             effect.Parameters["alphaFactor"].SetValue(instance.alphaFactor);
-            effect.Parameters["heatMapAlpha"].SetValue(instance.alphaFactor == 0);
+            effect.Parameters["heatMapAlpha"].SetValue(instance.alphaFactor != 0);
+            if(flag)
+                effect.Parameters["AlphaVector"].SetValue(ConfigurationUltraTest.ConfigSwooshUltraInstance.AlphaVector);
             Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.BaseTex[instance.ImageIndex].Value;
             Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.AniTex[modPlayer.ConfigurationSwoosh.AnimateIndex + 11].Value;
             Main.graphics.GraphicsDevice.Textures[2] = itemTex;
@@ -510,7 +512,7 @@ namespace CoolerItemVisualEffect
             Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
             if (modPlayer.UseSlash)// && ((instance.swooshActionStyle != SwooshAction.向后倾一定角度后重击 && instance.swooshActionStyle != SwooshAction.两次普通斩击一次高速旋转) || modPlayer.Player.itemAnimation < 18)
             {
-                effect.CurrentTechnique.Passes[flag ? 2 : passCount].Apply();
+                effect.CurrentTechnique.Passes[flag ? 7 : passCount].Apply();
                 Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, CreateTriList(array, modPlayer.Player.Center, distortScaler), 0, 88);
             }
             if (modPlayer.SwooshActive)
@@ -536,7 +538,7 @@ namespace CoolerItemVisualEffect
                         Main.graphics.GraphicsDevice.Textures[2] = TextureAssets.Item[ultraSwoosh.type].Value;
                         Main.graphics.GraphicsDevice.Textures[3] = ultraSwoosh.heatMap;
                         effect.Parameters["lightShift"].SetValue(instance.IsDarkFade ? (ultraSwoosh.timeLeft / (float)ultraSwoosh.timeLeftMax) - 1f : 0);
-                        effect.CurrentTechnique.Passes[flag ? 2 : passCount].Apply();
+                        effect.CurrentTechnique.Passes[flag ? 7 : passCount].Apply();
                         Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, CreateTriList(ultraSwoosh.vertexInfos, ultraSwoosh.center, distortScaler, true), 0, 58);
                     }
                 }
@@ -1084,11 +1086,11 @@ namespace CoolerItemVisualEffect
     {
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
-            Item.ShaderItemEffectInventory(spriteBatch, position, origin, CoolerItemVisualEffectMethods.GetTexture("ItemEffectTex_0"), Color.Lerp(new Color(0, 162, 232), new Color(34, 177, 76), (float)Math.Sin(MathHelper.Pi / 60 * CoolerSystem.ModTime) / 2 + 0.5f), scale);
+            Item.ShaderItemEffectInventory(spriteBatch, position, origin, LogSpiralLibraryMod.Misc[1].Value, Color.Lerp(new Color(0, 162, 232), new Color(34, 177, 76), (float)Math.Sin(MathHelper.Pi / 60 * CoolerSystem.ModTime) / 2 + 0.5f), scale);
         }
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
         {
-            Item.ShaderItemEffectInWorld(spriteBatch, CoolerItemVisualEffectMethods.GetTexture("ItemEffectTex_0"), Color.Lerp(new Color(0, 162, 232), new Color(34, 177, 76), (float)Math.Sin(MathHelper.Pi / 60 * CoolerSystem.ModTime) / 2 + 0.5f), rotation);
+            Item.ShaderItemEffectInWorld(spriteBatch, LogSpiralLibraryMod.Misc[1].Value, Color.Lerp(new Color(0, 162, 232), new Color(34, 177, 76), (float)Math.Sin(MathHelper.Pi / 60 * CoolerSystem.ModTime) / 2 + 0.5f), rotation);
         }
         public override void SetDefaults()
         {

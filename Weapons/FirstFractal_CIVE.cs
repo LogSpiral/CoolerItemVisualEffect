@@ -787,7 +787,7 @@ namespace CoolerItemVisualEffect.Weapons
     {
         public override string HammerName => base.HammerName;
         public override float MaxTime => (controlState == 2 ? 2f : 1f) * UpgradeValue(12, 9);
-        public override float factor => base.factor;
+        public override float Factor => base.Factor;
         public override Vector2 CollidingSize => base.CollidingSize;
         //public override Vector2 projCenter => base.projCenter + new Vector2(Player.direction * 16, -16);
         public override Vector2 CollidingCenter => base.CollidingCenter;//new Vector2(projTex.Size().X / 3 - 16, 16)
@@ -804,9 +804,9 @@ namespace CoolerItemVisualEffect.Weapons
 
             //Lighting.add
 
-            int max = (int)(30 * factor);
+            int max = (int)(30 * Factor);
             var vec = (CollidingCenter - DrawOrigin).RotatedBy(Rotation) + projCenter;
-            if (factor > 0.75f)
+            if (Factor > 0.75f)
             {
                 for (int n = 0; n < max; n++)
                 {
@@ -1040,12 +1040,12 @@ namespace CoolerItemVisualEffect.Weapons
                 projectile.damage = 0;
                 if (Charged)
                 {
-                    projectile.damage = (int)(Player.GetWeaponDamage(Player.HeldItem) * (3 * factor * factor));
+                    projectile.damage = (int)(Player.GetWeaponDamage(Player.HeldItem) * (3 * Factor * Factor));
                     SoundEngine.PlaySound(SoundID.Item71);
                 }
             }
             projectile.ai[1]++;
-            if (projectile.ai[1] > (Charged ? (MaxTimeLeft * factor) : timeCount))
+            if (projectile.ai[1] > (Charged ? (MaxTimeLeft * Factor) : timeCount))
             {
                 projectile.Kill();
             }
@@ -1344,12 +1344,12 @@ namespace CoolerItemVisualEffect.Weapons
                 projectile.damage = 0;
                 if (Charged)
                 {
-                    projectile.damage = (int)(Player.GetWeaponDamage(Player.HeldItem) * (3 * factor * factor));
+                    projectile.damage = (int)(Player.GetWeaponDamage(Player.HeldItem) * (3 *Factor * Factor));
                     SoundEngine.PlaySound(SoundID.Item71);
                 }
             }
             projectile.ai[1]++;
-            if (projectile.ai[1] > (Charged ? (MaxTimeLeft * factor) : timeCount))
+            if (projectile.ai[1] > (Charged ? (MaxTimeLeft * Factor) : timeCount))
             {
                 projectile.Kill();
             }
