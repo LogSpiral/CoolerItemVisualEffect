@@ -242,7 +242,7 @@ namespace CoolerItemVisualEffect.Weapons
             }
             projectile.friendly = projectile.ai[0] > when;
         }
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.immune[projectile.owner] = 5;
             if (SACoolDown < 0 && Main.rand.NextBool(controlTier % 5 == 4 ? 2 : 5))
@@ -255,7 +255,7 @@ namespace CoolerItemVisualEffect.Weapons
                     Dust.NewDustPerfect(cen, UpgradeValue(MyDustId.Wood, MyDustId.GreenGrass), (MathHelper.TwoPi / 30 * n).ToRotationVector2() * Main.rand.NextFloat(2, 8));
                 }
             }
-            base.OnHitNPC(target, damage, knockback, crit);
+            base.OnHitNPC(target, hit, damageDone);
         }
         public override void OnRelease(bool charged, bool left)
         {
@@ -817,8 +817,7 @@ namespace CoolerItemVisualEffect.Weapons
             }
             projectile.friendly = projectile.ai[0] > when;
         }
-
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.immune[projectile.owner] = 5;
             //TODO 枯石特殊攻击
@@ -835,7 +834,6 @@ namespace CoolerItemVisualEffect.Weapons
                     }
                 }
             }
-            //base.OnHitNPC(target, damage, knockback, crit);
         }
         public override void OnRelease(bool charged, bool left)
         {

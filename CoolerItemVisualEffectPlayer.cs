@@ -11,6 +11,7 @@ using Terraria.ID;
 using System.Reflection;
 using Terraria.GameContent.Drawing;
 using LogSpiralLibrary;
+using Terraria;
 
 namespace CoolerItemVisualEffect
 {
@@ -111,7 +112,6 @@ namespace CoolerItemVisualEffect
         public float currentSize;
         public float currentRotation;
 
-
         /// <summary>
         /// 对NPC攻击判定的修改
         /// <br>这个不是很好用</br>
@@ -119,7 +119,7 @@ namespace CoolerItemVisualEffect
         /// <param name="item"></param>
         /// <param name="target"></param>
         /// <returns></returns>
-        public override bool? CanHitNPC(Item item, NPC target)
+        public override bool? CanHitNPCWithItem(Item item, NPC target)
         {
             //bool? modCanHit = CombinedHooks.CanPlayerHitNPCWithItem(this, sItem, Main.npc[i]);
             var style = ConfigurationSwoosh.hitBoxStyle;
@@ -172,23 +172,30 @@ namespace CoolerItemVisualEffect
         /// 修改使用速度
         /// </summary>
         public override float UseSpeedMultiplier(Item item) => ConfigurationSwoosh.actionOffsetSpeed && UseSlash ? actionOffsetSpeed : 1f;
-
         /// <summary>
         /// 魔改打击效果
         /// </summary>
-        public override void ModifyHitNPC(Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
+        public override void ModifyHitNPCWithItem(Item item, NPC target, ref NPC.HitModifiers modifiers)
         {
             if (ConfigurationSwoosh.actionModifyEffect)
             {
-                damage = (int)(damage * actionOffsetDamage);
+                modifiers.SourceDamage *= actionOffsetDamage;
                 strengthOfShake = actionOffsetDamage * Main.rand.NextFloat(0.85f, 1.15f);
-                knockback = knockback * actionOffsetKnockBack;
+                modifiers.Knockback *= actionOffsetKnockBack;
                 var _crit = player.GetWeaponCrit(item);
                 _crit += actionOffsetCritAdder;
                 _crit = (int)(_crit * actionOffsetCritMultiplyer);
-                crit = Main.rand.Next(100) < _crit;
+                if (Main.rand.Next(100) < _crit)
+                {
+                    modifiers.SetCrit();
+                }
+                else 
+                {
+                    modifiers.DisableCrit();
+                }
             }
         }
+
         private void SetActionValue(float size = 1f /*,float speed = 1f*/, float knockBack = 1f, float damage = 1f, int critAdder = 0, float critMultiplyer = 1f)
         {
             actionOffsetSize = size;
@@ -1196,18 +1203,26 @@ namespace CoolerItemVisualEffect
                 }
             }
         }
-        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
-            knockback = 0;
             if (effectPlayer.ConfigurationSwoosh.actionModifyEffect)
             {
-                damage = (int)(damage * effectPlayer.actionOffsetDamage);
+                modifiers.SourceDamage *= effectPlayer.actionOffsetDamage;
                 effectPlayer.strengthOfShake = effectPlayer.actionOffsetDamage * Main.rand.NextFloat(0.85f, 1.15f);
+                modifiers.Knockback *= effectPlayer.actionOffsetKnockBack;
                 var _crit = player.GetWeaponCrit(player.HeldItem);
                 _crit += effectPlayer.actionOffsetCritAdder;
                 _crit = (int)(_crit * effectPlayer.actionOffsetCritMultiplyer);
-                crit = Main.rand.Next(100) < _crit;
+                if (Main.rand.Next(100) < _crit)
+                {
+                    modifiers.SetCrit();
+                }
+                else
+                {
+                    modifiers.DisableCrit();
+                }
             }
+            base.ModifyHitNPC(target, ref modifiers);
         }
         public override bool ShouldUpdatePosition()
         {
@@ -1224,11 +1239,9 @@ namespace CoolerItemVisualEffect
             Projectile.tileCollide = false;
         }
         //public static MethodBase ApplyNPCOnHitEffects;
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            //player.HeldItem.ModItem?.OnHitNPC(player, target, damage, knockback, crit);
-            ItemLoader.OnHitNPC(player.HeldItem, player, target, damage, knockback, crit);
-
+            ItemLoader.OnHitNPC(player.HeldItem, player, target, hit, damageDone);
             try
             {
                 #region *复杂的伤害计算*
@@ -1293,8 +1306,8 @@ namespace CoolerItemVisualEffect
             vec = new Vector2(-vec.Y, vec.X) * (effectPlayer.negativeDir ? -1 : 1);
             vec = (vec.SafeNormalize(default) + Projectile.velocity) * MathF.Sqrt(Projectile.knockBack * target.knockBackResist) * .5f;
             if (!target.boss) vec *= 2;
-            if (crit) vec *= 1.5f;
-            target.velocity += vec * (crit ? 1.5f : 1f);
+            if (hit.Crit) vec *= 1.5f;
+            target.velocity += vec * (hit.Crit ? 1.5f : 1f);
             //Projectile.ai[0] = 1;
             //NetMessage.SendData(MessageID.DamageNPC,)
         }

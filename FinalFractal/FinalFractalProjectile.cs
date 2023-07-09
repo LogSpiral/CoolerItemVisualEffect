@@ -19,10 +19,6 @@ namespace CoolerItemVisualEffect.FinalFractal
     {
         Projectile projectile => Projectile;
 
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("最终分形之影");
-        }
         public override void SetDefaults()
         {
             projectile.width = 16;
@@ -311,18 +307,15 @@ namespace CoolerItemVisualEffect.FinalFractal
     public class FinalFractalShadow : ModProjectile
     {
         Projectile projectile => Projectile;
-
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("最终分形之影");
-        }
-        public override void OnHitPvp(Player target, int damage, bool crit)
-        {
-            target.immune = false;
-        }
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.immune[projectile.owner] = 0;
+            base.OnHitNPC(target, hit, damageDone);
+        }
+        public override void OnHitPlayer(Player target, Player.HurtInfo info)
+        {
+            if(info.PvP) target.immune = false;
+            base.OnHitPlayer(target, info);
         }
         public override void SetDefaults()
         {
@@ -668,17 +661,15 @@ namespace CoolerItemVisualEffect.FinalFractal
     {
         Projectile projectile => Projectile;
 
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("分形次元斩");
-        }
-        public override void OnHitPvp(Player target, int damage, bool crit)
-        {
-            target.immune = false;
-        }
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.immune[projectile.owner] = 0;
+            base.OnHitNPC(target, hit, damageDone);
+        }
+        public override void OnHitPlayer(Player target, Player.HurtInfo info)
+        {
+            if (info.PvP) target.immune = false;
+            base.OnHitPlayer(target, info);
         }
         public override void SetDefaults()
         {
@@ -1033,10 +1024,6 @@ namespace CoolerItemVisualEffect.FinalFractal
     {
         Projectile projectile => Projectile;
 
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("分形次元斩");
-        }
         public override void SetDefaults()
         {
             projectile.width = 16;
@@ -1048,15 +1035,15 @@ namespace CoolerItemVisualEffect.FinalFractal
             projectile.alpha = 255;
             projectile.friendly = true;
         }
-        public override void OnHitPvp(Player target, int damage, bool crit)
-        {
-            target.immune = false;
-            //target.AddBuff(BuffType<Buffs.ForbiddenSpeech>(), 600);
-        }
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.immune[projectile.owner] = 0;
-            //target.AddBuff(BuffType<Buffs.ForbiddenSpeech>(), 600);
+            base.OnHitNPC(target, hit, damageDone);
+        }
+        public override void OnHitPlayer(Player target, Player.HurtInfo info)
+        {
+            if (info.PvP) target.immune = false;
+            base.OnHitPlayer(target, info);
         }
         private int timer = 0;
         public override void AI()
@@ -1194,10 +1181,6 @@ namespace CoolerItemVisualEffect.FinalFractal
     {
         Projectile projectile => Projectile;
 
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("天顶「FinalFractal」");
-        }
         public override void SetDefaults()
         {
             projectile.width = 16;
@@ -1281,21 +1264,26 @@ namespace CoolerItemVisualEffect.FinalFractal
             }
             return true;
         }
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             for (int n = 0; n < 6; n++)
             {
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), projectile.Center + new Vector2(64, 0).RotatedBy(projectile.rotation - MathHelper.PiOver4 + MathHelper.TwoPi / 6 * n), new Vector2(32, 0).RotatedBy(projectile.rotation - MathHelper.PiOver4 + MathHelper.TwoPi / 6 * n + MathHelper.TwoPi / 3), ProjectileType<Zenith_FirstFractals>(), projectile.damage, 0, projectile.owner);
             }
             target.immune[projectile.owner] = 0;
+            base.OnHitNPC(target, hit, damageDone);
         }
-        public override void OnHitPvp(Player target, int damage, bool crit)
+        public override void OnHitPlayer(Player target, Player.HurtInfo info)
         {
-            for (int n = 0; n < 6; n++)
+            if (info.PvP) 
             {
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), projectile.Center + new Vector2(64, 0).RotatedBy(projectile.rotation - MathHelper.PiOver4 + MathHelper.TwoPi / 6 * n), new Vector2(32, 0).RotatedBy(projectile.rotation - MathHelper.PiOver4 + MathHelper.TwoPi / 6 * n + MathHelper.TwoPi / 3), ProjectileType<Zenith_FirstFractals>(), projectile.damage, 0, projectile.owner);
+                for (int n = 0; n < 6; n++)
+                {
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), projectile.Center + new Vector2(64, 0).RotatedBy(projectile.rotation - MathHelper.PiOver4 + MathHelper.TwoPi / 6 * n), new Vector2(32, 0).RotatedBy(projectile.rotation - MathHelper.PiOver4 + MathHelper.TwoPi / 6 * n + MathHelper.TwoPi / 3), ProjectileType<Zenith_FirstFractals>(), projectile.damage, 0, projectile.owner);
+                }
+                target.immune = false;
             }
-            target.immune = false;
+            base.OnHitPlayer(target, info);
         }
         public override bool PreDraw(ref Color lightColor)
         {
@@ -1414,10 +1402,6 @@ namespace CoolerItemVisualEffect.FinalFractal
     }
     public class Zenith_FirstFractals : ModProjectile
     {
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("天顶「FinalFractal」");
-        }
         public override void SetDefaults()
         {
             projectile.width = 16;
@@ -1431,14 +1415,17 @@ namespace CoolerItemVisualEffect.FinalFractal
             projectile.alpha = 255;
             projectile.friendly = true;
         }
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.immune[projectile.owner] = 0;
+            base.OnHitNPC(target, hit, damageDone);
         }
-        public override void OnHitPvp(Player target, int damage, bool crit)
+        public override void OnHitPlayer(Player target, Player.HurtInfo info)
         {
-            target.immune = false;
+            if (info.PvP) target.immune = false;
+            base.OnHitPlayer(target, info);
         }
+
         private float drawColor
         {
             get => projectile.ai[0];
@@ -1623,10 +1610,6 @@ namespace CoolerItemVisualEffect.FinalFractal
     }
     public class FinalFractalDimensionalSwoosh3 : ModProjectile
     {
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("分形次元斩");
-        }
         private Vector2 P;
         private Vector2 M;
         private float T;
@@ -1645,13 +1628,15 @@ namespace CoolerItemVisualEffect.FinalFractal
             projectile.friendly = true;
             projectile.extraUpdates = 3;
         }
-        public override void OnHitPvp(Player target, int damage, bool crit)
-        {
-            target.immune = false;
-        }
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.immune[projectile.owner] = 0;
+            base.OnHitNPC(target, hit, damageDone);
+        }
+        public override void OnHitPlayer(Player target, Player.HurtInfo info)
+        {
+            if (info.PvP) target.immune = false;
+            base.OnHitPlayer(target, info);
         }
         private float drawColor;
         private int timer;

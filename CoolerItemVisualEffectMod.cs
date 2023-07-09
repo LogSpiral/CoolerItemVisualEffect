@@ -14,7 +14,6 @@ using System.IO;
 using Terraria.GameContent;
 using Terraria.GameContent.Skies.CreditsRoll;
 using Terraria.UI;
-using static Terraria.GameContent.Skies.CreditsRoll.Segments.PlayerSegment;
 using static CoolerItemVisualEffect.ConfigurationSwoosh;
 using System.Linq;
 using Terraria.Localization;
@@ -380,7 +379,7 @@ namespace CoolerItemVisualEffect
                     }
                 }
         }
-        private void PlayerDrawLayers_DrawPlayer_27_HeldItem_WeaponDisplay(On.Terraria.DataStructures.PlayerDrawLayers.orig_DrawPlayer_27_HeldItem orig, ref PlayerDrawSet drawinfo)
+        private void PlayerDrawLayers_DrawPlayer_27_HeldItem_WeaponDisplay(On_PlayerDrawLayers.orig_DrawPlayer_27_HeldItem orig, ref PlayerDrawSet drawinfo)
         {
             var drawPlayer = drawinfo.drawPlayer;
             var modPlayer = drawPlayer.GetModPlayer<CoolerItemVisualEffectPlayer>();
@@ -428,14 +427,15 @@ namespace CoolerItemVisualEffect
         public override void Load()
         {
             Instance = this;
-            On.Terraria.UI.UIElement.GetClippingRectangle += UIElement_GetClippingRectangle;
-            On.Terraria.DataStructures.PlayerDrawLayers.DrawPlayer_27_HeldItem += PlayerDrawLayers_DrawPlayer_27_HeldItem_WeaponDisplay;
-            On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayerInternal += LegacyPlayerRenderer_DrawPlayerInternal;
+            On_UIElement.GetClippingRectangle += UIElement_GetClippingRectangle;
+            On_PlayerDrawLayers.DrawPlayer_27_HeldItem += PlayerDrawLayers_DrawPlayer_27_HeldItem_WeaponDisplay;
+            On_LegacyPlayerRenderer.DrawPlayerInternal += LegacyPlayerRenderer_DrawPlayerInternal;
             Filters.Scene["CoolerItemVisualEffect:InvertGlass"] = new Filter(new ScreenShaderData(new Ref<Effect>(ModContent.Request<Effect>("LogSpiralLibrary/Effects/Xnbs/ZenithGlass", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value), "Zenith"), EffectPriority.Medium);
             Filters.Scene["CoolerItemVisualEffect:InvertGlass"].Load();
         }
+
         public static UIElement currentList;
-        private Rectangle UIElement_GetClippingRectangle(On.Terraria.UI.UIElement.orig_GetClippingRectangle orig, UIElement self, SpriteBatch spriteBatch)
+        private Rectangle UIElement_GetClippingRectangle(On_UIElement.orig_GetClippingRectangle orig, UIElement self, SpriteBatch spriteBatch)
         {
             var origin = orig.Invoke(self, spriteBatch);
             //var rect = Main.instance.GraphicsDevice.ScissorRectangle;
@@ -841,7 +841,7 @@ namespace CoolerItemVisualEffect
         /// <summary>
         /// 最后在这里画上
         /// </summary>
-        private void LegacyPlayerRenderer_DrawPlayerInternal(On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.orig_DrawPlayerInternal orig, LegacyPlayerRenderer self, Terraria.Graphics.Camera camera, Player drawPlayer, Vector2 position, float rotation, Vector2 rotationOrigin, float shadow, float alpha, float scale, bool headOnly)
+        private void LegacyPlayerRenderer_DrawPlayerInternal(On_LegacyPlayerRenderer.orig_DrawPlayerInternal orig, LegacyPlayerRenderer self, Terraria.Graphics.Camera camera, Player drawPlayer, Vector2 position, float rotation, Vector2 rotationOrigin, float shadow, float alpha, float scale, bool headOnly)
         {
             orig.Invoke(self, camera, drawPlayer, position, rotation, rotationOrigin, shadow, alpha, scale, headOnly);
             if (!drawPlayer.isFirstFractalAfterImage && shadow == 0f && !headOnly)
@@ -1109,11 +1109,6 @@ namespace CoolerItemVisualEffect
         //PureFractal:纯粹分形
         //FirstZenith:初源峰巅
         //FinalFractal:最终分形
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("返还袋ReturnBag");
-            Tooltip.SetDefault("");
-        }
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             var time = ((float)Math.Sin(CoolerSystem.ModTime / 60f * MathHelper.TwoPi) + 1) * .5f;

@@ -32,8 +32,8 @@ namespace CoolerItemVisualEffect.ConfigSLer
             SetPadding(10f);
             this.border = border;
             this.CalculateBorder = CalculateBorder;
-            OnMouseDown += DragStart;
-            OnMouseUp += DragEnd;
+            OnLeftMouseDown += DragStart;
+            OnLeftMouseUp += DragEnd;
             panelInfo = new CoolerPanelInfo
             {
                 origin = GetDimensions().Size() * .5f,
@@ -253,7 +253,7 @@ namespace CoolerItemVisualEffect.ConfigSLer
                 Left = new StyleDimension(-20f, 1f)
             };
             detailButton.SetSize(24f, 24f);
-            detailButton.OnClick += DetailButtonClick;
+            detailButton.OnLeftClick += DetailButtonClick;
             detailButton.OnUpdate += (_) =>
             {
                 if (detailButton.IsMouseHovering)
@@ -269,7 +269,7 @@ namespace CoolerItemVisualEffect.ConfigSLer
                 Left = new StyleDimension(detailButton.Left.Pixels - 24f, 1f)
             };
             deleteButton.SetSize(24f, 24f);
-            deleteButton.OnClick += DeleteButtonClick;
+            deleteButton.OnLeftClick += DeleteButtonClick;
             deleteButton.OnUpdate += (_) =>
             {
                 if (deleteButton.IsMouseHovering)
@@ -300,7 +300,7 @@ namespace CoolerItemVisualEffect.ConfigSLer
                 Left = new StyleDimension(RenameButton.Left.Pixels - 24f, 1f)
             };
             loadConfigButton.SetSize(24f, 24f);
-            loadConfigButton.OnClick += (ev, e) =>
+            loadConfigButton.OnLeftClick += (ev, e) =>
             {
                 Load(ConfigurationSwoosh.ConfigSwooshInstance, FilePath);
             };
@@ -418,10 +418,9 @@ namespace CoolerItemVisualEffect.ConfigSLer
             //panelInfo.glowShakingStrength = HoverFactor;
             //panelInfo.glowHueOffsetRange = .1f;
         }
-
-        public override void MouseDown(UIMouseEvent evt)
+        public override void LeftMouseDown(UIMouseEvent evt)
         {
-            base.MouseDown(evt);
+            base.LeftMouseDown(evt);
 
             if (Children.Any(i => i is UIImageButton && i.IsMouseHovering))
                 return;
@@ -743,9 +742,9 @@ namespace CoolerItemVisualEffect.ConfigSLer
             timer--;
         }
 
-        public override void MouseDown(UIMouseEvent evt)
+        public override void LeftMouseDown(UIMouseEvent evt)
         {
-            base.MouseDown(evt);
+            base.LeftMouseDown(evt);
 
             if (!Visible)
                 return;
@@ -763,9 +762,9 @@ namespace CoolerItemVisualEffect.ConfigSLer
             }
         }
 
-        public override void MouseUp(UIMouseEvent evt)
+        public override void LeftMouseUp(UIMouseEvent evt)
         {
-            base.MouseUp(evt);
+            base.LeftMouseUp(evt);
             if (!Visible)
                 return;
             dragging = false;

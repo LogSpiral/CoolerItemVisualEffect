@@ -192,10 +192,6 @@ namespace CoolerItemVisualEffect.FinalFractal
 
     public class FinalFractalItem : ModProjectile
     {
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("最终分形");
-        }
         private Player Player => Main.player[Projectile.owner];
         public bool right;
         public override void ReceiveExtraAI(BinaryReader reader)

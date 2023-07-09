@@ -1,0 +1,451 @@
+
+Mods: {
+	CoolerItemVisualEffect: {
+		ConfigSLer: {
+			Refresh: Refresh
+			TooManySameName: "///Failed!/// Hey bro, the file share the default name is toooo many! Please rename Them in time."
+			SameDefault: "///Notice!/// Now the saved files are all the default names. I added the serial number for you to distinguish. Remember to tidy up in time"
+			SavedAs: Current config has been saved as
+			DefaultName: UserDefinedConfig
+			LoadThisConfig: Set the current configuration to this
+			Path: File path:
+
+			RenameTip: {
+				Exists: A file with the same name already exists
+				TooLong: File name must not exceed 40 characters
+				Illegal: File name must not include following characterts: \\, /, :, *, ?, \", <, > or |
+			}
+
+			NotFinishYet: This page is being worked in progress......
+			Successed: \Load successed/！！
+			Failed: /Load failed\
+		}
+
+		Items: {
+			ConfigSLer: {
+				DisplayName: Config Reader/Writer
+				Tooltip:
+					'''
+					Left Click To Save Current Config.
+					Right Click To Show The UI And Choose Or Edit.
+					'''
+			}
+
+			旧日支配者: {
+				DisplayName: Great Old Ones
+				Tooltip: This power has not fully awakened
+			}
+
+			真旧日支配者.DisplayName: True Great Old Ones
+
+			FirstFractal_CIVE: {
+				DisplayName: First Fractal
+				Tooltip: Denied，forgotten，faded......It will return finally。
+			}
+
+			WitheredWoodSword: {
+				DisplayName: WitheredWoodSword
+				Tooltip: (New Version Work In Progress)
+			}
+
+			LivingWoodSword: {
+				DisplayName: Living Wood Sword
+				Tooltip: (New Version Work In Progress)
+			}
+
+			SereStoneSword: {
+				DisplayName: Sere Stone Sword
+				Tooltip: (New Version Work In Progress)
+			}
+
+			MossStoneSword: {
+				DisplayName: Moss Stone Sword
+				Tooltip: (New Version Work In Progress)
+			}
+
+			CrystalStoneSword.DisplayName: Crystal Stone Sword
+
+			RustySteelBlade: {
+				DisplayName: Rusty Steel Blade
+				Tooltip: (New Version Work In Progress)
+			}
+
+			RefinedSteelBlade: {
+				DisplayName: Refines Steel Blade
+				Tooltip: (New Version Work In Progress)
+			}
+
+			PureFractal: {
+				DisplayName: Pure Fractal
+				Tooltip: The Edge of Zenith Which Upgraded by the Ancient and Pure NaturalMagic.Show it, Your first Power.(New Version Work In Progress)
+			}
+
+			FirstZenith: {
+				DisplayName: First Zenith
+				Tooltip: (New Version Work In Progress)
+			}
+
+			FinalFractal: {
+				DisplayName: Final Fractal
+				Tooltip: Part of it includes itself, which we called Fractal. Infinite blades rotating as hurricane, they are part of it as well.(New Version Work In Progress)
+			}
+
+			WitheredWoodSword_Old: {
+				DisplayName: WitheredWoodSword_Old
+				Tooltip: Press Mouse Right, Then Dash And Release Thrones.
+			}
+
+			LivingWoodSword_Old: {
+				DisplayName: LivingWoodSword_Old
+				Tooltip: Press Mouse Right, Then Dash And Release Many Thrones.
+			}
+
+			SereStoneSword_Old: {
+				DisplayName: SereStoneSword_Old
+				Tooltip: Press Mouse Right, And Release Stalagmites.
+			}
+
+			MossStoneSword_Old: {
+				DisplayName: MossStoneSword_Old
+				Tooltip: Press Mouse Right, And Release List Of Stalagmite.
+			}
+
+			RustySteelBlade_Old: {
+				DisplayName: RustySteelBlade_Old
+				Tooltip: Press Mouse Right, And Release Rusty Steel Shards.
+			}
+
+			RefinedSteelBlade_Old: {
+				DisplayName: RefinedSteelBlade_Old
+				Tooltip: Press Mouse Right, And Release Many Refined Steel Shards.
+			}
+
+			PureFractal_Old: {
+				DisplayName: PureFractal_Old
+				Tooltip: The Edge of Zenith Which Upgraded by the Ancient and Pure NaturalMagic.Show it, Your first Power.
+			}
+
+			FirstZenith_Old.DisplayName: FirstZenith_Old
+
+			FinalFractal_Old: {
+				DisplayName: FinalFractal_Old
+				Tooltip: Part of it includes itself, which we called Fractal. Infinite blades rotating as hurricane, they are part of it as well.
+			}
+
+			UShallNotPass.DisplayName:
+				'''
+				I'm so sorry for the "Correct Name"
+				And I'm Making The New Version Of It Know.
+				The Old Version Will Be Retained.
+				You Can Use It Now(   ;)
+				'''
+			IDTKNOW.DisplayName: Pls Use This Weapon With A Correct Name.
+			FFBag.DisplayName: 返还袋ReturnBag
+			FZBag.DisplayName: 返还袋ReturnBag
+			LWBag.DisplayName: 返还袋ReturnBag
+			MSBag.DisplayName: 返还袋ReturnBag
+			PFBag.DisplayName: 返还袋ReturnBag
+			ReturnBag.DisplayName: 返还袋ReturnBag
+			RSBag.DisplayName: 返还袋ReturnBag
+			RSEXBag.DisplayName: 返还袋ReturnBag
+			SSBag.DisplayName: 返还袋ReturnBag
+			Azure.DisplayName: Azure
+			DemonScythe.DisplayName: Demon Scythe
+			WWBag.DisplayName: 返还袋ReturnBag
+		}
+
+		FinalFractalTip: {
+			0: This Even not the final state of them.
+			1: 「The Ultra Fractal Of The First And The Final」
+			2: 「Dimension Cut Of Fractal」
+			3: Zenith「FinalFractal」
+		}
+
+		StrangeTitle: {
+			0: Terraria:Change your title while Swing.
+			1: Terraria:Try reading 《Selected works of Mao Zedong》.
+			2: Terraria:The Workers of all lands unite.
+			3: Terraria:Infinite Nightmare,Imperishable Night.
+			4: Terraria:Listen to the noise of the wind and snow and watch the meteors fly.
+			5: VirtualDream:It's over. Terraria is body double.
+			6: Terraria:The city of storm is under construction.
+			7: Terraria:The sun is rising in the east.
+			8: Terraria:The boundless universe and the long river of time.
+			9: Terraria:How long are you going to stay in this Illusion world?
+			10: Terraria:How could you do That,阿汪,you change the title of Terraria by terrible code.
+			11: VirtualDream:The first part 风暴城辉光重现，赤天县暗流涌动。
+			12: VirtualDream:The second part 星之河孤帆渺渺，时之风独旅茫茫。
+			13: VirtualDream:The third part 虚幻界醉生梦死，现实境山重水复。
+			14: VirtualDream:The fourth part 无间狱暮雾蒙蒙，人间世长夜漫漫。
+		}
+
+		ConfigSwoosh: {
+			Label: Advanced Settings
+			Label1: Melee Slashing Settings[i:1199]
+			Label2: Sprite Draw Settings[i:1071]
+			Label3: Heat Map Settings[i:2012]
+			Label4: Special Effect Settings[i:3541]
+			Label5: Other Settings[i:1344]
+			D1: Basic Settings[i:398]
+			D2: Style Settings[i:399][i:1163][i:983]
+			D3: Value Settings[i:2799]
+			D4: Detail Settings[i:3619]
+			D5: Experimental Settings[i:3611]
+			1: More Cool Slashing Effects's Quality Setting[i:2608][i:724][i:3764][i:757]
+			2:
+				'''
+				"Are You Tired With The Vanilla Melee Swing Style?"
+				If You Want To Affect The Actual Attack Effect, Please Go To The Gameplay Settings To Open The Hitbox
+				The Quality Over Low Need LightingMode Is Color Or White, And The Water Quality Isn't Off.
+				Medium: Active Distort And Draw More Times.
+				High: Active Bloom Glow Light Effect.
+				Ultra: Active UltraSwoosh Effect.(Jsut Try It, As I Can't Explain It Well.
+				'''
+			3: Cancel The Effect Of The New Slashing Effect On Tools[i:1]
+			4:
+				'''
+				(Sobbing) How Can You Abandon Your Useful Tools?!
+				Yes, To Cancel The Effect Of The New Slashing Effect On The Tool, No, Not Cancel, The Default Is No
+				'''
+			5: Ignoring Natural Light When How Bright Is The Weapon Texture?[i:389]
+			6: Brightness Greater Than This Value Will Use High-Brightness Slashing
+			7: Color Style Of Slashing[i:1120]
+			8:
+				'''
+				The Follow Is
+					Weighted Average
+					Gradient
+					Diagonal Color Of The Enabled Weapon
+					Blend "Gradient" And "Diagonal Color Of the Enabled Weapon"
+					Heat Map
+				'''
+			9: Sampler Style Of Slashing[i:3186]
+			10:
+				'''
+				The Follow Is
+				Anisotropic
+				Linear
+				Point
+				'''
+			11: Factor Style Of Slashing[i:583]
+			12:
+				'''
+				The Follow Is
+				Decide The Factor At The Beginning Of Each Time.
+				Linear Interpolation (Lerp The Current One And The Next One)
+				'''
+			13: Action Style Of Slashing[i:498]
+			14:
+				'''
+				The Follow Is
+					Transverse Splitting
+					Transverse Splitting_EX
+					Heavy Slash
+					Up Slash
+					Cloud Slash
+					Wind Slash
+					Rain Slash
+					Thunder Slash
+					Storm Ultra Slash
+					Transverse Splitting_EX_Old
+					Transverse Splitting_Failed
+				'''
+			15: Size Of The Item And Slash[i:486]
+			16: According To The Default Size Is The Right HitBox, But Who Doesn't Like A Bigger Size?
+			17: The Offset Range Of Hue[i:1035]
+			18: The Value Of Plus Or Minus Centered On The Hue Of Original Color Is The Range Of Hue (Hue ∈ [OrighinHue - Value, OrighinHue + Value])
+			19: The Offset Value Of Original Hue[i:2870]
+			20: Add This Value To The Hue Of Original Color (OriginHue := OriginHue + Value)
+			21: Coefficient Of Hue[i:1051]
+			22: Which One Do You Prefer,The Grey One Or The Colorful One?
+			23: The Offset Value Of Original Luminosity[i:3559]
+			24: Interpolation Similar To HSL
+			25: Coefficient Of Luminosity[i:4952]
+			26: Strength Of Bloom Glow Light, Need "High" Quality
+			27: Coefficient Of Rotation Speed[i:561]
+			28: Applies Only Tail-Wagging
+			29: Coefficient Of Distortion[i:2880]
+			30: It's So Weird That I'm Ready To Think About It By Brain, Need "Medium" Quality
+			31: Weapon And Weapon Swing Effects Are Translucent And Highlighted [i:5005]
+			32:
+				'''
+				(Blend Additive,For Example,Color1=(0.5,0.7,0.3),Color2=(0.1,0.2,0.6),The Result Is (0.6,0.9,0.9))
+				阿汪:I Think This Is Weird But Someone Wants This
+				'''
+			33: Weapon HighLight（Ignore Natural Light)[i:65]
+			34: It Lights Up
+			35: The Strength Of Screen Shaking[i:1513]
+			36: Which Is Annoier Than 「MasterSpark」From TouhouProject
+			37: Style Of Slashing[i:3368]
+			38: I Only Prepared 12 Kinds, Recommend (Default) The One Which Index Is 7.
+			39: Detects Whether It Is Hollow[i:3823]
+			40: Just Try It And Make Your Own Choices www
+			41: Whether The End Is Retracted[i:3018]
+			42: You Can Try The Don't Retracted Ones, All Great!
+			43: Apply The Slash Effect To Zenith And First Fractal[i:4956]
+			44:
+				'''
+				OMG It Is Really Cool For All Color Style
+				I Recommend Click The Default And Choose The Max Size
+				While The Action Style Choose The Last One
+				And Turn The Strength Of Screen Shaking To The Value Greater Than 0.3
+				Finally Use Linear Interpolation
+				So Coooooooool！！！
+				'''
+			45: Item Glow Light As Enchanted Item In MineCraft[i:989]
+			46: Maybe Better After Add That?
+			Label_2: SlashingPreInstall
+			47: PreInstall Style
+			48: You can change the settings in the other page.
+			49: Don't Change The Game Title While Swing The Sword！！！
+			50: OMG this is so wired.The Title Will Change If It Is Off.
+			51: Draw the Effect How Many Times？[i:554]
+			52: The Default Is Once(normal),It Will Be So Coool More Than Once,But It Well Be Very Lagging(x  It Only Active When Your LightingMode Is White Or Color
+			53: Offset Angle Of ColorBar[i:393]
+			54:
+				'''
+				The Default is pi,And Set It To 0 Will Inverse The Direction(They Are Polar Gradient)，Use pi/2 Or 3*pi/2 To Get Radial Gradient
+				Need "Gradient"
+				Or " Blend "Gradient" And "Diagonal Color Of the Enabled Weapon" "
+				'''
+			55: LeftTime Of Swoosh[i:709]
+			56: The Default Is 10 Frame  Need "Ultra" Quality
+			57: Don't Change Size Of Item ItSelf[i:4923]
+			58: Only Change The Size Of SwooshEffect If It Is Yes, The Default Is No.
+			59: Fade Style Of Swoosh[i:3368]
+			60: The Default Is Both  Need "Ultra" Quality
+			61: Grow Style Of Swoosh[i:4144]
+			62: The Both Expand Horizontally And Offest Is Both  Need "Ultra" Quality
+			63: Style Of Slashing Animation Texture[i:4144]
+			64: I Only Prepared 6 Kinds, Recommend (Default) The One Which Index Is 3.
+			65: Size Of Distortion[i:3199]
+			66: The Default Is 1.5(Set It To 1 If It Is Too Lag)  Need "Medium" Quality
+			67: Show The Heat Map[i:2012]
+			68: Not "Weighted Average" And "Diagonal Color Of The Enabled Weapon"
+			69: Change Swoosh Size As ActionStyle Changes[i:426]
+			70: Change As ActionStyle Changes,Don't You Want It?
+			71: Mode Of Melee Hit Box
+			72: Although I Said "Visual Effect Modify", But I Need To Consider The Balance Of Visual Effect And Hit Box
+			73: Change Use Time As ActionStyle Changes[i:3099]
+			74: Notice: This Will Out The Range Of "Visual Effect",Please Consider It
+			75: Change Use Effect As ActionStyle Changes(Work In Progress)[i:675]
+			76: Notice: This Will Out The Range Of "Visual Effect",Please Consider It
+			77: Ignore The Damage Type[i:495]
+			78: Even If It Is A Magic Staff？？！！
+			79: Style Of HeatMap Factor[i:583]
+			80: Not Only Lerp Finally, Good Work, 阿汪.
+			81: List Of Color Of Designated HeatMap[i:2012]
+			82:
+				'''
+				The First One To The Last One Correspond To Left To Right
+				(Show The HeatMap And You Can Know What I Mean
+				Need "Designated HeatMap"
+				'''
+			83: Coefficient Of Opacity[i:170]
+			84: It Will Don't Care The Grey Value If It Is Zero.In Other Case, Opacity Will Multiply This Value.
+			85: Dust Amount[i:1348]
+			86: The Larger The Value Is , The More Dusts There Will Be.
+			87: Heat Map Create Style[i:3534]
+			88: Wow, You Can Try To Create The One You Like.
+			89: Max Time Of Cut Down[i:561]
+			90: The Unit Is Frame. It Was 9 Before And Now It Is 6.
+		}
+
+		Config: {
+			Label: Visual Settings
+			head1: Weapon Display
+			Num1: Weapon display switch
+			Num2: Yes, to turn on the weapon display, No, to cancel. Default is Yes
+			Num3: Weapon display in player interface
+			Num4: Yes, to enable the display of the first weapon in inventory(The First Item Will Be Ignored For Some Annoy Reason) in player interface, no,  to cancel. The default is
+			1: Dye used in weapons
+			2: The dye effect of the selected armor slot will be applied to the displayed weapon.
+			3: Weapon glowmask drawing switch
+			4: Yes, to turn on the weapon glowmask drawing(It will only take effect when the body armor has a glowmask, the effect is the same as the armor glowmask), no, to cancel. Default is No
+			5: Weapon glowmask brightness
+			6: Adjust the brightness of weapon glowmask
+			head2: Item Effect
+			head3: Slash Visual Effect (affects only the visual effect, not the gameplay)
+			7: More cool slashing effects
+			8:
+				'''
+				Are you tired with the vanilla melee swing style? 
+				 If you want to affect the actual attack effect, please go to the gameplay settings to open the hitbox
+				'''
+			9: Item light effect in world
+			10: Yes, to turn on the lighting effect of items in world, No, to cancel. Default is Yes
+			11: Weapon display size
+			12: Adjust the display size of weapons
+			13: Slash effect brightness
+			14: Brightness greater than 0.5 will use high-brightness slashing
+			15: Slashing effect color
+			16: Yes, associate the slashing effect color with the diagonal color of the enabled weapon map, no, use a single color. Default is Yes
+			17: Weapon and weapon swing effects are translucent and highlighted
+			18: Log_Spiral:I think this is weird but someone wants this
+			19: Cancel the effect of the new slashing effect on tools
+			20: Yes, to cancel the effect of the new slashing effect on the tool, No, not cancel, the default is No
+			23: The type of Item light effect in world
+			24: Misc Settings
+			25: Active Extra Glow Effect To Item In World.
+			26: I'm So Lazy That It Only Has One Style.
+			27: Active Extra Glow Effect To Item In Inventory.
+			28: I Don't Like It Too Much As It Is Too Dazzling.
+			29: Active Extra Draw Effect To Proejectile.
+			30: I Hope You Like It.
+			31: Active Teleport Extra Effect(WIP)
+			32: Exaggerate Magic Effect Is Too Much!!(I'm boring with it a bit
+			33: Melee Hit Box Modify Style
+			34: To reduce the sense of disobedience.
+			35: Improve Movement And Its Animation(WIP)
+			36: You Must Know That This One Is Imitating Celeste, Right?
+		}
+
+		ConfigurationServer: {
+			Label: Gameplay Settings
+			SlashSettings: Slash Gameplay Effect (affects only the gameplay, not the visual effect)
+			HitboxName: Use a new hitbox that matches the swing effect
+			HitboxTooltip: Yes, to enable a new hitbox for the weapon, no, to use the vanilla hitbox. Default is Yes
+			AttackablesName: Melee Slash Attackable Enemies Amount
+			AttackablesTooltip: Maximum number of enemies that can be damaged at one swing of the weapon.
+			Parry: Parry Settings
+			ParryName: Weapon Parry
+			ParryTooltip:
+				'''
+				If yes, the weapons listed below will be able to parry attacks.
+				Useful only when equipped with shield accessories
+				'''
+			ParryListName: Add parry effect to these weapons:
+			ParryListTooltip: List of weapons that can be used for parrying
+		}
+
+		Projectiles: {
+			FinalFractalDimensionalSwoosh.DisplayName: 分形次元斩
+			FinalFractalDimensionalSwoosh2.DisplayName: 分形次元斩
+			FinalFractalDimensionalSwoosh3.DisplayName: 分形次元斩
+			FinalFractalItem.DisplayName: 最终分形
+			FinalFractalProjectile.DisplayName: 最终分形之影
+			FinalFractalShadow.DisplayName: 最终分形之影
+			Zenith_FirstFractal.DisplayName: 天顶「FinalFractal」
+			Zenith_FirstFractals.DisplayName: 天顶「FinalFractal」
+			HitAssistProj.DisplayName: Hit Assist Proj
+			AzureProj.DisplayName: Azure Proj
+			DemonScythe_1.DisplayName: Demon Scythe_1
+			DemonScythe_Proj.DisplayName: 恶魔之镰
+			FirstZenith_Blade.DisplayName: 初源峰巅
+			FirstZenithProj.DisplayName: First Zenith Proj
+			PureFractalProj.DisplayName: Pure Fractal Proj
+			RustySteelBladeProj.DisplayName: 做个锤子
+			SereStoneSword_Blade.DisplayName: WitheredWoodSword
+			SereStoneSwordProj.DisplayName: 做个锤子
+			SharpStoneTears.DisplayName: Sharp Stone Tears
+			VectorField.DisplayName: Vector Field
+			VectorField_EX.DisplayName: Vector Field_ E X
+			VectorField_Ultra.DisplayName: Vector Field_ Ultra
+			WitheredTree.DisplayName: Withered Tree
+			WitheredWood.DisplayName: Withered Wood
+			WitheredWoodSword_Blade.DisplayName: WitheredWoodSword
+			WitheredWoodSword_Blade_GivenUp.DisplayName: WitheredWoodSword
+			WitheredWoodSwordProj.DisplayName: 做个锤子
+		}
+	}
+}
