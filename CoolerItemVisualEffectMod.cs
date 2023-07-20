@@ -27,7 +27,7 @@ using CoolerItemVisualEffect.ConfigSLer;
 using LogSpiralLibrary;
 
 namespace CoolerItemVisualEffect
-{
+{ 
     //TODO List计划表
     //
     public class CoolerItemVisualEffectMod : Mod
@@ -47,7 +47,7 @@ namespace CoolerItemVisualEffect
         internal static Effect ShaderSwooshEffect => LogSpiralLibraryMod.ShaderSwooshEffect;
         internal static Effect ShaderSwooshEX => LogSpiralLibraryMod.ShaderSwooshEX;
         internal static Effect ShaderSwooshUL => LogSpiralLibraryMod.ShaderSwooshUL;
-        internal static Effect DistortEffect => LogSpiralLibraryMod.DistortEffect;
+        internal static Effect DistortEffect => LogSpiralLibraryMod.RenderEffect;
         internal static Effect FinalFractalTailEffect => LogSpiralLibraryMod.FinalFractalTailEffect;
         internal static Effect ColorfulEffect => LogSpiralLibraryMod.ColorfulEffect;
         internal static Effect EightTrigramsFurnaceEffect => LogSpiralLibraryMod.EightTrigramsFurnaceEffect;
@@ -998,6 +998,14 @@ namespace CoolerItemVisualEffect
     }
     public class CoolerSystem : ModSystem
     {
+        public override void Load()
+        {
+            base.Load();
+        }
+        public override void Unload()
+        {
+            base.Unload();
+        }
         public static int ModTime;
         public override void UpdateUI(GameTime gameTime)
         {

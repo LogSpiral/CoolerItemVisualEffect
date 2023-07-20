@@ -161,24 +161,6 @@ Mods: {
 			3: Zenith「FinalFractal」
 		}
 
-		StrangeTitle: {
-			0: Terraria:Change your title while Swing.
-			1: Terraria:Try reading 《Selected works of Mao Zedong》.
-			2: Terraria:The Workers of all lands unite.
-			3: Terraria:Infinite Nightmare,Imperishable Night.
-			4: Terraria:Listen to the noise of the wind and snow and watch the meteors fly.
-			5: VirtualDream:It's over. Terraria is body double.
-			6: Terraria:The city of storm is under construction.
-			7: Terraria:The sun is rising in the east.
-			8: Terraria:The boundless universe and the long river of time.
-			9: Terraria:How long are you going to stay in this Illusion world?
-			10: Terraria:How could you do That,阿汪,you change the title of Terraria by terrible code.
-			11: VirtualDream:The first part 风暴城辉光重现，赤天县暗流涌动。
-			12: VirtualDream:The second part 星之河孤帆渺渺，时之风独旅茫茫。
-			13: VirtualDream:The third part 虚幻界醉生梦死，现实境山重水复。
-			14: VirtualDream:The fourth part 无间狱暮雾蒙蒙，人间世长夜漫漫。
-		}
-
 		ConfigSwoosh: {
 			Label: Advanced Settings
 			Label1: Melee Slashing Settings[i:1199]

@@ -891,11 +891,11 @@ namespace CoolerItemVisualEffect.Weapons
             useBloom = (0, config.luminosityFactor, 6);
             useDistort = (0, config.distortSize, Rotation.ToRotationVector2() * -0.25f * config.distortFactor);
         }
-        public override void VertexInfomation(ref bool additive, ref int indexOfGreyTex, ref float endAngle, ref bool useHeatMap)
+        public override void VertexInfomation(ref bool additive, ref int indexOfGreyTex, ref float endAngle, ref bool useHeatMap,ref int passCount)
         {
             var modplr = Player.GetModPlayer<CoolerItemVisualEffectPlayer>();
             additive = modplr.hsl.Z >= modplr.ConfigurationSwoosh.isLighterDecider;
-            base.VertexInfomation(ref additive, ref indexOfGreyTex, ref endAngle, ref useHeatMap);
+            base.VertexInfomation(ref additive, ref indexOfGreyTex, ref endAngle, ref useHeatMap,ref passCount);
         }
     }
     public class SereStoneSword_Old : ModItem

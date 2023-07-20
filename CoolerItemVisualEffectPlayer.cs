@@ -12,6 +12,7 @@ using System.Reflection;
 using Terraria.GameContent.Drawing;
 using LogSpiralLibrary;
 using Terraria;
+using System.IO;
 
 namespace CoolerItemVisualEffect
 {
@@ -189,7 +190,7 @@ namespace CoolerItemVisualEffect
                 {
                     modifiers.SetCrit();
                 }
-                else 
+                else
                 {
                     modifiers.DisableCrit();
                 }
@@ -921,8 +922,11 @@ namespace CoolerItemVisualEffect
             player.GetModPlayer<CoolerItemVisualEffectPlayer>().ConfigurationSwoosh.SendData(Player.whoAmI, fromWho, toWho, true);
         }
 
-        public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
+        public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo) 
         {
+            var results = from text in LanguageManager.Instance._localizedTexts.Keys where text.Contains("CoolerItemVisualEffect.Configs.ConfigurationSwoosh.coolerSwooshQuality") select text;
+            Main.NewText(results.Count());
+            Main.spriteBatch.DrawString(FontAssets.DeathText.Value, Language.GetTextValue("Mods.CoolerItemVisualEffect.Configs.ConfigurationSwoosh.MeleeSwooshConfigs.coolerSwooshQuality.Label"), new Vector2(200), Color.White);
             //int height = 0;
             //foreach (var item in LogSpiralLibraryMod.ShaderSwooshUL.CurrentTechnique.Passes) 
             //{
@@ -1140,6 +1144,36 @@ namespace CoolerItemVisualEffect
         }
         #endregion
 
+        public override void OnEnterWorld()
+        {
+            //string content = "";
+            //for (int n = 0; n < 5; n++) 
+            //{
+            //    Type type = n switch
+            //    {
+            //        0 => typeof(ConfigurationSwoosh.MeleeSwooshConfigs),
+            //        1 => typeof(ConfigurationSwoosh.DrawConfigs),
+            //        2 => typeof(ConfigurationSwoosh.HeatMapConfigs),
+            //        3 => typeof(ConfigurationSwoosh.RenderConfigs),
+            //        4 => typeof(ConfigurationSwoosh.OtherConfigs)
+            //    };
+            //    var fields = type.GetFields();
+            //    var props = type.GetProperties();
+            //    foreach (var field in fields)
+            //    {
+            //        content += field.Name + "\n";
+            //    }
+            //    foreach (var prop in props)
+            //    {
+            //        content += prop.Name + "\n";
+            //    }
+            //    content += "\n";
+            //}
+
+            //File.WriteAllText("E:/阿吧阿吧.txt", content);
+            //base.OnEnterWorld();
+        }
+
     }
     public class HitAssistProj : ModProjectile
     {
@@ -1292,7 +1326,7 @@ namespace CoolerItemVisualEffect
                     }, player.whoAmI);
                 }
                 #endregion
-                player.ApplyNPCOnHitEffects(player.HeldItem, itemRectangle, num, knockback, target.whoAmI, damage, damage);
+                player.ApplyNPCOnHitEffects(player.HeldItem, itemRectangle, num, hit.Knockback, target.whoAmI, hit.Damage, damageDone);
                 //(ApplyNPCOnHitEffects ??= typeof(Player).GetMethod(nameof(ApplyNPCOnHitEffects), BindingFlags.Instance | BindingFlags.NonPublic))
                 //    ?.Invoke(player, new object[] { player.HeldItem, itemRectangle, num, knockback, target.whoAmI, damage, damage });
 

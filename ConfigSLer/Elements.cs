@@ -57,7 +57,7 @@ namespace CoolerItemVisualEffect.ConfigSLer
             }
             panelInfo.configTexStyle = currentStyle;
             panelInfo.destination = rect;
-            panelInfo.DrawCoolerPanel(spriteBatch);
+            panelInfo.DrawComplexPanel(spriteBatch);
             //ConfigurationSwoosh.DrawCoolerPanel(spriteBatch, rect, borderColor, 0, ConfigurationSwoosh.currentStyle);
         }
 
@@ -615,7 +615,7 @@ namespace CoolerItemVisualEffect.ConfigSLer
                 info.glowHueOffsetRange = .1f;
                 info.glowEffectColor = currentColor;
                 info.backgroundColor = Color.White;
-                info.DrawCoolerPanel(spriteBatch);
+                info.DrawComplexPanel(spriteBatch);
             }
             else
             {
@@ -794,7 +794,7 @@ namespace CoolerItemVisualEffect.ConfigSLer
             info.glowShakingStrength = .5f;
             info.glowEffectColor = (Color.Cyan * .25f) with { A = 51 };
             info.mainColor = currentStyle == 0 ? CoolerUIPanel.GlowDefaultUnselectedColor : Color.White;
-            info.DrawCoolerPanel(spriteBatch);
+            info.DrawComplexPanel(spriteBatch);
 
             CalculatedStyle innerDimensions = GetInnerDimensions();
             Vector2 innerPosition = innerDimensions.Position();

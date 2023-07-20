@@ -91,7 +91,7 @@ namespace CoolerItemVisualEffect.ConfigSLer
             //TODO: hjson
             RefreshButton = QuickButton(RefreshTexture, "{$Mods.ImproveGame.Common.Refresh}");
             RefreshButton.SetPos(new(-286f, 8), 0.5f, 0f);
-            RefreshButton.OnMouseDown += (_, _) =>
+            RefreshButton.OnLeftMouseDown += (_, _) =>
             {
                 CachedConfigDatas.Clear();
                 SetupConfigList();
@@ -101,13 +101,13 @@ namespace CoolerItemVisualEffect.ConfigSLer
             #region 文件夹开启按钮初始化
             var folderButton = QuickButton(GetTexture("UI/Construct/Folder"), "{$LegacyInterface.110}");
             folderButton.SetPos(new(-220f, 8), 0.5f, 0f);
-            folderButton.OnMouseDown += (_, _) => Utils.OpenFolder(SavePath);
+            folderButton.OnLeftMouseDown += (_, _) => Utils.OpenFolder(SavePath);
             BasePanel.Append(folderButton);
             #endregion
             #region 关闭按钮初始化
             var closeButton = QuickButton(GetTexture("UI/Construct/Close"), "{$LegacyInterface.71}");
             closeButton.SetPos(new(243, 8), 0.5f, 0f);
-            closeButton.OnMouseDown += (_, _) => Close();
+            closeButton.OnLeftMouseDown += (_, _) => Close();
             BasePanel.Append(closeButton);
             #endregion
         }

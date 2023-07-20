@@ -1,0 +1,187 @@
+
+Mods: {
+	CoolerItemVisualEffect: {
+		ConfigSLer: {
+			Refresh: Refresh
+			TooManySameName: "///Failed!/// Hey bro, the file share the default name is toooo many! Please rename Them in time."
+			SameDefault: "///Notice!/// Now the saved files are all the default names. I added the serial number for you to distinguish. Remember to tidy up in time"
+			SavedAs: Current config has been saved as
+			DefaultName: UserDefinedConfig
+			LoadThisConfig: Set the current configuration to this
+			Path: File path:
+
+			RenameTip: {
+				Exists: A file with the same name already exists
+				TooLong: File name must not exceed 40 characters
+				Illegal: File name must not include following characterts: \\, /, :, *, ?, \", <, > or |
+			}
+
+			NotFinishYet: This page is being worked in progress......
+			Successed: \Load successed/！！
+			Failed: /Load failed\
+		}
+
+		Items: {
+			ConfigSLer: {
+				DisplayName: Config Reader/Writer
+				Tooltip:
+					'''
+					Left Click To Save Current Config.
+					Right Click To Show The UI And Choose Or Edit.
+					'''
+			}
+
+			FirstFractal_CIVE: {
+				DisplayName: First Fractal
+				Tooltip: Denied，forgotten，faded......It will return finally。
+			}
+
+			WitheredWoodSword: {
+				DisplayName: WitheredWoodSword
+				Tooltip: (New Version Work In Progress)
+			}
+
+			LivingWoodSword: {
+				DisplayName: Living Wood Sword
+				Tooltip: (New Version Work In Progress)
+			}
+
+			SereStoneSword: {
+				DisplayName: Sere Stone Sword
+				Tooltip: (New Version Work In Progress)
+			}
+
+			MossStoneSword: {
+				DisplayName: Moss Stone Sword
+				Tooltip: (New Version Work In Progress)
+			}
+
+			CrystalStoneSword.DisplayName: Crystal Stone Sword
+
+			RustySteelBlade: {
+				DisplayName: Rusty Steel Blade
+				Tooltip: (New Version Work In Progress)
+			}
+
+			RefinedSteelBlade: {
+				DisplayName: Refines Steel Blade
+				Tooltip: (New Version Work In Progress)
+			}
+
+			PureFractal: {
+				DisplayName: Pure Fractal
+				Tooltip: The Edge of Zenith Which Upgraded by the Ancient and Pure NaturalMagic.Show it, Your first Power.(New Version Work In Progress)
+			}
+
+			FirstZenith: {
+				DisplayName: First Zenith
+				Tooltip: (New Version Work In Progress)
+			}
+
+			FinalFractal: {
+				DisplayName: Final Fractal
+				Tooltip: Part of it includes itself, which we called Fractal. Infinite blades rotating as hurricane, they are part of it as well.(New Version Work In Progress)
+			}
+
+			WitheredWoodSword_Old: {
+				DisplayName: WitheredWoodSword_Old
+				Tooltip: Press Mouse Right, Then Dash And Release Thrones.
+			}
+
+			LivingWoodSword_Old: {
+				DisplayName: LivingWoodSword_Old
+				Tooltip: Press Mouse Right, Then Dash And Release Many Thrones.
+			}
+
+			SereStoneSword_Old: {
+				DisplayName: SereStoneSword_Old
+				Tooltip: Press Mouse Right, And Release Stalagmites.
+			}
+
+			MossStoneSword_Old: {
+				DisplayName: MossStoneSword_Old
+				Tooltip: Press Mouse Right, And Release List Of Stalagmite.
+			}
+
+			RustySteelBlade_Old: {
+				DisplayName: RustySteelBlade_Old
+				Tooltip: Press Mouse Right, And Release Rusty Steel Shards.
+			}
+
+			RefinedSteelBlade_Old: {
+				DisplayName: RefinedSteelBlade_Old
+				Tooltip: Press Mouse Right, And Release Many Refined Steel Shards.
+			}
+
+			PureFractal_Old: {
+				DisplayName: PureFractal_Old
+				Tooltip: The Edge of Zenith Which Upgraded by the Ancient and Pure NaturalMagic.Show it, Your first Power.
+			}
+
+			FirstZenith_Old.DisplayName: FirstZenith_Old
+
+			FinalFractal_Old: {
+				DisplayName: FinalFractal_Old
+				Tooltip: Part of it includes itself, which we called Fractal. Infinite blades rotating as hurricane, they are part of it as well.
+			}
+
+			UShallNotPass.DisplayName:
+				'''
+				I'm so sorry for the "Correct Name"
+				And I'm Making The New Version Of It Know.
+				The Old Version Will Be Retained.
+				You Can Use It Now(   ;)
+				'''
+			IDTKNOW.DisplayName: Pls Use This Weapon With A Correct Name.
+			FFBag.DisplayName: 返还袋ReturnBag
+			FZBag.DisplayName: 返还袋ReturnBag
+			LWBag.DisplayName: 返还袋ReturnBag
+			MSBag.DisplayName: 返还袋ReturnBag
+			PFBag.DisplayName: 返还袋ReturnBag
+			ReturnBag.DisplayName: 返还袋ReturnBag
+			RSBag.DisplayName: 返还袋ReturnBag
+			RSEXBag.DisplayName: 返还袋ReturnBag
+			SSBag.DisplayName: 返还袋ReturnBag
+			Azure.DisplayName: Azure
+			DemonScythe.DisplayName: Demon Scythe
+			WWBag.DisplayName: 返还袋ReturnBag
+		}
+
+		FinalFractalTip: {
+			0: This Even not the final state of them.
+			1: 「The Ultra Fractal Of The First And The Final」
+			2: 「Dimension Cut Of Fractal」
+			3: Zenith「FinalFractal」
+		}
+
+		Projectiles: {
+			FinalFractalDimensionalSwoosh.DisplayName: 分形次元斩
+			FinalFractalDimensionalSwoosh2.DisplayName: 分形次元斩
+			FinalFractalDimensionalSwoosh3.DisplayName: 分形次元斩
+			FinalFractalItem.DisplayName: 最终分形
+			FinalFractalProjectile.DisplayName: 最终分形之影
+			FinalFractalShadow.DisplayName: 最终分形之影
+			Zenith_FirstFractal.DisplayName: 天顶「FinalFractal」
+			Zenith_FirstFractals.DisplayName: 天顶「FinalFractal」
+			HitAssistProj.DisplayName: Hit Assist Proj
+			AzureProj.DisplayName: Azure Proj
+			DemonScythe_1.DisplayName: Demon Scythe_1
+			DemonScythe_Proj.DisplayName: 恶魔之镰
+			FirstZenith_Blade.DisplayName: 初源峰巅
+			FirstZenithProj.DisplayName: First Zenith Proj
+			PureFractalProj.DisplayName: Pure Fractal Proj
+			RustySteelBladeProj.DisplayName: 做个锤子
+			SereStoneSword_Blade.DisplayName: WitheredWoodSword
+			SereStoneSwordProj.DisplayName: 做个锤子
+			SharpStoneTears.DisplayName: Sharp Stone Tears
+			VectorField.DisplayName: Vector Field
+			VectorField_EX.DisplayName: Vector Field_ E X
+			VectorField_Ultra.DisplayName: Vector Field_ Ultra
+			WitheredTree.DisplayName: Withered Tree
+			WitheredWood.DisplayName: Withered Wood
+			WitheredWoodSword_Blade.DisplayName: WitheredWoodSword
+			WitheredWoodSword_Blade_GivenUp.DisplayName: WitheredWoodSword
+			WitheredWoodSwordProj.DisplayName: 做个锤子
+		}
+	}
+}

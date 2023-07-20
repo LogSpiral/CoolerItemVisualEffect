@@ -19,14 +19,13 @@ using Terraria;
 using Humanizer;
 using Terraria.GameContent.UI.Elements;
 using Mono.Cecil;
+using LogSpiralLibrary.CodeLibrary;
 
 namespace CoolerItemVisualEffect
 {
-
-    [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.Label")]
     [BackgroundColor(17, 17, 17, 127)]
     public class ConfigurationSwoosh : ModConfig
-    {
+    { 
 
         #region Basic
         public override ConfigScope Mode => ConfigScope.ClientSide;
@@ -656,7 +655,7 @@ namespace CoolerItemVisualEffect
         #endregion
 
         #region 子页实例
-        [SeparatePage]
+        [SeparatePage] 
         [BackgroundColor(51, 51, 51, 127)]
         [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.Label1")]
         public MeleeSwooshConfigs meleeSwooshConfigs = new MeleeSwooshConfigs();
@@ -800,7 +799,7 @@ namespace CoolerItemVisualEffect
             Holy
         }
         #endregion
-
+         
         #region Config类
         public class MeleeSwooshConfigs
         {
@@ -808,44 +807,30 @@ namespace CoolerItemVisualEffect
             [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D1")]
             [DrawTicks]
             [DefaultValue(QualityType.极限ultra)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.1")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.2")]
             [CustomModConfigItem(typeof(CoolerEnumElement))]
             [BackgroundColor(248, 0, 255, 255)] public QualityType coolerSwooshQuality = QualityType.极限ultra;
 
             [DefaultValue(true)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.3")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.4")]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(242, 0, 255, 255)] public bool toolsNoUseNewSwooshEffect = true;
 
             [DefaultValue(true)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.43")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.44")]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(236, 0, 255, 255)] public bool allowZenith = true;
 
             [DefaultValue(true)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.69")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.70")]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(230, 0, 255, 255)] public bool actionOffsetSize = true;
 
             [DefaultValue(true)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.73")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.74")]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(224, 0, 255, 255)] public bool actionOffsetSpeed = true;
 
             [DefaultValue(true)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.75")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.76")]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(218, 0, 255, 255)] public bool actionModifyEffect = true;
 
             [DefaultValue(true)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.41")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.42")]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(212, 0, 255, 255)] public bool gather = true;
             #endregion
@@ -854,38 +839,28 @@ namespace CoolerItemVisualEffect
             [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D2")]
             [DrawTicks]
             [DefaultValue(SwooshAction.左右横劈_后倾)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.13")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.14")]
             [CustomModConfigItem(typeof(CoolerEnumElement))]
             [BackgroundColor(206, 0, 255, 255)] public SwooshAction swooshActionStyle = SwooshAction.左右横劈_后倾;
 
             [Increment(1f)]
             [DefaultValue(7f)]
             [Range(0, 11f)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.37")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.38")]
             [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(200, 0, 255, 255)] public float imageIndex = 7;
 
             [Increment(1f)]
             [DefaultValue(3f)]
             [Range(0, 5f)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.63")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.64")]
             [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(194, 0, 255, 255)] public float animateIndex = 3;
 
             [DrawTicks]
             [DefaultValue(SwooshFadeStyle.全部Both)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.59")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.60")]
             [CustomModConfigItem(typeof(CoolerEnumElement))]
             [BackgroundColor(188, 0, 255, 255)] public SwooshFadeStyle fadeStyle = SwooshFadeStyle.全部Both;
 
             [DrawTicks]
             [DefaultValue(SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.61")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.62")]
             [CustomModConfigItem(typeof(CoolerEnumElement))]
             [BackgroundColor(182, 0, 255, 255)] public SwooshGrowStyle growStyle = SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest;
             #endregion
@@ -895,24 +870,18 @@ namespace CoolerItemVisualEffect
             [Increment(0.05f)]
             [DefaultValue(1f)]
             [Range(0.5f, 3f)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.15")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.16")]
             [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(176, 0, 255, 255)] public float swooshSize = 1f;
 
             [DefaultValue(10f)]
             [Range(0, 60f)]
             [Increment(1f)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.55")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.56")]
             [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(170, 0, 255, 255)] public float swooshTimeLeft = 10f;
 
             [Increment(0.05f)]
             [DefaultValue(0.1f)]
             [Range(0f, 1f)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.35")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.36")]
             [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(164, 0, 255, 255)] public float shake = 0.1f;
             #endregion
@@ -920,24 +889,18 @@ namespace CoolerItemVisualEffect
             #region 细节设置
             [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D4")]
             [DefaultValue(true)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.39")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.40")]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(158, 0, 255, 255)] public bool checkAir = true;
 
             [Increment(1f)]
             [DefaultValue(6f)]
             [Range(2f, 10f)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.89")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.90")]
             [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(152, 0, 255, 255)] public float swingAttackTime = 6f;
 
             [Increment(0.05f)]
             [DefaultValue(0.1f)]
             [Range(0f, 1f)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.45")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.46")]
             [CustomModConfigItem(typeof(CoolerFloatElement))]
             [BackgroundColor(146, 0, 255, 255)] public float glowLight = 0.1f;
             #endregion
@@ -945,15 +908,11 @@ namespace CoolerItemVisualEffect
             #region 试验性设置
             [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D5")]
             [DefaultValue(false)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.57")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.58")]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(140, 0, 255, 255)] public bool onlyChangeSizeOfSwoosh = false;
 
             [DefaultValue(false)]
-            [Label("$Mods.CoolerItemVisualEffect.ConfigSwoosh.77")]
             [BackgroundColor(134, 0, 255, 255)]
-            [Tooltip("$Mods.CoolerItemVisualEffect.ConfigSwoosh.78")]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool ignoreDamageType = false;
             #endregion
@@ -1148,15 +1107,15 @@ namespace CoolerItemVisualEffect
             #region 基本设置
             [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D1")]
             [DefaultValue(true)]
-            [Label("$Mods.CoolerItemVisualEffect.Config.Num1")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.Config.Num2")]
+            [Label("$Mods.CoolerItemVisualEffect.Config_Other.Num1")]
+            [Tooltip("$Mods.CoolerItemVisualEffect.Config_Other.Num2")]
             [BackgroundColor(0, 255, 255, 255)]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool useWeaponDisplay = true;
 
             [DefaultValue(true)]
-            [Label("$Mods.CoolerItemVisualEffect.Config.Num3")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.Config.Num4")]
+            [Label("$Mods.CoolerItemVisualEffect.Config_Other.Num3")]
+            [Tooltip("$Mods.CoolerItemVisualEffect.Config_Other.Num4")]
             [BackgroundColor(0, 255, 255, 255)]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool firstWeaponDisplay = true;
@@ -1164,8 +1123,8 @@ namespace CoolerItemVisualEffect
             [Increment(0.05f)]
             [Range(0.5f, 2f)]
             [DefaultValue(1f)]
-            [Label("$Mods.CoolerItemVisualEffect.Config.11")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.Config.12")]
+            [Label("$Mods.CoolerItemVisualEffect.Config_Other.11")]
+            [Tooltip("$Mods.CoolerItemVisualEffect.Config_Other.12")]
             [Slider]
             [BackgroundColor(0, 255, 255, 255)]
             [CustomModConfigItem(typeof(CoolerFloatElement))]
@@ -1173,8 +1132,8 @@ namespace CoolerItemVisualEffect
 
             [DefaultValue(HitBoxStyle.弹幕Projectile)]
             [DrawTicks]
-            [Label("$Mods.CoolerItemVisualEffect.Config.33")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.Config.34")]
+            [Label("$Mods.CoolerItemVisualEffect.Config_Other.33")]
+            [Tooltip("$Mods.CoolerItemVisualEffect.Config_Other.34")]
             [BackgroundColor(0, 255, 255, 255)]
             [CustomModConfigItem(typeof(CoolerEnumElement))]
             public HitBoxStyle hitBoxStyle = HitBoxStyle.弹幕Projectile;
@@ -1186,38 +1145,38 @@ namespace CoolerItemVisualEffect
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool DontChangeMyTitle = true;
 
-            [Header("$Mods.CoolerItemVisualEffect.Config.24")]
+            [Header("$Mods.CoolerItemVisualEffect.Config_Other.24")]
             [DefaultValue(false)]
-            [Label("$Mods.CoolerItemVisualEffect.Config.25")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.Config.26")]
+            [Label("$Mods.CoolerItemVisualEffect.Config_Other.25")]
+            [Tooltip("$Mods.CoolerItemVisualEffect.Config_Other.26")]
             [BackgroundColor(0, 255, 255, 255)]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool ItemDropEffectActive = false;
 
             [DefaultValue(false)]
-            [Label("$Mods.CoolerItemVisualEffect.Config.27")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.Config.28")]
+            [Label("$Mods.CoolerItemVisualEffect.Config_Other.27")]
+            [Tooltip("$Mods.CoolerItemVisualEffect.Config_Other.28")]
             [BackgroundColor(0, 255, 255, 255)]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool ItemInventoryEffectActive = false;
 
             [DefaultValue(true)]
-            [Label("$Mods.CoolerItemVisualEffect.Config.29")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.Config.30")]
+            [Label("$Mods.CoolerItemVisualEffect.Config_Other.29")]
+            [Tooltip("$Mods.CoolerItemVisualEffect.Config_Other.30")]
             [BackgroundColor(0, 255, 255, 255)]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool VanillaProjectileDrawModifyActive = true;
 
             [DefaultValue(false)]
-            [Label("$Mods.CoolerItemVisualEffect.Config.31")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.Config.32")]
+            [Label("$Mods.CoolerItemVisualEffect.Config_Other.31")]
+            [Tooltip("$Mods.CoolerItemVisualEffect.Config_Other.32")]
             [BackgroundColor(0, 255, 255, 255)]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool TeleprotEffectActive = false;
 
             [DefaultValue(false)]
-            [Label("$Mods.CoolerItemVisualEffect.Config.35")]
-            [Tooltip("$Mods.CoolerItemVisualEffect.Config.36")]
+            [Label("$Mods.CoolerItemVisualEffect.Config_Other.35")]
+            [Tooltip("$Mods.CoolerItemVisualEffect.Config_Other.36")]
             [BackgroundColor(0, 255, 255, 255)]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool CelesteMoveAnimation = false;
@@ -1477,78 +1436,11 @@ namespace CoolerItemVisualEffect
         #endregion
 
         #region Element类
-        public class CoolerPanelInfo
+        public class CoolerPanelInfo : ComplexPanelInfo
         {
-            #region 背景
-            /// <summary>
-            /// 指定背景贴图，为null的时候使用默认背景
-            /// </summary>
-            public Texture2D? backgroundTexture;
-            /// <summary>
-            /// 指定贴图背景的部分，和绘制那边一个用法
-            /// </summary>
-            public Rectangle? backgroundFrame;
-            /// <summary>
-            /// 单位大小，最后是进行平铺的
-            /// </summary>
-            public Vector2 backgroundUnitSize;
-            /// <summary>
-            /// 颜色，可以试试半透明的，很酷
-            /// </summary>
-            public Color backgroundColor;
-            #endregion
-
-            #region 边框
-            /// <summary>
-            /// 指定横向边界数
-            /// </summary>
-            public int? xBorderCount;
-            /// <summary>
-            /// 指定纵向边界数
-            /// </summary>
-            public int? yBorderCount;
-            /// <summary>
-            /// 外发光颜色
-            /// </summary>
-            public Color glowEffectColor;
-            /// <summary>
-            /// 外发光震动剧烈程度
-            /// </summary>
-            public float glowShakingStrength;
-            /// <summary>
-            /// 外发光色调偏移范围
-            /// </summary>
-            public float glowHueOffsetRange;
-            #endregion
-
-            #region 全局
-            public Color mainColor;
-            public Vector2 origin;
+            public override Texture2D StyleTexture { get => GetConfigStyleTex(configTexStyle); set { base.StyleTexture = value; Main.NewText("对这货赋值无效"); } }
             public ConfigTexStyle configTexStyle = ConfigTexStyle.DarkPurple;
-            public float scaler = 1f;
-            public Vector2 offset;
-            public Rectangle destination;
-            #endregion
-
-            public Rectangle ModifiedRectangle
-            {
-                get
-                {
-                    Vector2 size = destination.Size() * scaler;
-                    //Vector2 topLeft = (origin - destination.TopLeft()) * scaler + offset;
-                    Vector2 topLeft = origin * (1 - scaler) + destination.TopLeft() + offset;
-                    return VectorsToRectangle(topLeft, size);
-                }
-            }
-            public static Rectangle VectorsToRectangle(Vector2 topLeft, Vector2 size)
-            {
-                return new Rectangle((int)topLeft.X, (int)topLeft.Y, (int)size.X, (int)size.Y);
-            }
-            public CoolerPanelInfo()
-            {
-                mainColor = Color.White;
-            }
-            public Rectangle DrawCoolerPanel(SpriteBatch spriteBatch)
+            public override Rectangle DrawComplexPanel(SpriteBatch spriteBatch)
             {
                 if (configTexStyle == 0)
                 {
@@ -1558,43 +1450,7 @@ namespace CoolerItemVisualEffect
                 }
                 else
                 {
-                    var rectangle = ModifiedRectangle;
-                    #region 参数准备
-                    //ConfigElement.DrawPanel2(spriteBatch, rectangle.TopLeft(), TextureAssets.SettingsPanel.Value, rectangle.Width, rectangle.Height, color);
-                    Vector2 center = rectangle.Center();
-                    Vector2 scalerVec = rectangle.Size() / new Vector2(64);
-                    var clampVec = Vector2.Clamp(scalerVec, default, Vector2.One);
-                    bool flagX = scalerVec.X == clampVec.X;
-                    bool flagY = scalerVec.Y == clampVec.Y;
-                    Texture2D texture = GetConfigStyleTex(configTexStyle);
-                    float left = flagX ? center.X : rectangle.X + 32;
-                    float top = flagY ? center.Y : rectangle.Y + 32;
-                    float right = flagX ? center.X : rectangle.X + rectangle.Width - 32;
-                    float bottom = flagY ? center.Y : rectangle.Y + rectangle.Height - 32;
-                    #endregion
-                    #region 背景
-                    //spriteBatch.Draw(texture, rectangle, new Rectangle(210, 0, 40, 40), Color.White);
-                    if (backgroundTexture != null)
-                        DrawCoolerPanel_BackGround(spriteBatch, backgroundTexture, rectangle, backgroundFrame ?? new Rectangle(0, 0, backgroundTexture.Width, backgroundTexture.Height), backgroundUnitSize * scaler, backgroundColor);
-                    else
-                        DrawCoolerPanel_BackGround(spriteBatch, texture, destination, new Vector2(40 * scaler));
-                    #endregion
-                    #region 四个边框
-                    DrawCoolerPanel_Bound(spriteBatch, texture, new Vector2(left - 28 * clampVec.X, center.Y), rectangle.Height - 24, clampVec.X, -MathHelper.PiOver2, glowEffectColor, glowShakingStrength, yBorderCount, glowHueOffsetRange);
-                    DrawCoolerPanel_Bound(spriteBatch, texture, new Vector2(right + 28 * clampVec.X, center.Y), rectangle.Height - 24, clampVec.X, MathHelper.PiOver2, glowEffectColor, glowShakingStrength, yBorderCount, glowHueOffsetRange);
-                    DrawCoolerPanel_Bound(spriteBatch, texture, new Vector2(center.X, top - 28 * clampVec.Y), rectangle.Width - 24, clampVec.Y, 0, glowEffectColor, glowShakingStrength, xBorderCount, glowHueOffsetRange);
-                    DrawCoolerPanel_Bound(spriteBatch, texture, new Vector2(center.X, bottom + 28 * clampVec.Y), rectangle.Width - 24, clampVec.Y, MathHelper.Pi, glowEffectColor, glowShakingStrength, xBorderCount, glowHueOffsetRange);
-                    #endregion
-                    #region 四个角落
-                    spriteBatch.Draw(texture, new Vector2(left, top), new Rectangle(0, 0, 40, 40), Color.White, 0, new Vector2(40), clampVec, 0, 0);
-                    spriteBatch.Draw(texture, new Vector2(left, bottom), new Rectangle(42, 0, 40, 40), Color.White, 0, new Vector2(40, 0), clampVec, SpriteEffects.FlipVertically, 0);
-                    spriteBatch.Draw(texture, new Vector2(right, bottom), new Rectangle(42, 0, 40, 40), Color.White, MathHelper.Pi, new Vector2(40), clampVec, 0, 0);
-                    spriteBatch.Draw(texture, new Vector2(right, top), new Rectangle(42, 0, 40, 40), Color.White, 0, new Vector2(0, 40), clampVec, SpriteEffects.FlipHorizontally, 0);
-                    //spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Vector2(left, top), new Rectangle(0, 0, 1, 1), Color.Red, 0, new Vector2(.5f), 4f, 0, 0);
-                    //spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Vector2(960, 560), new Rectangle(0, 0, 1, 1), Color.Red, 0, new Vector2(.5f), 4f, 0, 0);
-
-                    #endregion
-                    return rectangle;
+                    return base.DrawComplexPanel(spriteBatch);
                 }
             }
         }
@@ -1760,7 +1616,7 @@ namespace CoolerItemVisualEffect
                 timers = new int[2];
                 activeTex = ModContent.Request<Texture2D>("CoolerItemVisualEffect/ConfigTex/Active");
                 containerTex = ModContent.Request<Texture2D>("CoolerItemVisualEffect/ConfigTex/Container");
-                OnClick += (ev, v) => Value = !Value;
+                OnLeftClick += (ev, v) => Value = !Value;
             }
             public override void DrawSelf(SpriteBatch spriteBatch)
             {
@@ -2012,7 +1868,8 @@ namespace CoolerItemVisualEffect
                 base.OnBind();
 
                 DrawTicks = Attribute.IsDefined(MemberInfo.MemberInfo, typeof(DrawTicksAttribute));
-                SliderColor = ConfigManager.GetCustomAttribute<SliderColorAttribute>(MemberInfo, Item, List)?.Color ?? BackgroundColorAttribute.Color;
+                SliderColor = ConfigManager.GetCustomAttributeFromMemberThenMemberType<SliderColorAttribute>(MemberInfo, Item, List)?.Color ?? BackgroundColorAttribute.Color;
+                //ConfigManager.GetCustomAttributeFromMemberThenMemberType
             }
 
             public float DrawValueBar(SpriteBatch sb, float scale, float perc, int lockState = 0, Utils.ColorLerpMethod colorMethod = null)
@@ -2183,7 +2040,8 @@ namespace CoolerItemVisualEffect
 
                 if (LabelAttribute != null)
                 { // Problem with Lists using ModConfig Label.
-                    TextDisplayFunction = () => LabelAttribute.Label + ": " + GetValue();
+                    
+                    TextDisplayFunction = () => Label + ": " + GetValue();
                 }
 
                 if (RangeAttribute != null && RangeAttribute.Min is T && RangeAttribute.Max is T)
@@ -2788,80 +2646,16 @@ namespace CoolerItemVisualEffect
             }
         }
         public static void DrawCoolerPanel_Bound(SpriteBatch spriteBatch, Texture2D texture, Vector2 center, float length, float widthScaler, float rotation)
-        {
-            int count = (int)(length / 192f) + 1;
-            Vector2 start = rotation.ToRotationVector2() * length * .5f;
-            Vector2 end = center + start;
-            start = end - 2 * start;
-            float lengthScaler = length / 192f / count;
-            for (int n = 0; n < count; n++)
-            {
-                spriteBatch.Draw(texture, Vector2.Lerp(start, end, (n + .5f) / count), new Rectangle(336, 0, 192, 40), Color.White, rotation, new Vector2(96, 18), new Vector2(lengthScaler, widthScaler), 0, 0);
-            }
-
-        }
+            => ComplexPanelInfo.DrawComplexPanel_Bound(spriteBatch, texture, center, length, widthScaler, rotation);
         public static void DrawCoolerPanel_Bound(SpriteBatch spriteBatch, Texture2D texture, Vector2 center, float length, float widthScaler, float rotation, Color glowLight)
-        {
-            int count = (int)(length / 192f) + 1;
-            Vector2 start = rotation.ToRotationVector2() * length * .5f;
-            Vector2 end = center + start;
-            start = end - 2 * start;
-            float lengthScaler = length / 192f / count;
-            for (int n = 0; n < count; n++)
-            {
-                spriteBatch.Draw(texture, Vector2.Lerp(start, end, (n + .5f) / count), new Rectangle(336, 0, 192, 40), Color.White, rotation, new Vector2(96, 18), new Vector2(lengthScaler, widthScaler), 0, 0);
-                spriteBatch.Draw(texture, Vector2.Lerp(start, end, (n + .5f) / count), new Rectangle(530, 0, 192, 40), glowLight, rotation, new Vector2(96, 18), new Vector2(lengthScaler, widthScaler), 0, 0);
-            }
-        }
+            => ComplexPanelInfo.DrawComplexPanel_Bound(spriteBatch, texture, center, length, widthScaler, rotation, glowLight);
         public static void DrawCoolerPanel_Bound(SpriteBatch spriteBatch, Texture2D texture, Vector2 center, float length, float widthScaler, float rotation, Color glowLight, float glowShakingStrength, float glowHueOffsetRange = .2f)
-        {
-            int count = (int)(length / 192f) + 1;
-            Vector2 start = rotation.ToRotationVector2() * length * .5f;
-            Vector2 end = center + start;
-            start = end - 2 * start;
-            float lengthScaler = length / 192f / count;
-            for (int n = 0; n < count; n++)
-            {
-                spriteBatch.Draw(texture, Vector2.Lerp(start, end, (n + .5f) / count), new Rectangle(336, 0, 192, 40), Color.White, rotation, new Vector2(96, 18), new Vector2(lengthScaler, widthScaler), 0, 0);
-                if (glowShakingStrength == 0)
-                    spriteBatch.Draw(texture, Vector2.Lerp(start, end, (n + .5f) / count), new Rectangle(530, 0, 192, 40), glowLight, rotation, new Vector2(96, 18), new Vector2(lengthScaler, widthScaler), 0, 0);
-                else
-                    for (int k = 0; k < 4; k++)
-                        spriteBatch.Draw(texture, Vector2.Lerp(start, end, (n + .5f) / count) + Main.rand.NextVector2Unit() * Main.rand.NextFloat(0, Main.rand.NextFloat(4f * glowShakingStrength)), new Rectangle(530, 0, 192, 40), ModifyHueByRandom(glowLight, glowHueOffsetRange), rotation, new Vector2(96, 18), new Vector2(lengthScaler, widthScaler), 0, 0);
-
-            }
-        }
+            => ComplexPanelInfo.DrawComplexPanel_Bound(spriteBatch, texture, center, length, widthScaler, rotation, glowLight, glowShakingStrength, glowHueOffsetRange);
         public static void DrawCoolerPanel_Bound(SpriteBatch spriteBatch, Texture2D texture, Vector2 center, float length, float widthScaler, float rotation, Color glowLight, float glowShakingStrength, int count, float glowHueOffsetRange = .2f)
-        {
-            Vector2 start = rotation.ToRotationVector2() * length * .5f;
-            Vector2 end = center + start;
-            start = end - 2 * start;
-            float lengthScaler = length / 192f / count;
-            for (int n = 0; n < count; n++)
-            {
-                spriteBatch.Draw(texture, Vector2.Lerp(start, end, (n + .5f) / count), new Rectangle(336, 0, 192, 40), Color.White, rotation, new Vector2(96, 18), new Vector2(lengthScaler, widthScaler), 0, 0);
-                if (glowShakingStrength == 0)
-                    spriteBatch.Draw(texture, Vector2.Lerp(start, end, (n + .5f) / count), new Rectangle(530, 0, 192, 40), glowLight, rotation, new Vector2(96, 18), new Vector2(lengthScaler, widthScaler), 0, 0);
-                else
-                    for (int k = 0; k < 4; k++)
-                        spriteBatch.Draw(texture, Vector2.Lerp(start, end, (n + .5f) / count) + Main.rand.NextVector2Unit() * Main.rand.NextFloat(0, Main.rand.NextFloat(4f * glowShakingStrength)), new Rectangle(530, 0, 192, 40), ModifyHueByRandom(glowLight, glowHueOffsetRange), rotation, new Vector2(96, 18), new Vector2(lengthScaler, widthScaler), 0, 0);
-
-            }
-        }
+            => ComplexPanelInfo.DrawComplexPanel_Bound(spriteBatch, texture, center, length, widthScaler, rotation, glowLight, glowShakingStrength, count, glowHueOffsetRange);
         public static void DrawCoolerPanel_Bound(SpriteBatch spriteBatch, Texture2D texture, Vector2 center, float length, float widthScaler, float rotation, Color glowLight, float glowShakingStrength, int? count, float glowHueOffsetRange = .2f)
-        {
-            if (count == null) DrawCoolerPanel_Bound(spriteBatch, texture, center, length, widthScaler, rotation, glowLight, glowShakingStrength, glowHueOffsetRange);
-            else DrawCoolerPanel_Bound(spriteBatch, texture, center, length, widthScaler, rotation, glowLight, glowShakingStrength, count.Value, glowHueOffsetRange);
-        }
-        public static Color ModifyHueByRandom(Color color, float range)
-        {
-            var alpha = color.A;
-            var vec = Main.rgbToHsl(color);
-            vec.X += Main.rand.NextFloat(-range, range);
-            while (vec.X < 0) vec.X++;
-            vec.X %= 1;
-            return Main.hslToRgb(vec) with { A = alpha };
-        }
+            => ComplexPanelInfo.DrawComplexPanel_Bound(spriteBatch, texture, center, length, widthScaler, rotation, glowLight, glowShakingStrength, count, glowHueOffsetRange);
+        public static Color ModifyHueByRandom(Color color, float range) => ComplexPanelInfo.ModifyHueByRandom(color, range);
         /// <summary>
         /// 使用config材质
         /// </summary>
@@ -2870,22 +2664,7 @@ namespace CoolerItemVisualEffect
         /// <param name="rectangle"></param>
         /// <param name="sizeX"></param>
         /// <param name="sizeY"></param>
-        public static void DrawCoolerPanel_BackGround(SpriteBatch spriteBatch, Texture2D texture, Rectangle rectangle, Vector2 size)
-        {
-            int countX = (int)(rectangle.Width / size.X) + 1;
-            int countY = (int)(rectangle.Height / size.Y) + 1;
-            float width = 40;
-            for (int i = 0; i < countX; i++)
-            {
-                if (i == countX - 1) width = (rectangle.Width - i * size.X) / size.X * 40;
-                float height = 40;
-                for (int j = 0; j < countY; j++)
-                {
-                    if (j == countY - 1) height = (rectangle.Height - j * size.Y) / size.Y * 40;
-                    spriteBatch.Draw(texture, rectangle.TopLeft() + new Vector2(i * size.X, j * size.Y), new Rectangle(210, 0, (int)width, (int)height), Color.White, 0, default, size / 40f * 1.025f, 0, 0);
-                }
-            }
-        }
+        public static void DrawCoolerPanel_BackGround(SpriteBatch spriteBatch, Texture2D texture, Rectangle rectangle, Vector2 size) => ComplexPanelInfo.DrawComplexPanel_BackGround(spriteBatch, texture, rectangle, size);
         /// <summary>
         /// 指定背景图
         /// </summary>
@@ -2895,23 +2674,7 @@ namespace CoolerItemVisualEffect
         /// <param name="frame"></param>
         /// <param name="size"></param>
         /// <param name="color"></param>
-        public static void DrawCoolerPanel_BackGround(SpriteBatch spriteBatch, Texture2D texture, Rectangle destination, Rectangle frame, Vector2 size, Color color)
-        {
-            (float sizeX, float sizeY) = (size.X, size.Y);
-            int countX = (int)(destination.Width / sizeX) + 1;
-            int countY = (int)(destination.Height / sizeY) + 1;
-            float width = frame.Width;
-            for (int i = 0; i < countX; i++)
-            {
-                if (i == countX - 1) width = (destination.Width - i * sizeX) / sizeX * width;
-                float height = frame.Height;
-                for (int j = 0; j < countY; j++)
-                {
-                    if (j == countY - 1) height = (destination.Height - j * sizeY) / sizeY * height;
-                    spriteBatch.Draw(texture, destination.TopLeft() + new Vector2(i * sizeX, j * sizeY), new Rectangle(frame.X, frame.Y, (int)width, (int)height), color, 0, default, new Vector2(sizeX, sizeY) / frame.Size() * 1.025f, 0, 0);
-                }
-            }
-        }
+        public static void DrawCoolerPanel_BackGround(SpriteBatch spriteBatch, Texture2D texture, Rectangle destination, Rectangle frame, Vector2 size, Color color) => ComplexPanelInfo.DrawComplexPanel_BackGround(spriteBatch, texture, destination, frame, size, color);
         #endregion
     }
 

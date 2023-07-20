@@ -73,7 +73,7 @@ namespace CoolerItemVisualEffect
                     spriteBatch.End();
                 }
                 #endregion
-                if (DistortEffect == null || ShaderSwooshEX == null) return;
+                if (RenderEffect == null || ShaderSwooshEX == null) return;
                 List<CustomVertexInfo> _triangleList = new List<CustomVertexInfo>();
                 SamplerState sampler;
                 switch (ConfigSwooshInstance.swooshSampler)
@@ -254,7 +254,7 @@ namespace CoolerItemVisualEffect
                 //{
                 //    spriteEffects = SpriteEffects.FlipHorizontally;
                 //}
-                if (DistortEffect == null || ShaderSwooshEX == null) return;
+                if (RenderEffect == null || ShaderSwooshEX == null) return;
 
                 List<CustomVertexInfo> _triangleList = new List<CustomVertexInfo>();
                 SamplerState sampler;
@@ -390,10 +390,10 @@ namespace CoolerItemVisualEffect
                                 gd.SetRenderTarget(Main.screenTargetSwap);
                                 gd.Clear(Color.Transparent);
                                 sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-                                DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
-                                DistortEffect.Parameters["offset"].SetValue(new Vector2(0.707f) * -0.09f * ConfigSwooshInstance.distortFactor);
-                                DistortEffect.Parameters["invAlpha"].SetValue(0);
-                                DistortEffect.CurrentTechnique.Passes[0].Apply();
+                                RenderEffect.Parameters["tex0"].SetValue(Instance.Render);
+                                RenderEffect.Parameters["offset"].SetValue(new Vector2(0.707f) * -0.09f * ConfigSwooshInstance.distortFactor);
+                                RenderEffect.Parameters["invAlpha"].SetValue(0);
+                                RenderEffect.CurrentTechnique.Passes[0].Apply();
                                 sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
                                 sb.End();
                                 gd.SetRenderTarget(Main.screenTarget);
@@ -516,16 +516,16 @@ namespace CoolerItemVisualEffect
                                 if (ConfigSwooshInstance.luminosityFactor != 0)
                                 {
                                     gd.SetRenderTarget(Main.screenTargetSwap);
-                                    DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-                                    DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
-                                    DistortEffect.Parameters["position"].SetValue(new Vector2(0, 6));
-                                    DistortEffect.Parameters["tier2"].SetValue(ConfigSwooshInstance.luminosityFactor);
+                                    RenderEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+                                    RenderEffect.Parameters["tex0"].SetValue(Instance.Render);
+                                    RenderEffect.Parameters["position"].SetValue(new Vector2(0, 6));
+                                    RenderEffect.Parameters["tier2"].SetValue(ConfigSwooshInstance.luminosityFactor);
                                     gd.Clear(Color.Transparent);
-                                    DistortEffect.CurrentTechnique.Passes[7].Apply();
+                                    RenderEffect.CurrentTechnique.Passes[7].Apply();
                                     sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
                                     gd.SetRenderTarget(Main.screenTarget);
                                     gd.Clear(Color.Transparent);
-                                    DistortEffect.CurrentTechnique.Passes[6].Apply();
+                                    RenderEffect.CurrentTechnique.Passes[6].Apply();
                                     sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
                                     sb.End();
                                     Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
@@ -554,10 +554,10 @@ namespace CoolerItemVisualEffect
                                     gd.SetRenderTarget(Main.screenTargetSwap);//将画布设置为这个
                                     gd.Clear(Color.Transparent);//清空
                                                                 //Vector2 direct = (instance.swooshFactorStyle == SwooshFactorStyle.每次开始时决定系数 ? modPlayer.kValue : ((modPlayer.kValue + modPlayer.kValueNext) * .5f)).ToRotationVector2() * -0.1f * fac.SymmetricalFactor2(0.5f, 0.2f) * instance.distortFactor;//(u + v)
-                                    DistortEffect.Parameters["offset"].SetValue(new Vector2(0.707f) * -0.09f * ConfigSwooshInstance.distortFactor);//设置参数时间
-                                    DistortEffect.Parameters["invAlpha"].SetValue(0);
-                                    DistortEffect.Parameters["tex0"].SetValue(ConfigSwooshInstance.distortSize != 1 ? Instance.Render_AirDistort : Instance.Render);
-                                    DistortEffect.CurrentTechnique.Passes[0].Apply();//ApplyPass
+                                    RenderEffect.Parameters["offset"].SetValue(new Vector2(0.707f) * -0.09f * ConfigSwooshInstance.distortFactor);//设置参数时间
+                                    RenderEffect.Parameters["invAlpha"].SetValue(0);
+                                    RenderEffect.Parameters["tex0"].SetValue(ConfigSwooshInstance.distortSize != 1 ? Instance.Render_AirDistort : Instance.Render);
+                                    RenderEffect.CurrentTechnique.Passes[0].Apply();//ApplyPass
                                     sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);//绘制原先屏幕内容
                                     gd.SetRenderTarget(Main.screenTarget);
                                     gd.Clear(Color.Transparent);

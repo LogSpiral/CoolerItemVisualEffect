@@ -68,7 +68,7 @@ namespace CoolerItemVisualEffect
                 mainColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
             }
             item.ShaderItemEffectInWorld(spriteBatch, LogSpiralLibraryMod.Misc[0].Value, mainColor, rotation);
-        mylabel:
+        mylabel: 
             base.PostDrawInWorld(item, spriteBatch, lightColor, alphaColor, rotation, scale, whoAmI);
         }
     }

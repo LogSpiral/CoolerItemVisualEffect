@@ -1,0 +1,595 @@
+
+Mods: {
+	CoolerItemVisualEffect: 
+	{
+		Configs:
+		{
+			ConfigurationSwoosh:
+			{
+				DisplayName: 高级设置选项
+				MeleeSwooshConfigs:
+				{
+					coolerSwooshQuality:
+					{
+						Label: 更帅的拔刀开关/质量设置[i:2608][i:724][i:3764][i:757]
+						Tooltip: 
+								'''
+								"你厌倦了原版近战的挥动方式了吗？"
+								如果想要影响实际攻击效果，请到游戏性设置处开启碰撞箱
+								低以上极限以下的质量需要同时照明模式是颜色或白，并且开启水波质量，否则没有区别
+								极限质量在复古 迷幻光照或者关闭水波质量时仍然有滞留剑气
+								中：启用空气扭曲与多次叠加
+								高：启用外发光
+								极限：启用滞留剑气
+								'''
+					}
+					toolsNoUseNewSwooshEffect:
+					{
+						Label: 取消新的挥舞效果对工具的影响[i:1]
+						Tooltip:
+								'''
+								呜呜呜你怎么能抛弃人家工具
+								是,以取消新的挥舞效果对工具的影响,否,不取消,默认为否
+								'''
+					}
+					allowZenith:
+					{
+						Label: 天顶剑与最初分形也能用的挥刃特效[i:4956]
+						ToolTip: 我知道这很怪，所以请期待它们的互换版本吧
+					}
+					actionOffsetSize:
+					{
+						Label: 随动作模式改变剑气大小[i:426]
+						ToolTip: 难道你不想让剑气大小随着你的动作作出调整吗？
+					}
+					actionOffsetSpeed:
+					{
+						Label: 随动作模式改变使用时间[i:3099]
+						ToolTip: 注意：这个已经超出“视觉效果”的范畴，请斟酌一下
+					}
+					actionModifyEffect:
+					{
+						Label: 随动作模式改变使用效果(弹幕发射等)(未完成)[i:675]
+						ToolTip: 注意：这个已经超出“视觉效果”的范畴，请斟酌一下
+					}
+					gather:
+					{
+						Label: 末端是否收束[i:3018]
+						ToolTip: 你可以试试不收束的，都很棒！
+					}
+					swooshActionStyle:
+					{
+						Label: 挥砍效果动作模式[i:498]
+						ToolTip:				
+								'''
+								依次是
+									左右横劈
+									左右横劈_后倾
+									重斩
+									上挑
+									腾云斩
+									旋风劈
+									流雨断
+									鸣雷刺
+									风暴灭却剑
+									左右横劈_后倾_旧
+									左右横劈_失败
+								'''
+					}
+					imageIndex:
+					{
+						Label: 刀光样式[i:3368]
+						ToolTip: 我只准备了12种，推荐序号为7的
+					}
+					animateIndex:
+					{
+						Label: 刀光动效贴图样式[i:4144]
+						ToolTip: 我只准备了6种，推荐序号为3的
+					}
+					fadeStyle:
+					{
+						Label: 剑气消散模式[i:3368]
+						ToolTip: 默认是全部 需要将质量设置为"极限"
+					}
+					growStyle:
+					{
+						Label: 剑气扩散模式[i:4144]
+						ToolTip: 默认是横向扩大与平移 需要将质量设置为"极限"
+					}
+					swooshSize:
+					{
+						Label: 物品和挥砍大小[i:486]
+						ToolTip: 按默认大小(1)才是正常判定，但是谁不喜欢大一点呢
+					}
+					swooshTimeLeft:
+					{
+						Label: 剑气残留时间[i:709]
+						ToolTip: 默认是10帧 需要将质量设置为"极限"
+					}
+					shake:
+					{
+						Label: 震屏力度[i:1513]
+						ToolTip: 比魔炮还恼人
+					}
+					checkAir:
+					{
+						Label: 检测是否空心[i:3823]
+						ToolTip: 自己取舍吧www
+					}
+					swingAttackTime:
+					{
+						Label: 斩击用时上限[i:561]
+						ToolTip: 单位为帧，之前是9，现在下调至6。
+					}
+					glowLight:
+					{
+						Label: 武器附魔光泽[i:989]
+						ToolTip: 加上之后也许好些？
+					}
+					onlyChangeSizeOfSwoosh:
+					{
+						Label: 不改变武器大小[i:4923]
+						ToolTip: 只有剑气改变了，默认是一起改变的。
+					}
+					ignoreDamageType:
+					{
+						Label: 无视物品伤害类型[i:495]
+						ToolTip: 甚至是魔杖都可以？？！！
+					}
+				}
+
+
+				swooshColorType:
+				{
+					Label:
+					ToolTip:
+				}
+				alphaFactor:
+				{
+					Label:
+					ToolTip:
+				}
+				isLighterDecider:
+				{
+					Label:
+					ToolTip:
+				}
+				swooshSampler:
+				{
+					Label:
+					ToolTip:
+				}
+				swooshFactorStyle:
+				{
+					Label:
+					ToolTip:
+				}
+				itemAdditive:
+				{
+					Label:
+					ToolTip:
+				}
+				itemHighLight:
+				{
+					Label:
+					ToolTip:
+				}
+
+				heatMapCreateStyle:
+				{
+					Label:
+					ToolTip:
+				}
+				heatMapFactorStyle:
+				{
+					Label:
+					ToolTip:
+				}
+				hueOffsetRange:
+				{
+					Label:
+					ToolTip:
+				}
+				hueOffsetValue:
+				{
+					Label:
+					ToolTip:
+				}
+				saturationScalar:
+				{
+					Label:
+					ToolTip:
+				}
+				luminosityRange:
+				{
+					Label:
+					ToolTip:
+				}
+				directOfHeatMap:
+				{
+					Label:
+					ToolTip:
+				}
+				heatMapColors:
+				{
+					Label:
+					ToolTip:
+				}
+				showHeatMap:
+				{
+					Label:
+					ToolTip:
+				}
+
+				luminosityFactor:
+				{
+					Label:
+					ToolTip:
+				}
+				distortFactor:
+				{
+					Label:
+					ToolTip:
+				}
+				distortSize:
+				{
+					Label:
+					ToolTip:
+				}
+				maxCount:
+				{
+					Label:
+					ToolTip:
+				}
+
+				useWeaponDisplay:
+				{
+					Label:
+					ToolTip:
+				}
+				firstWeaponDisplay:
+				{
+					Label:
+					ToolTip:
+				}
+				weaponScale:
+				{
+					Label:
+					ToolTip:
+				}
+				hitBoxStyle:
+				{
+					Label:
+					ToolTip:
+				}
+				DontChangeMyTitle:
+				{
+					Label:
+					ToolTip:
+				}
+				ItemDropEffectActive:
+				{
+					Label:
+					ToolTip:
+				}
+				ItemInventoryEffectActive:
+				{
+					Label:
+					ToolTip:
+				}
+				VanillaProjectileDrawModifyActive:
+				{
+					Label:
+					ToolTip:
+				}
+				TeleprotEffectActive:
+				{
+					Label:
+					ToolTip:
+				}
+				CelesteMoveAnimation:
+				{
+					Label:
+					ToolTip:
+				}
+				dustQuantity:
+				{
+					Label:
+					ToolTip:
+				}
+				texStyle:
+				{
+					Label:
+					ToolTip:
+				}
+				NormalActive:
+				{
+					Label:
+					ToolTip:
+				}
+				HurricaneActive:
+				{
+					Label:
+					ToolTip:
+				}
+				HugeActive:
+				{
+					Label:
+					ToolTip:
+				}
+				ExaggerateActive:
+				{
+					Label:
+					ToolTip:
+				}
+				BrightActive:
+				{
+					Label:
+					ToolTip:
+				}
+				DarkActive:
+				{
+					Label:
+					ToolTip:
+				}
+				SmoothActive:
+				{
+					Label:
+					ToolTip:
+				}
+				TerraActive:
+				{
+					Label:
+					ToolTip:
+				}
+				HolyActive:
+				{
+					Label:
+					ToolTip:
+				}
+				EvilActive:
+				{
+					Label:
+					ToolTip:
+				}
+				OldOnesActive:
+				{
+					Label:
+					ToolTip:
+				}
+				InfluxActive:
+				{
+					Label:
+					ToolTip:
+				}
+				GreyActive:
+				{
+					Label:
+					ToolTip:
+				}
+				InverseActive:
+				{
+					Label:
+					ToolTip:
+				}
+				RainbowActive:
+				{
+					Label:
+					ToolTip:
+				}
+				UltraRainbowActive:
+				{
+					Label:
+					ToolTip:
+				}
+			}
+
+		}
+		ConfigSwoosh: 
+		{
+			Label: 高级设置选项
+			Label1: 近战挥刃设置[i:1199]
+			Label2: 渲染绘制设置[i:1071]
+			Label3: 热度图设置[i:2012]
+			Label4: 特效设置[i:3541]
+			Label5: 其他设置[i:1344]
+			D1: 基本设置[i:398]
+			D2: 样式设置[i:399][i:1163][i:983]
+			D3: 参数设置[i:2799]
+			D4: 细节设置[i:3619]
+			D5: 试验性设置[i:3611]
+				
+			5: 武器贴图多亮的时候无视环境光？[i:389]
+			6: 亮度大于这个值就会使用高亮绘制
+			7: 挥砍效果颜色模式[i:1120]
+			8:
+				'''
+				依次是
+					加权平均
+					单向渐变
+					武器贴图对角线
+					单向渐变与对角线混合
+					热度图
+				'''
+			9: 挥砍效果采样模式[i:3186]
+			10:
+				'''
+				依次是
+					各向异性
+					线性
+					点
+				'''
+			11: 挥砍效果系数模式[i:583]
+			12:
+				'''
+				依次是
+					每次开始时决定系数
+					系数中间插值
+				'''
+			13: 挥砍效果动作模式[i:498]
+			14:
+				'''
+				依次是
+					左右横劈
+					左右横劈_后倾
+					重斩
+					上挑
+					腾云斩
+					旋风劈
+					流雨断
+					鸣雷刺
+					风暴灭却剑
+					左右横劈_后倾_旧
+					左右横劈_失败
+				'''
+			15: 物品和挥砍大小[i:486]
+			16: 按默认大小(1)才是正常判定，但是谁不喜欢大一点呢
+			17: 色调偏移量范围[i:1035]
+			18: 以原颜色色调为中心正负这个值即为色调范围
+			19: 色调偏移量[i:2870]
+			20: 以原颜色色调加上这个值
+			21: 饱和度系数[i:1051]
+			22: 你喜欢灰蒙蒙还是鲜艳艳
+			23: 亮度偏移范围[i:3559]
+			24: 类似于HSL的插值
+			25: 亮度系数[i:4952]
+			26: 外发光强烈程度，需要将质量设置为"高"
+			27: 转速系数[i:561]
+			28: 仅适用于高速转击
+			29: 扭曲系数[i:2880]
+			30: 太怪了准备拿脑子去想，需要将质量设置为"中"
+			31: 武器本体加法混合模式[i:5005]
+			32:
+				'''
+				(举个例子,Color1=(0.5,0.7,0.3),Color2=(0.1,0.2,0.6),计算结果就是(0.6,0.9,0.9))
+				阿汪:我觉着这挺诡异的但是有人想要www
+				'''
+			33: 武器本体高亮[i:65]
+			34: 亮起来了
+			35: 震屏力度[i:1513]
+			36: 比魔炮还恼人
+			37: 刀光样式[i:3368]
+			38: 我只准备了12种，推荐序号为7的
+			39: 检测是否空心[i:3823]
+			40: 自己取舍吧www
+			41: 末端是否收束[i:3018]
+			42: 你可以试试不收束的，都很棒！
+			43: 天顶剑与最初分形也能用的挥刃特效[i:4956]
+			44:
+				'''
+				OMG真的什么颜色模式都帅爆了
+				建议点默认后大小直接拉满
+				动作模式选择两次普通一次旋转
+				然后震屏也安排上
+				最后加上中间插值
+				帅爆了！！！
+				'''
+			45: 武器附魔光泽[i:989]
+			46: 加上之后也许好些？
+			Label_2: 挥刃预设及其他设置
+			47: 预设样式
+			48: 设置完之后可以自己另外调
+			49: 不要在挥剑的时候动那个标题！！！
+			50: 我抄这事什么好康的，关掉就会换上私货了吗
+			51: 叠加绘制几次？[i:554]
+			52: 默认一次(正常)，多次绘制会有很酷的效果，但是也很卡(x  需要将质量设置为"中"
+			53: 色彩偏离角度[i:393]
+			54:
+				'''
+				默认是pi，0则色彩逆向(它们是极向渐变)，pi/2或者3*pi/2则变成径向渐变
+				需要 单向渐变 或者 单向渐变与对角线混合
+				'''
+			55: 剑气残留时间[i:709]
+			56: 默认是10帧 需要将质量设置为"极限"
+			57: 不改变武器大小[i:4923]
+			58: 只有剑气改变了，默认是一起改变的。
+			59: 剑气消散模式[i:3368]
+			60: 默认是全部 需要将质量设置为"极限"
+			61: 剑气扩散模式[i:4144]
+			62: 默认是横向扩大与平移 需要将质量设置为"极限"
+			63: 刀光动效贴图样式[i:4144]
+			64: 我只准备了6种，推荐序号为3的
+			65: 空气扭曲缩放大小[i:3199]
+			66: 默认1.5倍(如果有明显掉帧就改回1) 需要将质量设置为"中"
+			67: 展示当前武器的热度图[i:2012]
+			68: 不能是 加权平均 与 武器贴图对角线
+			69: 随动作模式改变剑气大小[i:426]
+			70: 难道你不想让剑气大小随着你的动作作出调整吗？
+			71: 近战武器碰撞箱模式
+			72: 虽然我说是"仅修改视觉效果"，但是也要考虑视觉与实际判定的平衡
+			73: 随动作模式改变使用时间[i:3099]
+			74: 注意：这个已经超出“视觉效果”的范畴，请斟酌一下
+			75: 随动作模式改变使用效果(弹幕发射等)(未完成)[i:675]
+			76: 注意：这个已经超出“视觉效果”的范畴，请斟酌一下
+			77: 无视物品伤害类型[i:495]
+			78: 甚至是魔杖都可以？？！！
+			79: 热度图插值模式[i:583]
+			80: 挖偶，终于不只是线性插值了吗，屑阿汪你做得好啊
+			81: 指定热度图颜色列表[i:2012]
+			82:
+				'''
+				从第一个到最后一个对应从左到右
+				(使用展示热度图以理解我什么意思
+				需要 指定热度图
+				'''
+			83: 透明度系数[i:170]
+			84: 设置为0则不关注灰度值，其余情况为灰度值乘上这个
+			85: 粒子数量[i:1348]
+			86: 这个值越大粒子越多
+			87: 热度图生成模式[i:3534]
+			88: 哇哦，你可以调出你喜欢的！
+			89: 斩击用时上限[i:561]
+			90: 单位为帧，之前是9，现在下调至6。
+		}
+
+		Config_Other: 
+		{
+			Label: 视觉效果设置
+			head1: 武器背显
+			Num1: 武器背显开关
+			Num2: 是,以开启武器背显,否,关闭.默认为是
+			Num3: 选人界面武器背显开关
+			Num4: 是,以开启在人物选择界面显示物品栏第一把武器的功能(物品栏第一格会被忽略，因为某些讨厌的原因),否,关闭.默认为是
+			1: 武器使用的染料
+			2: 决定背显武器使用哪个装备栏的染料（Head:头 Body:身 Leg:腿）
+			3: 武器光效绘制开关
+			4: 是,以开启武器的光效绘制(只会在身体盔甲存在光效时生效,效果与盔甲光效一致),否,以取消.默认为否
+			5: 武器光效亮度
+			6: 调整武器光效的亮度
+			head2: 掉落物效果
+			head3: 挥砍效果（仅影响视觉效果，不影响实际判定）
+			7: 更帅的拔刀
+			8:
+				'''
+				你厌倦了原版近战的挥动方式了吗？
+				如果想要影响实际攻击效果，请到游戏性设置处开启碰撞箱
+				'''
+			9: 掉落物光效开关
+			10: 是,以开启掉落物的光效绘制,否,以取消.默认为是
+			11: 武器显示尺寸
+			12: 调整武器的显示尺寸
+			13: 挥砍效果亮度
+			14: 亮度大于0.5就会使用高亮式挥砍
+			15: 挥砍效果颜色
+			16: 是,以开启武器贴图对角线颜色关联挥砍效果颜色,否,使用单色.默认为是
+			17: 武器和武器挥舞效果半透明且高亮
+			18: 阿汪:我觉着这挺诡异的但是有人想要www
+			19: 取消新的挥舞效果对工具的影响
+			20: 是,以取消新的挥舞效果对工具的影响,否,不取消,默认为否
+			23: 掉落物使用的光效种类
+			24: 杂项设置
+			25: 启用掉落物品额外光效
+			26: 我很懒所以只准备了一种
+			27: 启用背包物品额外光效
+			28: 我不是很喜欢，太花眼了
+			29: 启用弹幕优化绘制
+			30: 希望你喜欢
+			31: 启用传送物品使用特效(未完成)
+			32: 夸张法阵满天飞
+			33: 近战碰撞修改模式
+			34: 为了降低违和感
+			35: 动作效果优化(未完成)
+			36: 你一定看得出这个是低仿蔚蓝的对吧
+		}
+	}
+}

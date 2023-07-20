@@ -612,10 +612,11 @@ namespace CoolerItemVisualEffect.Weapons
             useBloom = (0, config.luminosityFactor, 6);
             useDistort = (0, config.distortSize, Rotation.ToRotationVector2() * -0.15f * config.distortFactor);
         }
-        public override void VertexInfomation(ref bool additive, ref int indexOfGreyTex, ref float endAngle, ref bool useHeatMap)
+        public override void VertexInfomation(ref bool additive, ref int indexOfGreyTex, ref float endAngle, ref bool useHeatMap, ref int p)
         {
             var modplr = Player.GetModPlayer<CoolerItemVisualEffectPlayer>();
             additive = modplr.hsl.Z >= modplr.ConfigurationSwoosh.isLighterDecider;
+            p = 2;
         }
     }
     public class SereStoneSword : WitheredWoodSword
@@ -1090,10 +1091,11 @@ namespace CoolerItemVisualEffect.Weapons
             useBloom = (0, config.luminosityFactor, 6);
             useDistort = (0, config.distortSize, Rotation.ToRotationVector2() * -0.15f * config.distortFactor);
         }
-        public override void VertexInfomation(ref bool additive, ref int indexOfGreyTex, ref float endAngle, ref bool useHeatMap)
+        public override void VertexInfomation(ref bool additive, ref int indexOfGreyTex, ref float endAngle, ref bool useHeatMap, ref int p)
         {
             var modplr = Player.GetModPlayer<CoolerItemVisualEffectPlayer>();
             additive = modplr.hsl.Z >= modplr.ConfigurationSwoosh.isLighterDecider;
+            p = 2;
         }
         public override void OnChargedShoot()
         {

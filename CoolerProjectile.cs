@@ -20,18 +20,18 @@ namespace CoolerItemVisualEffect
     {
         public override void OnSpawn(Projectile projectile, IEntitySource source)
         {
-            if (projectile.ModProjectile is VertexHammerProj vertexHammer)
-            {
-                var player = vertexHammer.Player;
-                var modplr = player.GetModPlayer<CoolerItemVisualEffectPlayer>();
-                if (modplr.colorInfo.tex == null)
-                {
-                    Main.RunOnMainThread(() => modplr.colorInfo.tex = new Texture2D(Main.graphics.GraphicsDevice, 300, 1));
-                }
-                CoolerItemVisualEffectPlayer.ChangeItemTex(player);
-                CoolerItemVisualEffectMod.UpdateHeatMap(ref modplr.colorInfo.tex, modplr.hsl, modplr.ConfigurationSwoosh, TextureAssets.Item[player.HeldItem.type].Value);
-                vertexHammer.heatMap = modplr.colorInfo.tex;
-            }
+            //if (projectile.ModProjectile is VertexHammerProj vertexHammer)
+            //{
+            //    var player = vertexHammer.Player;
+            //    var modplr = player.GetModPlayer<CoolerItemVisualEffectPlayer>();
+            //    if (modplr.colorInfo.tex == null)
+            //    {
+            //        Main.RunOnMainThread(() => modplr.colorInfo.tex = new Texture2D(Main.graphics.GraphicsDevice, 300, 1));
+            //    }
+            //    CoolerItemVisualEffectPlayer.ChangeItemTex(player);
+            //    CoolerItemVisualEffectMod.UpdateHeatMap(ref modplr.colorInfo.tex, modplr.hsl, modplr.ConfigurationSwoosh, TextureAssets.Item[player.HeldItem.type].Value);
+            //    vertexHammer.heatMap = modplr.colorInfo.tex;
+            //}
             base.OnSpawn(projectile, source);
         }
         public override void PostAI(Projectile projectile)

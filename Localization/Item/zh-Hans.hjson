@@ -1,0 +1,187 @@
+
+Mods: {
+	CoolerItemVisualEffect: {
+		ConfigSLer: {
+			Refresh: 刷新
+			TooManySameName: "///存储失败！/// 兄啊你同名的也太多了(而且还都是默认名)，请整理并且重命名一下吧"
+			SameDefault: "///注意！/// 现在存储出的都是默认名，我帮你加了序号作为区分，记得及时整理"
+			SavedAs: 结构已存储为文件
+			DefaultName: 自定义设置
+			LoadThisConfig: 将目前的配置设为这个
+			Path: 文件路径:
+
+			RenameTip: {
+				Exists: 已经存在一个相同名称的文件
+				TooLong: 名称不能超过40个字符
+				Illegal: 文件名不能包含以下字符: \\、/、:、*、?、\"、<、>、|
+			}
+
+			NotFinishYet: 此页面施工中......
+			Successed: \加载成功/！！
+			Failed: /加载失败\
+		}
+
+		Items: {
+			ConfigSLer: {
+				DisplayName: 设置读写器
+				Tooltip:
+					'''
+					左键存入当前设置
+					右键打开界面以选择或编辑
+					'''
+			}
+
+			FirstFractal_CIVE: {
+				DisplayName: 最初分形
+				Tooltip: 否定，忘却，尘封......终有一天其将破土而出。
+			}
+
+			WitheredWoodSword: {
+				DisplayName: 朽木之刃
+				Tooltip: (新版制作中)
+			}
+
+			LivingWoodSword: {
+				DisplayName: 灵木之刃
+				Tooltip: (新版制作中)
+			}
+
+			SereStoneSword: {
+				DisplayName: 枯石之刃
+				Tooltip: (新版制作中)
+			}
+
+			MossStoneSword: {
+				DisplayName: 苔石之刃
+				Tooltip: (新版制作中)
+			}
+
+			CrystalStoneSword.DisplayName: 晶石之刃
+
+			RustySteelBlade: {
+				DisplayName: 锈钢之刃
+				Tooltip: (新版制作中)
+			}
+
+			RefinedSteelBlade: {
+				DisplayName: 精钢之刃
+				Tooltip: (新版制作中)
+			}
+
+			PureFractal: {
+				DisplayName: 纯粹分形
+				Tooltip: 远古纯粹的自然魔法洗礼之后的天顶之锋，展露吧，你最初的锋芒。(新版制作中)
+			}
+
+			FirstZenith: {
+				DisplayName: 初源峰巅
+				Tooltip: (新版制作中)
+			}
+
+			FinalFractal: {
+				DisplayName: 最终分形
+				Tooltip: 它的一部分包含着它，这就是分形。无数的刀刃回旋着，它们是它的一部分。(新版制作中)
+			}
+
+			WitheredWoodSword_Old: {
+				DisplayName: 朽木之刃_旧版
+				Tooltip: 右键蓄力后冲刺并释放荆棘
+			}
+
+			LivingWoodSword_Old: {
+				DisplayName: 灵木之刃_旧版
+				Tooltip: 右键蓄力后冲刺并释放大量荆棘
+			}
+
+			SereStoneSword_Old: {
+				DisplayName: 枯石之刃_旧版
+				Tooltip: 右键蓄力释放石笋
+			}
+
+			MossStoneSword_Old: {
+				DisplayName: 苔石之刃_旧版
+				Tooltip: 右键蓄力释放石笋阵
+			}
+
+			RustySteelBlade_Old: {
+				DisplayName: 锈钢之刃_旧版
+				Tooltip: 右键蓄力释放锈铁飞刃
+			}
+
+			RefinedSteelBlade_Old: {
+				DisplayName: 精钢之刃_旧版
+				Tooltip: 右键蓄力释放大量精钢飞刃
+			}
+
+			PureFractal_Old: {
+				DisplayName: 纯粹分形_旧版
+				Tooltip: 远古纯粹的自然魔法洗礼之后的天顶之锋，展露吧，你最初的锋芒。
+			}
+
+			FirstZenith_Old.DisplayName: 初源峰巅_旧版
+
+			FinalFractal_Old: {
+				DisplayName: 最终分形_旧版
+				Tooltip: 它的一部分包含着它，这就是分形。无数的刀刃回旋着，它们是它的一部分。
+			}
+
+			UShallNotPass.DisplayName:
+				'''
+				关于名字限制，我很抱歉
+				鉴于之前做得实在太烂了，我正在制作新版本
+				旧版本的会保留。
+				现在可以快乐使用了(   ;)
+				'''
+			IDTKNOW.DisplayName: Pls Use This Weapon With A Correct Name.
+			/* FFBag.DisplayName: 返还袋ReturnBag */
+			/* FZBag.DisplayName: 返还袋ReturnBag */
+			/* LWBag.DisplayName: 返还袋ReturnBag */
+			/* MSBag.DisplayName: 返还袋ReturnBag */
+			/* PFBag.DisplayName: 返还袋ReturnBag */
+			/* ReturnBag.DisplayName: 返还袋ReturnBag */
+			/* RSBag.DisplayName: 返还袋ReturnBag */
+			/* RSEXBag.DisplayName: 返还袋ReturnBag */
+			/* SSBag.DisplayName: 返还袋ReturnBag */
+			Azure.DisplayName: 蔚蕴
+			/* DemonScythe.DisplayName: Demon Scythe */
+			/* WWBag.DisplayName: 返还袋ReturnBag */
+		}
+
+		FinalFractalTip: {
+			0: 这甚至还不是它们的最终形态
+			1: 「最初与最后的究极分形」
+			2: 「分形次元斩」
+			3: 天顶「FinalFractal」
+		}
+
+		Projectiles: {
+			/* FinalFractalDimensionalSwoosh.DisplayName: 分形次元斩 */
+			/* FinalFractalDimensionalSwoosh2.DisplayName: 分形次元斩 */
+			/* FinalFractalDimensionalSwoosh3.DisplayName: 分形次元斩 */
+			/* FinalFractalItem.DisplayName: 最终分形 */
+			/* FinalFractalProjectile.DisplayName: 最终分形之影 */
+			/* FinalFractalShadow.DisplayName: 最终分形之影 */
+			/* Zenith_FirstFractal.DisplayName: 天顶「FinalFractal」 */
+			/* Zenith_FirstFractals.DisplayName: 天顶「FinalFractal」 */
+			/* HitAssistProj.DisplayName: Hit Assist Proj */
+			/* AzureProj.DisplayName: Azure Proj */
+			/* DemonScythe_1.DisplayName: Demon Scythe_1 */
+			/* DemonScythe_Proj.DisplayName: 恶魔之镰 */
+			/* FirstZenith_Blade.DisplayName: 初源峰巅 */
+			/* FirstZenithProj.DisplayName: First Zenith Proj */
+			/* PureFractalProj.DisplayName: Pure Fractal Proj */
+			/* RustySteelBladeProj.DisplayName: 做个锤子 */
+			/* SereStoneSword_Blade.DisplayName: WitheredWoodSword */
+			/* SereStoneSwordProj.DisplayName: 做个锤子 */
+			/* SharpStoneTears.DisplayName: Sharp Stone Tears */
+			/* VectorField.DisplayName: Vector Field */
+			/* VectorField_EX.DisplayName: Vector Field_ E X */
+			/* VectorField_Ultra.DisplayName: Vector Field_ Ultra */
+			/* WitheredTree.DisplayName: Withered Tree */
+			/* WitheredWood.DisplayName: Withered Wood */
+			/* WitheredWoodSword_Blade.DisplayName: WitheredWoodSword */
+			/* WitheredWoodSword_Blade_GivenUp.DisplayName: WitheredWoodSword */
+			/* WitheredWoodSwordProj.DisplayName: 做个锤子 */
+		}
+	}
+}
