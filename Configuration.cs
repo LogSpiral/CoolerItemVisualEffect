@@ -799,7 +799,7 @@ namespace CoolerItemVisualEffect
         public class MeleeSwooshConfigs
         {
             #region 基本设置
-            [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D1")]
+            [Header("$Mods.CoolerItemVisualEffect.HeadLines.D1")]
             [DrawTicks]
             [DefaultValue(QualityType.极限ultra)]
             [CustomModConfigItem(typeof(CoolerEnumElement))]
@@ -831,7 +831,7 @@ namespace CoolerItemVisualEffect
             #endregion
 
             #region 样式设置
-            [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D2")]
+            [Header("$Mods.CoolerItemVisualEffect.HeadLines.D2")]
             [DrawTicks]
             [DefaultValue(SwooshAction.左右横劈_后倾)]
             [CustomModConfigItem(typeof(CoolerEnumElement))]
@@ -861,7 +861,7 @@ namespace CoolerItemVisualEffect
             #endregion
 
             #region 参数设置
-            [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D3")]
+            [Header("$Mods.CoolerItemVisualEffect.HeadLines.D3")]
             [Increment(0.05f)]
             [DefaultValue(1f)]
             [Range(0.5f, 3f)]
@@ -882,7 +882,7 @@ namespace CoolerItemVisualEffect
             #endregion
 
             #region 细节设置
-            [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D4")]
+            [Header("$Mods.CoolerItemVisualEffect.HeadLines.D4")]
             [DefaultValue(true)]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(158, 0, 255, 255)] public bool checkAir = true;
@@ -901,7 +901,7 @@ namespace CoolerItemVisualEffect
             #endregion
 
             #region 试验性设置
-            [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D5")]
+            [Header("$Mods.CoolerItemVisualEffect.HeadLines.D5")]
             [DefaultValue(false)]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(140, 0, 255, 255)] public bool onlyChangeSizeOfSwoosh = false;
@@ -915,7 +915,7 @@ namespace CoolerItemVisualEffect
         public class DrawConfigs
         {
             #region 样式设置
-            [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D2")]
+            [Header("$Mods.CoolerItemVisualEffect.HeadLines.D2")]
             [DrawTicks]
             [DefaultValue(SwooshColorType.热度图)]
             [CustomModConfigItem(typeof(CoolerEnumElement))]
@@ -923,7 +923,7 @@ namespace CoolerItemVisualEffect
             #endregion
 
             #region 参数设置
-            [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D3")]
+            [Header("$Mods.CoolerItemVisualEffect.HeadLines.D3")]
             [Increment(0.05f)]
             [DefaultValue(1.5f)]
             [Range(0f, 3f)]
@@ -938,7 +938,7 @@ namespace CoolerItemVisualEffect
             #endregion
 
             #region 细节设置
-            [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D4")]
+            [Header("$Mods.CoolerItemVisualEffect.HeadLines.D4")]
             [DrawTicks]
             [DefaultValue(SwooshSamplerState.线性)]
             [CustomModConfigItem(typeof(CoolerEnumElement))]
@@ -951,7 +951,7 @@ namespace CoolerItemVisualEffect
             #endregion
 
             #region 试验性设置
-            [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D5")]
+            [Header("$Mods.CoolerItemVisualEffect.HeadLines.D5")]
             [DefaultValue(false)]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(32, 0, 255, 255)] public bool itemAdditive = false;
@@ -975,7 +975,7 @@ namespace CoolerItemVisualEffect
         public class HeatMapConfigs
         {
             #region 样式设置
-            [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D2")]
+            [Header("$Mods.CoolerItemVisualEffect.HeadLines.D2")]
             [DrawTicks]
             [DefaultValue(HeatMapCreateStyle.函数生成)]
             [CustomModConfigItem(typeof(CoolerEnumElement))]
@@ -988,7 +988,7 @@ namespace CoolerItemVisualEffect
             #endregion
 
             #region 参数设置
-            [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D3")]
+            [Header("$Mods.CoolerItemVisualEffect.HeadLines.D3")]
             [DefaultValue(0.2f)]
             [Increment(0.01f)]
             [Range(-1f, 1f)]
@@ -1023,7 +1023,7 @@ namespace CoolerItemVisualEffect
             #endregion
 
             #region 试验性设置
-            [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D5")]
+            [Header("$Mods.CoolerItemVisualEffect.HeadLines.D5")]
             [DefaultValue(false)]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             [BackgroundColor(0, 116, 255, 255)] public bool showHeatMap = false;
@@ -1032,7 +1032,7 @@ namespace CoolerItemVisualEffect
         public class RenderConfigs
         {
             #region 参数设置
-            [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D3")]
+            [Header("$Mods.CoolerItemVisualEffect.HeadLines.D3")]
             [DefaultValue(0f)]
             [Increment(0.05f)]
             [Range(0f, 1f)]
@@ -1060,7 +1060,7 @@ namespace CoolerItemVisualEffect
         public class OtherConfigs
         {
             #region 基本设置
-            [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D1")]
+            [Header("$Mods.CoolerItemVisualEffect.HeadLines.D1")]
             [DefaultValue(true)]
             [BackgroundColor(0, 255, 255, 255)]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
@@ -1090,7 +1090,7 @@ namespace CoolerItemVisualEffect
             [CustomModConfigItem(typeof(CoolerBoolElement))]
             public bool DontChangeMyTitle = true;
 
-            [Header("$Mods.CoolerItemVisualEffect.Config_Other.24")]
+            [Header("$Mods.CoolerItemVisualEffect.HeadLines.Head2")]
             [DefaultValue(false)]
             [BackgroundColor(0, 255, 255, 255)]
             [CustomModConfigItem(typeof(CoolerBoolElement))]
@@ -1118,13 +1118,13 @@ namespace CoolerItemVisualEffect
             #endregion
 
             #region 样式设置
-            [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D2")]
+            [Header("$Mods.CoolerItemVisualEffect.HeadLines.D2")]
             [BackgroundColor(0, 255, 255, 255)]
             [DefaultValue(ConfigTexStyle.Origin)]
             [CustomModConfigItem(typeof(CoolerEnumElement))]
             public ConfigTexStyle texStyle { get; set; } = ConfigTexStyle.Origin;
 
-            [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.47")]
+            [Header("$Mods.CoolerItemVisualEffect.HeadLines.Head1")]
 
             [DefaultValue(true)]
             [BackgroundColor(0, 255, 255, 255)]
@@ -1326,7 +1326,7 @@ namespace CoolerItemVisualEffect
             #endregion
 
             #region 参数设置
-            [Header("$Mods.CoolerItemVisualEffect.ConfigSwoosh.D3")]
+            [Header("$Mods.CoolerItemVisualEffect.HeadLines.D3")]
             [Increment(0.05f)]
             [DefaultValue(.75f)]
             [Range(0f, 1f)]
@@ -1891,7 +1891,7 @@ namespace CoolerItemVisualEffect
                     num2 = 1;
                 }
                 else if (rightLock != null)
-                {
+                {  
                     num2 = 2;
                 }
 

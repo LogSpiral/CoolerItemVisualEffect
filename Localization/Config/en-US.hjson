@@ -425,25 +425,22 @@ Mods:
 			ConfigurationSwoosh:
 			{
 				DisplayName: Advanced Settings
+				meleeSwooshConfigs.Label: Melee Slashing Settings[i:1199]
+				drawConfigs.Label: Sprite Draw Settings[i:1071]
+				heatMapConfigs.Label: Heat Map Settings[i:2012]
+				renderConfigs.Label: Special Effect Settings[i:3541]
+				otherConfigs.Label: Other Settings[i:1344]
 			}
 		}
-		ConfigSwoosh: {
-			Label: Advanced Settings
-			Label1: Melee Slashing Settings[i:1199]
-			Label2: Sprite Draw Settings[i:1071]
-			Label3: Heat Map Settings[i:2012]
-			Label4: Special Effect Settings[i:3541]
-			Label5: Other Settings[i:1344]
+		HeadLines: 
+		{
 			D1: Basic Settings[i:398]
 			D2: Style Settings[i:399][i:1163][i:983]
 			D3: Value Settings[i:2799]
 			D4: Detail Settings[i:3619]
 			D5: Experimental Settings[i:3611]
-		}
-
-		Config: {
-			Label: Visual Settings
-			head1: Weapon Display
+			Head1: Preset Style
+			Head2: Misc Settings
 		}
 	}
 }

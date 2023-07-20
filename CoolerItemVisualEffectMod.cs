@@ -1124,7 +1124,7 @@ namespace CoolerItemVisualEffect
             if (time < 0.5f) color = Color.Lerp(Color.Cyan, Color.Green, time * 2f);
             else color = Color.Lerp(Color.Green, Color.Yellow, time * 2f - 1);
 
-            var str = Language.GetTextValue("Mods.CoolerItemVisualEffect.ItemName." + ReturnName);
+            var str = Language.GetTextValue($"Mods.CoolerItemVisualEffect.Items.{ReturnName}.DisplayName");
 
             tooltips.Add(new TooltipLine(Mod, "YEEEEE", $"反还{str}的材料\nreturn the material of {str}") { OverrideColor = color });
         }

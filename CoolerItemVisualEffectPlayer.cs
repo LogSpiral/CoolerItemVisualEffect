@@ -896,7 +896,7 @@ namespace CoolerItemVisualEffect
                     if (!ultra.Active)
                     {
                         ultra.color = color ?? colorInfo.color;
-                        ultra.type = type ?? colorInfo.type;
+                        ultra.type = type ?? colorInfo.type; 
                         //Main.NewText(new Item(ultra.type).Name);
                         ultra.checkAirFactor = airFac ?? colorInfo.checkAirFactor;
                         //ultra.rotationVelocity = ConfigurationSwoosh.swooshActionStyle == SwooshAction.旋风劈 && swingCount % 3 == 0 ? ConfigurationSwoosh.swingAttackTime : 1f;//
@@ -922,11 +922,11 @@ namespace CoolerItemVisualEffect
             player.GetModPlayer<CoolerItemVisualEffectPlayer>().ConfigurationSwoosh.SendData(Player.whoAmI, fromWho, toWho, true);
         }
 
-        public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo) 
+        public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)  
         {
             //var results = from text in LanguageManager.Instance._localizedTexts.Keys where text.Contains("CoolerItemVisualEffect.Configs.ConfigurationSwoosh.coolerSwooshQuality") select text;
             //Main.NewText(results.Count());
-            Main.spriteBatch.DrawString(FontAssets.DeathText.Value, Language.GetTextValue("Mods.CoolerItemVisualEffect.Configs.MeleeSwooshConfigs.glowLight.Label"), new Vector2(200), Color.White);
+            //Main.spriteBatch.DrawString(FontAssets.DeathText.Value, Language.GetTextValue("Mods.CoolerItemVisualEffect.Configs.MeleeSwooshConfigs.glowLight.Label"), new Vector2(200), Color.White);
             //int height = 0;
             //foreach (var item in LogSpiralLibraryMod.ShaderSwooshUL.CurrentTechnique.Passes) 
             //{

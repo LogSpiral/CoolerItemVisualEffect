@@ -165,7 +165,7 @@ namespace CoolerItemVisualEffect.Weapons
         {
             if (Main.LocalPlayer.name != "")
             {
-                tooltips.Add(new TooltipLine(Mod, "UShallNotPass!!!", Language.GetTextValue("Mods.CoolerItemVisualEffect.ItemName.UShallNotPass")) { OverrideColor = Color.Red });
+                tooltips.Add(new TooltipLine(Mod, "UShallNotPass!!!", Language.GetTextValue("Mods.CoolerItemVisualEffect.Items.UShallNotPass")) { OverrideColor = Color.Red });
             }
         }
         //public override bool CanUseItem(Player player)
@@ -694,7 +694,7 @@ namespace CoolerItemVisualEffect.Weapons
         {
             if (Main.LocalPlayer.name != "")
             {
-                tooltips.Add(new TooltipLine(Mod, "UShallNotPass!!!", Language.GetTextValue("Mods.CoolerItemVisualEffect.ItemName.UShallNotPass")) { OverrideColor = Color.Red });
+                tooltips.Add(new TooltipLine(Mod, "UShallNotPass!!!", Language.GetTextValue("Mods.CoolerItemVisualEffect.Items.UShallNotPass")) { OverrideColor = Color.Red });
             }
         }
         public override bool CanUseItem(Player player)
@@ -940,7 +940,7 @@ namespace CoolerItemVisualEffect.Weapons
         {
             if (Main.LocalPlayer.name != "")
             {
-                tooltips.Add(new TooltipLine(Mod, "UShallNotPass!!!", Language.GetTextValue("Mods.CoolerItemVisualEffect.ItemName.UShallNotPass")) { OverrideColor = Color.Red });
+                tooltips.Add(new TooltipLine(Mod, "UShallNotPass!!!", Language.GetTextValue("Mods.CoolerItemVisualEffect.Items.UShallNotPass")) { OverrideColor = Color.Red });
             }
         }
         public override bool AltFunctionUse(Player player)
@@ -1241,7 +1241,7 @@ namespace CoolerItemVisualEffect.Weapons
         {
             if (Main.LocalPlayer.name != "")
             {
-                tooltips.Add(new TooltipLine(Mod, "UShallNotPass!!!", Language.GetTextValue("Mods.CoolerItemVisualEffect.ItemName.UShallNotPass")) { OverrideColor = Color.Red });
+                tooltips.Add(new TooltipLine(Mod, "UShallNotPass!!!", Language.GetTextValue("Mods.CoolerItemVisualEffect.Items.UShallNotPass")) { OverrideColor = Color.Red });
             }
         }
         public override bool AltFunctionUse(Player player)

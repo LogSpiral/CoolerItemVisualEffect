@@ -58,7 +58,7 @@ namespace CoolerItemVisualEffect.FinalFractal
 
             if (Main.LocalPlayer.name != "")
             {
-                tooltips.Add(new TooltipLine(Mod, "UShallNotPass!!!", Language.GetTextValue("Mods.CoolerItemVisualEffect.ItemName.UShallNotPass")) { OverrideColor = Color.Red });
+                tooltips.Add(new TooltipLine(Mod, "UShallNotPass!!!", Language.GetTextValue("Mods.CoolerItemVisualEffect.Items.UShallNotPass")) { OverrideColor = Color.Red });
             }
             //tooltips.Add(new TooltipLine(Mod, "PureSuggestion", "「最初与最后的究极分形」") { OverrideColor = Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffect.ModTime) / 2 + 0.5f) });
             //tooltips.Add(new TooltipLine(Mod, "PureSuggestion", "「分形次元斩」") { OverrideColor = Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * (CoolerItemVisualEffect.ModTime + 40)) / 2 + 0.5f) });

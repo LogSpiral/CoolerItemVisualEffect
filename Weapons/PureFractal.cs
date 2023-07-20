@@ -37,7 +37,7 @@ namespace CoolerItemVisualEffect.Weapons
             tooltips.Add(new TooltipLine(Mod, "PureSuggestion", Language.GetTextValue("Mods.CoolerItemVisualEffect.FinalFractalTip.0")) { OverrideColor = color });//"这甚至还不是它们的最终形态"
             if (Main.LocalPlayer.name != "")
             {
-                tooltips.Add(new TooltipLine(Mod, "UShallNotPass!!!", Language.GetTextValue("Mods.CoolerItemVisualEffect.ItemName.UShallNotPass")) { OverrideColor = Color.Red });
+                tooltips.Add(new TooltipLine(Mod, "UShallNotPass!!!", Language.GetTextValue("Mods.CoolerItemVisualEffect.Items.UShallNotPass")) { OverrideColor = Color.Red });
             }
         }
 

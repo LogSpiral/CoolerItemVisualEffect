@@ -425,28 +425,23 @@ Mods:
 			}
 			ConfigurationSwoosh:
 			{
-				DisplayName: 高级设置选项
+				displayName: 高级设置选项
+				meleeSwooshConfigs.Label: 近战挥刃设置[i:1199]
+				drawConfigs.Label: 渲染绘制设置[i:1071]
+				heatMapConfigs.Label: 热度图设置[i:2012]
+				renderConfigs.Label: 特效设置[i:3541]
+				otherConfigs.Label: 其他设置[i:1344]
 			}
 		}
-		ConfigSwoosh: 
+		HeadLines: 
 		{
-			Label: 高级设置选项
-			Label1: 近战挥刃设置[i:1199]
-			Label2: 渲染绘制设置[i:1071]
-			Label3: 热度图设置[i:2012]
-			Label4: 特效设置[i:3541]
-			Label5: 其他设置[i:1344]
 			D1: 基本设置[i:398]
 			D2: 样式设置[i:399][i:1163][i:983]
 			D3: 参数设置[i:2799]
 			D4: 细节设置[i:3619]
 			D5: 试验性设置[i:3611]
-		}
-
-		Config_Other: 
-		{
-			Label: 视觉效果设置
-			head1: 武器背显
+			Head1: 预设样式
+			Head2: 杂项设置
 		}
 	}
 }

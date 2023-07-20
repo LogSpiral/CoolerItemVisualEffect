@@ -125,26 +125,26 @@ Mods: {
 				Tooltip: Part of it includes itself, which we called Fractal. Infinite blades rotating as hurricane, they are part of it as well.
 			}
 
-			UShallNotPass.DisplayName:
+			UShallNotPass:
 				'''
 				I'm so sorry for the "Correct Name"
 				And I'm Making The New Version Of It Know.
 				The Old Version Will Be Retained.
 				You Can Use It Now(   ;)
 				'''
-			IDTKNOW.DisplayName: Pls Use This Weapon With A Correct Name.
-			FFBag.DisplayName: 返还袋ReturnBag
-			FZBag.DisplayName: 返还袋ReturnBag
-			LWBag.DisplayName: 返还袋ReturnBag
-			MSBag.DisplayName: 返还袋ReturnBag
-			PFBag.DisplayName: 返还袋ReturnBag
-			ReturnBag.DisplayName: 返还袋ReturnBag
-			RSBag.DisplayName: 返还袋ReturnBag
-			RSEXBag.DisplayName: 返还袋ReturnBag
-			SSBag.DisplayName: 返还袋ReturnBag
+			IDTKNOW: Pls Use This Weapon With A Correct Name.
+			FFBag.DisplayName: ReturnBag
+			FZBag.DisplayName: ReturnBag
+			LWBag.DisplayName: ReturnBag
+			MSBag.DisplayName: ReturnBag
+			PFBag.DisplayName: ReturnBag
+			ReturnBag.DisplayName: ReturnBag
+			RSBag.DisplayName: ReturnBag
+			RSEXBag.DisplayName: ReturnBag
+			SSBag.DisplayName: ReturnBag
 			Azure.DisplayName: Azure
 			DemonScythe.DisplayName: Demon Scythe
-			WWBag.DisplayName: 返还袋ReturnBag
+			WWBag.DisplayName: ReturnBag
 		}
 
 		FinalFractalTip: {
