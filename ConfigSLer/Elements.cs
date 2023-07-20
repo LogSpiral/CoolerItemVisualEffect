@@ -302,7 +302,7 @@ namespace CoolerItemVisualEffect.ConfigSLer
             loadConfigButton.SetSize(24f, 24f);
             loadConfigButton.OnLeftClick += (ev, e) =>
             {
-                Load(ConfigurationSwoosh.ConfigSwooshInstance, FilePath);
+                Load(ConfigSwooshInstance, FilePath);
             };
             loadConfigButton.OnUpdate += (_) =>
             {

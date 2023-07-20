@@ -83,7 +83,7 @@ namespace CoolerItemVisualEffect
                     case SwooshSamplerState.线性: sampler = SamplerState.LinearWrap; break;
                     case SwooshSamplerState.点: sampler = SamplerState.PointWrap; break;
                 }
-                switch (ConfigurationSwoosh.ConfigSwooshInstance.swooshColorType)
+                switch (ConfigSwooshInstance.swooshColorType)
                 {
                     case SwooshColorType.热度图:
                         {
@@ -316,7 +316,7 @@ namespace CoolerItemVisualEffect
                     Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
                     Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
                     Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
-                    switch (ConfigurationSwoosh.ConfigSwooshInstance.swooshColorType)
+                    switch (ConfigSwooshInstance.swooshColorType)
                     {
                         case SwooshColorType.热度图:
                             {

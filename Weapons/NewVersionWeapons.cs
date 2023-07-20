@@ -37,7 +37,7 @@ namespace CoolerItemVisualEffect.Weapons
             Item.noMelee = true;
             Item.shootSpeed = 16f;
             Item.value = Item.sellPrice(0, 0, 0, 0);
-            Item.shoot = ModContent.ProjectileType<WitheredWoodSword_Blade>();
+            Item.shoot = ProjectileType<WitheredWoodSword_Blade>();
         }
         public override void AddRecipes()
         {
@@ -92,12 +92,12 @@ namespace CoolerItemVisualEffect.Weapons
             //var type = Player.HeldItem.type;
             var type = sourceItem.type;
 
-            if (type == ModContent.ItemType<WitheredWoodSword>())
+            if (type == ItemType<WitheredWoodSword>())
             {
                 return normal;
             }
 
-            if (type == ModContent.ItemType<LivingWoodSword>())
+            if (type == ItemType<LivingWoodSword>())
             {
                 return extra;
             }
@@ -198,7 +198,7 @@ namespace CoolerItemVisualEffect.Weapons
             if (Charged && Player.CheckMana(50, true))
             {
                 var cen = projCenter - (CollidingCenter - DrawOrigin).RotatedBy(RealRotation) * new Vector2(Player.direction, 1) * 1.5f + new Vector2(0, -24);
-                Projectile.NewProjectile(projectile.GetSource_FromThis(), cen, default, ModContent.ProjectileType<WitheredTree>(), Projectile.damage * 4, Projectile.knockBack, Projectile.owner, UpgradeValue(1, 3));
+                Projectile.NewProjectile(projectile.GetSource_FromThis(), cen, default, ProjectileType<WitheredTree>(), Projectile.damage * 4, Projectile.knockBack, Projectile.owner, UpgradeValue(1, 3));
                 for (int n = 0; n < 30; n++)
                 {
                     Dust.NewDustPerfect(cen, UpgradeValue(MyDustId.Wood, MyDustId.GreenGrass), (MathHelper.TwoPi / 30 * n).ToRotationVector2() * Main.rand.NextFloat(2, 8));
@@ -248,7 +248,7 @@ namespace CoolerItemVisualEffect.Weapons
             if (SACoolDown < 0 && Main.rand.NextBool(controlTier % 5 == 4 ? 2 : 5))
             {
                 var cen = target.Center + new Vector2(0, 24);
-                Projectile.NewProjectile(projectile.GetSource_FromThis(), cen, default, ModContent.ProjectileType<WitheredTree>(), Projectile.damage * 2, Projectile.knockBack, Projectile.owner, UpgradeValue(0, 2));
+                Projectile.NewProjectile(projectile.GetSource_FromThis(), cen, default, ProjectileType<WitheredTree>(), Projectile.damage * 2, Projectile.knockBack, Projectile.owner, UpgradeValue(0, 2));
                 SACoolDown = 15;
                 for (int n = 0; n < 30; n++)
                 {
@@ -276,7 +276,7 @@ namespace CoolerItemVisualEffect.Weapons
                 Main.RunOnMainThread(() => modplr.colorInfo.tex = new Texture2D(Main.graphics.GraphicsDevice, 300, 1));
             }
             CoolerItemVisualEffectPlayer.ChangeItemTex(Player);
-            CoolerItemVisualEffectMod.UpdateHeatMap(ref modplr.colorInfo.tex, modplr.hsl, modplr.ConfigurationSwoosh, TextureAssets.Item[Player.HeldItem.type].Value);
+            UpdateHeatMap(ref modplr.colorInfo.tex, modplr.hsl, modplr.ConfigurationSwoosh, TextureAssets.Item[Player.HeldItem.type].Value);
             base.OnSpawn(source);
         }
     }
@@ -468,12 +468,12 @@ namespace CoolerItemVisualEffect.Weapons
             //var type = Player.HeldItem.type;
             var type = sourceItem.type;
 
-            if (type == ModContent.ItemType<WitheredWoodSword>())
+            if (type == ItemType<WitheredWoodSword>())
             {
                 return normal;
             }
 
-            if (type == ModContent.ItemType<LivingWoodSword>())
+            if (type == ItemType<LivingWoodSword>())
             {
                 return extra;
             }
@@ -635,7 +635,7 @@ namespace CoolerItemVisualEffect.Weapons
             item.knockBack = 8;
             item.useStyle = ItemUseStyleID.Swing;
             item.autoReuse = true;
-            Item.shoot = ModContent.ProjectileType<SereStoneSword_Blade>();
+            Item.shoot = ProjectileType<SereStoneSword_Blade>();
 
         }
         public override void AddRecipes()
@@ -853,12 +853,12 @@ namespace CoolerItemVisualEffect.Weapons
         {
             var type = sourceItem.type;
 
-            if (type == ModContent.ItemType<SereStoneSword>())
+            if (type == ItemType<SereStoneSword>())
             {
                 return normal;
             }
 
-            if (type == ModContent.ItemType<CrystalStoneSword>())
+            if (type == ItemType<CrystalStoneSword>())
             {
                 return extra;
             }
@@ -979,11 +979,11 @@ namespace CoolerItemVisualEffect.Weapons
     {
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
-            Item.ShaderItemEffectInventory(spriteBatch, position, origin, LogSpiralLibraryMod.Misc[0].Value, Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffectMod.ModTime) / 2 + 0.5f), scale);
+            Item.ShaderItemEffectInventory(spriteBatch, position, origin, LogSpiralLibraryMod.Misc[0].Value, Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * ModTime) / 2 + 0.5f), scale);
         }
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
         {
-            Item.ShaderItemEffectInWorld(spriteBatch, LogSpiralLibraryMod.Misc[0].Value, Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffectMod.ModTime) / 2 + 0.5f), rotation);
+            Item.ShaderItemEffectInWorld(spriteBatch, LogSpiralLibraryMod.Misc[0].Value, Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * ModTime) / 2 + 0.5f), rotation);
         }
         public override void SetDefaults()
         {
@@ -1004,7 +1004,7 @@ namespace CoolerItemVisualEffect.Weapons
             Item.value = Item.sellPrice(0, 0, 0, 0);
             Item.crit = 31;
             Item.rare = ItemRarityID.Purple;
-            Item.shoot = ModContent.ProjectileType<FirstZenith_Blade>();
+            Item.shoot = ProjectileType<FirstZenith_Blade>();
         }
         public override void AddRecipes()
         {
@@ -1100,7 +1100,7 @@ namespace CoolerItemVisualEffect.Weapons
         public override void OnChargedShoot()
         {
             //CoolerSystem.UseInvertGlass = !CoolerSystem.UseInvertGlass;
-            Projectile.NewProjectile(projectile.GetSource_FromThis(), Player.Center, default, ModContent.ProjectileType<VectorField_Ultra>(), 0, 0, Player.whoAmI);//(Main.MouseWorld - Player.Center).SafeNormalize(default) * 6
+            Projectile.NewProjectile(projectile.GetSource_FromThis(), Player.Center, default, ProjectileType<VectorField_Ultra>(), 0, 0, Player.whoAmI);//(Main.MouseWorld - Player.Center).SafeNormalize(default) * 6
         }
     }
 
@@ -1120,7 +1120,7 @@ namespace CoolerItemVisualEffect.Weapons
             vectorTex = LogSpiralLibraryMod.Misc[4].Value;
         }
         public Texture2D vectorTex;
-        public override string Texture => ModContent.GetInstance<FirstZenith>().Texture;
+        public override string Texture => GetInstance<FirstZenith>().Texture;
         public Vector2 IHat
         {
             //((float)Main.time / 30f).ToRotationVector2() * 2f
@@ -1382,7 +1382,7 @@ namespace CoolerItemVisualEffect.Weapons
         public int realFlow => 120;
         public int flowCount => realFlow + 900;
         public Flow[] flows;
-        public override string Texture => ModContent.GetInstance<FirstZenith>().Texture;
+        public override string Texture => GetInstance<FirstZenith>().Texture;
         public override void SetStaticDefaults()
         {
             base.SetStaticDefaults();
@@ -1609,7 +1609,7 @@ namespace CoolerItemVisualEffect.Weapons
             vectorTex = LogSpiralLibraryMod.Misc[4].Value;
         }
         public Texture2D vectorTex;
-        public override string Texture => ModContent.GetInstance<FirstZenith>().Texture;
+        public override string Texture => GetInstance<FirstZenith>().Texture;
         public Flow[] flows;
         public int flowCount => 120;
         public Vector2 ElectricField(Vector2 vec) => new Vector2(vec.Y, MathF.Sin(vec.X) * 512);//new Vector2(vec.X * vec.X - vec.Y * vec.Y, 2 * vec.X * vec.Y) * .2f + new Vector2(-vec.Y,vec.X) * .8f
@@ -1787,17 +1787,17 @@ namespace CoolerItemVisualEffect.Weapons
         }
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
-            item.ShaderItemEffectInventory(spriteBatch, position, origin, LogSpiralLibraryMod.Misc[0].Value, Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffectMod.ModTime) / 2 + 0.5f), scale);
+            item.ShaderItemEffectInventory(spriteBatch, position, origin, LogSpiralLibraryMod.Misc[0].Value, Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * ModTime) / 2 + 0.5f), scale);
         }
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
         {
-            item.ShaderItemEffectInWorld(spriteBatch, LogSpiralLibraryMod.Misc[0].Value, Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * CoolerItemVisualEffectMod.ModTime) / 2 + 0.5f), rotation);
+            item.ShaderItemEffectInWorld(spriteBatch, LogSpiralLibraryMod.Misc[0].Value, Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * ModTime) / 2 + 0.5f), rotation);
         }
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             for (int n = 1; n < 4; n++)
             {
-                tooltips.Add(new TooltipLine(Mod, "PureSuggestion", Language.GetTextValue("Mods.CoolerItemVisualEffect.FinalFractalTip." + n)) { OverrideColor = Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * (CoolerItemVisualEffectMod.ModTime + 40 * n)) / 2 + 0.5f) });
+                tooltips.Add(new TooltipLine(Mod, "PureSuggestion", Language.GetTextValue("Mods.CoolerItemVisualEffect.FinalFractalTip." + n)) { OverrideColor = Color.Lerp(new Color(99, 74, 187), new Color(20, 120, 118), (float)Math.Sin(MathHelper.Pi / 60 * (ModTime + 40 * n)) / 2 + 0.5f) });
             }
         }
         public override void SetDefaults()

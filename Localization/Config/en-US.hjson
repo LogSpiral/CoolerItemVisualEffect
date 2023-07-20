@@ -1,549 +1,432 @@
 
-Mods: {
+Mods: 
+{
 	CoolerItemVisualEffect: 
 	{
-			Configs:
+		Configs:
 		{
-			ConfigurationSwoosh:
+			MeleeSwooshConfigs:
 			{
-				DisplayName: Advanced Settings
-				MeleeSwooshConfigs:
-				{
-					coolerSwooshQuality:
-					{
-						Label: More Cool Slashing Effects's Quality Setting[i:2608][i:724][i:3764][i:757]
-						Tooltip: 
-							'''
-							"Are You Tired With The Vanilla Melee Swing Style?"
-							If You Want To Affect The Actual Attack Effect, Please Go To The Gameplay Settings To Open The Hitbox
-							The Quality Over Low Need LightingMode Is Color Or White, And The Water Quality Isn't Off.
-							Medium: Active Distort And Draw More Times.
-							High: Active Bloom Glow Light Effect.
-							Ultra: Active UltraSwoosh Effect.(Jsut Try It, As I Can't Explain It Well.
-							'''
-					}
-					toolsNoUseNewSwooshEffect:
-					{
-						Label: Cancel The Effect Of The New Slashing Effect On Tools[i:1]
-						Tooltip:
-								'''
-								(Sobbing) How Can You Abandon Your Useful Tools?!
-								Yes, To Cancel The Effect Of The New Slashing Effect On The Tool, No, Not Cancel, The Default Is Yes
-								'''
-					}
-					allowZenith:
-					{
-						Label: Apply The Slash Effect To Zenith And First Fractal[i:4956]
-						ToolTip: I know this is weird, so looking forward to their swap style.
-					}
-					actionOffsetSize:
-					{
-						Label: Change Swoosh Size As ActionStyle Changes[i:426]
-						ToolTip: Change As ActionStyle Changes,Don't You Want It?
-					}
-					actionOffsetSpeed:
-					{
-						Label: Change Use Time As ActionStyle Changes[i:3099]
-						ToolTip: This Will Out The Range Of "Visual Effect",Please Consider It
-					}
-					actionModifyEffect:
-					{
-						Label: Use Effect As ActionStyle Changes(Work In Progress)[i:675]
-						ToolTip: This Will Out The Range Of "Visual Effect",Please Consider It
-					}
-					gather:
-					{
-						Label: Whether The End Is Retracted[i:3018]
-						ToolTip: You Can Try The Don't Retracted Ones, All Great!
-					}
-					swooshActionStyle:
-					{
-						Label: Action Style Of Slashing[i:498]
-						ToolTip:				
-							'''
-							The Follow Is
-								Transverse Splitting
-								Transverse Splitting_EX
-								Heavy Slash
-								Up Slash
-								Cloud Slash
-								Wind Slash
-								Rain Slash
-								Thunder Slash
-								Storm Ultra Slash
-								Transverse Splitting_EX_Old
-								Transverse Splitting_Failed
-							'''
-					}
-					imageIndex:
-					{
-						Label: Style Of Slashing[i:3368]
-						ToolTip: I Only Prepared 12 Kinds, Recommend (Default) The One Which Index Is 7.
-					}
-					animateIndex:
-					{
-						Label: Style Of Slashing Animation Texture[i:4144]
-						ToolTip: I Only Prepared 6 Kinds, Recommend (Default) The One Which Index Is 3.
-					}
-					fadeStyle:
-					{
-						Label: Fade Style Of Swoosh[i:3368]
-						ToolTip: The Default Is Both  Need "Ultra" Quality
-					}
-					growStyle:
-					{
-						Label: Grow Style Of Swoosh[i:4144]
-						ToolTip: The Both Expand Horizontally And Offest Is Both  Need "Ultra" Quality
-					}
-					swooshSize:
-					{
-						Label: Size Of The Item And Slash[i:486]
-						ToolTip: According To The Default Size Is The Right HitBox, But Who Doesn't Like A Bigger Size?
-					}
-					swooshTimeLeft:
-					{
-						Label: LeftTime Of Swoosh[i:709]
-						ToolTip: The Default Is 10 Frame  Need "Ultra" Quality
-					}
-					shake:
-					{
-						Label: The Strength Of Screen Shaking[i:1513]
-						ToolTip: Which Is Annoier Than 「MasterSpark」From TouhouProject
-					}
-					checkAir:
-					{
-						Label: Detects Whether It Is Hollow[i:3823]
-						ToolTip: Just Try It And Make Your Own Choices www
-					}
-					swingAttackTime:
-					{
-						Label: Max Time Of Cut Down[i:561]
-						ToolTip: The Unit Is Frame. It Was 9 Before And Now It Is 6.
-					}
-					glowLight:
-					{
-						Label: Item Glow Light As Enchanted Item In MineCraft[i:989]
-						ToolTip: Maybe Better After Add That?
-					}
-					onlyChangeSizeOfSwoosh:
-					{
-						Label: Don't Change Size Of Item ItSelf[i:4923]
-						ToolTip: Only Change The Size Of SwooshEffect If It Is Yes, The Default Is No.
-					}
-					ignoreDamageType:
-					{
-						Label: Ignore The Damage Type[i:495]
-						ToolTip: Even If It Is A Magic Staff？？！！
-					}
+				coolerSwooshQuality:
+				{ 
+					Label: More Cool Slashing Effects's Quality Setting[i:2608][i:724][i:3764][i:757]
+					Tooltip: 
+						'''
+						"Are You Tired With The Vanilla Melee Swing Style?"
+						If You Want To Affect The Actual Attack Effect, Please Go To The Gameplay Settings To Open The Hitbox
+						The Quality Over Low Need LightingMode Is Color Or White, And The Water Quality Isn't Off.
+						Medium: Active Distort And Draw More Times.
+						High: Active Bloom Glow Light Effect.
+						Ultra: Active UltraSwoosh Effect.(Jsut Try It, As I Can't Explain It Well.
+						'''
 				}
-
-
+				toolsNoUseNewSwooshEffect:
+				{
+					Label: Cancel The Effect Of The New Slashing Effect On Tools[i:1]
+					Tooltip:
+							'''
+							(Sobbing) How Can You Abandon Your Useful Tools?!
+							Yes, To Cancel The Effect Of The New Slashing Effect On The Tool, No, Not Cancel, The Default Is Yes
+							'''
+				}
+				allowZenith:
+				{
+					Label: Apply The Slash Effect To Zenith And First Fractal[i:4956]
+					Tooltip: I know this is weird, so looking forward to their swap style.
+				}
+				actionOffsetSize:
+				{
+					Label: Change Swoosh Size As ActionStyle Changes[i:426]
+					Tooltip: Change As ActionStyle Changes,Don't You Want It?
+				}
+				actionOffsetSpeed:
+				{
+					Label: Change Use Time As ActionStyle Changes[i:3099]
+					Tooltip: This Will Out The Range Of "Visual Effect",Please Consider It
+				}
+				actionModifyEffect:
+				{
+					Label: Use Effect As ActionStyle Changes(Work In Progress)[i:675]
+					Tooltip: This Will Out The Range Of "Visual Effect",Please Consider It
+				}
+				gather:
+				{
+					Label: Whether The End Is Retracted[i:3018]
+					Tooltip: You Can Try The Don't Retracted Ones, All Great!
+				}
+				swooshActionStyle:
+				{
+					Label: Action Style Of Slashing[i:498]
+					Tooltip:				
+						'''
+						The Follow Is
+							Transverse Splitting
+							Transverse Splitting_EX
+							Heavy Slash
+							Up Slash
+							Cloud Slash
+							Wind Slash
+							Rain Slash
+							Thunder Slash
+							Storm Ultra Slash
+							Transverse Splitting_EX_Old
+							Transverse Splitting_Failed
+						'''
+				}
+				imageIndex:
+				{
+					Label: Style Of Slashing[i:3368]
+					Tooltip: I Only Prepared 12 Kinds, Recommend (Default) The One Which Index Is 7.
+				}
+				animateIndex:
+				{
+					Label: Style Of Slashing Animation Texture[i:4144]
+					Tooltip: I Only Prepared 6 Kinds, Recommend (Default) The One Which Index Is 3.
+				}
+				fadeStyle:
+				{
+					Label: Fade Style Of Swoosh[i:3368]
+					Tooltip: The Default Is Both  Need "Ultra" Quality
+				}
+				growStyle:
+				{
+					Label: Grow Style Of Swoosh[i:4144]
+					Tooltip: The Both Expand Horizontally And Offest Is Both  Need "Ultra" Quality
+				}
+				swooshSize:
+				{
+					Label: Size Of The Item And Slash[i:486]
+					Tooltip: According To The Default Size Is The Right HitBox, But Who Doesn't Like A Bigger Size?
+				}
+				swooshTimeLeft:
+				{
+					Label: LeftTime Of Swoosh[i:709]
+					Tooltip: The Default Is 10 Frame  Need "Ultra" Quality
+				}
+				shake:
+				{
+					Label: The Strength Of Screen Shaking[i:1513]
+					Tooltip: Which Is Annoier Than 「MasterSpark」From TouhouProject
+				}
+				checkAir:
+				{
+					Label: Detects Whether It Is Hollow[i:3823]
+					Tooltip: Just Try It And Make Your Own Choices www
+				}
+				swingAttackTime:
+				{
+					Label: Max Time Of Cut Down[i:561]
+					Tooltip: The Unit Is Frame. It Was 9 Before And Now It Is 6.
+				}
+				glowLight:
+				{
+					Label: Item Glow Light As Enchanted Item In MineCraft[i:989]
+					Tooltip: Maybe Better After Add That?
+				}
+				onlyChangeSizeOfSwoosh:
+				{
+					Label: Don't Change Size Of Item ItSelf[i:4923]
+					Tooltip: Only Change The Size Of SwooshEffect If It Is Yes, The Default Is No.
+				}
+				ignoreDamageType:
+				{
+					Label: Ignore The Damage Type[i:495]
+					Tooltip: Even If It Is A Magic Staff？？！！
+				}
+			}
+			DrawConfigs:
+			{
 				swooshColorType:
 				{
-					Label:
-					ToolTip:
+					Label: Color Style Of Slashing[i:1120]
+					Tooltip:
+							'''
+							The Follow Is
+								Weighted Average
+								Gradient
+								Diagonal Color Of The Enabled Weapon
+								Blend "Gradient" And "Diagonal Color Of the Enabled Weapon"
+								Heat Map
+							'''
 				}
 				alphaFactor:
 				{
-					Label:
-					ToolTip:
+					Label: Coefficient Of Opacity[i:170]
+					Tooltip: It Will Don't Care The Grey Value If It Is Zero.In Other Case, Opacity Will Multiply This Value.
 				}
 				isLighterDecider:
 				{
-					Label:
-					ToolTip:
+					Label: Slash effect brightness
+					Tooltip: Brightness greater than 0.5 will use high-brightness slashing
 				}
 				swooshSampler:
 				{
-					Label:
-					ToolTip:
+					Label: Sampler Style Of Slashing[i:3186]
+					Tooltip:
+							'''
+							The Follow Is
+								Anisotropic
+								Linear
+								Point
+							'''
 				}
 				swooshFactorStyle:
 				{
-					Label:
-					ToolTip:
+					Label: Factor Style Of Slashing[i:583]
+					Tooltip:
+							'''
+							The Follow Is
+								Decide The Factor At The Beginning Of Each Time.
+								Linear Interpolation (Lerp The Current One And The Next One)
+							'''
 				}
 				itemAdditive:
 				{
-					Label:
-					ToolTip:
+					Label: Weapon And Weapon Swing Effects Are Translucent And Highlighted [i:5005]
+					Tooltip:
+							'''
+							(Blend Additive,For Example,Color1=(0.5,0.7,0.3),Color2=(0.1,0.2,0.6),The Result Is (0.6,0.9,0.9))
+							阿汪:I Think This Is Weird But Someone Wants This
+							'''
 				}
 				itemHighLight:
 				{
-					Label:
-					ToolTip:
+					Label: Weapon HighLight（Ignore Natural Light)[i:65]
+					Tooltip: It Lights Up
 				}
+			}
 
+			HeatMapConfigs:
+			{
 				heatMapCreateStyle:
 				{
-					Label:
-					ToolTip:
+					Label: Heat Map Create Style[i:3534]
+					Tooltip: Wow, You Can Try To Create The One You Like!
 				}
 				heatMapFactorStyle:
 				{
-					Label:
-					ToolTip:
+					Label: Style Of HeatMap Factor[i:583]
+					Tooltip: Not Only Lerp Finally, Good Work, 阿汪.
 				}
 				hueOffsetRange:
 				{
-					Label:
-					ToolTip:
+					Label: The Offset Range Of Hue[i:1035]
+					Tooltip: The Value Of Plus Or Minus Centered On The Hue Of Original Color Is The Range Of Hue (Hue ∈ [OrighinHue - Value, OrighinHue + Value])
 				}
 				hueOffsetValue:
 				{
-					Label:
-					ToolTip:
+					Label: The Offset Value Of Original Hue[i:2870]
+					Tooltip: Add This Value To The Hue Of Original Color (OriginHue := OriginHue + Value)
 				}
 				saturationScalar:
 				{
-					Label:
-					ToolTip:
+					Label: Coefficient Of Saturation[i:1051]
+					Tooltip: Which One Do You Prefer,The Grey One Or The Colorful One?
 				}
 				luminosityRange:
 				{
-					Label:
-					ToolTip:
+					Label: The Offset Value Of Original Luminosity[i:3559]
+					Tooltip: Interpolation Similar To HSL
 				}
 				directOfHeatMap:
 				{
-					Label:
-					ToolTip:
+					Label: Offset Angle Of ColorBar[i:393]
+					Tooltip:
+							'''
+							The Default is pi,And Set It To 0 Will Inverse The Direction(They Are Polar Gradient)，Use pi/2 Or 3*pi/2 To Get Radial Gradient
+							Need "Gradient"
+							Or " Blend "Gradient" And "Diagonal Color Of the Enabled Weapon" "
+							'''
 				}
 				heatMapColors:
 				{
-					Label:
-					ToolTip:
+					Label: List Of Color Of Designated HeatMap[i:2012]
+					Tooltip:
+							'''
+							The First One To The Last One Correspond To Left To Right
+							(Show The HeatMap And You Can Know What I Mean
+							Need "Designated HeatMap"
+							'''
 				}
 				showHeatMap:
 				{
-					Label:
-					ToolTip:
+					Label: Show The Heat Map[i:2012]
+					Tooltip: Not "Weighted Average" And "Diagonal Color Of The Enabled Weapon"
 				}
+			}
 
+			RenderConfigs:
+			{
 				luminosityFactor:
 				{
-					Label:
-					ToolTip:
+					Label: Coefficient Of Luminosity[i:4952]
+					Tooltip: Strength Of Bloom Glow Light, Need "High" Quality
 				}
 				distortFactor:
 				{
-					Label:
-					ToolTip:
+					Label: Coefficient Of Distortion[i:2880]
+					Tooltip: It's So Weird That I'm Ready To Think About It By Brain, Need "Medium" Quality
 				}
 				distortSize:
 				{
-					Label:
-					ToolTip:
+					Label: Size Of Distortion[i:3199]
+					Tooltip: The Default Is 1.5(Set It To 1 If It Is Too Lag)  Need "Medium" Quality
 				}
 				maxCount:
 				{
-					Label:
-					ToolTip:
+					Label: Draw the Effect How Many Times？[i:554]
+					Tooltip: The Default Is Once(normal),It Will Be So Coool More Than Once,But It Well Be Very Lagging(x  It Only Active When Your LightingMode Is White Or Color
 				}
+			}
 
+			OtherConfigs:
+			{
 				useWeaponDisplay:
 				{
-					Label:
-					ToolTip:
+					Label: Weapon display switch
+					Tooltip: Yes, to turn on the weapon display, No, to cancel. Default is Yes
 				}
 				firstWeaponDisplay:
 				{
-					Label:
-					ToolTip:
+					Label: Weapon display in player interface
+					Tooltip: Yes, to enable the display of the first weapon in inventory(The First Item Will Be Ignored For Some Annoy Reason) in player interface, no,  to cancel. The default is
 				}
 				weaponScale:
 				{
-					Label:
-					ToolTip:
+					Label: Weapon display size
+					Tooltip: Adjust the display size of weapons
 				}
 				hitBoxStyle:
 				{
-					Label:
-					ToolTip:
+					Label: Melee Hit Box Modify Style
+					Tooltip: To reduce the sense of disobedience.
 				}
 				DontChangeMyTitle:
 				{
-					Label:
-					ToolTip:
+					Label: Don't Change The Game Title While Swing The Sword！！！
+					Tooltip: OMG this is so wired.The Title Will Change If It Is Off.
 				}
 				ItemDropEffectActive:
 				{
-					Label:
-					ToolTip:
+					Label: Active Extra Glow Effect To Item In World.
+					Tooltip: I'm So Lazy That It Only Has One Style.
 				}
 				ItemInventoryEffectActive:
 				{
-					Label:
-					ToolTip:
+					Label: Active Extra Glow Effect To Item In Inventory.
+					Tooltip: I Don't Like It Too Much As It Is Too Dazzling.
 				}
 				VanillaProjectileDrawModifyActive:
 				{
-					Label:
-					ToolTip:
+					Label: Active Extra Draw Effect To Proejectile.
+					Tooltip: I Hope You Like It.
 				}
 				TeleprotEffectActive:
 				{
-					Label:
-					ToolTip:
+					Label: Active Teleport Extra Effect(WIP)
+					Tooltip: Exaggerate Magic Effect Is Too Much!!(I'm boring with it a bit
 				}
 				CelesteMoveAnimation:
 				{
-					Label:
-					ToolTip:
+					Label: Improve Movement And Its Animation(WIP)
+					Tooltip: You Must Know That This One Is Imitating Celeste, Right?
 				}
 				dustQuantity:
 				{
-					Label:
-					ToolTip:
+					Label: Dust Amount[i:1348]
+					Tooltip: The Larger The Value Is , The More Dusts There Will Be.
 				}
 				texStyle:
 				{
-					Label:
-					ToolTip:
+					Label: ConfigStyle
+					# Tooltip:
 				}
 				NormalActive:
 				{
-					Label:
-					ToolTip:
+					Label: '''[i:4] Normal'''
+					# Tooltip:
 				}
 				HurricaneActive:
 				{
-					Label:
-					ToolTip:
+					Label: '''[i:3852] Hurricane'''
+					# Tooltip:
 				}
 				HugeActive:
 				{
-					Label:
-					ToolTip:
+					Label: '''[i:426] Huge'''
+					# Tooltip:
 				}
 				ExaggerateActive:
 				{
-					Label:
-					ToolTip:
+					Label: '''[i:4956] Exaggerate'''
+					# Tooltip:
 				}
 				BrightActive:
 				{
-					Label:
-					ToolTip:
+					Label: '''[i:3768] Bright'''
+					# Tooltip:
 				}
 				DarkActive:
 				{
-					Label:
-					ToolTip:
+					Label: '''[i:1327] Dark'''
+					# Tooltip:
 				}
 				SmoothActive:
 				{
-					Label:
-					ToolTip:
+					Label: '''[i:3781] Smooth'''
+					# Tooltip:
 				}
 				TerraActive:
 				{
-					Label:
-					ToolTip:
+					Label: '''[i:757] Terra|Especially Terra_Blade Recommended'''
+					# Tooltip:
 				}
 				HolyActive:
 				{
-					Label:
-					ToolTip:
+					Label: '''[i:674] Holy|Especially True_Excalibur Recommended'''
+					# Tooltip:
 				}
 				EvilActive:
 				{
-					Label:
-					ToolTip:
+					Label: '''[i:675] Evil|Especially True_NightsEdge Recommended'''
+					# Tooltip:
 				}
 				OldOnesActive:
 				{
-					Label:
-					ToolTip:
+					Label: '''[i:3827] OldOnes|Especially Flying_Dragon Recommended'''
+					# Tooltip:
 				}
 				InfluxActive:
 				{
-					Label:
-					ToolTip:
+					Label: '''[i:2880] Influx|Especially Influx_Waver Recommended'''
+					# Tooltip:
 				}
 				GreyActive:
 				{
-					Label:
-					ToolTip:
+					Label: '''[i:389] Grey'''
+					# Tooltip:
 				}
 				InverseActive:
 				{
-					Label:
-					ToolTip:
+					Label: '''[i:1968] Inverse Hue'''
+					# Tooltip:
 				}
 				RainbowActive:
 				{
-					Label:
-					ToolTip:
+					Label: '''[i:3063] Rainbow'''
+					# Tooltip:
 				}
 				UltraRainbowActive:
 				{
-					Label:
-					ToolTip:
+					Label: '''[i:5005] Ultra Rainbow'''
+					# Tooltip:
 				}
 			}
-
+			ConfigurationSwoosh:
+			{
+				DisplayName: Advanced Settings
+			}
 		}
-		ConfigSLer: {
-			Refresh: Refresh
-			TooManySameName: "///Failed!/// Hey bro, the file share the default name is toooo many! Please rename Them in time."
-			SameDefault: "///Notice!/// Now the saved files are all the default names. I added the serial number for you to distinguish. Remember to tidy up in time"
-			SavedAs: Current config has been saved as
-			DefaultName: UserDefinedConfig
-			LoadThisConfig: Set the current configuration to this
-			Path: File path:
-
-			RenameTip: {
-				Exists: A file with the same name already exists
-				TooLong: File name must not exceed 40 characters
-				Illegal: File name must not include following characterts: \\, /, :, *, ?, \", <, > or |
-			}
-
-			NotFinishYet: This page is being worked in progress......
-			Successed: \Load successed/！！
-			Failed: /Load failed\
-		}
-
-		Items: {
-			ConfigSLer: {
-				DisplayName: Config Reader/Writer
-				Tooltip:
-					'''
-					Left Click To Save Current Config.
-					Right Click To Show The UI And Choose Or Edit.
-					'''
-			}
-
-			旧日支配者: {
-				DisplayName: Great Old Ones
-				Tooltip: This power has not fully awakened
-			}
-
-			真旧日支配者.DisplayName: True Great Old Ones
-
-			FirstFractal_CIVE: {
-				DisplayName: First Fractal
-				Tooltip: Denied，forgotten，faded......It will return finally。
-			}
-
-			WitheredWoodSword: {
-				DisplayName: WitheredWoodSword
-				Tooltip: (New Version Work In Progress)
-			}
-
-			LivingWoodSword: {
-				DisplayName: Living Wood Sword
-				Tooltip: (New Version Work In Progress)
-			}
-
-			SereStoneSword: {
-				DisplayName: Sere Stone Sword
-				Tooltip: (New Version Work In Progress)
-			}
-
-			MossStoneSword: {
-				DisplayName: Moss Stone Sword
-				Tooltip: (New Version Work In Progress)
-			}
-
-			CrystalStoneSword.DisplayName: Crystal Stone Sword
-
-			RustySteelBlade: {
-				DisplayName: Rusty Steel Blade
-				Tooltip: (New Version Work In Progress)
-			}
-
-			RefinedSteelBlade: {
-				DisplayName: Refines Steel Blade
-				Tooltip: (New Version Work In Progress)
-			}
-
-			PureFractal: {
-				DisplayName: Pure Fractal
-				Tooltip: The Edge of Zenith Which Upgraded by the Ancient and Pure NaturalMagic.Show it, Your first Power.(New Version Work In Progress)
-			}
-
-			FirstZenith: {
-				DisplayName: First Zenith
-				Tooltip: (New Version Work In Progress)
-			}
-
-			FinalFractal: {
-				DisplayName: Final Fractal
-				Tooltip: Part of it includes itself, which we called Fractal. Infinite blades rotating as hurricane, they are part of it as well.(New Version Work In Progress)
-			}
-
-			WitheredWoodSword_Old: {
-				DisplayName: WitheredWoodSword_Old
-				Tooltip: Press Mouse Right, Then Dash And Release Thrones.
-			}
-
-			LivingWoodSword_Old: {
-				DisplayName: LivingWoodSword_Old
-				Tooltip: Press Mouse Right, Then Dash And Release Many Thrones.
-			}
-
-			SereStoneSword_Old: {
-				DisplayName: SereStoneSword_Old
-				Tooltip: Press Mouse Right, And Release Stalagmites.
-			}
-
-			MossStoneSword_Old: {
-				DisplayName: MossStoneSword_Old
-				Tooltip: Press Mouse Right, And Release List Of Stalagmite.
-			}
-
-			RustySteelBlade_Old: {
-				DisplayName: RustySteelBlade_Old
-				Tooltip: Press Mouse Right, And Release Rusty Steel Shards.
-			}
-
-			RefinedSteelBlade_Old: {
-				DisplayName: RefinedSteelBlade_Old
-				Tooltip: Press Mouse Right, And Release Many Refined Steel Shards.
-			}
-
-			PureFractal_Old: {
-				DisplayName: PureFractal_Old
-				Tooltip: The Edge of Zenith Which Upgraded by the Ancient and Pure NaturalMagic.Show it, Your first Power.
-			}
-
-			FirstZenith_Old.DisplayName: FirstZenith_Old
-
-			FinalFractal_Old: {
-				DisplayName: FinalFractal_Old
-				Tooltip: Part of it includes itself, which we called Fractal. Infinite blades rotating as hurricane, they are part of it as well.
-			}
-
-			UShallNotPass.DisplayName:
-				'''
-				I'm so sorry for the "Correct Name"
-				And I'm Making The New Version Of It Know.
-				The Old Version Will Be Retained.
-				You Can Use It Now(   ;)
-				'''
-			IDTKNOW.DisplayName: Pls Use This Weapon With A Correct Name.
-			FFBag.DisplayName: 返还袋ReturnBag
-			FZBag.DisplayName: 返还袋ReturnBag
-			LWBag.DisplayName: 返还袋ReturnBag
-			MSBag.DisplayName: 返还袋ReturnBag
-			PFBag.DisplayName: 返还袋ReturnBag
-			ReturnBag.DisplayName: 返还袋ReturnBag
-			RSBag.DisplayName: 返还袋ReturnBag
-			RSEXBag.DisplayName: 返还袋ReturnBag
-			SSBag.DisplayName: 返还袋ReturnBag
-			Azure.DisplayName: Azure
-			DemonScythe.DisplayName: Demon Scythe
-			WWBag.DisplayName: 返还袋ReturnBag
-		}
-
-		FinalFractalTip: {
-			0: This Even not the final state of them.
-			1: 「The Ultra Fractal Of The First And The Final」
-			2: 「Dimension Cut Of Fractal」
-			3: Zenith「FinalFractal」
-		}
-
 		ConfigSwoosh: {
 			Label: Advanced Settings
 			Label1: Melee Slashing Settings[i:1199]
@@ -556,261 +439,11 @@ Mods: {
 			D3: Value Settings[i:2799]
 			D4: Detail Settings[i:3619]
 			D5: Experimental Settings[i:3611]
-			1: More Cool Slashing Effects's Quality Setting[i:2608][i:724][i:3764][i:757]
-			2:
-				'''
-				"Are You Tired With The Vanilla Melee Swing Style?"
-				If You Want To Affect The Actual Attack Effect, Please Go To The Gameplay Settings To Open The Hitbox
-				The Quality Over Low Need LightingMode Is Color Or White, And The Water Quality Isn't Off.
-				Medium: Active Distort And Draw More Times.
-				High: Active Bloom Glow Light Effect.
-				Ultra: Active UltraSwoosh Effect.(Jsut Try It, As I Can't Explain It Well.
-				'''
-			3: Cancel The Effect Of The New Slashing Effect On Tools[i:1]
-			4:
-				'''
-				(Sobbing) How Can You Abandon Your Useful Tools?!
-				Yes, To Cancel The Effect Of The New Slashing Effect On The Tool, No, Not Cancel, The Default Is No
-				'''
-			5: Ignoring Natural Light When How Bright Is The Weapon Texture?[i:389]
-			6: Brightness Greater Than This Value Will Use High-Brightness Slashing
-			7: Color Style Of Slashing[i:1120]
-			8:
-				'''
-				The Follow Is
-					Weighted Average
-					Gradient
-					Diagonal Color Of The Enabled Weapon
-					Blend "Gradient" And "Diagonal Color Of the Enabled Weapon"
-					Heat Map
-				'''
-			9: Sampler Style Of Slashing[i:3186]
-			10:
-				'''
-				The Follow Is
-				Anisotropic
-				Linear
-				Point
-				'''
-			11: Factor Style Of Slashing[i:583]
-			12:
-				'''
-				The Follow Is
-				Decide The Factor At The Beginning Of Each Time.
-				Linear Interpolation (Lerp The Current One And The Next One)
-				'''
-			13: Action Style Of Slashing[i:498]
-			14:
-				'''
-				The Follow Is
-					Transverse Splitting
-					Transverse Splitting_EX
-					Heavy Slash
-					Up Slash
-					Cloud Slash
-					Wind Slash
-					Rain Slash
-					Thunder Slash
-					Storm Ultra Slash
-					Transverse Splitting_EX_Old
-					Transverse Splitting_Failed
-				'''
-			15: Size Of The Item And Slash[i:486]
-			16: According To The Default Size Is The Right HitBox, But Who Doesn't Like A Bigger Size?
-			17: The Offset Range Of Hue[i:1035]
-			18: The Value Of Plus Or Minus Centered On The Hue Of Original Color Is The Range Of Hue (Hue ∈ [OrighinHue - Value, OrighinHue + Value])
-			19: The Offset Value Of Original Hue[i:2870]
-			20: Add This Value To The Hue Of Original Color (OriginHue := OriginHue + Value)
-			21: Coefficient Of Hue[i:1051]
-			22: Which One Do You Prefer,The Grey One Or The Colorful One?
-			23: The Offset Value Of Original Luminosity[i:3559]
-			24: Interpolation Similar To HSL
-			25: Coefficient Of Luminosity[i:4952]
-			26: Strength Of Bloom Glow Light, Need "High" Quality
-			27: Coefficient Of Rotation Speed[i:561]
-			28: Applies Only Tail-Wagging
-			29: Coefficient Of Distortion[i:2880]
-			30: It's So Weird That I'm Ready To Think About It By Brain, Need "Medium" Quality
-			31: Weapon And Weapon Swing Effects Are Translucent And Highlighted [i:5005]
-			32:
-				'''
-				(Blend Additive,For Example,Color1=(0.5,0.7,0.3),Color2=(0.1,0.2,0.6),The Result Is (0.6,0.9,0.9))
-				阿汪:I Think This Is Weird But Someone Wants This
-				'''
-			33: Weapon HighLight（Ignore Natural Light)[i:65]
-			34: It Lights Up
-			35: The Strength Of Screen Shaking[i:1513]
-			36: Which Is Annoier Than 「MasterSpark」From TouhouProject
-			37: Style Of Slashing[i:3368]
-			38: I Only Prepared 12 Kinds, Recommend (Default) The One Which Index Is 7.
-			39: Detects Whether It Is Hollow[i:3823]
-			40: Just Try It And Make Your Own Choices www
-			41: Whether The End Is Retracted[i:3018]
-			42: You Can Try The Don't Retracted Ones, All Great!
-			43: Apply The Slash Effect To Zenith And First Fractal[i:4956]
-			44:
-				'''
-				OMG It Is Really Cool For All Color Style
-				I Recommend Click The Default And Choose The Max Size
-				While The Action Style Choose The Last One
-				And Turn The Strength Of Screen Shaking To The Value Greater Than 0.3
-				Finally Use Linear Interpolation
-				So Coooooooool！！！
-				'''
-			45: Item Glow Light As Enchanted Item In MineCraft[i:989]
-			46: Maybe Better After Add That?
-			Label_2: SlashingPreInstall
-			47: PreInstall Style
-			48: You can change the settings in the other page.
-			49: Don't Change The Game Title While Swing The Sword！！！
-			50: OMG this is so wired.The Title Will Change If It Is Off.
-			51: Draw the Effect How Many Times？[i:554]
-			52: The Default Is Once(normal),It Will Be So Coool More Than Once,But It Well Be Very Lagging(x  It Only Active When Your LightingMode Is White Or Color
-			53: Offset Angle Of ColorBar[i:393]
-			54:
-				'''
-				The Default is pi,And Set It To 0 Will Inverse The Direction(They Are Polar Gradient)，Use pi/2 Or 3*pi/2 To Get Radial Gradient
-				Need "Gradient"
-				Or " Blend "Gradient" And "Diagonal Color Of the Enabled Weapon" "
-				'''
-			55: LeftTime Of Swoosh[i:709]
-			56: The Default Is 10 Frame  Need "Ultra" Quality
-			57: Don't Change Size Of Item ItSelf[i:4923]
-			58: Only Change The Size Of SwooshEffect If It Is Yes, The Default Is No.
-			59: Fade Style Of Swoosh[i:3368]
-			60: The Default Is Both  Need "Ultra" Quality
-			61: Grow Style Of Swoosh[i:4144]
-			62: The Both Expand Horizontally And Offest Is Both  Need "Ultra" Quality
-			63: Style Of Slashing Animation Texture[i:4144]
-			64: I Only Prepared 6 Kinds, Recommend (Default) The One Which Index Is 3.
-			65: Size Of Distortion[i:3199]
-			66: The Default Is 1.5(Set It To 1 If It Is Too Lag)  Need "Medium" Quality
-			67: Show The Heat Map[i:2012]
-			68: Not "Weighted Average" And "Diagonal Color Of The Enabled Weapon"
-			69: Change Swoosh Size As ActionStyle Changes[i:426]
-			70: Change As ActionStyle Changes,Don't You Want It?
-			71: Mode Of Melee Hit Box
-			72: Although I Said "Visual Effect Modify", But I Need To Consider The Balance Of Visual Effect And Hit Box
-			73: Change Use Time As ActionStyle Changes[i:3099]
-			74: Notice: This Will Out The Range Of "Visual Effect",Please Consider It
-			75: Change Use Effect As ActionStyle Changes(Work In Progress)[i:675]
-			76: Notice: This Will Out The Range Of "Visual Effect",Please Consider It
-			77: Ignore The Damage Type[i:495]
-			78: Even If It Is A Magic Staff？？！！
-			79: Style Of HeatMap Factor[i:583]
-			80: Not Only Lerp Finally, Good Work, 阿汪.
-			81: List Of Color Of Designated HeatMap[i:2012]
-			82:
-				'''
-				The First One To The Last One Correspond To Left To Right
-				(Show The HeatMap And You Can Know What I Mean
-				Need "Designated HeatMap"
-				'''
-			83: Coefficient Of Opacity[i:170]
-			84: It Will Don't Care The Grey Value If It Is Zero.In Other Case, Opacity Will Multiply This Value.
-			85: Dust Amount[i:1348]
-			86: The Larger The Value Is , The More Dusts There Will Be.
-			87: Heat Map Create Style[i:3534]
-			88: Wow, You Can Try To Create The One You Like.
-			89: Max Time Of Cut Down[i:561]
-			90: The Unit Is Frame. It Was 9 Before And Now It Is 6.
 		}
 
 		Config: {
 			Label: Visual Settings
 			head1: Weapon Display
-			Num1: Weapon display switch
-			Num2: Yes, to turn on the weapon display, No, to cancel. Default is Yes
-			Num3: Weapon display in player interface
-			Num4: Yes, to enable the display of the first weapon in inventory(The First Item Will Be Ignored For Some Annoy Reason) in player interface, no,  to cancel. The default is
-			1: Dye used in weapons
-			2: The dye effect of the selected armor slot will be applied to the displayed weapon.
-			3: Weapon glowmask drawing switch
-			4: Yes, to turn on the weapon glowmask drawing(It will only take effect when the body armor has a glowmask, the effect is the same as the armor glowmask), no, to cancel. Default is No
-			5: Weapon glowmask brightness
-			6: Adjust the brightness of weapon glowmask
-			head2: Item Effect
-			head3: Slash Visual Effect (affects only the visual effect, not the gameplay)
-			7: More cool slashing effects
-			8:
-				'''
-				Are you tired with the vanilla melee swing style? 
-				 If you want to affect the actual attack effect, please go to the gameplay settings to open the hitbox
-				'''
-			9: Item light effect in world
-			10: Yes, to turn on the lighting effect of items in world, No, to cancel. Default is Yes
-			11: Weapon display size
-			12: Adjust the display size of weapons
-			13: Slash effect brightness
-			14: Brightness greater than 0.5 will use high-brightness slashing
-			15: Slashing effect color
-			16: Yes, associate the slashing effect color with the diagonal color of the enabled weapon map, no, use a single color. Default is Yes
-			17: Weapon and weapon swing effects are translucent and highlighted
-			18: Log_Spiral:I think this is weird but someone wants this
-			19: Cancel the effect of the new slashing effect on tools
-			20: Yes, to cancel the effect of the new slashing effect on the tool, No, not cancel, the default is No
-			23: The type of Item light effect in world
-			24: Misc Settings
-			25: Active Extra Glow Effect To Item In World.
-			26: I'm So Lazy That It Only Has One Style.
-			27: Active Extra Glow Effect To Item In Inventory.
-			28: I Don't Like It Too Much As It Is Too Dazzling.
-			29: Active Extra Draw Effect To Proejectile.
-			30: I Hope You Like It.
-			31: Active Teleport Extra Effect(WIP)
-			32: Exaggerate Magic Effect Is Too Much!!(I'm boring with it a bit
-			33: Melee Hit Box Modify Style
-			34: To reduce the sense of disobedience.
-			35: Improve Movement And Its Animation(WIP)
-			36: You Must Know That This One Is Imitating Celeste, Right?
-		}
-
-		ConfigurationServer: {
-			Label: Gameplay Settings
-			SlashSettings: Slash Gameplay Effect (affects only the gameplay, not the visual effect)
-			HitboxName: Use a new hitbox that matches the swing effect
-			HitboxTooltip: Yes, to enable a new hitbox for the weapon, no, to use the vanilla hitbox. Default is Yes
-			AttackablesName: Melee Slash Attackable Enemies Amount
-			AttackablesTooltip: Maximum number of enemies that can be damaged at one swing of the weapon.
-			Parry: Parry Settings
-			ParryName: Weapon Parry
-			ParryTooltip:
-				'''
-				If yes, the weapons listed below will be able to parry attacks.
-				Useful only when equipped with shield accessories
-				'''
-			ParryListName: Add parry effect to these weapons:
-			ParryListTooltip: List of weapons that can be used for parrying
-		}
-
-		Projectiles: {
-			FinalFractalDimensionalSwoosh.DisplayName: 分形次元斩
-			FinalFractalDimensionalSwoosh2.DisplayName: 分形次元斩
-			FinalFractalDimensionalSwoosh3.DisplayName: 分形次元斩
-			FinalFractalItem.DisplayName: 最终分形
-			FinalFractalProjectile.DisplayName: 最终分形之影
-			FinalFractalShadow.DisplayName: 最终分形之影
-			Zenith_FirstFractal.DisplayName: 天顶「FinalFractal」
-			Zenith_FirstFractals.DisplayName: 天顶「FinalFractal」
-			HitAssistProj.DisplayName: Hit Assist Proj
-			AzureProj.DisplayName: Azure Proj
-			DemonScythe_1.DisplayName: Demon Scythe_1
-			DemonScythe_Proj.DisplayName: 恶魔之镰
-			FirstZenith_Blade.DisplayName: 初源峰巅
-			FirstZenithProj.DisplayName: First Zenith Proj
-			PureFractalProj.DisplayName: Pure Fractal Proj
-			RustySteelBladeProj.DisplayName: 做个锤子
-			SereStoneSword_Blade.DisplayName: WitheredWoodSword
-			SereStoneSwordProj.DisplayName: 做个锤子
-			SharpStoneTears.DisplayName: Sharp Stone Tears
-			VectorField.DisplayName: Vector Field
-			VectorField_EX.DisplayName: Vector Field_ E X
-			VectorField_Ultra.DisplayName: Vector Field_ Ultra
-			WitheredTree.DisplayName: Withered Tree
-			WitheredWood.DisplayName: Withered Wood
-			WitheredWoodSword_Blade.DisplayName: WitheredWoodSword
-			WitheredWoodSword_Blade_GivenUp.DisplayName: WitheredWoodSword
-			WitheredWoodSwordProj.DisplayName: 做个锤子
 		}
 	}
 }
