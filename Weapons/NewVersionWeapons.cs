@@ -211,7 +211,7 @@ namespace CoolerItemVisualEffect.Weapons
             {
                 bool large = (controlState == 2 || controlTier % 5 == 4);
                 var modplr = Player.GetModPlayer<CoolerItemVisualEffectPlayer>();
-                modplr.NewUltraSwoosh(Color.DarkRed, Player.HeldItem.type, 1, 1
+                modplr.NewCoolerSwoosh(Color.DarkRed, Player.HeldItem.type, 1, 1
                     , large ? (byte)30 : (byte)15, ((projTex.Size() / new Vector2(FrameMax.X, FrameMax.Y)).Length() * Player.GetAdjustedItemScale(Player.HeldItem) - (new Vector2(0, projTex.Size().Y / FrameMax.Y) - DrawOrigin).Length()) * (large ? 0.625f : .5f), _negativeDir: controlTier % 2 == 1
                     , _rotation: 0, xscaler: large ? 1.25f : 1, angleRange: (Player.direction == 1 ? -1.125f : 2.125f, Player.direction == 1 ? 3f / 8 : 0.625f));//MathHelper.Pi / 8 * 3, -MathHelper.PiOver2 - MathHelper.Pi / 8
                 modplr.UpdateVertex();
@@ -547,7 +547,7 @@ namespace CoolerItemVisualEffect.Weapons
             {
                 bool large = (controlState == 2 || (int)(timeCount / MaxTime) % 5 == 4);
                 var modplr = Player.GetModPlayer<CoolerItemVisualEffectPlayer>();
-                modplr.NewUltraSwoosh(Color.DarkRed, Player.HeldItem.type, 1, large ? 2 : 1
+                modplr.NewCoolerSwoosh(Color.DarkRed, Player.HeldItem.type, 1, large ? 2 : 1
                     , large ? (byte)30 : (byte)15, ((projTex.Size() / new Vector2(FrameMax.X, FrameMax.Y)).Length() * Player.GetAdjustedItemScale(Player.HeldItem) - (new Vector2(0, projTex.Size().Y / FrameMax.Y) - DrawOrigin).Length()) * (large ? 0.625f : .5f), _negativeDir: false
                     , _rotation: large ? MathHelper.Pi : 0, xscaler: large ? 1.25f : 1, heat: HeatMap, angleRange: (Player.direction == 1 ? -1.125f : 2.125f, Player.direction == 1 ? 3f / 8 : 0.625f));//MathHelper.Pi / 8 * 3, -MathHelper.PiOver2 - MathHelper.Pi / 8
                 modplr.UpdateVertex();
@@ -606,11 +606,11 @@ namespace CoolerItemVisualEffect.Weapons
             }
             base.OnSpawn(source);
         }
-        public override void RenderInfomation(ref (float M, float Intensity, float Range) useBloom, ref (float M, float Range, Vector2 director) useDistort, ref (Texture2D fillTex, Vector2 texSize, Color glowColor, Color boundColor, float tier1, float tier2, Vector2 offset, bool lightAsAlpha, bool inverse) useMask)
+        public override void RenderInfomation(ref BloomEffectInfo useBloom, ref AirDistortEffectInfo useDistort, ref MaskEffectInfo useMask)
         {
             var config = Player.GetModPlayer<CoolerItemVisualEffectPlayer>().ConfigurationSwoosh;
-            useBloom = (0, config.luminosityFactor, 6);
-            useDistort = (0, config.distortSize, Rotation.ToRotationVector2() * -0.15f * config.distortFactor);
+            useBloom = new BloomEffectInfo(0, config.luminosityFactor, 6, 3, true);
+            useDistort = new AirDistortEffectInfo(config.distortSize, Rotation.ToRotationVector2() * -0.15f * config.distortFactor);
         }
         public override void VertexInfomation(ref bool additive, ref int indexOfGreyTex, ref float endAngle, ref bool useHeatMap, ref int p)
         {
@@ -1085,11 +1085,11 @@ namespace CoolerItemVisualEffect.Weapons
             }
             base.OnSpawn(source);
         }
-        public override void RenderInfomation(ref (float M, float Intensity, float Range) useBloom, ref (float M, float Range, Vector2 director) useDistort, ref (Texture2D fillTex, Vector2 texSize, Color glowColor, Color boundColor, float tier1, float tier2, Vector2 offset, bool lightAsAlpha, bool inverse) useMask)
+        public override void RenderInfomation(ref BloomEffectInfo useBloom, ref AirDistortEffectInfo useDistort, ref MaskEffectInfo useMask)
         {
             var config = Player.GetModPlayer<CoolerItemVisualEffectPlayer>().ConfigurationSwoosh;
-            useBloom = (0, config.luminosityFactor, 6);
-            useDistort = (0, config.distortSize, Rotation.ToRotationVector2() * -0.15f * config.distortFactor);
+            useBloom = new BloomEffectInfo(0, config.luminosityFactor, 6, 3, true);
+            useDistort = new AirDistortEffectInfo(config.distortSize, Rotation.ToRotationVector2() * -0.15f * config.distortFactor);
         }
         public override void VertexInfomation(ref bool additive, ref int indexOfGreyTex, ref float endAngle, ref bool useHeatMap, ref int p)
         {

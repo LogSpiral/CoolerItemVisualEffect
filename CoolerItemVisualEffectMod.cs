@@ -517,33 +517,8 @@ namespace CoolerItemVisualEffect
             }
             if (modPlayer.SwooshActive)
             {
-                //foreach (var ultraSwoosh in modPlayer.ultraSwooshes)
-                //{
-                //    if (ultraSwoosh != null && ultraSwoosh.Active)
-                //    {
-                //        Main.spriteBatch.Draw(ultraSwoosh.heatMap, ultraSwoosh.center - Main.screenPosition, null, Color.White, 0, default, 1, 0, 0);
-                //        Utils.DrawBorderString(Main.spriteBatch, ultraSwoosh.timeLeft.ToString(), ultraSwoosh.center - Main.screenPosition, Color.Red);
-                //        var list = CreateTriList(ultraSwoosh.vertexInfos, ultraSwoosh.center, distortScaler, true);
-                //        for (int n = 0; n < list.Length - 1; n++) 
-                //        {
-                //            Main.spriteBatch.DrawLine(list[n].Position, list[n + 1].Position, Color.Red, 2, false, -Main.screenPosition);
-                //        }
-                //    }
-                //}
-                foreach (var ultraSwoosh in modPlayer.ultraSwooshes)
-                {
-                    if (ultraSwoosh != null && ultraSwoosh.Active)
-                    {
-                        effect.Parameters["airFactor"].SetValue(ultraSwoosh.checkAirFactor);
-                        Main.graphics.GraphicsDevice.Textures[2] = TextureAssets.Item[ultraSwoosh.type].Value;
-                        Main.graphics.GraphicsDevice.Textures[3] = ultraSwoosh.heatMap;
-                        effect.Parameters["lightShift"].SetValue(instance.IsDarkFade ? (ultraSwoosh.timeLeft / (float)ultraSwoosh.timeLeftMax) - 1f : 0);
-                        effect.CurrentTechnique.Passes[flag ? 7 : passCount].Apply();
-                        Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, CreateTriList(ultraSwoosh.vertexInfos, ultraSwoosh.center, distortScaler, true), 0, 58);
-                    }
-                }
-
-
+                //因为这里另外合批了效果，就没必要在这个的pre和post里面写render了
+                modPlayer.coolerSwooshes.DrawVertexInfo(typeof(CoolerSwoosh),Main.spriteBatch, null, null, null, distortScaler);
             }
         }
         /// <summary>

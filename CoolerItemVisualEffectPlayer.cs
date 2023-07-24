@@ -13,31 +13,63 @@ using Terraria.GameContent.Drawing;
 using LogSpiralLibrary;
 using Terraria;
 using System.IO;
+using LogSpiralLibrary.CodeLibrary;
 
 namespace CoolerItemVisualEffect
 {
-    /// <summary>
-    /// 滞留剑气类
-    /// </summary>
-    public class UltraSwoosh
+    public class CoolerSwoosh : UltraSwoosh
     {
-        public float rotation;
-        public byte timeLeft;
-        public float xScaler;
-        public Vector2 center;
-        public bool negativeDir;
-        public Texture2D heatMap;
-        public Color color;
-        public Vector3 hsl;
         public int type;
         public float checkAirFactor;
         public float rotationVelocity;
-        public readonly CustomVertexInfo[] vertexInfos = new CustomVertexInfo[60];
-        public bool Active => timeLeft > 0;
-        public float scaler;
-        public byte timeLeftMax;
-        public (float from, float to) angleRange;
-        public bool updateWithData;
+        public Vector3 hsl;
+        public CoolerItemVisualEffectPlayer modPlr;
+        public override IRenderDrawInfo[] RenderDrawInfos => new IRenderDrawInfo[] { };//new EmptyEffectInfo()
+        public override void Uptate()
+        {
+            var drawPlayer = modPlr.Player;
+            var instance = modPlr.ConfigurationSwoosh;
+            var alphaLight = hsl.Z < instance.isLighterDecider ? Lighting.GetColor((drawPlayer.Center / 16).ToPoint().X, (drawPlayer.Center / 16).ToPoint().Y).R / 255f * .5f : 0.5f;
+            for (int i = 0; i < 30; i++)
+            {
+                var f = i / 29f;
+                var num = 1 - factor;
+                var lerp = f.Lerp(instance.IsCloseAngleFade ? num : 0, 1);//num
+                                                                          //float theta2 = (1.8375f * lerp - 1.125f) * MathHelper.Pi + MathHelper.Pi;
+                float theta2 = ((angleRange.to - angleRange.from) * lerp * rotationVelocity + angleRange.from) * MathHelper.Pi + MathHelper.Pi;
+                if (negativeDir) theta2 = MathHelper.TwoPi - theta2;
+                Vector2 offsetVec = -2 * (theta2.ToRotationVector2() * new Vector2(xScaler * (instance.IsHorizontallyGrow ? (1 + num) : 1), 1)).RotatedBy(rotation) * scaler * (instance.IsExpandGrow ? (1 + num * (instance.growStyle == SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest ? 0.125f : 0.25f)) : 1);
+                Vector2 adder = (offsetVec * 0.25f + rotation.ToRotationVector2() * scaler * 2f) * (instance.IsOffestGrow ? num : 0);
+                if (instance.growStyle == SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest) adder *= 0.25f;
+                var realColor = color.Invoke(f);
+                realColor.A = (byte)((1 - f).HillFactor2(1) * (instance.IsTransparentFade ? MathF.Sqrt(1 - num) : 1) * 255);
+                VertexInfos[2 * i] = new CustomVertexInfo(center + offsetVec + adder, realColor, new Vector3(1 - f, 1, alphaLight));
+                //realColor.A = 0;
+                VertexInfos[2 * i + 1] = new CustomVertexInfo(center + adder, realColor, new Vector3(0, 0, alphaLight));
+            }
+        }
+        public override void PreDraw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D render, RenderTarget2D renderAirDistort)
+        {
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="contextArgument">难得用到的上下文参数，这里是缩放大小</param>
+        public override void Draw(SpriteBatch spriteBatch, IRenderDrawInfo renderDrawInfo, params object[] contextArgument)
+        {
+            LogSpiralLibraryMod.ShaderSwooshUL.Parameters["airFactor"].SetValue(checkAirFactor);
+            Main.graphics.GraphicsDevice.Textures[2] = TextureAssets.Item[type].Value;
+            Main.graphics.GraphicsDevice.Textures[3] = heatMap;
+            LogSpiralLibraryMod.ShaderSwooshUL.Parameters["lightShift"].SetValue(modPlr.ConfigurationSwoosh.IsDarkFade ? factor - 1f : 0);
+            LogSpiralLibraryMod.ShaderSwooshUL.CurrentTechnique.Passes[7].Apply();
+            DrawPrimitives((float)contextArgument[0]);
+        }
+        public override void PostDraw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D render, RenderTarget2D renderAirDistort)
+        {
+
+        }
     }
     public class CoolerItemVisualEffectPlayer : ModPlayer
     {
@@ -74,7 +106,7 @@ namespace CoolerItemVisualEffect
             get
             {
                 bool flag = false;
-                foreach (var ultra in ultraSwooshes)
+                foreach (var ultra in coolerSwooshes)
                 {
                     if (ultra != null && ultra.Active) { flag = true; break; }
                 }
@@ -98,8 +130,9 @@ namespace CoolerItemVisualEffect
         public float direct;
         public (Vector2 u, Vector2 v) vectors;
         public readonly CustomVertexInfo[] vertexInfos = new CustomVertexInfo[90];
-        public readonly UltraSwoosh[] ultraSwooshes = new UltraSwoosh[60];
-        public UltraSwoosh currentSwoosh;
+        public readonly CoolerSwoosh[] coolerSwooshes = new CoolerSwoosh[60];
+        //public CoolerSwoosh[] coolerSwooshes => (from swoosh in ultraSwooshes where true select swoosh as CoolerSwoosh).ToArray();
+        public CoolerSwoosh currentSwoosh;
         #endregion
 
         #region 实际效果修改部分
@@ -139,7 +172,7 @@ namespace CoolerItemVisualEffect
             {
                 if (ConfigurationSwoosh.coolerSwooshQuality == QualityType.极限ultra)
                 {
-                    foreach (var swoosh in ultraSwooshes)
+                    foreach (var swoosh in coolerSwooshes)
                     {
                         if (swoosh != null && swoosh.Active)
                         {
@@ -556,41 +589,14 @@ namespace CoolerItemVisualEffect
                     vertexInfos[2 * i + 1] = new CustomVertexInfo(default, colorInfo.color with { A = (byte)alphaValue }, new Vector3(0, 0, alphaLight));//drawCen
                 }
             }
-
-
-            foreach (var swoosh in ultraSwooshes)
-            {
-
-                if (swoosh != null && swoosh.Active)
-                {
-
-                    for (int i = 0; i < 30; i++)
-                    {
-                        var f = i / 29f;
-                        var num = 1 - swoosh.timeLeft / (float)swoosh.timeLeftMax;
-                        var lerp = f.Lerp(instance.IsCloseAngleFade ? num : 0, 1);//num
-                        //float theta2 = (1.8375f * lerp - 1.125f) * MathHelper.Pi + MathHelper.Pi;
-                        float theta2 = ((swoosh.angleRange.to - swoosh.angleRange.from) * lerp * swoosh.rotationVelocity + swoosh.angleRange.from) * MathHelper.Pi + MathHelper.Pi;
-                        if (swoosh.negativeDir) theta2 = MathHelper.TwoPi - theta2;
-                        Vector2 offsetVec = -2 * (theta2.ToRotationVector2() * new Vector2(swoosh.xScaler * (instance.IsHorizontallyGrow ? (1 + num) : 1), 1)).RotatedBy(swoosh.rotation) * swoosh.scaler * (instance.IsExpandGrow ? (1 + num * (instance.growStyle == SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest ? 0.125f : 0.25f)) : 1);
-                        Vector2 adder = (offsetVec * 0.25f + swoosh.rotation.ToRotationVector2() * swoosh.scaler * 2f) * (instance.IsOffestGrow ? num : 0);
-                        if (instance.growStyle == SwooshGrowStyle.横向扩大与平移BothExpandHorizontallyAndOffest) adder *= 0.25f;
-                        var realColor = swoosh.color;
-                        realColor.A = (byte)((1 - f).HillFactor2(1) * (instance.IsTransparentFade ? MathF.Sqrt(1 - num) : 1) * 255);
-                        swoosh.vertexInfos[2 * i] = new CustomVertexInfo(swoosh.center + offsetVec + adder, realColor, new Vector3(1 - f, 1, alphaLight));
-                        //realColor.A = 0;
-                        swoosh.vertexInfos[2 * i + 1] = new CustomVertexInfo(swoosh.center + adder, realColor, new Vector3(0, 0, alphaLight));
-                    }
-                }
-            }
-
+            coolerSwooshes.UpdateVertexInfo();
         }
         /// <summary>
         /// 更新剑气的采样图
         /// </summary>
         public void UpdateSwooshHM()
         {
-            foreach (var us in ultraSwooshes)
+            foreach (var us in coolerSwooshes)
             {
                 if (us != null && us.Active)
                 {
@@ -725,7 +731,7 @@ namespace CoolerItemVisualEffect
 
                 SetActionSpeed();
 
-                NewUltraSwoosh();
+                NewCoolerSwoosh();
             }
             lastItemAnimation = player.itemAnimation;
             //Main.NewText(player.HeldItem.noUseGraphic);
@@ -799,7 +805,7 @@ namespace CoolerItemVisualEffect
             {
                 if (ConfigurationSwoosh.coolerSwooshQuality == QualityType.极限ultra)
                 {
-                    var ultra = ultraSwooshes[n];
+                    var ultra = coolerSwooshes[n];
                     if (ultra != null && ultra.Active)
                     {
                         ultra.timeLeft--;
@@ -807,7 +813,7 @@ namespace CoolerItemVisualEffect
                 }
                 else
                 {
-                    ultraSwooshes[n] = null;
+                    coolerSwooshes[n] = null;
                 }
 
             }
@@ -880,49 +886,38 @@ namespace CoolerItemVisualEffect
         /// <summary>
         /// 生成新的剑气
         /// </summary>
-        public void NewUltraSwoosh(
+        public void NewCoolerSwoosh(
             Color? color = null, int? type = null, float? airFac = null,
             float? rotVel = null, byte? timeLeft = null, float? _scaler = null,
             Vector2? center = null, Texture2D heat = null, bool? _negativeDir = null,
             Vector3? _hsl = null, float? _rotation = null, float? xscaler = null,
             (float, float)? angleRange = null)
         {
-            for (int n = 0; n < 60; n++)
-            {
-                var ultra = ultraSwooshes[n];
-                if (ultra == null || !ultra.Active)
-                {
-                    if (ultra == null) ultra = ultraSwooshes[n] = new UltraSwoosh();
-                    if (!ultra.Active)
-                    {
-                        ultra.color = color ?? colorInfo.color;
-                        ultra.type = type ?? colorInfo.type; 
-                        //Main.NewText(new Item(ultra.type).Name);
-                        ultra.checkAirFactor = airFac ?? colorInfo.checkAirFactor;
-                        //ultra.rotationVelocity = ConfigurationSwoosh.swooshActionStyle == SwooshAction.旋风劈 && swingCount % 3 == 0 ? ConfigurationSwoosh.swingAttackTime : 1f;//
-                        ultra.rotationVelocity = rotVel ?? (ConfigurationSwoosh.swooshActionStyle == SwooshAction.旋风劈 && swingCount % 3 == 0 ? 2 : 1f);//
-                        ultra.timeLeftMax = ultra.timeLeft = timeLeft ?? (byte)ConfigurationSwoosh.swooshTimeLeft;
-                        ultra.scaler = _scaler ?? scaler;
-                        ultra.center = center ?? player.Center;
-                        ultra.heatMap = heat ?? colorInfo.tex;
-                        ultra.negativeDir = _negativeDir ?? negativeDir;
-                        ultra.hsl = _hsl ?? hsl;
-                        ultra.rotation = _rotation ?? rotationForShadow;
-                        ultra.xScaler = xscaler ?? kValue;
-                        ultra.angleRange = angleRange ?? (-1.125f, 0.7125f);
-                        ultra.updateWithData = false;
-                        currentSwoosh = ultra;
-                    }
-                    break;
-                }
-            }
+            var ultra = UltraSwoosh.NewUltraSwoosh<CoolerSwoosh>(
+                color ?? colorInfo.color,
+                coolerSwooshes,
+                timeLeft ?? (byte)ConfigurationSwoosh.swooshTimeLeft,
+                _scaler ?? scaler,
+                center ?? player.Center,
+                heat ?? colorInfo.tex,
+                _negativeDir ?? negativeDir,
+                _rotation ?? rotationForShadow,
+                xscaler ?? kValue,
+                angleRange ?? (-1.125f, 0.7125f));
+
+            ultra.type = type ?? colorInfo.type;
+            ultra.checkAirFactor = airFac ?? colorInfo.checkAirFactor;
+            ultra.rotationVelocity = rotVel ?? (ConfigurationSwoosh.swooshActionStyle == SwooshAction.旋风劈 && swingCount % 3 == 0 ? 2 : 1f);
+            ultra.hsl = _hsl ?? hsl;
+            ultra.modPlr = this;
+            currentSwoosh = ultra;
         }
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
         {
             player.GetModPlayer<CoolerItemVisualEffectPlayer>().ConfigurationSwoosh.SendData(Player.whoAmI, fromWho, toWho, true);
         }
 
-        public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)  
+        public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
         {
             //var results = from text in LanguageManager.Instance._localizedTexts.Keys where text.Contains("CoolerItemVisualEffect.Configs.ConfigurationSwoosh.coolerSwooshQuality") select text;
             //Main.NewText(results.Count());
@@ -1186,7 +1181,7 @@ namespace CoolerItemVisualEffect
                 if (player.itemAnimation == 0) return false;
             }
 
-            foreach (var swoosh in effectPlayer.ultraSwooshes)
+            foreach (var swoosh in effectPlayer.coolerSwooshes)
             {
                 if (swoosh != null && swoosh.Active)
                 {
@@ -1227,7 +1222,7 @@ namespace CoolerItemVisualEffect
             Projectile.velocity = (Main.MouseWorld - player.Center).SafeNormalize(default);
             if (effectPlayer.SwooshActive)
             {
-                foreach (var swoosh in effectPlayer.ultraSwooshes)
+                foreach (var swoosh in effectPlayer.coolerSwooshes)
                 {
                     if (swoosh != null && swoosh.Active && swoosh.timeLeft == swoosh.timeLeftMax - 1 && !Projectile.friendly)
                     {
@@ -1275,7 +1270,7 @@ namespace CoolerItemVisualEffect
         //public static MethodBase ApplyNPCOnHitEffects;
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            ItemLoader.OnHitNPC(player.HeldItem, player, target, hit, damageDone);
+            //ItemLoader.OnHitNPC(player.HeldItem, player, target, hit, damageDone);
             try
             {
                 #region *复杂的伤害计算*

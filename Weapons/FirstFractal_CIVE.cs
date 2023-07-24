@@ -885,11 +885,11 @@ namespace CoolerItemVisualEffect.Weapons
 
             return defaultValue;
         }
-        public override void RenderInfomation(ref (float M, float Intensity, float Range) useBloom, ref (float M, float Range, Vector2 director) useDistort, ref (Texture2D fillTex, Vector2 texSize, Color glowColor, Color boundColor, float tier1, float tier2, Vector2 offset, bool lightAsAlpha, bool inverse) useMask)
+        public override void RenderInfomation(ref BloomEffectInfo useBloom, ref AirDistortEffectInfo useDistort, ref MaskEffectInfo useMask)
         {
             var config = Player.GetModPlayer<CoolerItemVisualEffectPlayer>().ConfigurationSwoosh;
-            useBloom = (0, config.luminosityFactor, 6);
-            useDistort = (0, config.distortSize, Rotation.ToRotationVector2() * -0.25f * config.distortFactor);
+            useBloom = new BloomEffectInfo(0, config.luminosityFactor, 6, 3, true);
+            useDistort = new AirDistortEffectInfo(config.distortSize, Rotation.ToRotationVector2() * -0.25f * config.distortFactor);
         }
         public override void VertexInfomation(ref bool additive, ref int indexOfGreyTex, ref float endAngle, ref bool useHeatMap,ref int passCount)
         {
