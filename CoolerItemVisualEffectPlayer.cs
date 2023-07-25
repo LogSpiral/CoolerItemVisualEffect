@@ -17,6 +17,37 @@ using LogSpiralLibrary.CodeLibrary;
 
 namespace CoolerItemVisualEffect
 {
+    public struct SwooshInfos
+    {
+        public struct SwooshInfo
+        {
+            public bool stab = false;
+            public float actionOffsetSize = 1;
+            public float actionOffsetSpeed = 1;
+            public float actionOffsetKnockBack = 1;
+            public float actionOffsetDamage = 1;
+            public int actionOffsetCritAdder = 0;
+            public float actionOffsetCritMultiplyer = 1;
+            public bool negativeDir = false;
+            public float kValue = 1;
+            public SwooshInfo()
+            {
+
+            }
+            /// <summary>
+            /// 将除了速度以外的值赋给目标
+            /// </summary>
+            /// <param name="target"></param>
+            public void SetActionValue(ref SwooshInfo target)
+            {
+                float speed = target.actionOffsetSpeed;
+                target = this with { actionOffsetSpeed = speed };
+            }
+            public void SetActionSpeed(ref SwooshInfo target) => target.actionOffsetSpeed = this.actionOffsetSpeed;
+        }
+        public List<SwooshInfo> infos;
+
+    }
     public class CoolerSwoosh : UltraSwoosh
     {
         public int type;
@@ -79,6 +110,7 @@ namespace CoolerItemVisualEffect
         {
             get
             {
+                //Main.NewText("猪猪");
                 if (configurationSwoosh == null)
                 {
                     configurationSwoosh = Main.myPlayer == player.whoAmI ? ConfigSwooshInstance : new ConfigurationSwoosh();
@@ -98,6 +130,7 @@ namespace CoolerItemVisualEffect
         public bool UseSlash;
         public bool IsMeleeBroadSword => CoolerItemVisualEffectMod.MeleeCheck(player.HeldItem.DamageType) || ConfigurationSwoosh.ignoreDamageType;
         public float TimeToCutThem => ConfigurationSwoosh.swingAttackTime * 2;//8f
+        public SwooshInfos.SwooshInfo currentInfo;
         /// <summary>
         /// 剑气是否可用
         /// </summary>
@@ -117,8 +150,16 @@ namespace CoolerItemVisualEffect
         #endregion
 
         #region 视觉效果修改部分
-        public float kValue;
-        public bool negativeDir;
+        public float kValue
+        {
+            get => currentInfo.kValue;
+            set => currentInfo.kValue = value;
+        }
+        public bool negativeDir
+        {
+            get => currentInfo.negativeDir;
+            set => currentInfo.negativeDir = value;
+        }
         public bool oldNegativeDir;
         public float rotationForShadow;
         public float kValueNext;
@@ -136,12 +177,36 @@ namespace CoolerItemVisualEffect
         #endregion
 
         #region 实际效果修改部分
-        public float actionOffsetSize;
-        public float actionOffsetSpeed;
-        public float actionOffsetKnockBack;
-        public float actionOffsetDamage;
-        public int actionOffsetCritAdder;
-        public float actionOffsetCritMultiplyer;
+        public float actionOffsetSize
+        {
+            get => currentInfo.actionOffsetSize;
+            set => currentInfo.actionOffsetSize = value;
+        }
+        public float actionOffsetSpeed
+        {
+            get => currentInfo.actionOffsetSpeed;
+            set => currentInfo.actionOffsetSpeed = value;
+        }
+        public float actionOffsetKnockBack
+        {
+            get => currentInfo.actionOffsetKnockBack;
+            set => currentInfo.actionOffsetKnockBack = value;
+        }
+        public float actionOffsetDamage
+        {
+            get => currentInfo.actionOffsetDamage;
+            set => currentInfo.actionOffsetDamage = value;
+        }
+        public int actionOffsetCritAdder
+        {
+            get => currentInfo.actionOffsetCritAdder;
+            set => currentInfo.actionOffsetCritAdder = value;
+        }
+        public float actionOffsetCritMultiplyer
+        {
+            get => currentInfo.actionOffsetCritMultiplyer;
+            set => currentInfo.actionOffsetCritMultiplyer = value;
+        }
         public float RealSize => ConfigurationSwoosh.swooshSize * currentSize;
         public float currentSize;
         public float currentRotation;
@@ -641,7 +706,7 @@ namespace CoolerItemVisualEffect
                                 }
                                 else
                                 {
-                                    fac = MathHelper.SmoothStep(0, 1.125f, player.itemAnimation / k);
+                                    fac = MathHelper.SmoothStep(0, 1.125f, MathF.Pow(player.itemAnimation / k, 4));
                                 }
                             }
                         }
@@ -726,15 +791,16 @@ namespace CoolerItemVisualEffect
                 SetActionSpeed();
             }
             //Main.NewText((swingCount,negativeDir,oldNegativeDir));
-            if ((player.itemAnimation == player.itemAnimationMax || player.itemAnimation == 0) && lastItemAnimation == 1 && UseSlash && ConfigurationSwoosh.coolerSwooshQuality == QualityType.极限ultra && HitboxPosition != default)
+            if (UseSlash && ConfigurationSwoosh.coolerSwooshQuality == QualityType.极限ultra && HitboxPosition != default)
             {
-
-                SetActionSpeed();
-
-                NewCoolerSwoosh();
+                if ((player.itemAnimation == player.itemAnimationMax || player.itemAnimation == 0) && lastItemAnimation == 1)
+                    SetActionSpeed();
+                if ((player.itemAnimation == 1) && lastItemAnimation == 2)
+                    NewCoolerSwoosh();
             }
             lastItemAnimation = player.itemAnimation;
             //Main.NewText(player.HeldItem.noUseGraphic);
+
             if (player.itemAnimation == player.itemAnimationMax && player.itemAnimation > 0)
             {
                 //var flag = player.HeldItem.damage > 0 && player.HeldItem.useStyle == ItemUseStyleID.Swing && player.HeldItem.DamageType == DamageClass.Melee && !player.HeldItem.noUseGraphic;
