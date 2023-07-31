@@ -15,6 +15,8 @@ using static CoolerItemVisualEffect.ConfigurationSwoosh;
 using static CoolerItemVisualEffect.ConfigSLer.ConfigSLHelper;
 using Terraria.GameContent;
 using Terraria.Utilities;
+using Terraria.ModLoader.Config.UI;
+using Terraria.UI.Chat;
 
 namespace CoolerItemVisualEffect.ConfigSLer
 {
@@ -611,10 +613,13 @@ namespace CoolerItemVisualEffect.ConfigSLer
                 info.destination = rect;
                 info.scaler = 1f;
                 info.origin = default;
-                info.glowShakingStrength = IsMouseHovering ? .25f : 0f;
-                info.glowHueOffsetRange = .1f;
-                info.glowEffectColor = currentColor;
-                info.backgroundColor = Color.White;
+                //info.glowShakingStrength = IsMouseHovering ? .25f : 0f;
+                //info.glowHueOffsetRange = .1f;
+                //info.glowEffectColor = currentColor;
+                info.backgroundTexture = Main.Assets.Request<Texture2D>("Images/UI/HotbarRadial_1").Value;
+                info.backgroundFrame = new Rectangle(4, 4, 28, 28);
+                info.backgroundUnitSize = new Vector2(28, 28) * 2f;
+                info.backgroundColor = currentColor;
                 info.DrawComplexPanel(spriteBatch);
             }
             else
@@ -638,6 +643,31 @@ namespace CoolerItemVisualEffect.ConfigSLer
         public override void MouseOut(UIMouseEvent evt)
         {
             base.MouseOut(evt);
+        }
+    }
+    public class CoolerImageButtonSplit : CoolerImageButton
+    {
+        public string HoverTextUp;
+        public string HoverTextDown;
+        public CoolerImageButtonSplit(Asset<Texture2D> texture, Color activeColor = default, Color inactiveColor = default) : base(texture, activeColor, inactiveColor)
+        {
+
+        }
+        public override void DrawSelf(SpriteBatch spriteBatch)
+        {
+            Rectangle rectangle = GetDimensions().ToRectangle();
+            if (base.IsMouseHovering)
+            {
+                if (Main.mouseY < rectangle.Y + rectangle.Height / 2)
+                {
+                    UIModConfig.Tooltip = HoverTextUp;
+                }
+                else
+                {
+                    UIModConfig.Tooltip = HoverTextDown;
+                }
+            }
+            base.DrawSelf(spriteBatch);
         }
     }
     /// <summary>
@@ -819,6 +849,178 @@ namespace CoolerItemVisualEffect.ConfigSLer
 
             this.viewSize = viewSize;
             this.maxViewSize = maxViewSize;
+        }
+    }
+
+    public class CoolerUITextPanel<T> : UIPanel
+    {
+        public T _text;
+
+        public float _textScale = 1f;
+
+        public Vector2 _textSize = Vector2.Zero;
+
+        public bool _isLarge;
+
+        public Color _color = Color.White;
+
+        public bool _drawPanel = true;
+
+        public float TextHAlign = 0.5f;
+
+        public bool HideContents;
+
+        public string _asterisks;
+
+        public bool IsLarge => _isLarge;
+
+        public new bool DrawPanel
+        {
+            get
+            {
+                return _drawPanel;
+            }
+            set
+            {
+                _drawPanel = value;
+            }
+        }
+
+        public float TextScale
+        {
+            get
+            {
+                return _textScale;
+            }
+            set
+            {
+                _textScale = value;
+            }
+        }
+
+        public Vector2 TextSize => _textSize;
+
+        public string Text
+        {
+            get
+            {
+                if (_text != null)
+                {
+                    return _text.ToString();
+                }
+
+                return "";
+            }
+        }
+
+        public Color TextColor
+        {
+            get
+            {
+                return _color;
+            }
+            set
+            {
+                _color = value;
+            }
+        }
+        public Color ColorActive;
+        public Color ColorInactive;
+        public Color currentColor;
+        public CoolerUITextPanel(T text, float textScale = 1f, bool large = false, Color activeColor = default, Color inactiveColor = default)
+        {
+            SetText(text, textScale, large);
+        }
+
+        public override void Recalculate()
+        {
+            SetText(_text, _textScale, _isLarge);
+            base.Recalculate();
+        }
+
+        public void SetText(T text)
+        {
+            SetText(text, _textScale, _isLarge);
+        }
+
+        public virtual void SetText(T text, float textScale, bool large)
+        {
+            Vector2 stringSize = ChatManager.GetStringSize(large ? FontAssets.DeathText.Value : FontAssets.MouseText.Value, text.ToString(), new Vector2(textScale));
+            stringSize.Y = (large ? 32f : 16f) * textScale;
+            _text = text;
+            _textScale = textScale;
+            _textSize = stringSize;
+            _isLarge = large;
+            MinWidth.Set(stringSize.X + PaddingLeft + PaddingRight, 0f);
+            MinHeight.Set(stringSize.Y + PaddingTop + PaddingBottom, 0f);
+        }
+
+        public override void DrawSelf(SpriteBatch spriteBatch)
+        {
+            if (_drawPanel)
+            {
+                if (currentStyleTex != null)
+                {
+                    //var rect = dimensions.ToRectangle();
+                    //rect = rect.OffsetSize((int)dimensions.Width / 2, (int)(-dimensions.Height / 4));
+                    //rect.Offset(0, (int)(dimensions.Height / 8));
+                    //DrawCoolerTextBox_Combine(spriteBatch, currentStyleTex, rect, currentColor);
+                    var mainColor = IsMouseHovering ? ColorActive : ColorInactive;
+                    currentColor = Color.Lerp(currentColor, mainColor, 0.05f);
+                    var rect = GetDimensions().ToRectangle().OffsetSize(8, 8);
+                    rect.Offset(-4, -4);
+                    var info = new CoolerPanelInfo();
+                    info.configTexStyle = currentStyle;
+                    info.destination = rect;
+                    info.scaler = 1f;
+                    info.origin = default;
+                    info.backgroundTexture = Main.Assets.Request<Texture2D>("Images/UI/HotbarRadial_1").Value;
+                    info.backgroundFrame = new Rectangle(4, 4, 28, 28);
+                    info.backgroundUnitSize = new Vector2(28, 28) * 2f;
+                    info.backgroundColor = currentColor;
+                    info.backgroundColor = Color.White;
+                    info.DrawComplexPanel(spriteBatch);
+                }
+                else
+                    base.DrawSelf(spriteBatch);
+            }
+
+            DrawText(spriteBatch);
+        }
+
+        public void DrawText(SpriteBatch spriteBatch)
+        {
+            CalculatedStyle innerDimensions = GetInnerDimensions();
+            Vector2 pos = innerDimensions.Position();
+            if (_isLarge)
+            {
+                pos.Y -= 10f * _textScale * _textScale;
+            }
+            else
+            {
+                pos.Y -= 2f * _textScale;
+            }
+
+            pos.X += (innerDimensions.Width - _textSize.X) * TextHAlign;
+            string text = Text;
+            if (HideContents)
+            {
+                if (_asterisks == null || _asterisks.Length != text.Length)
+                {
+                    _asterisks = new string('*', text.Length);
+                }
+
+                text = _asterisks;
+            }
+
+            if (_isLarge)
+            {
+                Utils.DrawBorderStringBig(spriteBatch, text, pos, _color, _textScale);
+            }
+            else
+            {
+                Utils.DrawBorderString(spriteBatch, text, pos, _color, _textScale);
+            }
         }
     }
 }

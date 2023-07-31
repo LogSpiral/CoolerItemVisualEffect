@@ -817,7 +817,7 @@ namespace CoolerItemVisualEffect.FinalFractal
             {
                 //int num4 = 5;
                 //projectile.Center -= new Vector2((float)num4);
-                if (Main.rand.Next(15) == 0)
+                if (Main.rand.NextBool(15))
                 {
                     Dust dust = Dust.NewDustPerfect(projectile.Center, MyDustId.CyanBubble, null, 100, Color.Lerp(Main.hslToRgb(drawColor, 1f, 0.5f), Color.White, Main.rand.NextFloat() * 0.3f), 1f);
                     dust.scale = 0.7f;

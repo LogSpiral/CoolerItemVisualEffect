@@ -151,6 +151,11 @@ Mods:
 								热度图
 							'''
 				}
+				colorVector:
+				{
+					Label: 颜色系数向量
+					Tooltip: 一个打包了各种颜色模式对应系数的向量
+				}
 				alphaFactor:
 				{
 					Label: 透明度系数[i:170]
@@ -423,9 +428,32 @@ Mods:
 					# Tooltip:
 				}
 			}
+			ColorVector:
+			{
+				mapColorAlpha:
+				{
+					Label: 单向渐变
+					Tooltip: 单向渐变的系数(占比)
+				}
+				weaponColorAlpha:
+				{
+					Label: 武器对角线
+					Tooltip: 武器对角线的系数(占比)
+				}
+				heatMapAlpha:
+				{
+					Label: 热度图
+					Tooltip: 热度图的系数(占比)
+				}
+				normalize:
+				{
+					Label: 单位化(归一化)
+					Tooltip: 如果启用将会使最终结果各分量加起来为1
+				}
+			}
 			ConfigurationSwoosh:
 			{
-				displayName: 高级设置选项
+				DisplayName: 高级设置选项
 				meleeSwooshConfigs.Label: 近战挥刃设置[i:1199]
 				drawConfigs.Label: 渲染绘制设置[i:1071]
 				heatMapConfigs.Label: 热度图设置[i:2012]

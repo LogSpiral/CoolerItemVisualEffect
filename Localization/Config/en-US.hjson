@@ -149,6 +149,11 @@ Mods:
 								Heat Map
 							'''
 				}
+				colorVector:
+				{
+					Label: Color Coefficient Vector
+					Tooltip: A Vector Packed Coefficient Of Each Mode Of Color
+				}
 				alphaFactor:
 				{
 					Label: Coefficient Of Opacity[i:170]
@@ -422,6 +427,32 @@ Mods:
 					# Tooltip:
 				}
 			}
+
+			ColorVector:
+			{
+				mapColorAlpha:
+				{
+					Label: Gradient
+					Tooltip: Coefficient Of Gradient
+				}
+				weaponColorAlpha:
+				{
+					Label: Diagonal
+					Tooltip: Coefficient Of Weapon Diagonal Color
+				}
+				heatMapAlpha:
+				{
+					Label: HeatMap
+					Tooltip: Coefficient Of HeatMap
+				}
+				normalize:
+				{
+					Label: Normalize
+					Tooltip: If set it to Yes,Dot Product:((1,1,1),ColorVector)) would be 1
+				}
+			}
+
+
 			ConfigurationSwoosh:
 			{
 				DisplayName: Advanced Settings

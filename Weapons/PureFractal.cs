@@ -323,7 +323,7 @@ namespace CoolerItemVisualEffect.Weapons
             }
 
             #region 快乐顶点绘制_1(在原来的基础上叠加，亮瞎了)
-            if (ShaderSwooshEX == null) return;//false
+            if (ShaderSwooshUL == null) return;//false
             if (ShaderSwooshUL == null) return;
             if (DistortEffect == null) return;
             if (Main.GameViewMatrix == null) return;
@@ -401,10 +401,10 @@ namespace CoolerItemVisualEffect.Weapons
             //        sb.End();
             //        gd.SetRenderTarget(Instance.Render);
             //        gd.Clear(Color.Transparent);
-            //        sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity); ShaderSwooshEX.Parameters["uTransform"].SetValue(model * projection);
-            //        ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
-            //        ShaderSwooshEX.Parameters["uTime"].SetValue(0); ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir); ShaderSwooshEX.Parameters["airFactor"].SetValue(airFactor);
-            //        ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
+            //        sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity); ShaderSwooshUL.Parameters["uTransform"].SetValue(model * projection);
+            //        ShaderSwooshUL.Parameters["uLighter"].SetValue(instance.luminosityFactor);
+            //        ShaderSwooshUL.Parameters["uTime"].SetValue(0); ShaderSwooshUL.Parameters["checkAir"].SetValue(instance.checkAir); ShaderSwooshUL.Parameters["airFactor"].SetValue(airFactor);
+            //        ShaderSwooshUL.Parameters["gather"].SetValue(instance.gather);
             //        Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + (int)MathHelper.Clamp(instance.ImageIndex, 0, 7)); Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
             //        Main.graphics.GraphicsDevice.Textures[2] = itemTex;
             //        if (instance.swooshColorType == SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = GetPureFractalHeatMaps(Projectile.frame);
@@ -412,7 +412,7 @@ namespace CoolerItemVisualEffect.Weapons
             //        Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
             //        Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
             //        Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
-            //        ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+            //        ShaderSwooshUL.CurrentTechnique.Passes[passCount].Apply();
             //        Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList.ToArray(), 0, triangleList.Count / 3);
             //        Main.graphics.GraphicsDevice.RasterizerState = originalState;
             //        for (int n = 0; n < instance.maxCount; n++)
@@ -433,11 +433,11 @@ namespace CoolerItemVisualEffect.Weapons
             //    else
             //    {
             //        sb.End();
-            //        sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans); ShaderSwooshEX.Parameters["uTransform"].SetValue(model * projection);
-            //        ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
-            //        ShaderSwooshEX.Parameters["uTime"].SetValue(0); ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);
-            //        ShaderSwooshEX.Parameters["airFactor"].SetValue(airFactor);
-            //        ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
+            //        sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans); ShaderSwooshUL.Parameters["uTransform"].SetValue(model * projection);
+            //        ShaderSwooshUL.Parameters["uLighter"].SetValue(instance.luminosityFactor);
+            //        ShaderSwooshUL.Parameters["uTime"].SetValue(0); ShaderSwooshUL.Parameters["checkAir"].SetValue(instance.checkAir);
+            //        ShaderSwooshUL.Parameters["airFactor"].SetValue(airFactor);
+            //        ShaderSwooshUL.Parameters["gather"].SetValue(instance.gather);
             //        Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + (int)MathHelper.Clamp(instance.ImageIndex, 0, 7)); Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
             //        Main.graphics.GraphicsDevice.Textures[2] = itemTex;
             //        if (instance.swooshColorType == SwooshColorType.函数生成热度图) Main.graphics.GraphicsDevice.Textures[3] = modPlayer.colorBar.tex;
@@ -445,7 +445,7 @@ namespace CoolerItemVisualEffect.Weapons
             //        Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
             //        Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
             //        Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
-            //        ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+            //        ShaderSwooshUL.CurrentTechnique.Passes[passCount].Apply();
             //        Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, triangleList.ToArray(), 0, triangleList.Count / 3);
             //        Main.graphics.GraphicsDevice.RasterizerState = originalState;
             //    }
@@ -494,14 +494,6 @@ namespace CoolerItemVisualEffect.Weapons
                 //var gd = Main.graphics.GraphicsDevice;
                 //var sb = Main.spriteBatch;
                 var passCount = 0;
-                switch (ConfigSwooshInstance.swooshColorType)
-                {
-                    case SwooshColorType.热度图: passCount = 2; break;
-                    case SwooshColorType.武器贴图对角线: passCount = 1; break;
-                    case SwooshColorType.单向渐变与对角线混合: passCount = 3; break;
-                    case SwooshColorType.单向渐变: passCount = 4; break;
-
-                }
                 //if (false)//useRender
                 //{
                 //    #region MyRegion
@@ -510,11 +502,11 @@ namespace CoolerItemVisualEffect.Weapons
                 //    gd.SetRenderTarget(Instance.Render);
                 //    gd.Clear(Color.Transparent);
                 //    sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
-                //    ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
-                //    ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
-                //    ShaderSwooshEX.Parameters["uTime"].SetValue(0); ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);
-                //    ShaderSwooshEX.Parameters["airFactor"].SetValue(airFactor);
-                //    ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
+                //    ShaderSwooshUL.Parameters["uTransform"].SetValue(model * trans * projection);
+                //    ShaderSwooshUL.Parameters["uLighter"].SetValue(instance.luminosityFactor);
+                //    ShaderSwooshUL.Parameters["uTime"].SetValue(0); ShaderSwooshUL.Parameters["checkAir"].SetValue(instance.checkAir);
+                //    ShaderSwooshUL.Parameters["airFactor"].SetValue(airFactor);
+                //    ShaderSwooshUL.Parameters["gather"].SetValue(instance.gather);
                 //    Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + (int)MathHelper.Clamp(instance.ImageIndex, 0, 7));
                 //    Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
                 //    Main.graphics.GraphicsDevice.Textures[2] = currentTex;
@@ -523,7 +515,7 @@ namespace CoolerItemVisualEffect.Weapons
                 //    Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
                 //    Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
                 //    Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
-                //    ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+                //    ShaderSwooshUL.CurrentTechnique.Passes[passCount].Apply();
                 //    Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, _triangleList.ToArray(), 0, _triangleList.Count / 3);
                 //    Main.graphics.GraphicsDevice.RasterizerState = originalState;
                 //    for (int n = 0; n < instance.maxCount; n++)
@@ -586,11 +578,11 @@ namespace CoolerItemVisualEffect.Weapons
                 //{
                 //    sb.End();
                 //    sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
-                //    ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
-                //    ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
-                //    ShaderSwooshEX.Parameters["uTime"].SetValue(0); ShaderSwooshEX.Parameters["checkAir"].SetValue(instance.checkAir);
-                //    ShaderSwooshEX.Parameters["airFactor"].SetValue(airFactor);
-                //    ShaderSwooshEX.Parameters["gather"].SetValue(instance.gather);
+                //    ShaderSwooshUL.Parameters["uTransform"].SetValue(model * trans * projection);
+                //    ShaderSwooshUL.Parameters["uLighter"].SetValue(instance.luminosityFactor);
+                //    ShaderSwooshUL.Parameters["uTime"].SetValue(0); ShaderSwooshUL.Parameters["checkAir"].SetValue(instance.checkAir);
+                //    ShaderSwooshUL.Parameters["airFactor"].SetValue(airFactor);
+                //    ShaderSwooshUL.Parameters["gather"].SetValue(instance.gather);
                 //    Main.graphics.GraphicsDevice.Textures[0] = GetWeaponDisplayImage("BaseTex_" + (int)MathHelper.Clamp(instance.ImageIndex, 0, 7));
                 //    Main.graphics.GraphicsDevice.Textures[1] = GetWeaponDisplayImage("AniTex");
                 //    Main.graphics.GraphicsDevice.Textures[2] = currentTex;
@@ -599,23 +591,25 @@ namespace CoolerItemVisualEffect.Weapons
                 //    Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
                 //    Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
                 //    Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
-                //    ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+                //    ShaderSwooshUL.CurrentTechnique.Passes[passCount].Apply();
                 //    Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, _triangleList.ToArray(), 0, _triangleList.Count / 3);
                 //    Main.graphics.GraphicsDevice.RasterizerState = originalState;
                 //}
                 //sb.End();
                 //sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
-                ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
-                //ShaderSwooshEX.Parameters["uLighter"].SetValue(instance.luminosityFactor);
-                ShaderSwooshEX.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f); ShaderSwooshEX.Parameters["checkAir"].SetValue(ConfigSwooshInstance.checkAir);
-                ShaderSwooshEX.Parameters["airFactor"].SetValue(airFactor);
-                ShaderSwooshEX.Parameters["gather"].SetValue(ConfigSwooshInstance.gather);
-                ShaderSwooshEX.Parameters["alphaFactor"].SetValue(ConfigSwooshInstance.alphaFactor);
-                ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(ConfigSwooshInstance.alphaFactor == 0);
+                ShaderSwooshUL.Parameters["uTransform"].SetValue(model * trans * projection);
+                //ShaderSwooshUL.Parameters["uLighter"].SetValue(instance.luminosityFactor);
+                ShaderSwooshUL.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f); ShaderSwooshUL.Parameters["checkAir"].SetValue(ConfigSwooshInstance.checkAir);
+                ShaderSwooshUL.Parameters["airFactor"].SetValue(airFactor);
+                ShaderSwooshUL.Parameters["gather"].SetValue(ConfigSwooshInstance.gather);
+                ShaderSwooshUL.Parameters["alphaFactor"].SetValue(ConfigSwooshInstance.alphaFactor);
+                ShaderSwooshUL.Parameters["heatMapAlpha"].SetValue(ConfigSwooshInstance.alphaFactor == 0);
                 var _v = ConfigSwooshInstance.directOfHeatMap.ToRotationVector2();
-                ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
-                ShaderSwooshEX.Parameters["lightShift"].SetValue(0);
-                ShaderSwooshEX.Parameters["distortScaler"].SetValue(0);
+                ShaderSwooshUL.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
+                ShaderSwooshUL.Parameters["lightShift"].SetValue(0);
+                ShaderSwooshUL.Parameters["distortScaler"].SetValue(0);
+                ShaderSwooshUL.Parameters["AlphaVector"].SetValue(ConfigSwooshInstance.colorVector.AlphaVector);
+
                 Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.BaseTex[ConfigSwooshInstance.ImageIndex].Value;
                 Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.AniTex[ConfigSwooshInstance.AnimateIndex + 11].Value;
                 Main.graphics.GraphicsDevice.Textures[2] = currentTex;
@@ -623,16 +617,8 @@ namespace CoolerItemVisualEffect.Weapons
                 Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
                 Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
                 Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
-                switch (ConfigSwooshInstance.swooshColorType)
-                {
-                    case SwooshColorType.热度图:
-                        {
-                            sampler = SamplerState.AnisotropicClamp;
-                            break;
-                        }
-                }
-                Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
-                ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+                Main.graphics.GraphicsDevice.SamplerStates[3] = SamplerState.AnisotropicClamp;
+                ShaderSwooshUL.CurrentTechnique.Passes[7].Apply();
                 Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, _triangleList.ToArray(), 0, _triangleList.Count / 3);
                 Main.graphics.GraphicsDevice.RasterizerState = originalState;
             }

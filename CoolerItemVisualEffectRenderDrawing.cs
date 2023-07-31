@@ -55,7 +55,8 @@ namespace CoolerItemVisualEffect
                             var f = i / (max - 1f);
                             f = 1 - f;
                             var alphaLight = 0.6f;
-                            if (ConfigSwooshInstance.swooshColorType == SwooshColorType.单向渐变 || ConfigSwooshInstance.swooshColorType == SwooshColorType.单向渐变与对角线混合)
+                            //TODO 初源绘制检查
+                            if (false)//ConfigSwooshInstance.swooshColorType == SwooshColorType.单向渐变 || ConfigSwooshInstance.swooshColorType == SwooshColorType.单向渐变与对角线混合
                             {
                                 float h = (hsl.X + ConfigSwooshInstance.hueOffsetValue + ConfigSwooshInstance.hueOffsetRange * (2 * f - 1)) % 1;
                                 float s = MathHelper.Clamp(hsl.Y * ConfigSwooshInstance.saturationScalar, 0, 1);
@@ -73,7 +74,7 @@ namespace CoolerItemVisualEffect
                     spriteBatch.End();
                 }
                 #endregion
-                if (RenderEffect == null || ShaderSwooshEX == null) return;
+                if (RenderEffect == null || ShaderSwooshUL == null) return;
                 List<CustomVertexInfo> _triangleList = new List<CustomVertexInfo>();
                 SamplerState sampler;
                 switch (ConfigSwooshInstance.swooshSampler)
@@ -82,14 +83,6 @@ namespace CoolerItemVisualEffect
                     case SwooshSamplerState.各向异性: sampler = SamplerState.AnisotropicWrap; break;
                     case SwooshSamplerState.线性: sampler = SamplerState.LinearWrap; break;
                     case SwooshSamplerState.点: sampler = SamplerState.PointWrap; break;
-                }
-                switch (ConfigSwooshInstance.swooshColorType)
-                {
-                    case SwooshColorType.热度图:
-                        {
-                            sampler = SamplerState.AnisotropicClamp;
-                            break;
-                        }
                 }
                 RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
                 var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
@@ -109,25 +102,19 @@ namespace CoolerItemVisualEffect
                         _triangleList.Add(bars[i + 2]);
                         _triangleList.Add(bars[i + 3]);
                     }
-                    switch (ConfigSwooshInstance.swooshColorType)
-                    {
-                        case SwooshColorType.热度图: passCount = 2; break;
-                        case SwooshColorType.武器贴图对角线: passCount = 1; break;
-                        case SwooshColorType.单向渐变与对角线混合: passCount = 3; break;
-                        case SwooshColorType.单向渐变: passCount = 4; break;
-                    }
-                    ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
-                    //ShaderSwooshEX.Parameters["uLighter"].SetValue(ConfigSwooshInstance.luminosityFactor);
-                    ShaderSwooshEX.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
-                    ShaderSwooshEX.Parameters["checkAir"].SetValue(ConfigSwooshInstance.checkAir);
-                    ShaderSwooshEX.Parameters["airFactor"].SetValue(1);
-                    ShaderSwooshEX.Parameters["gather"].SetValue(ConfigSwooshInstance.gather);
-                    ShaderSwooshEX.Parameters["lightShift"].SetValue(0);
-                    ShaderSwooshEX.Parameters["distortScaler"].SetValue(0);
+                    ShaderSwooshUL.Parameters["uTransform"].SetValue(model * trans * projection);
+                    //ShaderSwooshUL.Parameters["uLighter"].SetValue(ConfigSwooshInstance.luminosityFactor);
+                    ShaderSwooshUL.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
+                    ShaderSwooshUL.Parameters["checkAir"].SetValue(ConfigSwooshInstance.checkAir);
+                    ShaderSwooshUL.Parameters["airFactor"].SetValue(1);
+                    ShaderSwooshUL.Parameters["gather"].SetValue(ConfigSwooshInstance.gather);
+                    ShaderSwooshUL.Parameters["lightShift"].SetValue(0);
+                    ShaderSwooshUL.Parameters["distortScaler"].SetValue(0);
                     var _v = ConfigSwooshInstance.directOfHeatMap.ToRotationVector2();
-                    ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
-                    ShaderSwooshEX.Parameters["alphaFactor"].SetValue(ConfigSwooshInstance.alphaFactor);
-                    ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(ConfigSwooshInstance.alphaFactor == 0);
+                    ShaderSwooshUL.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
+                    ShaderSwooshUL.Parameters["alphaFactor"].SetValue(ConfigSwooshInstance.alphaFactor);
+                    ShaderSwooshUL.Parameters["heatMapAlpha"].SetValue(ConfigSwooshInstance.alphaFactor == 0);
+                    ShaderSwooshUL.Parameters["AlphaVector"].SetValue(ConfigSwooshInstance.colorVector.AlphaVector);
                     Main.graphics.GraphicsDevice.Textures[0] = BaseTex[ConfigSwooshInstance.ImageIndex].Value;
                     Main.graphics.GraphicsDevice.Textures[1] = AniTex[ConfigSwooshInstance.AnimateIndex + 11].Value;
                     Main.graphics.GraphicsDevice.Textures[2] = ModContent.Request<Texture2D>("CoolerItemVisualEffect/Weapons/FirstZenithProj_5").Value;
@@ -135,9 +122,9 @@ namespace CoolerItemVisualEffect
                     Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
                     Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
                     Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
-                    Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
+                    Main.graphics.GraphicsDevice.SamplerStates[3] = SamplerState.AnisotropicClamp;
 
-                    ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+                    ShaderSwooshUL.CurrentTechnique.Passes[7].Apply();
                     Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, _triangleList.ToArray(), 0, _triangleList.Count / 3);
                     sb.End();
                 }
@@ -225,7 +212,7 @@ namespace CoolerItemVisualEffect
                             var f = i / (max - 1f);
                             f = 1 - f;
                             var alphaLight = 0.6f;
-                            if (ConfigSwooshInstance.swooshColorType == SwooshColorType.单向渐变 || ConfigSwooshInstance.swooshColorType == SwooshColorType.单向渐变与对角线混合)
+                            if (false)
                             {
                                 float h = (hsl.X + ConfigSwooshInstance.hueOffsetValue + ConfigSwooshInstance.hueOffsetRange * (2 * f - 1)) % 1;
                                 float s = MathHelper.Clamp(hsl.Y * ConfigSwooshInstance.saturationScalar, 0, 1);
@@ -254,7 +241,7 @@ namespace CoolerItemVisualEffect
                 //{
                 //    spriteEffects = SpriteEffects.FlipHorizontally;
                 //}
-                if (RenderEffect == null || ShaderSwooshEX == null) return;
+                if (RenderEffect == null || ShaderSwooshUL == null) return;
 
                 List<CustomVertexInfo> _triangleList = new List<CustomVertexInfo>();
                 SamplerState sampler;
@@ -288,26 +275,20 @@ namespace CoolerItemVisualEffect
                         _triangleList.Add(bars[i + 2]);
                         _triangleList.Add(bars[i + 3]);
                     }
-                    switch (ConfigSwooshInstance.swooshColorType)
-                    {
-                        case SwooshColorType.热度图: passCount = 2; break;
-                        case SwooshColorType.武器贴图对角线: passCount = 1; break;
-                        case SwooshColorType.单向渐变与对角线混合: passCount = 3; break;
-                        case SwooshColorType.单向渐变: passCount = 4; break;
-                    }
-                    ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
-                    //ShaderSwooshEX.Parameters["uLighter"].SetValue(ConfigSwooshInstance.luminosityFactor);
-                    ShaderSwooshEX.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
-                    ShaderSwooshEX.Parameters["checkAir"].SetValue(ConfigSwooshInstance.checkAir);
-                    ShaderSwooshEX.Parameters["airFactor"].SetValue(1);
-                    ShaderSwooshEX.Parameters["gather"].SetValue(ConfigSwooshInstance.gather);
-                    ShaderSwooshEX.Parameters["alphaFactor"].SetValue(ConfigSwooshInstance.alphaFactor);
-                    ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(ConfigSwooshInstance.alphaFactor == 0);
+                    ShaderSwooshUL.Parameters["uTransform"].SetValue(model * trans * projection);
+                    //ShaderSwooshUL.Parameters["uLighter"].SetValue(ConfigSwooshInstance.luminosityFactor);
+                    ShaderSwooshUL.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
+                    ShaderSwooshUL.Parameters["checkAir"].SetValue(ConfigSwooshInstance.checkAir);
+                    ShaderSwooshUL.Parameters["airFactor"].SetValue(1);
+                    ShaderSwooshUL.Parameters["gather"].SetValue(ConfigSwooshInstance.gather);
+                    ShaderSwooshUL.Parameters["alphaFactor"].SetValue(ConfigSwooshInstance.alphaFactor);
+                    ShaderSwooshUL.Parameters["heatMapAlpha"].SetValue(ConfigSwooshInstance.alphaFactor == 0);
                     var _v = ConfigSwooshInstance.directOfHeatMap.ToRotationVector2();
-                    ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
+                    ShaderSwooshUL.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
 
-                    ShaderSwooshEX.Parameters["lightShift"].SetValue(0);
-                    ShaderSwooshEX.Parameters["distortScaler"].SetValue(0);
+                    ShaderSwooshUL.Parameters["lightShift"].SetValue(0);
+                    ShaderSwooshUL.Parameters["distortScaler"].SetValue(0);
+                    ShaderSwooshUL.Parameters["AlphaVector"].SetValue(ConfigSwooshInstance.colorVector.AlphaVector);
 
                     Main.graphics.GraphicsDevice.Textures[0] = BaseTex[ConfigSwooshInstance.ImageIndex].Value;
                     Main.graphics.GraphicsDevice.Textures[1] = AniTex[ConfigSwooshInstance.AnimateIndex + 11].Value;
@@ -316,16 +297,8 @@ namespace CoolerItemVisualEffect
                     Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
                     Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
                     Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
-                    switch (ConfigSwooshInstance.swooshColorType)
-                    {
-                        case SwooshColorType.热度图:
-                            {
-                                sampler = SamplerState.AnisotropicClamp;
-                                break;
-                            }
-                    }
-                    Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
-                    ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+                    Main.graphics.GraphicsDevice.SamplerStates[3] = SamplerState.AnisotropicClamp;;
+                    ShaderSwooshUL.CurrentTechnique.Passes[7].Apply();
                     Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, _triangleList.ToArray(), 0, _triangleList.Count / 3);
                     sb.End();
 
@@ -334,8 +307,8 @@ namespace CoolerItemVisualEffect
                         gd.SetRenderTarget(Instance.Render_AirDistort);
                         gd.Clear(Color.Transparent);
                         sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
-                        ShaderSwooshEX.Parameters["distortScaler"].SetValue(ConfigSwooshInstance.distortSize);
-                        ShaderSwooshEX.CurrentTechnique.Passes[passCount].Apply();
+                        ShaderSwooshUL.Parameters["distortScaler"].SetValue(ConfigSwooshInstance.distortSize);
+                        ShaderSwooshUL.CurrentTechnique.Passes[7].Apply();
                         _triangleList.Clear();
                         for (int i = 0; i < bars_2.Count - 2; i += 2)
                         {

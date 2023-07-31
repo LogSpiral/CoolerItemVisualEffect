@@ -129,7 +129,7 @@ namespace CoolerItemVisualEffect
         /// </summary>
         public bool UseSlash;
         public bool IsMeleeBroadSword => CoolerItemVisualEffectMod.MeleeCheck(player.HeldItem.DamageType) || ConfigurationSwoosh.ignoreDamageType;
-        public float TimeToCutThem => ConfigurationSwoosh.swingAttackTime * 2;//8f
+        public float TimeToCutThem => ConfigurationSwoosh.swingAttackTime;//8f
         public SwooshInfos.SwooshInfo currentInfo;
         /// <summary>
         /// 剑气是否可用
@@ -227,7 +227,7 @@ namespace CoolerItemVisualEffect
 
             if (ConfigurationSwoosh.actionModifyEffect)
             {
-                if (player.itemAnimation > TimeToCutThem / 2f && (ConfigurationSwoosh.coolerSwooshQuality == QualityType.极限ultra ^ !SwooshActive))// && 
+                if (player.itemAnimation > TimeToCutThem && (ConfigurationSwoosh.coolerSwooshQuality == QualityType.极限ultra ^ !SwooshActive))// && 
                     return false;
                 else
                     player.attackCD = 0;
@@ -294,7 +294,6 @@ namespace CoolerItemVisualEffect
                 }
             }
         }
-
         private void SetActionValue(float size = 1f /*,float speed = 1f*/, float knockBack = 1f, float damage = 1f, int critAdder = 0, float critMultiplyer = 1f)
         {
             actionOffsetSize = size;
@@ -585,7 +584,7 @@ namespace CoolerItemVisualEffect
                 fac = modPlayer.negativeDir ? 1 - fac : fac;
                 float rotVel = instance.swooshActionStyle == SwooshAction.旋风劈 && modPlayer.swingCount % 3 == 0 ? 3 : 1;
                 var theta = (1.2375f * fac * rotVel - 1.125f) * MathHelper.Pi;
-                var itemTex = TextureAssets.Item[drawPlayer.HeldItem.type].Value;
+                var itemTex = GetWeaponTextureFromItem(drawPlayer.HeldItem);
                 float xScaler = instance.swooshFactorStyle == SwooshFactorStyle.系数中间插值 ? MathHelper.Lerp(modPlayer.kValue, modPlayer.kValueNext, fac) : modPlayer.kValue;
                 currentSize = MathHelper.Lerp(currentSize, (ConfigurationSwoosh.actionOffsetSize ? actionOffsetSize : 1), 0.2f);
                 modPlayer.scaler = itemTex.Size().Length() * drawPlayer.GetAdjustedItemScale(drawPlayer.HeldItem) / xScaler * 0.5f * modPlayer.RealSize * modPlayer.colorInfo.checkAirFactor;
@@ -627,7 +626,7 @@ namespace CoolerItemVisualEffect
                     //_f = MathHelper.Clamp(_f, 0, 1);
                     var _flag = (byte)ConfigurationSwoosh.swooshActionStyle > 0 && (byte)ConfigurationSwoosh.swooshActionStyle < 9;
                     //var progress = _flag ? Utils.GetLerpValue(MathHelper.Clamp(player.itemAnimationMax, TimeToCutThem, 114514), TimeToCutThem, player.itemAnimation, true) : 1f;
-                    var progress = _flag ? Utils.GetLerpValue(TimeToCutThem, TimeToCutThem * .5f, player.itemAnimation, true) : 1f;//MathHelper.Clamp(player.itemAnimationMax, TimeToCutThem, 114514)
+                    var progress = _flag ? Utils.GetLerpValue(TimeToCutThem * 2, TimeToCutThem, player.itemAnimation, true) : 1f;//MathHelper.Clamp(player.itemAnimationMax, TimeToCutThem, 114514)
                     var alphaValue = MathHelper.Clamp((1 - f).HillFactor2() * 2f, 0, 1);
                     if (_dustAllow)
                     {
@@ -665,9 +664,59 @@ namespace CoolerItemVisualEffect
             {
                 if (us != null && us.Active)
                 {
-                    CoolerItemVisualEffectMod.UpdateHeatMap(ref us.heatMap, us.hsl, ConfigurationSwoosh, TextureAssets.Item[us.type].Value);
+                    CoolerItemVisualEffectMod.UpdateHeatMap(ref us.heatMap, us.hsl, ConfigurationSwoosh, GetWeaponTextureFromItem_Nullable(player.HeldItem) ?? TextureAssets.Item[us.type].Value);
                 }
             }
+        }
+        /// <summary>
+        /// 支持粘武器用的函数
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public static Texture2D GetWeaponTextureFromItem_Nullable(Item item)
+        {
+            var moditem = item.ModItem;
+            if (moditem != null && ModContent.TryFind<ModItem>("StickyWeapons", "StickyItem", out var sticky) && sticky.GetType().Equals(moditem.GetType()))
+            {
+                try
+                {
+                    dynamic dynamicItem = moditem;
+                    return dynamicItem.complexTexture;
+                }
+                catch (Exception e)
+                {
+                    Main.NewText(e.Message);
+                }
+            }
+            else
+            {
+            }
+            return null;
+        }
+        /// <summary>
+        /// 支持粘武器用的函数
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public static Texture2D GetWeaponTextureFromItem(Item item)
+        {
+            var moditem = item.ModItem;
+            if (moditem != null && ModContent.TryFind<ModItem>("StickyWeapons", "StickyItem", out var sticky) && sticky.GetType().Equals(moditem.GetType()))
+            {
+                try
+                {
+                    dynamic dynamicItem = moditem;
+                    return dynamicItem.complexTexture;
+                }
+                catch (Exception e)
+                {
+                    Main.NewText(e.Message);
+                }
+            }
+            else
+            {
+            }
+            return TextureAssets.Item[item.type].Value;
         }
         /// <summary>
         /// 更新插值
@@ -687,27 +736,44 @@ namespace CoolerItemVisualEffect
                     {
                         if (player.itemAnimationMax > TimeToCutThem)
                         {
-                            if ((negativeDir == oldNegativeDir && swingCount > 0) && player.itemAnimation > TimeToCutThem / 2f)//
+                            float k = TimeToCutThem;
+                            float max = player.itemAnimationMax;
+                            float t = player.itemAnimation;
+                            float v = 0.1f;
+                            float tier2 = (max - k) * v;
+                            float tier1 = MathHelper.Lerp(max, k, 1 - v);
+                            if ((negativeDir == oldNegativeDir && swingCount > 0) && player.itemAnimation > tier1)//
                             {
-                                var tangent1 = 1f / TimeToCutThem / (player.itemAnimationMax - TimeToCutThem * .5f);
-                                fac = MathHelper.Hermite(1.125f, tangent1, 160 / 99f, 0f, Utils.GetLerpValue(TimeToCutThem / 2f, player.itemAnimationMax, player.itemAnimation, true));
+                                //TODO 重新理解这一段雪山
+                                //var tangent1 = .5f / TimeToCutThem / (player.itemAnimationMax - TimeToCutThem);
+                                //fac = MathHelper.Hermite(1.125f, tangent1, 160 / 99f, 0f, Utils.GetLerpValue(TimeToCutThem, player.itemAnimationMax, player.itemAnimation, true));
+                                fac = MathHelper.SmoothStep(160 / 99f, 1.125f, Utils.GetLerpValue(max, tier1, t, true));
                             }
                             else
                             {
                                 //_factor = player.itemAnimation <= TimeToCutThem / 2f ? (player.itemAnimation / TimeToCutThem) : (((player.itemAnimation - TimeToCutThem / 2) / (player.itemAnimationMax - TimeToCutThem / 2) + 1f) / 2f);
                                 //fac = 1 - (cValue - 1) * (1 - _factor) * (1 - _factor) - (2 - cValue) * (1 - _factor);
                                 //↑旧版代码，有点小难受那种
-                                float k = TimeToCutThem / 2f;
-                                float max = player.itemAnimationMax;
-                                float t = player.itemAnimation;
-                                if (t >= k)
-                                {
-                                    fac = MathHelper.SmoothStep(1, 1.125f, Utils.GetLerpValue(max, k, t));
-                                }
+                                //float k = TimeToCutThem / 2f;
+                                //float max = player.itemAnimationMax;
+                                //float t = player.itemAnimation;
+                                //if (t >= k)
+                                //{
+                                //    fac = MathHelper.SmoothStep(1, 1.125f, Utils.GetLerpValue(max, k, t));
+                                //}
+                                //else
+                                //{
+                                //    fac = MathHelper.SmoothStep(0, 1.125f, MathF.Pow(player.itemAnimation / k, 4));
+                                //}
+                                //↑旧版代码，没有后摇
+
+
+                                if (t > tier1)
+                                    fac = MathHelper.SmoothStep(1, 1.125f, Utils.GetLerpValue(max, tier1, t, true));
+                                else if (t < tier2)
+                                    fac = 0;
                                 else
-                                {
-                                    fac = MathHelper.SmoothStep(0, 1.125f, MathF.Pow(player.itemAnimation / k, 4));
-                                }
+                                    fac = MathHelper.SmoothStep(0, 1.125f, Utils.GetLerpValue(tier2, tier1, t, true));
                             }
                         }
                         else
@@ -738,7 +804,7 @@ namespace CoolerItemVisualEffect
         /// </summary>
         public override void PreUpdate()
         {
-            if (ConfigurationSwoosh.actionModifyEffect && player.itemAnimation < TimeToCutThem)
+            if (ConfigurationSwoosh.actionModifyEffect && factor == MathHelper.Clamp(factor, 0, 1))
             {
                 player.attackCD = 0;
             }
@@ -755,7 +821,7 @@ namespace CoolerItemVisualEffect
                 Projectile.NewProjectile(player.GetSource_ItemUse_WithPotentialAmmo(player.HeldItem, 0), player.Center, default, ModContent.ProjectileType<HitAssistProj>(), 1, 1, player.whoAmI);
             }
             //base.PostUpdate();
-            if (ConfigurationSwoosh.actionModifyEffect && player.itemAnimation < TimeToCutThem)
+            if (ConfigurationSwoosh.actionModifyEffect && factor == MathHelper.Clamp(factor, 0, 1))
             {
                 player.attackCD = 0;
             }
@@ -810,7 +876,7 @@ namespace CoolerItemVisualEffect
                     if (ConfigurationSwoosh.CoolerSwooshActive) // 
                     {
                         //Main.NewText(swingCount);
-                        if (player.itemAnimationMax > TimeToCutThem / 2)
+                        if (player.itemAnimationMax > TimeToCutThem)
                             ItemID.Sets.SkipsInitialUseSound[player.HeldItem.type] = true;
                         if (Main.myPlayer == player.whoAmI)
                             ChangeShooshStyle();
@@ -822,7 +888,7 @@ namespace CoolerItemVisualEffect
                 }
             }
 
-            if (player.itemAnimation == (int)(TimeToCutThem / 2) && ItemID.Sets.SkipsInitialUseSound[player.HeldItem.type])
+            if (player.itemAnimation == player.itemAnimationMax / 2 && ItemID.Sets.SkipsInitialUseSound[player.HeldItem.type])
             {
                 SoundEngine.PlaySound(player.HeldItem.UseSound, player.Center);
             }
@@ -833,10 +899,11 @@ namespace CoolerItemVisualEffect
                 player.SetCompositeArmFront(enabled: true, Player.CompositeArmStretchAmount.Full, player.itemRotation);
                 //player.direction = Math.Sign(Main.MouseWorld.X - player.Center.X);
                 player.direction = Math.Sign(MathF.Cos(rotationForShadow));
-                if (player.itemAnimation > TimeToCutThem && ConfigurationSwoosh.dustQuantity != 0)
+                var tier1 = (player.itemAnimationMax + TimeToCutThem) * .5f;
+                if (player.itemAnimation > tier1 && ConfigurationSwoosh.dustQuantity != 0)
                 {
                     var _flag = (byte)ConfigurationSwoosh.swooshActionStyle > 0 && (byte)ConfigurationSwoosh.swooshActionStyle < 9;
-                    var progress = _flag ? Utils.GetLerpValue(MathHelper.Clamp(player.itemAnimationMax, TimeToCutThem, 114514), TimeToCutThem, player.itemAnimation, true) : 1f;
+                    var progress = _flag ? Utils.GetLerpValue(MathHelper.Clamp(player.itemAnimationMax, tier1, 114514), tier1, player.itemAnimation, true) : 1f;
                     var scaler = player.itemAnimationMax / (float)player.HeldItem.useAnimation;
                     if (Main.rand.Next(100) < progress * 100 * ConfigurationSwoosh.dustQuantity)
                     {
@@ -911,7 +978,7 @@ namespace CoolerItemVisualEffect
         {
             CoolerItemVisualEffectPlayer modPlayer = player.GetModPlayer<CoolerItemVisualEffectPlayer>();
             if (!TextureAssets.Item[player.HeldItem.type].IsLoaded) TextureAssets.Item[player.HeldItem.type] = Main.Assets.Request<Texture2D>("Images/Item_" + player.HeldItem.type, ReLogic.Content.AssetRequestMode.AsyncLoad);
-            var texture = TextureAssets.Item[player.HeldItem.type].Value;
+            var texture = GetWeaponTextureFromItem(player.HeldItem);
             if (modPlayer.colorInfo.type != player.HeldItem.type)
             {
                 var w = texture.Width;
@@ -926,7 +993,8 @@ namespace CoolerItemVisualEffect
 
                 for (int n = 0; n < cs.Length; n++)
                 {
-                    if (cs[n] != default && (n - w < 0 || cs[n - w] != default) && (n - 1 < 0 || cs[n - 1] != default) && (n + w >= cs.Length || cs[n + w] != default) && (n + 1 >= cs.Length || cs[n + 1] != default))
+                    if (cs[n] != default && (n - w < 0 || cs[n - w] != default) && (n - 1 < 0 || cs[n - 1] != default) &&
+                        (n + w >= cs.Length || cs[n + w] != default) && (n + 1 >= cs.Length || cs[n + 1] != default))
                     {
                         var weight = (float)((n + 1) % w * (h - n / w)) / w / h;
                         vcolor += cs[n].ToVector4() * weight;
@@ -1242,7 +1310,8 @@ namespace CoolerItemVisualEffect
         {
             if (!effectPlayer.SwooshActive)
             {
-                if (player.itemAnimation > effectPlayer.TimeToCutThem / 2f)
+                var fac = effectPlayer.FactorGeter;
+                if (fac != MathHelper.Clamp(fac, 0, 1))
                     return false;
                 if (player.itemAnimation == 0) return false;
             }

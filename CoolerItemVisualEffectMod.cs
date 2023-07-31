@@ -27,7 +27,7 @@ using CoolerItemVisualEffect.ConfigSLer;
 using LogSpiralLibrary;
 
 namespace CoolerItemVisualEffect
-{ 
+{
     //TODO List计划表
     //
     public class CoolerItemVisualEffectMod : Mod
@@ -477,7 +477,7 @@ namespace CoolerItemVisualEffect
         public static void DrawSwooshContent(CoolerItemVisualEffectPlayer modPlayer, Matrix result, ConfigurationSwoosh instance, SamplerState sampler, Texture2D itemTex, float checkAirFactor, int passCount, CustomVertexInfo[] array, bool distort = false, float scaler = 1f)
         {
             var distortScaler = distort ? instance.distortSize : 1;
-            bool flag = ConfigurationUltraTest.ConfigSwooshUltraInstance.useUltraEffect;
+            bool flag = true;
             Effect effect = flag ? ShaderSwooshUL : ShaderSwooshEX;
             //if (flag)
             //    effect.Parameters["AlphaVector"].SetValue(ConfigurationUltraTest.ConfigSwooshUltraInstance.AlphaVector);
@@ -492,8 +492,8 @@ namespace CoolerItemVisualEffect
             effect.Parameters["distortScaler"].SetValue(distortScaler * scaler);
             effect.Parameters["alphaFactor"].SetValue(instance.alphaFactor);
             effect.Parameters["heatMapAlpha"].SetValue(instance.alphaFactor != 0);
-            if(flag)
-                effect.Parameters["AlphaVector"].SetValue(ConfigurationUltraTest.ConfigSwooshUltraInstance.AlphaVector);
+            if (flag)
+                effect.Parameters["AlphaVector"].SetValue(instance.colorVector.AlphaVector);
             Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.BaseTex[instance.ImageIndex].Value;
             Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.AniTex[modPlayer.ConfigurationSwoosh.AnimateIndex + 11].Value;
             Main.graphics.GraphicsDevice.Textures[2] = itemTex;
@@ -501,15 +501,15 @@ namespace CoolerItemVisualEffect
             Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
             Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
             Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
-            switch (instance.swooshColorType)
-            {
-                case SwooshColorType.热度图:
-                    {
-                        sampler = SamplerState.AnisotropicClamp;
-                        break;
-                    }
-            }
-            Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
+            //switch (instance.swooshColorType)
+            //{
+            //    case SwooshColorType.热度图:
+            //        {
+            //            sampler = SamplerState.AnisotropicClamp;
+            //            break;
+            //        }
+            //}
+            Main.graphics.GraphicsDevice.SamplerStates[3] = SamplerState.AnisotropicClamp;
             if (modPlayer.UseSlash)// && ((instance.swooshActionStyle != SwooshAction.向后倾一定角度后重击 && instance.swooshActionStyle != SwooshAction.两次普通斩击一次高速旋转) || modPlayer.Player.itemAnimation < 18)
             {
                 effect.CurrentTechnique.Passes[flag ? 7 : passCount].Apply();
@@ -518,7 +518,7 @@ namespace CoolerItemVisualEffect
             if (modPlayer.SwooshActive)
             {
                 //因为这里另外合批了效果，就没必要在这个的pre和post里面写render了
-                modPlayer.coolerSwooshes.DrawVertexInfo(typeof(CoolerSwoosh),Main.spriteBatch, null, null, null, distortScaler);
+                modPlayer.coolerSwooshes.DrawVertexInfo(typeof(CoolerSwoosh), Main.spriteBatch, null, null, null, distortScaler);
             }
         }
         /// <summary>
@@ -540,7 +540,9 @@ namespace CoolerItemVisualEffect
             var newColor = modPlayer.colorInfo.color;
             var alphaBlend = modPlayer.hsl.Z < instance.isLighterDecider;
             var checkAirFactor = modPlayer.colorInfo.checkAirFactor;
-            var itemTex = TextureAssets.Item[drawPlayer.HeldItem.type].Value;
+            //var itemTex = TextureAssets.Item[drawPlayer.HeldItem.type].Value;
+            //Main.NewText("你小子");
+            var itemTex = CoolerItemVisualEffectPlayer.GetWeaponTextureFromItem(drawPlayer.HeldItem);
             var drawCen = drawPlayer.Center;
             var fac = modPlayer.FactorGeter;
             CustomVertexInfo[] c = new CustomVertexInfo[6];
@@ -549,12 +551,13 @@ namespace CoolerItemVisualEffect
             RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
             if (modPlayer.colorInfo.tex == null || modPlayer.colorInfo.type != drawPlayer.HeldItem.type)
             {
-                if (instance.swooshColorType == SwooshColorType.热度图 ||
-                    instance.swooshColorType == SwooshColorType.单向渐变 ||
-                    instance.swooshColorType == SwooshColorType.单向渐变与对角线混合)
-                {
-                    UpdateHeatMap(ref modPlayer.colorInfo.tex, modPlayer.hsl, instance, itemTex);
-                }
+                //if (instance.swooshColorType == SwooshColorType.热度图 ||
+                //    instance.swooshColorType == SwooshColorType.单向渐变 ||
+                //    instance.swooshColorType == SwooshColorType.单向渐变与对角线混合)
+                //{
+                //    UpdateHeatMap(ref modPlayer.colorInfo.tex, modPlayer.hsl, instance, itemTex);
+                //}
+                UpdateHeatMap(ref modPlayer.colorInfo.tex, modPlayer.hsl, instance, itemTex);
                 modPlayer.colorInfo.type = drawPlayer.HeldItem.type;
             }
             Matrix result = model * trans * projection;
@@ -634,14 +637,14 @@ namespace CoolerItemVisualEffect
                 }
             }
             var passCount = 0;
-            switch (instance.swooshColorType)
-            {
-                case SwooshColorType.热度图: passCount = 2; break;
-                case SwooshColorType.武器贴图对角线: passCount = 1; break;
-                case SwooshColorType.单向渐变与对角线混合: passCount = 3; break;
-                case SwooshColorType.单向渐变: passCount = 4; break;
+            //switch (instance.swooshColorType)
+            //{
+            //    case SwooshColorType.热度图: passCount = 2; break;
+            //    case SwooshColorType.武器贴图对角线: passCount = 1; break;
+            //    case SwooshColorType.单向渐变与对角线混合: passCount = 3; break;
+            //    case SwooshColorType.单向渐变: passCount = 4; break;
 
-            }
+            //}
 
             sb.End();
             if (useRender)
@@ -973,10 +976,23 @@ namespace CoolerItemVisualEffect
     }
     public class CoolerSystem : ModSystem
     {
-        public override void Load()
-        {
-            base.Load();
-        }
+        //public static void CloneValue(BlendState source, BlendState target)
+        //{
+        //    target.ColorSourceBlend = source.ColorSourceBlend;
+        //    target.AlphaSourceBlend = source.AlphaSourceBlend;
+        //    target.ColorDestinationBlend = source.ColorDestinationBlend;
+        //    target.AlphaDestinationBlend = source.AlphaDestinationBlend;
+        //}
+        //public override void Load()
+        //{
+        //    BlendState state = BlendState.Additive;
+        //    CloneValue(state, BlendState.NonPremultiplied);
+        //    CloneValue(state, BlendState.AlphaBlend);
+        //    CloneValue(state, BlendState.Opaque);
+
+        //    Lighting.Mode = Terraria.Graphics.Light.LightMode.Retro;
+        //    base.Load();
+        //}
         public override void Unload()
         {
             base.Unload();
