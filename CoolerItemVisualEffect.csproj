@@ -6,7 +6,7 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<LangVersion>latest</LangVersion>
-		<EnablePublicizer>True</EnablePublicizer>
+		<Solaestas-UsePublicizer>True</Solaestas-UsePublicizer>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Remove="obj\**" />
@@ -17,6 +17,7 @@
 	  <None Remove="Localization\Config\zh-Hans - 复制.hjson" />
 	</ItemGroup>
 	<ItemGroup>
+		<PackageReference Include="Solaestas.tModLoader.ModBuilder" Version="1.3.0" />
 		<PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
 	</ItemGroup>
 	<ItemGroup>

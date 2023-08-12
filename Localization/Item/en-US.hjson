@@ -1,4 +1,3 @@
-
 Mods: {
 	CoolerItemVisualEffect: {
 		ConfigSLer: {
@@ -56,7 +55,10 @@ Mods: {
 				Tooltip: (New Version Work In Progress)
 			}
 
-			CrystalStoneSword.DisplayName: Crystal Stone Sword
+			CrystalStoneSword: {
+				DisplayName: Crystal Stone Sword
+				Tooltip: ""
+			}
 
 			RustySteelBlade: {
 				DisplayName: Rusty Steel Blade
@@ -118,7 +120,10 @@ Mods: {
 				Tooltip: The Edge of Zenith Which Upgraded by the Ancient and Pure NaturalMagic.Show it, Your first Power.
 			}
 
-			FirstZenith_Old.DisplayName: FirstZenith_Old
+			FirstZenith_Old: {
+				DisplayName: FirstZenith_Old
+				Tooltip: ""
+			}
 
 			FinalFractal_Old: {
 				DisplayName: FinalFractal_Old
@@ -133,18 +138,59 @@ Mods: {
 				You Can Use It Now(   ;)
 				'''
 			IDTKNOW: Pls Use This Weapon With A Correct Name.
-			FFBag.DisplayName: ReturnBag
-			FZBag.DisplayName: ReturnBag
-			LWBag.DisplayName: ReturnBag
-			MSBag.DisplayName: ReturnBag
-			PFBag.DisplayName: ReturnBag
-			ReturnBag.DisplayName: ReturnBag
-			RSBag.DisplayName: ReturnBag
-			RSEXBag.DisplayName: ReturnBag
-			SSBag.DisplayName: ReturnBag
+
+			FFBag: {
+				DisplayName: ReturnBag
+				Tooltip: ""
+			}
+
+			FZBag: {
+				DisplayName: ReturnBag
+				Tooltip: ""
+			}
+
+			LWBag: {
+				DisplayName: ReturnBag
+				Tooltip: ""
+			}
+
+			MSBag: {
+				DisplayName: ReturnBag
+				Tooltip: ""
+			}
+
+			PFBag: {
+				DisplayName: ReturnBag
+				Tooltip: ""
+			}
+
+			ReturnBag: {
+				DisplayName: ReturnBag
+				Tooltip: ""
+			}
+
+			RSBag: {
+				DisplayName: ReturnBag
+				Tooltip: ""
+			}
+
+			RSEXBag: {
+				DisplayName: ReturnBag
+				Tooltip: ""
+			}
+
+			SSBag: {
+				DisplayName: ReturnBag
+				Tooltip: ""
+			}
+
 			Azure.DisplayName: Azure
 			DemonScythe.DisplayName: Demon Scythe
-			WWBag.DisplayName: ReturnBag
+
+			WWBag: {
+				DisplayName: ReturnBag
+				Tooltip: ""
+			}
 		}
 
 		FinalFractalTip: {
