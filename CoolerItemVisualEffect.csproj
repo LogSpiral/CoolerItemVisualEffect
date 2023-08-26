@@ -6,6 +6,7 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<LangVersion>latest</LangVersion>
+		<Solaestas-UseAssetPath>false</Solaestas-UseAssetPath>
 		<Solaestas-UsePublicizer>True</Solaestas-UsePublicizer>
 	</PropertyGroup>
 	<ItemGroup>
@@ -22,6 +23,9 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\LogSpiralLibrary\LogSpiralLibrary.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Update="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.1" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ResourceFile Update="Localization\Config\zh-Hans - 复制.hjson">

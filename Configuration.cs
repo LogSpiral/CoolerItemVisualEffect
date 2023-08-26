@@ -1161,9 +1161,9 @@ namespace CoolerItemVisualEffect
             #region 样式设置
             [Header("$Mods.CoolerItemVisualEffect.HeadLines.D2")]
             [BackgroundColor(0, 255, 255, 255)]
-            [DefaultValue(ConfigTexStyle.Origin)]
+            [DefaultValue(ConfigTexStyle.DarkMetal)]
             [CustomModConfigItem(typeof(CoolerEnumElement))]
-            public ConfigTexStyle texStyle { get; set; } = ConfigTexStyle.Origin;
+            public ConfigTexStyle texStyle { get; set; } = ConfigTexStyle.DarkMetal;
 
             [Header("$Mods.CoolerItemVisualEffect.HeadLines.Head1")]
 
@@ -3680,10 +3680,10 @@ namespace CoolerItemVisualEffect
             }
         }
 
-        [CustomModConfigItem(typeof(CoolerListElement))]
-        [CollectionElementCustomItem(typeof(CoolerIntElement))]
-        [BackgroundColor(112, 0, 255, 255)]
-        public List<int> useLessValues;
+        //[CustomModConfigItem(typeof(CoolerListElement))]
+        //[CollectionElementCustomItem(typeof(CoolerIntElement))]
+        //[BackgroundColor(112, 0, 255, 255)]
+        //public List<int> useLessValues;
 
         public static bool operator ==(ColorVector v1, ColorVector v2)
         {

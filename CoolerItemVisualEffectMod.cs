@@ -830,6 +830,28 @@ namespace CoolerItemVisualEffect
 
         #endregion
         #region 辅助函数
+        public override object Call(params object[] args)
+        {
+            if (args.Length == 0 || args[0] is not string str)
+                return base.Call(args);
+            switch (str)
+            {
+                case "RegisterModifyWeaponTex":
+                    {
+                        try
+                        {
+                            CoolerItemVisualEffectPlayer.weaponGetFunctions.Add(((Func<Item, Texture2D> func, float priority))(args[1], args[2]));
+                            CoolerItemVisualEffectPlayer.RefreshWeaponTexFunc = true;
+                        }
+                        catch
+                        {
+                            return null;
+                        }
+                        return null;
+                    }
+                default: return null;
+            }
+        }
         //public const string ImagePath = "CoolerItemVisualEffect/Shader/";
         //public static Texture2D GetWeaponDisplayImage(string name) => ModContent.Request<Texture2D>(ImagePath + name).Value;
         public override void HandlePacket(BinaryReader reader, int whoAmI)

@@ -693,30 +693,44 @@ namespace CoolerItemVisualEffect
             }
             return null;
         }
+        public static List<(Func<Item, Texture2D> func, float priority)> weaponGetFunctions = new();
+        public static bool RefreshWeaponTexFunc;
         /// <summary>
-        /// 支持粘武器用的函数
+        /// 如果你的武器贴图和"看上去"的不一样，用这个换成看上去的
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
         public static Texture2D GetWeaponTextureFromItem(Item item)
         {
-            var moditem = item.ModItem;
-            if (moditem != null && ModContent.TryFind<ModItem>("StickyWeapons", "StickyItem", out var sticky) && sticky.GetType().Equals(moditem.GetType()))
+            if (RefreshWeaponTexFunc) 
             {
-                try
-                {
-                    dynamic dynamicItem = moditem;
-                    return dynamicItem.complexTexture;
-                }
-                catch (Exception e)
-                {
-                    Main.NewText(e.Message);
-                }
+                RefreshWeaponTexFunc = false;
+                weaponGetFunctions.Sort((v1, v2) => v1.priority > v2.priority ? 1 : -1);
             }
-            else
+            Texture2D texture = null;
+            foreach (var func in weaponGetFunctions) 
             {
+                if (func.func == null) continue;
+                if (texture != null) break;
+                texture = func.func.Invoke(item);
             }
-            return TextureAssets.Item[item.type].Value;
+            //var moditem = item.ModItem;
+            //if (moditem != null && ModContent.TryFind<ModItem>("StickyWeapons", "StickyItem", out var sticky) && sticky.GetType().Equals(moditem.GetType()))
+            //{
+            //    try
+            //    {
+            //        dynamic dynamicItem = moditem;
+            //        return dynamicItem.complexTexture;
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        Main.NewText(e.Message);
+            //    }
+            //}
+            //else
+            //{
+            //}
+            return texture ?? TextureAssets.Item[item.type].Value;
         }
         /// <summary>
         /// 更新插值
@@ -1162,7 +1176,7 @@ namespace CoolerItemVisualEffect
         public void DrawWeapon(Player Player, Item holditem, PlayerDrawSet drawInfo)
         {
 
-            Texture2D texture = TextureAssets.Item[holditem.type].Value;
+            Texture2D texture = GetWeaponTextureFromItem(holditem);//TextureAssets.Item[holditem.type].Value
             Rectangle rectangle = new Rectangle(0, 0, texture.Width, texture.Height);
             Vector2 origin = rectangle.Size() / 2f;
             Vector2 value5 = DrawPlayer_Head_GetSpecialDrawPosition(ref drawInfo, Vector2.Zero, new Vector2(0f, 8f));

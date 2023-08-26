@@ -876,5 +876,83 @@ Mods: {
 			35: 动作效果优化(未完成)
 			36: 你一定看得出这个是低仿蔚蓝的对吧
 		}
+
+		ConfigSLer: {
+			RenameTip: {
+			}
+		}
+
+		Items: {
+			ConfigSLer: {
+			}
+
+			旧日支配者: {
+			}
+
+			// 真旧日支配者.DisplayName: True Great Old Ones
+			
+			FirstFractal_CIVE: {
+			}
+
+			WitheredWoodSword: {
+			}
+
+			LivingWoodSword: {
+			}
+
+			SereStoneSword: {
+			}
+
+			MossStoneSword: {
+			}
+
+			RustySteelBlade: {
+			}
+
+			RefinedSteelBlade: {
+			}
+
+			PureFractal: {
+			}
+
+			FirstZenith: {
+			}
+
+			FinalFractal: {
+			}
+
+			WitheredWoodSword_Old: {
+			}
+
+			LivingWoodSword_Old: {
+			}
+
+			SereStoneSword_Old: {
+			}
+
+			MossStoneSword_Old: {
+			}
+
+			RustySteelBlade_Old: {
+			}
+
+			RefinedSteelBlade_Old: {
+			}
+
+			PureFractal_Old: {
+			}
+
+			FinalFractal_Old: {
+			}
+		}
+
+		FinalFractalTip: {
+		}
+
+		ConfigurationServer: {
+		}
+
+		Projectiles: {
+		}
 	}
 }

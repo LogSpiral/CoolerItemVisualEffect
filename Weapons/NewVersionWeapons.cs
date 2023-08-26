@@ -1105,7 +1105,7 @@ namespace CoolerItemVisualEffect.Weapons
     }
 
 
-    public class VectorField : ModProjectile
+    public class VectorField : ModProjectile 
     {
         public override void SetDefaults()
         {
@@ -1116,7 +1116,7 @@ namespace CoolerItemVisualEffect.Weapons
         }
         public override void Load()
         {
-            if (Main.netMode == NetmodeID.Server) return;
+            if (Main.netMode == NetmodeID.Server) return; 
             vectorTex = LogSpiralLibraryMod.Misc[4].Value;
         }
         public Texture2D vectorTex;
