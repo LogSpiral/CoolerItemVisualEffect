@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using static CoolerItemVisualEffect.CoolerItemVisualEffectMethods;
 using Terraria.GameContent;
-using LogSpiralLibrary.CodeLibrary;
 using System.Reflection;
 using LogSpiralLibrary;
 using Terraria.ModLoader;
+using LogSpiralLibrary.CodeLibrary.DataStructures;
 
 namespace CoolerItemVisualEffect
 {

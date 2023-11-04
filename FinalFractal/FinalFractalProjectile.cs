@@ -12,6 +12,7 @@ using static Terraria.Utils;
 using Terraria.GameContent;
 using System.IO;
 using LogSpiralLibrary;
+using LogSpiralLibrary.CodeLibrary.DataStructures;
 
 namespace CoolerItemVisualEffect.FinalFractal
 {

@@ -13,41 +13,10 @@ using Terraria.GameContent.Drawing;
 using LogSpiralLibrary;
 using Terraria;
 using System.IO;
-using LogSpiralLibrary.CodeLibrary;
+using LogSpiralLibrary.CodeLibrary.DataStructures;
 
 namespace CoolerItemVisualEffect
 {
-    public struct SwooshInfos
-    {
-        public struct SwooshInfo
-        {
-            public bool stab = false;
-            public float actionOffsetSize = 1;
-            public float actionOffsetSpeed = 1;
-            public float actionOffsetKnockBack = 1;
-            public float actionOffsetDamage = 1;
-            public int actionOffsetCritAdder = 0;
-            public float actionOffsetCritMultiplyer = 1;
-            public bool negativeDir = false;
-            public float kValue = 1;
-            public SwooshInfo()
-            {
-
-            }
-            /// <summary>
-            /// 将除了速度以外的值赋给目标
-            /// </summary>
-            /// <param name="target"></param>
-            public void SetActionValue(ref SwooshInfo target)
-            {
-                float speed = target.actionOffsetSpeed;
-                target = this with { actionOffsetSpeed = speed };
-            }
-            public void SetActionSpeed(ref SwooshInfo target) => target.actionOffsetSpeed = this.actionOffsetSpeed;
-        }
-        public List<SwooshInfo> infos;
-
-    }
     public class CoolerSwoosh : UltraSwoosh
     {
         public int type;
@@ -130,7 +99,7 @@ namespace CoolerItemVisualEffect
         public bool UseSlash;
         public bool IsMeleeBroadSword => CoolerItemVisualEffectMod.MeleeCheck(player.HeldItem.DamageType) || ConfigurationSwoosh.ignoreDamageType;
         public float TimeToCutThem => ConfigurationSwoosh.swingAttackTime;//8f
-        public SwooshInfos.SwooshInfo currentInfo;
+        public MeleeModifyData currentInfo;
         /// <summary>
         /// 剑气是否可用
         /// </summary>
@@ -150,15 +119,25 @@ namespace CoolerItemVisualEffect
         #endregion
 
         #region 视觉效果修改部分
+        //public float kValue
+        //{
+        //    get => currentInfo.kValue;
+        //    set => currentInfo.kValue = value;
+        //}
+        //public bool negativeDir
+        //{
+        //    get => currentInfo.negativeDir;
+        //    set => currentInfo.negativeDir = value;
+        //}
         public float kValue
         {
-            get => currentInfo.kValue;
-            set => currentInfo.kValue = value;
+            get;
+            set;
         }
         public bool negativeDir
         {
-            get => currentInfo.negativeDir;
-            set => currentInfo.negativeDir = value;
+            get;
+            set;
         }
         public bool oldNegativeDir;
         public float rotationForShadow;

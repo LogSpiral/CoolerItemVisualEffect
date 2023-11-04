@@ -25,6 +25,7 @@ using System.ComponentModel;
 using MonoMod.RuntimeDetour.HookGen;
 using CoolerItemVisualEffect.ConfigSLer;
 using LogSpiralLibrary;
+using LogSpiralLibrary.CodeLibrary.DataStructures;
 
 namespace CoolerItemVisualEffect
 {

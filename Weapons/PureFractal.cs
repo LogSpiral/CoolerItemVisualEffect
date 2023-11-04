@@ -17,6 +17,7 @@ using Terraria.GameContent;
 using CoolerItemVisualEffect;
 using System.IO;
 using LogSpiralLibrary;
+using LogSpiralLibrary.CodeLibrary.DataStructures;
 
 namespace CoolerItemVisualEffect.Weapons
 {

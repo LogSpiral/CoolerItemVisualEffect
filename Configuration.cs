@@ -19,7 +19,6 @@ using Terraria;
 using Humanizer;
 using Terraria.GameContent.UI.Elements;
 using Mono.Cecil;
-using LogSpiralLibrary.CodeLibrary;
 using static CoolerItemVisualEffect.ConfigurationSwoosh;
 using Terraria.GameContent.UI.States;
 using System.Collections;
@@ -27,6 +26,7 @@ using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using LogSpiralLibrary.ForFun.FractalSpawn;
 using CoolerItemVisualEffect.ConfigSLer;
+using LogSpiralLibrary.CodeLibrary.DataStructures;
 
 namespace CoolerItemVisualEffect
 {

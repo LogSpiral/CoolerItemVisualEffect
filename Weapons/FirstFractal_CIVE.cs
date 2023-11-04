@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using System;
 using LogSpiralLibrary;
+using LogSpiralLibrary.CodeLibrary.DataStructures;
 
 namespace CoolerItemVisualEffect.Weapons
 {
@@ -889,7 +890,7 @@ namespace CoolerItemVisualEffect.Weapons
         {
             var config = Player.GetModPlayer<CoolerItemVisualEffectPlayer>().ConfigurationSwoosh;
             useBloom = new BloomEffectInfo(0, config.luminosityFactor, 6, 3, true);
-            useDistort = new AirDistortEffectInfo(config.distortSize, Rotation.ToRotationVector2() * -0.25f * config.distortFactor);
+            useDistort = new AirDistortEffectInfo(config.distortSize * 3f);
         }
         public override void VertexInfomation(ref bool additive, ref int indexOfGreyTex, ref float endAngle, ref bool useHeatMap,ref int passCount)
         {
