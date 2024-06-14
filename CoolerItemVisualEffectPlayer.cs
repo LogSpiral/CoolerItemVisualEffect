@@ -1,19 +1,13 @@
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria.GameContent;
 using Terraria.Localization;
-using Terraria.ModLoader;
 using static CoolerItemVisualEffect.ConfigurationSwoosh;
-using Terraria.ID;
-using System.Reflection;
 using Terraria.GameContent.Drawing;
 using LogSpiralLibrary;
-using Terraria;
-using System.IO;
 using LogSpiralLibrary.CodeLibrary.DataStructures;
+using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures;
 
 namespace CoolerItemVisualEffect
 {
@@ -99,7 +93,7 @@ namespace CoolerItemVisualEffect
         public bool UseSlash;
         public bool IsMeleeBroadSword => CoolerItemVisualEffectMod.MeleeCheck(player.HeldItem.DamageType) || ConfigurationSwoosh.ignoreDamageType;
         public float TimeToCutThem => ConfigurationSwoosh.swingAttackTime;//8f
-        public MeleeModifyData currentInfo;
+        public ActionModifyData currentInfo;
         /// <summary>
         /// 剑气是否可用
         /// </summary>
@@ -163,8 +157,8 @@ namespace CoolerItemVisualEffect
         }
         public float actionOffsetSpeed
         {
-            get => currentInfo.actionOffsetSpeed;
-            set => currentInfo.actionOffsetSpeed = value;
+            get => currentInfo.actionOffsetTimeScaler;
+            set => currentInfo.actionOffsetTimeScaler = value;
         }
         public float actionOffsetKnockBack
         {

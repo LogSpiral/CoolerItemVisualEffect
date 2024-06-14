@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
 using ReLogic.Content;
 using System;
@@ -7,15 +6,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
-using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.Config;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
-using Terraria.Utilities;
 using static CoolerItemVisualEffect.ConfigSLer.ConfigSLHelper;
 using static CoolerItemVisualEffect.ConfigurationSwoosh;
 namespace CoolerItemVisualEffect.ConfigSLer

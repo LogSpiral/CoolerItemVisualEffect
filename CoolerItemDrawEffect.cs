@@ -1,10 +1,5 @@
 ﻿using LogSpiralLibrary;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.GameContent;
 
 namespace CoolerItemVisualEffect
@@ -12,7 +7,7 @@ namespace CoolerItemVisualEffect
     public class CoolerItemDrawEffect : GlobalItem
     {
         public override bool InstancePerEntity => true;
-        public Color mainColor;
+        public Color mainColor; 
         public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
             if (!ConfigurationSwoosh.ConfigSwooshInstance.ItemInventoryEffectActive) goto mylabel;

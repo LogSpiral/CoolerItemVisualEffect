@@ -1,6 +1,4 @@
-using MonoMod.Cil;
 using System;
-using Terraria.ID;
 
 namespace CoolerItemVisualEffect
 {

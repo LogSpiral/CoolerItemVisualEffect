@@ -1,16 +1,10 @@
 ﻿using CoolerItemVisualEffect.Weapons;
 using Microsoft.Xna.Framework.Graphics;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.GameContent;
-using Terraria.ModLoader.Config;
 using Terraria.Utilities;
-using static CoolerItemVisualEffect.CoolerItemVisualEffectMod;
 using static Terraria.Utils;
 namespace CoolerItemVisualEffect
 {

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Terraria.Localization;
-using Terraria.ID;
 using static Terraria.Utils;
 using Terraria.Enums;
 using Microsoft.Xna.Framework.Graphics;
@@ -802,7 +801,7 @@ namespace CoolerItemVisualEffect.Weapons
         public override bool UseRight => true;
         public override bool UseLeft => false;
         public override (int X, int Y) FrameMax => (2, 1);
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
 
             //Lighting.add
@@ -820,7 +819,7 @@ namespace CoolerItemVisualEffect.Weapons
             //{
             //    Projectile.NewProjectile(projectile.GetSource_FromThis(), vec, default, ModContent.ProjectileType<HolyExp>(), player.GetWeaponDamage(player.HeldItem) * 3, projectile.knockBack, projectile.owner);
             //}
-            base.Kill(timeLeft);
+            base.OnKill(timeLeft);
         }
         public override void OnChargedShoot()
         {

@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
 using Terraria.Localization;
-using Terraria.ID;
 using static Terraria.Utils;
-using Terraria.Enums;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using System;
 using static Terraria.ModLoader.ModContent;
-using Terraria.DataStructures;
 using static CoolerItemVisualEffect.CoolerItemVisualEffectMethods;
 using static CoolerItemVisualEffect.CoolerItemVisualEffectMod;
 using LogSpiralLibrary;
@@ -538,7 +535,7 @@ namespace CoolerItemVisualEffect.Weapons
         public override bool UseRight => true;
         public override bool UseLeft => true;
         public override (int X, int Y) FrameMax => (2, 1);
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             //if (factor == 1)
             //{
@@ -589,7 +586,8 @@ namespace CoolerItemVisualEffect.Weapons
                 {
                     projectile.ai[1] = 0;
                     projectile.ai[0]++;
-                    Kill(projectile.timeLeft);
+                    OnKill(projectile.timeLeft);
+                    
 
                 }
                 else
@@ -1051,7 +1049,7 @@ namespace CoolerItemVisualEffect.Weapons
         public override bool UseRight => true;
         public override bool UseLeft => true;
         public override (int X, int Y) FrameMax => (1, 1);
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             //if (factor == 1)
             //{
@@ -1059,7 +1057,7 @@ namespace CoolerItemVisualEffect.Weapons
             //}
             //CoolerSystem.UseInvertGlass = !CoolerSystem.UseInvertGlass;
 
-            base.Kill(timeLeft);
+            base.OnKill(timeLeft);
         }
         public override void OnCharging(bool left, bool right)
         {

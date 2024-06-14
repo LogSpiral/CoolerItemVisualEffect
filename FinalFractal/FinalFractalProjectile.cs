@@ -1,13 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
-using Terraria.ModLoader;
-using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
-using CoolerItemVisualEffect;
-using static CoolerItemVisualEffect.CoolerItemVisualEffectMethods;
 using static Terraria.Utils;
 using Terraria.GameContent;
 using System.IO;

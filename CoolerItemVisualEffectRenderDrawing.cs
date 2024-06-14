@@ -3,9 +3,6 @@ using LogSpiralLibrary.CodeLibrary.DataStructures;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static CoolerItemVisualEffect.ConfigurationSwoosh;
 using static LogSpiralLibrary.LogSpiralLibraryMod;
 namespace CoolerItemVisualEffect

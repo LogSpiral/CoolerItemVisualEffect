@@ -1,14 +1,8 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static CoolerItemVisualEffect.CoolerItemVisualEffectMethods;
 using Terraria.GameContent;
-using System.Reflection;
 using LogSpiralLibrary;
-using Terraria.ModLoader;
 using LogSpiralLibrary.CodeLibrary.DataStructures;
 
 namespace CoolerItemVisualEffect
