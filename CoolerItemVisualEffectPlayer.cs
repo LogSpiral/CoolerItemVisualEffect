@@ -8,6 +8,7 @@ using Terraria.GameContent.Drawing;
 using LogSpiralLibrary;
 using LogSpiralLibrary.CodeLibrary.DataStructures;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures;
+using Terraria.ModLoader;
 
 namespace CoolerItemVisualEffect
 {
@@ -18,7 +19,7 @@ namespace CoolerItemVisualEffect
         public float rotationVelocity;
         public Vector3 hsl;
         public CoolerItemVisualEffectPlayer modPlr;
-        public override IRenderDrawInfo[] RenderDrawInfos => new IRenderDrawInfo[] { };//new EmptyEffectInfo()
+        //public override IRenderDrawInfo[] RenderDrawInfos => new IRenderDrawInfo[] { };//new EmptyEffectInfo()
         public override void Uptate()
         {
             var drawPlayer = modPlr.Player;
@@ -49,16 +50,18 @@ namespace CoolerItemVisualEffect
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="spriteBatch"></param>
-        /// <param name="contextArgument">难得用到的上下文参数，这里是缩放大小</param>
-        public override void Draw(SpriteBatch spriteBatch, IRenderDrawInfo renderDrawInfo, params object[] contextArgument)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             LogSpiralLibraryMod.ShaderSwooshUL.Parameters["airFactor"].SetValue(checkAirFactor);
             Main.graphics.GraphicsDevice.Textures[2] = TextureAssets.Item[type].Value;
             Main.graphics.GraphicsDevice.Textures[3] = heatMap;
             LogSpiralLibraryMod.ShaderSwooshUL.Parameters["lightShift"].SetValue(modPlr.ConfigurationSwoosh.IsDarkFade ? factor - 1f : 0);
             LogSpiralLibraryMod.ShaderSwooshUL.CurrentTechnique.Passes[7].Apply();
-            DrawPrimitives((float)contextArgument[0]);
+
+            var modPlayer = Main.LocalPlayer.GetModPlayer<CoolerItemVisualEffectPlayer>();
+            var scaler = modPlayer.ConfigurationSwoosh.onlyChangeSizeOfSwoosh ? modPlayer.RealSize : 1f;
+            var dS = LogSpiralLibraryMod.ShaderSwooshUL.Parameters["distortScaler"].GetValueSingle() / scaler;
+            DrawPrimitives(dS);
         }
         public override void PostDraw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D render, RenderTarget2D renderAirDistort)
         {

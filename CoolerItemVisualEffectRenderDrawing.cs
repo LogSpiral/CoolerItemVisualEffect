@@ -302,7 +302,7 @@ namespace CoolerItemVisualEffect
 
                     if (disFlag)
                     {
-                        gd.SetRenderTarget(Instance.Render_AirDistort);
+                        gd.SetRenderTarget(Instance.Render_Swap);
                         gd.Clear(Color.Transparent);
                         sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
                         ShaderSwooshUL.Parameters["distortScaler"].SetValue(ConfigSwooshInstance.distortSize);
@@ -333,7 +333,7 @@ namespace CoolerItemVisualEffect
 
                     if (disFlag)
                     {
-                        gd.SetRenderTarget(Instance.Render_AirDistort);
+                        gd.SetRenderTarget(Instance.Render_Swap);
                         gd.Clear(Color.Transparent);
                         sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
                         foreach (var projectile in pureFractals)
@@ -487,16 +487,17 @@ namespace CoolerItemVisualEffect
                                 if (ConfigSwooshInstance.luminosityFactor != 0)
                                 {
                                     gd.SetRenderTarget(Main.screenTargetSwap);
-                                    RenderEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+                                    RenderEffect.Parameters["screenScale"].SetValue(Main.ScreenSize.ToVector2());
+                                    RenderEffect.Parameters["threshold"].SetValue(0);
+                                    RenderEffect.Parameters["range"].SetValue(6);
+                                    RenderEffect.Parameters["intensity"].SetValue(ConfigSwooshInstance.luminosityFactor);
                                     RenderEffect.Parameters["tex0"].SetValue(Instance.Render);
-                                    RenderEffect.Parameters["position"].SetValue(new Vector2(0, 6));
-                                    RenderEffect.Parameters["tier2"].SetValue(ConfigSwooshInstance.luminosityFactor);
                                     gd.Clear(Color.Transparent);
-                                    RenderEffect.CurrentTechnique.Passes[7].Apply();
+                                    RenderEffect.CurrentTechnique.Passes[3].Apply();
                                     sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
                                     gd.SetRenderTarget(Main.screenTarget);
                                     gd.Clear(Color.Transparent);
-                                    RenderEffect.CurrentTechnique.Passes[6].Apply();
+                                    RenderEffect.CurrentTechnique.Passes[2].Apply();
                                     sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
                                     sb.End();
                                     Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
@@ -527,7 +528,7 @@ namespace CoolerItemVisualEffect
                                                                 //Vector2 direct = (instance.swooshFactorStyle == SwooshFactorStyle.每次开始时决定系数 ? modPlayer.kValue : ((modPlayer.kValue + modPlayer.kValueNext) * .5f)).ToRotationVector2() * -0.1f * fac.SymmetricalFactor2(0.5f, 0.2f) * instance.distortFactor;//(u + v)
                                     RenderEffect.Parameters["offset"].SetValue(new Vector2(0.707f) * -0.09f * ConfigSwooshInstance.distortFactor);//设置参数时间
                                     RenderEffect.Parameters["invAlpha"].SetValue(0);
-                                    RenderEffect.Parameters["tex0"].SetValue(ConfigSwooshInstance.distortSize != 1 ? Instance.Render_AirDistort : Instance.Render);
+                                    RenderEffect.Parameters["tex0"].SetValue(ConfigSwooshInstance.distortSize != 1 ? Instance.Render_Swap : Instance.Render);
                                     RenderEffect.CurrentTechnique.Passes[0].Apply();//ApplyPass
                                     sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);//绘制原先屏幕内容
                                     gd.SetRenderTarget(Main.screenTarget);

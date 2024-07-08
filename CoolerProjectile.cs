@@ -128,7 +128,7 @@ namespace CoolerItemVisualEffect
                         //    projectile.oldPos[0] = projectile.Center;
                         //    projectile.oldRot[0] = projectile.rotation;
                         //}
-                        if (CoolerItemVisualEffectMod.DistortEffect == null || CoolerItemVisualEffectMod.ShaderSwooshEX == null) goto mylabel;
+                        if (CoolerItemVisualEffectMod.RenderEffect == null || CoolerItemVisualEffectMod.ShaderSwooshEX == null) goto mylabel;
                         //goto mylabel;
                         var bars = new List<CustomVertexInfo>();
                         var max = projectile.oldPos.Length;

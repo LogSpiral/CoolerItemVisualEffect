@@ -32,7 +32,7 @@ namespace CoolerItemVisualEffect
         public static int ModTime => (int)LogSpiralLibrarySystem.ModTime;
         public static Texture2D emptyTex;
         public RenderTarget2D Render => LogSpiralLibraryMod.Instance.Render;
-        public RenderTarget2D Render_AirDistort => LogSpiralLibraryMod.Instance.Render_AirDistort;
+        public RenderTarget2D Render_AirDistort => LogSpiralLibraryMod.Instance.Render_Swap;
 
         public static BlendState AllOne => LogSpiralLibraryMod.AllOne;
         public static bool CanUseRender => LogSpiralLibraryMod.CanUseRender && (byte)ConfigSwooshInstance.coolerSwooshQuality > 1;
@@ -42,7 +42,7 @@ namespace CoolerItemVisualEffect
         internal static Effect ShaderSwooshEffect => LogSpiralLibraryMod.ShaderSwooshEffect;
         internal static Effect ShaderSwooshEX => LogSpiralLibraryMod.ShaderSwooshEX;
         internal static Effect ShaderSwooshUL => LogSpiralLibraryMod.ShaderSwooshUL;
-        internal static Effect DistortEffect => LogSpiralLibraryMod.RenderEffect;
+        internal static Effect RenderEffect => LogSpiralLibraryMod.RenderEffect;
         internal static Effect FinalFractalTailEffect => LogSpiralLibraryMod.FinalFractalTailEffect;
         internal static Effect ColorfulEffect => LogSpiralLibraryMod.ColorfulEffect;
         internal static Effect EightTrigramsFurnaceEffect => LogSpiralLibraryMod.EightTrigramsFurnaceEffect;
@@ -513,7 +513,7 @@ namespace CoolerItemVisualEffect
             if (modPlayer.SwooshActive)
             {
                 //因为这里另外合批了效果，就没必要在这个的pre和post里面写render了
-                modPlayer.coolerSwooshes.DrawVertexInfo(typeof(CoolerSwoosh), Main.spriteBatch, null, null, null, distortScaler);
+                modPlayer.coolerSwooshes.DrawVertexInfo(typeof(CoolerSwoosh), Main.spriteBatch, null, null, null);
             }
         }
         /// <summary>
@@ -525,7 +525,7 @@ namespace CoolerItemVisualEffect
             if (ShaderSwooshEX == null) return;
             if (ShaderSwooshUL == null) return;
             if (ItemEffect == null) return;
-            if (DistortEffect == null) return;
+            if (RenderEffect == null) return;
             if (Main.GameViewMatrix == null) return;
 
             var trans = Main.GameViewMatrix != null ? Main.GameViewMatrix.TransformationMatrix : Matrix.Identity;
@@ -679,10 +679,10 @@ namespace CoolerItemVisualEffect
                             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
                             if (instance.distortFactor != 0)
                             {
-                                DistortEffect.Parameters["tex0"].SetValue(instance.distortSize != 1 ? Instance.Render_AirDistort : Instance.Render);//render可以当成贴图使用或者绘制。（前提是当前gd.SetRenderTarget的不是这个render，否则会报错）
-                                DistortEffect.Parameters["offset"].SetValue(direct);//设置参数时间
-                                DistortEffect.Parameters["invAlpha"].SetValue(0);
-                                DistortEffect.CurrentTechnique.Passes[0].Apply();//ApplyPass
+                                RenderEffect.Parameters["tex0"].SetValue(instance.distortSize != 1 ? Instance.Render_AirDistort : Instance.Render);//render可以当成贴图使用或者绘制。（前提是当前gd.SetRenderTarget的不是这个render，否则会报错）
+                                RenderEffect.Parameters["offset"].SetValue(direct);//设置参数时间
+                                RenderEffect.Parameters["invAlpha"].SetValue(0);
+                                RenderEffect.CurrentTechnique.Passes[0].Apply();//ApplyPass
                             }
 
                             sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);//绘制原先屏幕内容
@@ -714,16 +714,17 @@ namespace CoolerItemVisualEffect
                             if (instance.luminosityFactor != 0)
                             {
                                 gd.SetRenderTarget(Main.screenTargetSwap);
-                                DistortEffect.Parameters["offset"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-                                DistortEffect.Parameters["tex0"].SetValue(Instance.Render);
-                                DistortEffect.Parameters["position"].SetValue(new Vector2(0, 6));
-                                DistortEffect.Parameters["tier2"].SetValue(instance.luminosityFactor);
+                                RenderEffect.Parameters["screenScale"].SetValue(Main.ScreenSize.ToVector2());
+                                RenderEffect.Parameters["threshold"].SetValue(0);
+                                RenderEffect.Parameters["range"].SetValue(6);
+                                RenderEffect.Parameters["intensity"].SetValue(instance.luminosityFactor);
+                                RenderEffect.Parameters["tex0"].SetValue(Instance.Render);
                                 gd.Clear(Color.Transparent);
-                                DistortEffect.CurrentTechnique.Passes[7].Apply();
+                                RenderEffect.CurrentTechnique.Passes[3].Apply();
                                 sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
                                 gd.SetRenderTarget(Main.screenTarget);
                                 gd.Clear(Color.Transparent);
-                                DistortEffect.CurrentTechnique.Passes[6].Apply();
+                                RenderEffect.CurrentTechnique.Passes[2].Apply();
                                 sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
                                 sb.End();
                                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
@@ -752,10 +753,10 @@ namespace CoolerItemVisualEffect
                                 gd.SetRenderTarget(Main.screenTargetSwap);//将画布设置为这个
                                 gd.Clear(Color.Transparent);//清空
                                 //Vector2 direct = (instance.swooshFactorStyle == SwooshFactorStyle.每次开始时决定系数 ? modPlayer.kValue : ((modPlayer.kValue + modPlayer.kValueNext) * .5f)).ToRotationVector2() * -0.1f * fac.SymmetricalFactor2(0.5f, 0.2f) * instance.distortFactor;//(u + v)
-                                DistortEffect.Parameters["offset"].SetValue(direct);//设置参数时间
-                                DistortEffect.Parameters["invAlpha"].SetValue(0);
-                                DistortEffect.Parameters["tex0"].SetValue(instance.distortSize != 1 ? Instance.Render_AirDistort : Instance.Render);
-                                DistortEffect.CurrentTechnique.Passes[0].Apply();//ApplyPass
+                                RenderEffect.Parameters["offset"].SetValue(direct);//设置参数时间
+                                RenderEffect.Parameters["invAlpha"].SetValue(0);
+                                RenderEffect.Parameters["tex0"].SetValue(instance.distortSize != 1 ? Instance.Render_AirDistort : Instance.Render);
+                                RenderEffect.CurrentTechnique.Passes[0].Apply();//ApplyPass
                                 sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);//绘制原先屏幕内容
                                 gd.SetRenderTarget(Main.screenTarget);
                                 gd.Clear(Color.Transparent);
