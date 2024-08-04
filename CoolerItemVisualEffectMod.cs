@@ -647,6 +647,7 @@ namespace CoolerItemVisualEffect
                 gd.SetRenderTarget(Instance.Render);
                 gd.Clear(Color.Transparent);
             }
+            //Main.NewText(Instance.Render_AirDistort == null);
             sb.Begin(SpriteSortMode.Immediate, alphaBlend ? BlendState.NonPremultiplied : BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);//Main.DefaultSamplerState//Main.GameViewMatrix.TransformationMatrix
             DrawSwooshContent(modPlayer, result, instance, sampler, itemTex, checkAirFactor, passCount, modPlayer.vertexInfos, false, instance.onlyChangeSizeOfSwoosh ? modPlayer.RealSize : 1f);
             if (useRender)
@@ -718,9 +719,11 @@ namespace CoolerItemVisualEffect
                                 RenderEffect.Parameters["threshold"].SetValue(0);
                                 RenderEffect.Parameters["range"].SetValue(6);
                                 RenderEffect.Parameters["intensity"].SetValue(instance.luminosityFactor);
+                                RenderEffect.Parameters["uBloomAdditive"].SetValue(true);
                                 RenderEffect.Parameters["tex0"].SetValue(Instance.Render);
                                 gd.Clear(Color.Transparent);
                                 RenderEffect.CurrentTechnique.Passes[3].Apply();
+
                                 sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
                                 gd.SetRenderTarget(Main.screenTarget);
                                 gd.Clear(Color.Transparent);
@@ -728,6 +731,18 @@ namespace CoolerItemVisualEffect
                                 sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
                                 sb.End();
                                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+
+                                //if (drawPlayer.itemAnimation == 10) 
+                                //{
+                                //    using FileStream fileStreamMain = new FileStream("D:/图片测试/main.png", FileMode.Create);
+                                //    using FileStream fileStreamSwap = new FileStream("D:/图片测试/swap.png", FileMode.Create);
+                                //    using FileStream fileStreamSub = new FileStream("D:/图片测试/sub.png", FileMode.Create);
+                                //    Main.screenTarget.SaveAsPng(fileStreamMain, Main.screenWidth, Main.screenHeight);
+                                //    Main.screenTargetSwap.SaveAsPng(fileStreamSwap, Main.screenWidth, Main.screenHeight);
+                                //    Instance.Render.SaveAsPng(fileStreamSub, Main.screenWidth, Main.screenHeight);
+                                //    Main.NewText("CG");
+                                //}
+
                             }
 
 
