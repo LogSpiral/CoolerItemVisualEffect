@@ -10,7 +10,7 @@ namespace CoolerItemVisualEffect
     /// <summary>
     /// 部分弹幕绘制的修改
     /// </summary>
-    public class CoolerProjectile : GlobalProjectile
+    public class ProjectileDrawingModify : GlobalProjectile
     {
         public override void OnSpawn(Projectile projectile, IEntitySource source)
         {
@@ -92,7 +92,7 @@ namespace CoolerItemVisualEffect
         }
         public override bool PreDraw(Projectile projectile, ref Color lightColor)
         {
-            if (!ConfigurationSwoosh.ConfigSwooshInstance.VanillaProjectileDrawModifyActive) goto mylabel;
+            if (!ConfigurationCIVE.ConfigCIVEInstance.VanillaProjectileDrawModifyActive) goto mylabel;
             SpriteBatch spriteBatch = Main.spriteBatch;
             switch (projectile.type)
             {
@@ -173,7 +173,7 @@ namespace CoolerItemVisualEffect
                                     _scaler = 16;
                                     if (projectile.type == ProjectileID.StarWrath)
                                     {
-                                        angleOffset = CoolerSystem.ModTime * MathHelper.Pi / 30f;
+                                        angleOffset = (float)LogSpiralLibraryMod.ModTime * MathHelper.Pi / 30f;
                                         centerOffset = new Vector2(projectile.width, projectile.height) * .5f;
                                         ProjectileID.Sets.TrailCacheLength[ProjectileID.StarWrath] = 20;
                                     }
@@ -396,21 +396,21 @@ namespace CoolerItemVisualEffect
                             }
                             CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["uTransform"].SetValue(model * trans * projection);
                             //ShaderSwooshEX.Parameters["uLighter"].SetValue(ConfigSwooshInstance.luminosityFactor);
-                            CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["uTime"].SetValue(-CoolerSystem.ModTime * 0.03f);
+                            CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["uTime"].SetValue(-(float)LogSpiralLibraryMod.ModTime * 0.03f);
                             CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["checkAir"].SetValue(false);
                             CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["airFactor"].SetValue(1);
                             CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["gather"].SetValue(true);
                             CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["lightShift"].SetValue(0);
                             CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["distortScaler"].SetValue(0);
-                            CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["alphaFactor"].SetValue(ConfigurationSwoosh.ConfigSwooshInstance.alphaFactor);
-                            CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(ConfigurationSwoosh.ConfigSwooshInstance.alphaFactor == 0);
-                            var _v = ConfigurationSwoosh.ConfigSwooshInstance.directOfHeatMap.ToRotationVector2();
+                            CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["alphaFactor"].SetValue(ConfigurationCIVE.ConfigCIVEInstance.alphaFactor);
+                            CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(ConfigurationCIVE.ConfigCIVEInstance.alphaFactor == 0);
+                            var _v = ConfigurationCIVE.ConfigCIVEInstance.directOfHeatMap.ToRotationVector2();
                             CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
                             //var par = CoolerItemVisualEffect.ShaderSwooshEX.Parameters["heatRotation"];
                             //var wht = (par.Annotations, par.ColumnCount, par.RowCount, par.ParameterType, par.Elements, par.Name, par.ParameterClass, par.Semantic, par.StructureMembers);            Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.BaseTex[instance.ImageIndex].Value;
-                            Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.BaseTex[ConfigurationSwoosh.ConfigSwooshInstance.ImageIndex].Value;
-                            Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.AniTex[ConfigurationSwoosh.ConfigSwooshInstance.AnimateIndex + 11].Value;
-                            Main.graphics.GraphicsDevice.Textures[2] = ModContent.Request<Texture2D>("CoolerItemVisualEffect/Weapons/FirstZenithProj_5").Value;
+                            Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.BaseTex[ConfigurationCIVE.ConfigCIVEInstance.imageIndex].Value;
+                            Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.AniTex[ConfigurationCIVE.ConfigCIVEInstance.animateIndex + 11].Value;
+                            Main.graphics.GraphicsDevice.Textures[2] = TextureAssets.Item[ItemID.InfluxWaver].Value;//ModContent.Request<Texture2D>("CoolerItemVisualEffect/Weapons/FirstZenithProj_5").Value;
                             Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
                             Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
                             Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;

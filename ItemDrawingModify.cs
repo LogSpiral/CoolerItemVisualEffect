@@ -4,13 +4,13 @@ using Terraria.GameContent;
 
 namespace CoolerItemVisualEffect
 {
-    public class CoolerItemDrawEffect : GlobalItem
+    public class ItemDrawingModify : GlobalItem
     {
         public override bool InstancePerEntity => true;
         public Color mainColor; 
         public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
-            if (!ConfigurationSwoosh.ConfigSwooshInstance.ItemInventoryEffectActive) goto mylabel;
+            if (!ConfigurationCIVE.ConfigCIVEInstance.ItemInventoryEffectActive) goto mylabel;
             if (mainColor == default)
             {
                 var itemTex = TextureAssets.Item[item.type].Value;
@@ -39,7 +39,7 @@ namespace CoolerItemVisualEffect
         }
         public override void PostDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
         {
-            if (!ConfigurationSwoosh.ConfigSwooshInstance.ItemDropEffectActive) goto mylabel;
+            if (!ConfigurationCIVE.ConfigCIVEInstance.ItemDropEffectActive) goto mylabel;
             if (mainColor == default)
             {
                 var itemTex = TextureAssets.Item[item.type].Value;

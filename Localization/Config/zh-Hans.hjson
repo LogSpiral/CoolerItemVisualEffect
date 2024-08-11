@@ -631,6 +631,9 @@ Mods: {
 				// 函数生成.Label: 函数生成
 				// 贴图生成.Label: 贴图生成
 				// 指定.Label: 指定
+				// ByFunction.Label: By Function
+				// FromTexturePixel.Label: From Texture Pixel
+				// Designate.Label: Designate
 			}
 
 			HeatMapFactorStyle: {
@@ -640,6 +643,11 @@ Mods: {
 				// 二次Quadratic.Label: 二次 Quadratic
 				// 平方根SquareRoot.Label: 平方根 Square Root
 				// 柔和分块SmoothFloor.Label: 柔和分块 Smooth Floor
+				// Linear.Label: Linear
+				// Floor.Label: Floor
+				// Quadratic.Label: Quadratic
+				// SquareRoot.Label: Square Root
+				// SmoothFloor.Label: Smooth Floor
 			}
 
 			HitBoxStyle: {
@@ -660,6 +668,284 @@ Mods: {
 				// Purple.Label: Purple
 				// Silver.Label: Silver
 				// Holy.Label: Holy
+			}
+
+			ConfigurationCIVE: {
+				DisplayName: 更酷的物品视效设置
+				Headers.MeleeSwordPart: 近战宽剑修改部分
+
+				SwordModifyActive: {
+					Label: 启用近战修改
+					Tooltip: ""
+				}
+
+				swooshActionStyle: {
+					Label: 执行序列
+					Tooltip: ""
+				}
+
+				imageIndex: {
+					Label: 刀光样式
+					Tooltip: ""
+				}
+
+				animateIndex: {
+					Label: 刀光动效贴图样式
+					Tooltip: ""
+				}
+
+				swooshTimeLeft: {
+					Label: 剑气残留时间
+					Tooltip: ""
+				}
+
+				shake: {
+					Label: 震屏力度
+					Tooltip: ""
+				}
+
+				swingAttackTime: {
+					Label: 斩击用时上限
+					Tooltip: ""
+				}
+
+				glowLight: {
+					Label: 武器附魔光泽
+					Tooltip: ""
+				}
+
+				colorVector: {
+					Label: 颜色系数向量
+					Tooltip: ""
+				}
+
+				alphaFactor: {
+					Label: 透明度系数
+					Tooltip: ""
+				}
+
+				isLighterDecider: {
+					Label: 挥砍效果亮度标准值
+					Tooltip: ""
+				}
+
+				itemAdditive: {
+					Label: 武器本体加法混合模式
+					Tooltip: ""
+				}
+
+				heatMapCreateStyle: {
+					Label: 热度图生成模式
+					Tooltip: ""
+				}
+
+				heatMapFactorStyle: {
+					Label: 热度图插值模式
+					Tooltip: ""
+				}
+
+				hueOffsetRange: {
+					Label: 色调偏移量范围
+					Tooltip: ""
+				}
+
+				hueOffsetValue: {
+					Label: 色调偏移量
+					Tooltip: ""
+				}
+
+				saturationScalar: {
+					Label: 饱和度系数
+					Tooltip: ""
+				}
+
+				luminosityRange: {
+					Label: 亮度偏移范围
+					Tooltip: ""
+				}
+
+				directOfHeatMap: {
+					Label: 色彩偏离角度
+					Tooltip: ""
+				}
+
+				heatMapColors: {
+					Label: 指定热度图颜色列表
+					Tooltip: ""
+				}
+
+				showHeatMap: {
+					Label: 展示当前武器的热度图
+					Tooltip: ""
+				}
+
+				distortConfigs: {
+					Label: 空气扭曲设置
+					Tooltip: 如果太卡了首先关掉这个
+				}
+
+				bloomConfigs: {
+					Label: 外发光设置
+					Tooltip: 以前是它最吃配置
+				}
+
+				maskConfigs: {
+					Label: 星空遮罩设置
+					Tooltip: 这玩意得配合外发光才好看呜
+				}
+
+				useWeaponDisplay: {
+					Label: 武器背显开关
+					Tooltip: ""
+				}
+
+				firstWeaponDisplay: {
+					Label: 选人界面武器背显开关
+					Tooltip: ""
+				}
+
+				weaponScale: {
+					Label: 武器显示尺寸
+					Tooltip: ""
+				}
+
+				ItemDropEffectActive: {
+					Label: 启用掉落物品额外光效
+					Tooltip: ""
+				}
+
+				ItemInventoryEffectActive: {
+					Label: 启用背包物品额外光效
+					Tooltip: ""
+				}
+
+				VanillaProjectileDrawModifyActive: {
+					Label: 启用弹幕优化绘制
+					Tooltip: ""
+				}
+
+				TeleprotEffectActive: {
+					Label: 启用传送物品使用特效(未完成)
+					Tooltip: ""
+				}
+
+				dustQuantity: {
+					Label: 粒子数量
+					Tooltip: ""
+				}
+
+				itemHighLight: {
+					Label: 武器本体高亮
+					Tooltip: ""
+				}
+			}
+
+			AirDistortConfigs: {
+				// Tooltip: ""
+				
+				intensity: {
+					Label: 扭曲强度
+					Tooltip: 拉得越大越明显
+				}
+
+				rotation: {
+					Label: 角偏移量
+					Tooltip: 不是很重要的莫名奇妙的设置
+				}
+
+				colorOffset: {
+					Label: 色差距离
+					Tooltip: 你可以试试拉满或者拉一半
+				}
+
+				tier: {
+					Label: 阶数
+					Tooltip: 反直觉的是，0是采样次数最多的，卡了就改2，配置好可以用0
+				}
+
+				Available: {
+					Label: 启用
+					Tooltip: 空气扭曲，启动！
+				}
+
+				// Tooltip: ""
+			}
+
+			BloomConfigs: {
+				// Tooltip: ""
+				
+				threshold: {
+					Label: 阈值
+					Tooltip: 亮度高于这个值的像素会进行外发光
+				}
+
+				intensity: {
+					Label: 强度
+					Tooltip: 要瞎了要瞎了
+				}
+
+				range: {
+					Label: 范围
+					Tooltip: 点亮一大片！
+				}
+
+				times: {
+					Label: 迭代次数
+					Tooltip: 迭代太多次绝对会亮瞎眼而卡爆的吧
+				}
+
+				Available: {
+					Label: 启用
+					Tooltip: 外发光，启动！
+				}
+
+				// Tooltip: ""
+			}
+
+			MaskConfigs: {
+				// Tooltip: ""
+				
+				SkyStyle: {
+					Label: 星空样式
+					Tooltip: 现在你可以两种星空里切换了(x
+				}
+
+				glowColor: {
+					Label: 主体颜色
+					Tooltip: ""
+				}
+
+				boundColor: {
+					Label: 边界颜色
+					Tooltip: ""
+				}
+
+				tier1: {
+					Label: 边界阈值
+					Tooltip: 低于这个值的会替换为主体颜色
+				}
+
+				tier2: {
+					Label: 遮罩阈值
+					Tooltip: 高于这个值的会替换为星空遮罩
+				}
+
+				lightAsAlpha: {
+					Label: 是否让亮度参与透明度的生成
+					Tooltip: 你可以关了试试，我也不知道为什么我要你选这个
+				}
+
+				inverse: {
+					Label: 亮度反向
+					Tooltip: 现在最暗的被换成星空了
+				}
+
+				Available: {
+					Label: 启用
+					Tooltip: 星空遮罩，启动！
+				}
+
+				// Tooltip: ""
 			}
 		}
 
@@ -952,7 +1238,6 @@ Mods: {
 		ConfigurationServer: {
 		}
 
-		Projectiles: {
-		}
+		Projectiles.CIVESword.DisplayName: CIVE剑
 	}
 }
