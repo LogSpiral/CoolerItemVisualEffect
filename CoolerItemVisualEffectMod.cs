@@ -513,7 +513,7 @@ namespace CoolerItemVisualEffect
             if (modPlayer.SwooshActive)
             {
                 //因为这里另外合批了效果，就没必要在这个的pre和post里面写render了
-                modPlayer.coolerSwooshes.DrawVertexInfo(typeof(CoolerSwoosh), Main.spriteBatch, null, null, null);
+                VertexDrawInfo.DrawVertexInfo(modPlayer.coolerSwooshes, typeof(CoolerSwoosh), Main.spriteBatch, null, null, null);
             }
         }
         /// <summary>
