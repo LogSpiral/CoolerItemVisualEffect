@@ -21,32 +21,34 @@ using System.Collections;
 //using CoolerItemVisualEffect.ConfigSLer;
 using LogSpiralLibrary.CodeLibrary.DataStructures;
 using LogSpiralLibrary;
+using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures;
 
 namespace CoolerItemVisualEffect
 {
 
-    public class ConfigurationCIVE : ModConfig 
+    public class ConfigurationCIVE : ModConfig
     {
         public static ConfigurationCIVE ConfigCIVEInstance => ModContent.GetInstance<ConfigurationCIVE>();
 
         public override ConfigScope Mode => ConfigScope.ClientSide;
 
-        //[Header("MeleeSwordPart")]
+        [Header("MeleeModifyPart")]
         [DefaultValue(true)]
         public bool SwordModifyActive = true;
 
-         
-        public string swooshActionStyle = "";//改
+        [CustomModConfigItem(typeof(SequenceDefinitionElement<MeleeAction>))]
+        [TypeConverter(typeof(ToFromStringConverter<SequenceDefinition<MeleeAction>>))]
+        public SequenceDefinition<MeleeAction> swooshActionStyle = new SequenceDefinition<MeleeAction>(nameof(CoolerItemVisualEffect), nameof(CIVESword));
 
-        [DefaultValue(7f)]
-        [Range(0, 11f)]
+        [DefaultValue(7)]
+        [Range(0, 11)]
         [Slider]
-         public int imageIndex = 7;//改
+        public int imageIndex = 7;//改
 
-        [DefaultValue(3f)]
-        [Range(0, 5f)]
+        [DefaultValue(3)]
+        [Range(0, 5)]
         [Slider]
-         public int animateIndex = 3;//改
+        public int animateIndex = 3;//改
 
         [DefaultValue(10)]
         [Range(0, 60)]
@@ -54,50 +56,46 @@ namespace CoolerItemVisualEffect
         public int swooshTimeLeft = 10;//改
 
         [Increment(0.05f)]
-        [DefaultValue(0.1f)]
+        [DefaultValue(1f)]
         [Range(0f, 1f)]
-         public float shake = 0.1f;//改
+        public float shake = 1f;//改
 
 
-        [Increment(1f)]
+        /*[Increment(1f)]
         [DefaultValue(6f)]
         [Range(2f, 10f)]
-        
-         public float swingAttackTime = 6f;//改
+        public float swingAttackTime = 6f;//改 */
 
-        [Increment(0.05f)]
+        /*[Increment(0.05f)]
         [DefaultValue(0.1f)]
         [Range(0f, 1f)]
-        
-         public float glowLight = 0.1f;//改
+        public float glowLight = 0.1f;//改
 
-        
-        
-        [SeparatePage]
-        
-        public ColorVector colorVector = new ColorVector() { heatMapAlpha = 1, normalize = true };
+        [Increment(0.05f)]
+        [DefaultValue(.75f)]
+        [Range(0f, 1f)]
+        public float dustQuantity = .75f;*/
 
-        
+        //[SeparatePage]
+        [Header("RenderingPart")]
+        public ColorVector colorVector = new ColorVector();//{ heatMapAlpha = 1, normalize = true }
+
+
         [Increment(0.05f)]
         [DefaultValue(1.5f)]
         [Range(0f, 3f)]
-        
-         public float alphaFactor = 1.5f;//暂定预览
+        public float alphaFactor = 1.5f;//暂定预览
 
         [Increment(0.05f)]
         [Range(0f, 1f)]
         [DefaultValue(0.2f)]
-        
-         public float isLighterDecider = 0.2f;//黑白名单形式?
+        public float isLighterDecider = 0.2f;//黑白名单形式?
 
-        
-        [DefaultValue(false)]
-        
-         public bool itemAdditive = false;
+
+        /*[DefaultValue(false)]
+        public bool itemAdditive = false;
 
         [DefaultValue(false)]
-        
-        
         public bool itemHighLight
         {
             get => highLight;
@@ -108,9 +106,9 @@ namespace CoolerItemVisualEffect
         }
         [JsonIgnore]
         [DefaultValue(false)]
-        bool highLight = false;
+        bool highLight = false;*/
 
-        public enum HeatMapCreateStyle 
+        public enum HeatMapCreateStyle
         {
             ByFunction,
             FromTexturePixel,
@@ -128,58 +126,45 @@ namespace CoolerItemVisualEffect
 
         [DrawTicks]
         [DefaultValue(HeatMapCreateStyle.ByFunction)]
-         public HeatMapCreateStyle heatMapCreateStyle = HeatMapCreateStyle.ByFunction;
+        public HeatMapCreateStyle heatMapCreateStyle = HeatMapCreateStyle.ByFunction;
 
         [DrawTicks]
         [DefaultValue(HeatMapFactorStyle.Linear)]
-         public HeatMapFactorStyle heatMapFactorStyle = HeatMapFactorStyle.Linear;//改为拖动曲线?
+        public HeatMapFactorStyle heatMapFactorStyle = HeatMapFactorStyle.Linear;//改为拖动曲线?
 
-        
+
         [DefaultValue(0.2f)]
         [Increment(0.01f)]
         [Range(-1f, 1f)]
-        
-        
         public float hueOffsetRange = 0.2f;
 
         [DefaultValue(0f)]
         [Increment(0.01f)]
         [Range(0f, 1f)]
-        
-        
         public float hueOffsetValue = 0f;
 
         [DefaultValue(5f)]
         [Increment(0.05f)]
         [Range(0f, 5f)]
-        
-        
         public float saturationScalar = 5f;
 
         [DefaultValue(0.2f)]
         [Increment(0.05f)]
         [Range(0f, 1f)]
-        
-        
         public float luminosityRange = 0.2f;
 
         [DefaultValue(3.1415f)]
         [Range(0, 6.283f)]
         [Increment(0.05f)]
-        
-        
         public float directOfHeatMap = MathHelper.Pi;
 
-        [SeparatePage]
-        
-        
         public List<Color> heatMapColors = new List<Color>() { Color.Blue, Color.Green, Color.Yellow };
 
-        
-        [DefaultValue(false)]
-        
-         public bool showHeatMap = false;
 
+        [DefaultValue(false)]
+        public bool showHeatMap = false;
+
+        [Header("EffectPart")]
         [CustomModConfigItem(typeof(AvailableConfigElement))]
         public AirDistortConfigs distortConfigs = new AirDistortConfigs();
         [CustomModConfigItem(typeof(AvailableConfigElement))]
@@ -236,15 +221,15 @@ namespace CoolerItemVisualEffect
 
         }
 
-        
+
         [DefaultValue(true)]
-        
-        
+
+        [Header("MiscPart")]
         public bool useWeaponDisplay = true;
 
         [DefaultValue(true)]
-        
-        
+
+
         public bool firstWeaponDisplay = true;
 
         [Increment(0.05f)]
@@ -252,53 +237,46 @@ namespace CoolerItemVisualEffect
         [DefaultValue(1f)]
         [Slider]
         public float weaponScale = 1f;
-        
+
         [DefaultValue(false)]
-        
-        
+
+
         public bool ItemDropEffectActive = false;
 
         [DefaultValue(false)]
-        
-        
+
+
         public bool ItemInventoryEffectActive = false;
 
         [DefaultValue(true)]
-        
-        
+
+
         public bool VanillaProjectileDrawModifyActive = true;
 
         [DefaultValue(false)]
-        
-        
+
+
         public bool TeleprotEffectActive = false;
 
-        
-        [Increment(0.05f)]
-        [DefaultValue(.75f)]
-        [Range(0f, 1f)]
-        
-        
-        public float dustQuantity = .75f;
+
+
     }
     public class ColorVector
     {
         [Range(0, 1f)]
         [DefaultValue(1f)]
-        public float mapColorAlpha;
+        public float mapColorAlpha = 1f;
 
         [Range(0, 1f)]
         [DefaultValue(0.25f)]
-        public float weaponColorAlpha;
+        public float weaponColorAlpha = .25f;
 
         [Range(0, 1f)]
         [DefaultValue(1f)]
-        public float heatMapAlpha;
+        public float heatMapAlpha = 1f;
 
         [DefaultValue(true)]
-        
-        
-        public bool normalize;
+        public bool normalize = true;
         [JsonIgnore]
         public Vector3 AlphaVector
         {

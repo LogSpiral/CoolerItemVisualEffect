@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sequence name="CIVESword" AuthorName="LSL" Description="Auto Spawn By LogSpiralLibrary." FileName="CIVESword" DisplayName="CIVESword" ModName="CoolerItemVisualEffect" createTime="638594198586058809" lastModifyDate="638595768585923049" passWord="" Finished="True">
+  <Group>
+    <Wraper condition="Always">
+      <Action mode="0" Cycle="3" ModifyData="(1.00,3.00,1.00,1.00,0,1.00)" name="LogSpiralLibrary/SwooshInfo" />
+    </Wraper>
+  </Group>
+  <Group>
+    <Wraper condition="Always">
+      <Action mode="1" Cycle="4" ModifyData="(1.00,2.00,1.00,1.00,0,1.00)" name="LogSpiralLibrary/SwooshInfo" />
+    </Wraper>
+  </Group>
+  <Group>
+    <Wraper condition="Always">
+      <Action mode="0" Cycle="1" ModifyData="(2.00,3.00,3.15,2.50,10,1.20)" name="LogSpiralLibrary/SwooshInfo" />
+    </Wraper>
+  </Group>
+  <Group>
+    <Wraper condition="TimeNight">
+      <Action givenCycle="3" ModifyData="(1.00,1.00,1.00,1.00,0,1.00)" rangeOffsetMin="0" rangeOffsetMax="2" name="LogSpiralLibrary/RapidlyStabInfo" />
+    </Wraper>
+    <Wraper condition="Always">
+      <Action Cycle="2" ModifyData="(1.50,2.00,5.00,3.25,20,1.30)" name="LogSpiralLibrary/StabInfo" />
+    </Wraper>
+  </Group>
+</Sequence>

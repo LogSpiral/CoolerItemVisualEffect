@@ -628,9 +628,6 @@ Mods: {
 
 			HeatMapCreateStyle: {
 				Tooltip: ""
-				函数生成.Label: 函数生成
-				贴图生成.Label: 贴图生成
-				指定.Label: 指定
 				ByFunction.Label: By Function
 				FromTexturePixel.Label: From Texture Pixel
 				Designate.Label: Designate
@@ -638,11 +635,6 @@ Mods: {
 
 			HeatMapFactorStyle: {
 				Tooltip: ""
-				线性Linear.Label: 线性 Linear
-				分块Floor.Label: 分块 Floor
-				二次Quadratic.Label: 二次 Quadratic
-				平方根SquareRoot.Label: 平方根 Square Root
-				柔和分块SmoothFloor.Label: 柔和分块 Smooth Floor
 				Linear.Label: Linear
 				Floor.Label: Floor
 				Quadratic.Label: Quadratic
@@ -672,7 +664,13 @@ Mods: {
 
 			ConfigurationCIVE: {
 				DisplayName: 更酷的物品视效设置
-				Headers.MeleeSwordPart: 近战宽剑修改部分
+
+				Headers: {
+					MeleeModifyPart: "[i:1199]Melee Visual Effect Settings"
+					RenderingPart: "[i:2012]Rendering Settings"
+					EffectPart: "[i:3541]Special Effect Settings"
+					MiscPart: "[i:1344]Misc Settings"
+				}
 
 				SwordModifyActive: {
 					Label: 启用近战修改

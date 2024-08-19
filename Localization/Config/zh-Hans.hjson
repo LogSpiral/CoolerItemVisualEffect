@@ -628,26 +628,18 @@ Mods: {
 
 			HeatMapCreateStyle: {
 				// Tooltip: ""
-				// 函数生成.Label: 函数生成
-				// 贴图生成.Label: 贴图生成
-				// 指定.Label: 指定
-				// ByFunction.Label: By Function
-				// FromTexturePixel.Label: From Texture Pixel
-				// Designate.Label: Designate
+				ByFunction.Label: 函数生成
+				FromTexturePixel.Label: 贴图像素
+				Designate.Label: 指定
 			}
 
 			HeatMapFactorStyle: {
 				// Tooltip: ""
-				// 线性Linear.Label: 线性 Linear
-				// 分块Floor.Label: 分块 Floor
-				// 二次Quadratic.Label: 二次 Quadratic
-				// 平方根SquareRoot.Label: 平方根 Square Root
-				// 柔和分块SmoothFloor.Label: 柔和分块 Smooth Floor
-				// Linear.Label: Linear
-				// Floor.Label: Floor
-				// Quadratic.Label: Quadratic
-				// SquareRoot.Label: Square Root
-				// SmoothFloor.Label: Smooth Floor
+				Linear.Label: 线性
+				Floor.Label: 分块
+				Quadratic.Label: 二次
+				SquareRoot.Label: 平方根
+				SmoothFloor.Label: 柔和分块
 			}
 
 			HitBoxStyle: {
@@ -672,7 +664,13 @@ Mods: {
 
 			ConfigurationCIVE: {
 				DisplayName: 更酷的物品视效设置
-				Headers.MeleeSwordPart: 近战宽剑修改部分
+
+				Headers: {
+					MeleeModifyPart: "[i:1199]近战视效修改设置"
+					RenderingPart: "[i:2012]渲染设置"
+					EffectPart: "[i:3541]特效设置"
+					MiscPart: "[i:1344]杂项设置"
+				}
 
 				SwordModifyActive: {
 					Label: 启用近战修改

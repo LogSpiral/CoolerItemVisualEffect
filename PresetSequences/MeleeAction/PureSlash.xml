@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sequence name="PureSlash" AuthorName="错数螺线" Description="纯粹连斩" FileName="PureSlash" DisplayName="纯连斩Slash" ModName="CoolerItemVisualEffect" createTime="638595958176565835" lastModifyDate="638595958176565840" passWord="" Finished="True">
+  <Group>
+    <Wraper condition="Always">
+      <Action mode="1" Cycle="2" ModifyData="(1.00,2.00,1.00,1.00,0,1.00)" name="LogSpiralLibrary/SwooshInfo" />
+    </Wraper>
+  </Group>
+</Sequence>

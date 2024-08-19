@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sequence name="ComplexExample" AuthorName="错数螺线" Description="大杂烩!!" FileName="ComplexExample" DisplayName="复合斩击Complex" ModName="CoolerItemVisualEffect" createTime="638595966420174407" lastModifyDate="638595970649655169" passWord="" Finished="True">
+  <Group>
+    <Wraper condition="TimeDay" IsSequence="True" Mod="CoolerItemVisualEffect">HeavyChop</Wraper>
+    <Wraper condition="Always" IsSequence="True" Mod="CoolerItemVisualEffect">PureSlash</Wraper>
+  </Group>
+  <Group>
+    <Wraper condition="WorldForTheWorthy">
+      <Action Cycle="1" ModifyData="(3.00,1.50,2.95,2.30,0,1.00)" name="LogSpiralLibrary/StabInfo" />
+    </Wraper>
+    <Wraper condition="WorldNotTheBees" IsSequence="True">
+      <Sequence>
+        <Group>
+          <Wraper condition="Always">
+            <Action mode="1" Cycle="2" ModifyData="(1.50,1.00,1.00,1.00,0,1.00)" name="LogSpiralLibrary/SwooshInfo" />
+          </Wraper>
+        </Group>
+        <Group>
+          <Wraper condition="Always">
+            <Action Cycle="3" ModifyData="(1.00,2.00,1.00,1.00,0,1.00)" name="LogSpiralLibrary/StabInfo" />
+          </Wraper>
+        </Group>
+      </Sequence>
+    </Wraper>
+    <Wraper condition="Always" IsSequence="True" Mod="CoolerItemVisualEffect">PureStab</Wraper>
+  </Group>
+  <Group>
+    <Wraper condition="Always" IsSequence="True" Mod="CoolerItemVisualEffect">StormySlash</Wraper>
+  </Group>
+</Sequence>

@@ -10,6 +10,7 @@ using LogSpiralLibrary.CodeLibrary.DataStructures;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures;
 using Terraria.ModLoader;
 using System.Linq;
+using System.IO;
 
 namespace CoolerItemVisualEffect
 {
@@ -61,6 +62,8 @@ namespace CoolerItemVisualEffect
     }
     public class MeleeModifyPlayer : ModPlayer
     {
+
+
         #region 基本量声明
         ConfigurationCIVE configurationSwoosh;
         public ConfigurationCIVE ConfigurationSwoosh
@@ -131,6 +134,8 @@ namespace CoolerItemVisualEffect
 
         public override void PostUpdate()
         {
+            if (IsMeleeBroadSword)
+                ItemID.Sets.SkipsInitialUseSound[player.HeldItem.type] = ConfigCIVEInstance.SwordModifyActive;
             CheckItemChange(player);
             base.PostUpdate();
         }
@@ -183,15 +188,6 @@ namespace CoolerItemVisualEffect
             return texture ?? TextureAssets.Item[item.type].Value;
         }
         #endregion
-        public override void EmitEnchantmentVisualsAt(Projectile projectile, Vector2 boxPosition, int boxWidth, int boxHeight)
-        {
-            base.EmitEnchantmentVisualsAt(projectile, boxPosition, boxWidth, boxHeight);
-
-        }
-        public override void MeleeEffects(Item item, Rectangle hitbox)
-        {
-            base.MeleeEffects(item, hitbox);
-        }
         #region 辅助函数
         public static bool SwordCheck(Item item)
         {
@@ -413,6 +409,17 @@ namespace CoolerItemVisualEffect
             var texture = GetWeaponTextureFromItem(player.HeldItem);
             if (modPlayer.lastWeaponHash != player.HeldItem.GetHashCode())
             {
+                if (!modPlayer.IsMeleeBroadSword) 
+                {
+                    foreach (var proj in Main.projectile) 
+                    {
+                        if (proj.type == ModContent.ProjectileType<CIVESword>() && proj.owner == player.whoAmI) 
+                        {
+                            proj.Kill();
+                            return;
+                        }
+                    }
+                }
                 modPlayer.lastWeaponHash = player.HeldItem.GetHashCode();
                 var width = texture.Width;
                 var height = texture.Height;
@@ -481,6 +488,7 @@ namespace CoolerItemVisualEffect
                     }
                     if (firstweapon != null)
                     {
+                        Main.instance.LoadItem(firstweapon.type);
                         DrawWeapon(Player, firstweapon, drawInfo);
                     }
                 }
@@ -576,6 +584,8 @@ namespace CoolerItemVisualEffect
     }
     public class CIVESword : MeleeSequenceProj
     {
+
+
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
             if (UseSwordModify)
@@ -597,9 +607,11 @@ namespace CoolerItemVisualEffect
 
                 scaler = (player.HeldItem.type == ItemID.TrueExcalibur ? 1.5f : 1) * MeleeModifyPlayer.GetWeaponTextureFromItem(player.HeldItem).Size().Length() * 1.25f,
                 timeLeft = ConfigCIVEInstance.swooshTimeLeft,
-                colorVec = ConfigCIVEInstance.colorVector.AlphaVector
+                colorVec = ConfigCIVEInstance.colorVector.AlphaVector,
+                swooshTexIndex = (ConfigCIVEInstance.animateIndex, ConfigCIVEInstance.imageIndex)
             },
-            itemType = player.HeldItem.type
+            itemType = player.HeldItem.type,
+            soundStyle = player.HeldItem.UseSound
         };
         public override bool PreDraw(ref Color lightColor)
         {
@@ -613,6 +625,93 @@ namespace CoolerItemVisualEffect
         public override void AI()
         {
             base.AI();
+        }
+        public override void InitializeSequence(string modName, string fileName)
+        {
+            var definition = ConfigCIVEInstance.swooshActionStyle;
+
+            if (definition != null)
+                base.InitializeSequence(definition.Mod, definition.Name);
+            else
+                base.InitializeSequence(modName, fileName);
+        }
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            //if (!target.CanBeChasedBy()) return;
+            try
+            {
+                #region *复杂的伤害计算*
+                int num = Projectile.damage;
+                var sItem = player.HeldItem;
+                var vec = ((MeleeAction)currentData).targetedVector;
+                var itemRectangle = Utils.CenteredRectangle(player.Center + vec * .5f, vec);
+                int num2 = Item.NPCtoBanner(target.BannerID());
+                if (num2 > 0 && player.HasNPCBannerBuff(num2))
+                    num = ((!Main.expertMode) ? ((int)((float)num * ItemID.Sets.BannerStrength[Item.BannerToItem(num2)].NormalDamageDealt)) : ((int)((float)num * ItemID.Sets.BannerStrength[Item.BannerToItem(num2)].ExpertDamageDealt)));
+
+                if (player.parryDamageBuff && sItem.DamageType.CountsAsClass(DamageClass.Melee))
+                {
+                    num *= 5;
+                    player.parryDamageBuff = false;
+                    player.ClearBuff(198);
+                }
+
+                if (sItem.type == ItemID.BreakerBlade && (float)target.life >= (float)target.lifeMax * 0.9f)
+                    num = (int)((float)num * 2f);
+
+                if (sItem.type == ItemID.HamBat)
+                {
+                    int num3 = 0;
+                    if (player.FindBuffIndex(26) != -1)
+                        num3 = 1;
+
+                    if (player.FindBuffIndex(206) != -1)
+                        num3 = 2;
+
+                    if (player.FindBuffIndex(207) != -1)
+                        num3 = 3;
+
+                    float num4 = 1f + 0.05f * (float)num3;
+                    num = (int)((float)num * num4);
+                }
+
+                if (sItem.type == ItemID.Keybrand)
+                {
+                    float t = (float)target.life / (float)target.lifeMax;
+                    float lerpValue = Utils.GetLerpValue(1f, 0.1f, t, clamped: true);
+                    float num5 = 1.5f * lerpValue;
+                    num = (int)((float)num * (1f + num5));
+                    Vector2 point = itemRectangle.Center.ToVector2();
+                    Vector2 positionInWorld = target.Hitbox.ClosestPointInRect(point);
+                    ParticleOrchestrator.RequestParticleSpawn(clientOnly: false, ParticleOrchestraType.Keybrand, new ParticleOrchestraSettings
+                    {
+                        PositionInWorld = positionInWorld
+                    }, player.whoAmI);
+                }
+                #endregion
+                CombinedHooks.OnPlayerHitNPCWithItem(player, sItem, target, hit, damageDone);
+                player.ApplyNPCOnHitEffects(player.HeldItem, itemRectangle, num, hit.Knockback, target.whoAmI, hit.Damage, damageDone);
+
+
+                if (sItem.type == ItemID.TheHorsemansBlade && target.CanBeChasedBy())
+                {
+                    player.HorsemansBlade_SpawnPumpkin(target.whoAmI, damageDone, hit.Knockback);
+                }
+                //(ApplyNPCOnHitEffects ??= typeof(Player).GetMethod(nameof(ApplyNPCOnHitEffects), BindingFlags.Instance | BindingFlags.NonPublic))
+                //    ?.Invoke(player, new object[] { player.HeldItem, itemRectangle, num, knockback, target.whoAmI, damage, damage });
+
+            }
+            catch
+            {
+                Main.NewText("炸了！");
+            }
+            player.GetModPlayer<LogSpiralLibraryPlayer>().strengthOfShake = ConfigCIVEInstance.shake * Main.rand.NextFloat(0.85f, 1.15f) * (damageDone / MathHelper.Clamp(player.HeldItem.damage, 1, int.MaxValue));//
+        }
+        public override void OnHitPlayer(Player target, Player.HurtInfo info)
+        {
+            player.GetModPlayer<LogSpiralLibraryPlayer>().strengthOfShake = ConfigCIVEInstance.shake * Main.rand.NextFloat(0.85f, 1.15f);
+
+            base.OnHitPlayer(target, info);
         }
         //public override void AI()
         //{
