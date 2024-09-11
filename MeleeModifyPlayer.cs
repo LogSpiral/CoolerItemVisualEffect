@@ -11,6 +11,7 @@ using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures;
 using Terraria.ModLoader;
 using System.Linq;
 using System.IO;
+using MonoMod.Cil;
 
 namespace CoolerItemVisualEffect
 {
@@ -21,7 +22,7 @@ namespace CoolerItemVisualEffect
         {
             Player player = Main.player[projectile.owner];
             var mplr = player.GetModPlayer<MeleeModifyPlayer>();
-            if (ConfigCIVEInstance.SwordModifyActive && mplr.IsMeleeBroadSword && vanillaSlashProjectiles.Contains(projectile.type))
+            if (mplr.ConfigurationSwoosh.SwordModifyActive && mplr.IsMeleeBroadSword && vanillaSlashProjectiles.Contains(projectile.type))
                 projectile.Kill();
             base.AI(projectile);
         }
@@ -32,7 +33,7 @@ namespace CoolerItemVisualEffect
         public override void UseStyle(Item item, Player player, Rectangle heldItemFrame)
         {
             var mplr = player.GetModPlayer<MeleeModifyPlayer>();
-            if (player.itemAnimation == player.itemAnimationMax && player.ownedProjectileCounts[ModContent.ProjectileType<CIVESword>()] == 0 && ConfigCIVEInstance.SwordModifyActive && mplr.IsMeleeBroadSword)
+            if (player.itemAnimation == player.itemAnimationMax && player.ownedProjectileCounts[ModContent.ProjectileType<CIVESword>()] == 0 && mplr.ConfigurationSwoosh.SwordModifyActive && mplr.IsMeleeBroadSword)
             {
                 Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, default, ModContent.ProjectileType<CIVESword>(), 1, 1, player.whoAmI);
             }
@@ -48,14 +49,14 @@ namespace CoolerItemVisualEffect
         public override bool? CanHitNPC(Item item, Player player, NPC target)
         {
             var mplr = player.GetModPlayer<MeleeModifyPlayer>();
-            if (ConfigCIVEInstance.SwordModifyActive && mplr.IsMeleeBroadSword)
+            if (mplr.ConfigurationSwoosh.SwordModifyActive && mplr.IsMeleeBroadSword)
                 return false;
             return base.CanHitNPC(item, player, target);
         }
         public override bool CanHitPvp(Item item, Player player, Player target)
         {
             var mplr = player.GetModPlayer<MeleeModifyPlayer>();
-            if (ConfigCIVEInstance.SwordModifyActive && mplr.IsMeleeBroadSword)
+            if (mplr.ConfigurationSwoosh.SwordModifyActive && mplr.IsMeleeBroadSword)
                 return false;
             return base.CanHitPvp(item, player, target);
         }
@@ -92,7 +93,7 @@ namespace CoolerItemVisualEffect
             return flag;
         }
         public bool IsMeleeBroadSword => MeleeBroadSwordCheck(player.HeldItem);
-        public bool UseSwordModify => ConfigCIVEInstance.SwordModifyActive && IsMeleeBroadSword && player.itemAnimation > 0;
+        public bool UseSwordModify => ConfigurationSwoosh.SwordModifyActive && IsMeleeBroadSword && player.itemAnimation > 0;
         #endregion
 
         #region 视觉效果相关
@@ -114,7 +115,31 @@ namespace CoolerItemVisualEffect
         public override void Load()
         {
             On_Player.ItemCheck_EmitUseVisuals += On_Player_ItemCheck_EmitUseVisuals_CIVEMelee;
+            IL_Player.ItemCheck_OwnerOnlyCode += ProjectileShootBan;
             base.Load();
+        }
+
+        private void ProjectileShootBan(MonoMod.Cil.ILContext il)
+        {
+            var c = new ILCursor(il);
+            if (!c.TryGotoNext(i => i.MatchCall<Player>("ItemCheck_Shoot")))//找到ItemCheck_Shoot的位置
+                return;
+            if (!c.TryGotoPrev(i => i.MatchAnd()))//找到它前面最近的一次取与
+                return;
+            c.Index++;
+
+            c.EmitLdarg0();
+            c.EmitDelegate<Func<Player, bool>>
+                (
+                player => 
+                {
+                    var mplr = player.GetModPlayer<MeleeModifyPlayer>();
+                    return !(mplr.ConfigurationSwoosh.SwordModifyActive && mplr.IsMeleeBroadSword);
+                })
+                ;
+            c.EmitAnd();
+
+
         }
 
         private Rectangle On_Player_ItemCheck_EmitUseVisuals_CIVEMelee(On_Player.orig_ItemCheck_EmitUseVisuals orig, Player self, Item sItem, Rectangle itemRectangle)
@@ -127,7 +152,7 @@ namespace CoolerItemVisualEffect
         public override void Unload()
         {
             On_Player.ItemCheck_EmitUseVisuals -= On_Player_ItemCheck_EmitUseVisuals_CIVEMelee;
-
+            IL_Player.ItemCheck_OwnerOnlyCode -= ProjectileShootBan;
             base.Unload();
         }
         #region 更新状态
@@ -135,8 +160,12 @@ namespace CoolerItemVisualEffect
         public override void PostUpdate()
         {
             if (IsMeleeBroadSword)
-                ItemID.Sets.SkipsInitialUseSound[player.HeldItem.type] = ConfigCIVEInstance.SwordModifyActive;
+                ItemID.Sets.SkipsInitialUseSound[player.HeldItem.type] = ConfigurationSwoosh.SwordModifyActive;
             CheckItemChange(player);
+
+            //Main.NewText((player.itemAnimation, player.itemAnimationMax, player.itemTime, player.itemTimeMax),Color.Red);
+
+
             base.PostUpdate();
         }
         /// <summary>
@@ -189,6 +218,11 @@ namespace CoolerItemVisualEffect
         }
         #endregion
         #region 辅助函数
+        public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
+        {
+            SyncConfigCIVE.Get(player.whoAmI, ConfigurationSwoosh).Send(toWho, fromWho);
+            base.SyncPlayer(toWho, fromWho, newPlayer);
+        }
         public static bool SwordCheck(Item item)
         {
             return item.useStyle == ItemUseStyleID.Swing && item.damage > 0 && !item.noUseGraphic && MeleeCheck(item.DamageType);
@@ -359,6 +393,7 @@ namespace CoolerItemVisualEffect
                         }
                         break;
                     }
+                case HeatMapCreateStyle.ByFunction:
                 default:
                     {
                         for (int i = 0; i < 300; i++)
@@ -390,30 +425,31 @@ namespace CoolerItemVisualEffect
             }
             texture.SetData(colors);
         }
-        public static void WhenConfigSwooshChange()
-        {
-            if (Main.player != null)
-                foreach (var player in Main.player)
-                {
-                    if (player.active)
-                    {
-                        var modPlr = player.GetModPlayer<MeleeModifyPlayer>();
-                        UpdateHeatMap(ref modPlr.heatMap, modPlr.hsl, modPlr.ConfigurationSwoosh, TextureAssets.Item[player.HeldItem.type].Value);
-                    }
-                }
-        }
+        //public static void WhenConfigSwooshChange()
+        //{
+        //    if (Main.player != null)
+        //        foreach (var player in Main.player)
+        //        {
+        //            if (player.active)
+        //            {
+        //                var modPlr = player.GetModPlayer<MeleeModifyPlayer>();
+        //                UpdateHeatMap(ref modPlr.heatMap, modPlr.hsl, modPlr.ConfigurationSwoosh, TextureAssets.Item[player.HeldItem.type].Value);
+        //            }
+        //        }
+        //}
         public static void CheckItemChange(Player player, bool airCheck = false)
         {
+            if (Main.netMode == NetmodeID.Server) return;
             MeleeModifyPlayer modPlayer = player.GetModPlayer<MeleeModifyPlayer>();
             if (!TextureAssets.Item[player.HeldItem.type].IsLoaded) Main.instance.LoadItem(player.HeldItem.type);//TextureAssets.Item[player.HeldItem.type] = Main.Assets.Request<Texture2D>("Images/Item_" + player.HeldItem.type, ReLogic.Content.AssetRequestMode.AsyncLoad);
             var texture = GetWeaponTextureFromItem(player.HeldItem);
             if (modPlayer.lastWeaponHash != player.HeldItem.GetHashCode())
             {
-                if (!modPlayer.IsMeleeBroadSword) 
+                if (!modPlayer.IsMeleeBroadSword)
                 {
-                    foreach (var proj in Main.projectile) 
+                    foreach (var proj in Main.projectile)
                     {
-                        if (proj.type == ModContent.ProjectileType<CIVESword>() && proj.owner == player.whoAmI) 
+                        if (proj.type == ModContent.ProjectileType<CIVESword>() && proj.owner == player.whoAmI)
                         {
                             proj.Kill();
                             return;
@@ -451,7 +487,7 @@ namespace CoolerItemVisualEffect
                 vcolor /= count;
                 var newColor = modPlayer.mainColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
                 modPlayer.hsl = Main.rgbToHsl(newColor);
-                UpdateHeatMap(ref modPlayer.heatMap, modPlayer.hsl, ConfigCIVEInstance, texture);
+                UpdateHeatMap(ref modPlayer.heatMap, modPlayer.hsl, modPlayer.ConfigurationSwoosh, texture);
             }
         }
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
@@ -469,7 +505,9 @@ namespace CoolerItemVisualEffect
             }
             if (ConfigurationSwoosh.showHeatMap && heatMap != null && !Main.gameMenu && !drawInfo.headOnlyRender)
             {
-                Main.spriteBatch.Draw(heatMap, player.Center - Main.screenPosition + (player.whoAmI == Main.myPlayer ? new Vector2(-760, -340) : new Vector2(0, -64)), null, Color.White, 0, new Vector2(150, .5f), new Vector2(1, 50f), SpriteEffects.None, 0);
+                //Vector2 drawPos = player.whoAmI == Main.myPlayer ? new Vector2(600,400) : (player.Center - Main.screenPosition - Vector2.UnitY * 64);
+                Vector2 drawPos = player.Center - Main.screenPosition - Vector2.UnitY * 64;
+                Main.spriteBatch.Draw(heatMap, drawPos, null, Color.White, 0, new Vector2(150, .5f), new Vector2(1, 50f), SpriteEffects.None, 0);
             }
             if (ConfigurationSwoosh.useWeaponDisplay && !drawInfo.headOnlyRender)
             {
@@ -584,8 +622,11 @@ namespace CoolerItemVisualEffect
     }
     public class CIVESword : MeleeSequenceProj
     {
-
-
+        public override bool? CanHitNPC(NPC target)
+        {
+            if(target.isLikeATownNPC && player.HeldItem.type == ItemID.Flymeal) return true;
+            return base.CanHitNPC(target);
+        }
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
             if (UseSwordModify)
@@ -594,6 +635,7 @@ namespace CoolerItemVisualEffect
         }
         public bool UseSwordModify => player.GetModPlayer<MeleeModifyPlayer>().UseSwordModify || (meleeSequence.currentData != null && ((meleeSequence.currentData.counter < meleeSequence.currentData.Cycle || (meleeSequence.currentData.counter == meleeSequence.currentData.Cycle && meleeSequence.currentData.timer > 0)) && !meleeSequence.currentWrapper.finished));
         public override string Texture => $"Terraria/Images/Item_{ItemID.TerraBlade}";
+        public ConfigurationCIVE ConfigurationSwoosh => player.GetModPlayer<MeleeModifyPlayer>().ConfigurationSwoosh;
         public override StandardInfo StandardInfo => base.StandardInfo with
         {
             standardColor = player.GetModPlayer<MeleeModifyPlayer>().mainColor,//
@@ -603,15 +645,16 @@ namespace CoolerItemVisualEffect
             {
                 active = true,
                 heatMap = player.GetModPlayer<MeleeModifyPlayer>().heatMap ?? LogSpiralLibraryMod.HeatMap[0].Value,
-                renderInfos = [[ConfigCIVEInstance.distortConfigs.effectInfo], [ConfigCIVEInstance.maskConfigs.maskEffectInfo, ConfigCIVEInstance.bloomConfigs.effectInfo]],
+                renderInfos = [[ConfigurationSwoosh.distortConfigs.effectInfo], [ConfigurationSwoosh.maskConfigs.maskEffectInfo, ConfigurationSwoosh.bloomConfigs.effectInfo]],
 
-                scaler = (player.HeldItem.type == ItemID.TrueExcalibur ? 1.5f : 1) * MeleeModifyPlayer.GetWeaponTextureFromItem(player.HeldItem).Size().Length() * 1.25f,
-                timeLeft = ConfigCIVEInstance.swooshTimeLeft,
-                colorVec = ConfigCIVEInstance.colorVector.AlphaVector,
-                swooshTexIndex = (ConfigCIVEInstance.animateIndex, ConfigCIVEInstance.imageIndex)
+                scaler = (player.HeldItem.type == ItemID.TrueExcalibur ? 1.5f : 1) * MeleeModifyPlayer.GetWeaponTextureFromItem(player.HeldItem).Size().Length() * 1.25f * player.GetAdjustedItemScale(player.HeldItem),
+                timeLeft = ConfigurationSwoosh.swooshTimeLeft,
+                colorVec = ConfigurationSwoosh.colorVector.AlphaVector,
+                swooshTexIndex = (ConfigurationSwoosh.animateIndex, ConfigurationSwoosh.imageIndex)
             },
             itemType = player.HeldItem.type,
-            soundStyle = player.HeldItem.UseSound
+            soundStyle = player.HeldItem.UseSound,
+            dustAmount = player.GetModPlayer<MeleeModifyPlayer>().ConfigurationSwoosh.dustQuantity
         };
         public override bool PreDraw(ref Color lightColor)
         {
@@ -628,7 +671,7 @@ namespace CoolerItemVisualEffect
         }
         public override void InitializeSequence(string modName, string fileName)
         {
-            var definition = ConfigCIVEInstance.swooshActionStyle;
+            var definition = ConfigurationSwoosh.swooshActionStyle;
 
             if (definition != null)
                 base.InitializeSequence(definition.Mod, definition.Name);
@@ -705,11 +748,12 @@ namespace CoolerItemVisualEffect
             {
                 Main.NewText("炸了！");
             }
-            player.GetModPlayer<LogSpiralLibraryPlayer>().strengthOfShake = ConfigCIVEInstance.shake * Main.rand.NextFloat(0.85f, 1.15f) * (damageDone / MathHelper.Clamp(player.HeldItem.damage, 1, int.MaxValue));//
+
+            player.GetModPlayer<LogSpiralLibraryPlayer>().strengthOfShake = ConfigurationSwoosh.shake * Main.rand.NextFloat(0.85f, 1.15f) * (damageDone / MathHelper.Clamp(player.HeldItem.damage, 1, int.MaxValue));//
         }
         public override void OnHitPlayer(Player target, Player.HurtInfo info)
         {
-            player.GetModPlayer<LogSpiralLibraryPlayer>().strengthOfShake = ConfigCIVEInstance.shake * Main.rand.NextFloat(0.85f, 1.15f);
+            player.GetModPlayer<LogSpiralLibraryPlayer>().strengthOfShake = ConfigurationSwoosh.shake * Main.rand.NextFloat(0.85f, 1.15f);
 
             base.OnHitPlayer(target, info);
         }

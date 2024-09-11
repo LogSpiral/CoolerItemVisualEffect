@@ -22,15 +22,78 @@ using System.Collections;
 using LogSpiralLibrary.CodeLibrary.DataStructures;
 using LogSpiralLibrary;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures;
+using NetSimplified;
+using NetSimplified.Syncing;
 
 namespace CoolerItemVisualEffect
 {
-
+    public class SyncConfigCIVE : NetModule
+    {
+        public int plrIndex;
+        public ConfigurationCIVE configuration;
+        public static SyncConfigCIVE Get(int plrIndex, ConfigurationCIVE configurationCIVE)
+        {
+            var result = NetModuleLoader.Get<SyncConfigCIVE>();
+            result.plrIndex = plrIndex;
+            result.configuration = configurationCIVE;
+            return result;
+        }
+        public override void Send(ModPacket p)
+        {
+            p.Write((byte)plrIndex);
+            string content = JsonConvert.SerializeObject(configuration);
+            p.Write(content);
+            base.Send(p);
+        }
+        public override void Read(BinaryReader r)
+        {
+            plrIndex = r.ReadByte();
+            string content = r.ReadString();
+            configuration = new ConfigurationCIVE();
+            configuration.heatMapColors.Clear();
+            JsonConvert.PopulateObject(content, configuration);
+            //configuration = (ConfigurationCIVE)JsonConvert.DeserializeObject(content);
+            base.Read(r);
+        }
+        public override void Receive()
+        {
+            var plr = Main.player[plrIndex];
+            var MMPlr = plr.GetModPlayer<MeleeModifyPlayer>();
+            MMPlr.ConfigurationSwoosh = configuration;
+            if (MMPlr.heatMap != null && MMPlr.hsl != default)
+                MeleeModifyPlayer.UpdateHeatMap(ref MMPlr.heatMap, MMPlr.hsl, MMPlr.ConfigurationSwoosh, MeleeModifyPlayer.GetWeaponTextureFromItem(plr.HeldItem));
+            if (Main.dedServ)
+            {
+                Get(plrIndex, configuration).Send(-1, plrIndex);
+            }
+        }
+    }
     public class ConfigurationCIVE : ModConfig
     {
         public static ConfigurationCIVE ConfigCIVEInstance => ModContent.GetInstance<ConfigurationCIVE>();
 
         public override ConfigScope Mode => ConfigScope.ClientSide;
+
+        public override void OnChanged()
+        {
+            if (Main.player != null && Main.LocalPlayer != null && Main.LocalPlayer.active)
+            {
+                var plr = Main.LocalPlayer;
+                var MMPlr = plr.GetModPlayer<MeleeModifyPlayer>();
+                MeleeModifyPlayer.UpdateHeatMap(ref MMPlr.heatMap, MMPlr.hsl, MMPlr.ConfigurationSwoosh, MeleeModifyPlayer.GetWeaponTextureFromItem(plr.HeldItem));
+                //foreach (var plr in Main.player) 
+                //{
+                //    if (plr == null || !plr.active) continue;
+                //    var MMPlr = plr.GetModPlayer<MeleeModifyPlayer>();
+                //    MeleeModifyPlayer.UpdateHeatMap(ref MMPlr.heatMap, MMPlr.hsl, MMPlr.ConfigurationSwoosh, MeleeModifyPlayer.GetWeaponTextureFromItem(plr.HeldItem));
+                //}
+            }
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                SyncConfigCIVE.Get(Main.myPlayer, this).Send();
+            }
+            base.OnChanged();
+        }
 
         [Header("MeleeModifyPart")]
         [DefaultValue(true)]
@@ -69,12 +132,12 @@ namespace CoolerItemVisualEffect
         /*[Increment(0.05f)]
         [DefaultValue(0.1f)]
         [Range(0f, 1f)]
-        public float glowLight = 0.1f;//改
+        public float glowLight = 0.1f;*/  //改
 
         [Increment(0.05f)]
-        [DefaultValue(.75f)]
+        [DefaultValue(1f)]
         [Range(0f, 1f)]
-        public float dustQuantity = .75f;*/
+        public float dustQuantity = 1f;
 
         //[SeparatePage]
         [Header("RenderingPart")]

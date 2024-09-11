@@ -9,6 +9,8 @@ using System;
 using Terraria.GameContent;
 using static CoolerItemVisualEffect.ConfigurationCIVE;
 using LogSpiralLibrary;
+using System.IO;
+using NetSimplified;
 namespace CoolerItemVisualEffect
 {
     public class CoolerItemVisualEffectMod : Mod
@@ -43,5 +45,17 @@ namespace CoolerItemVisualEffect
             }
         }
         #endregion
+        public override void HandlePacket(BinaryReader reader, int whoAmI)
+        {
+            NetModule.ReceiveModule(reader, whoAmI);
+
+            base.HandlePacket(reader, whoAmI);
+        }
+        public override void Load()
+        {
+            AddContent<NetModuleLoader>();
+
+            base.Load();
+        }
     }
 }

@@ -712,6 +712,11 @@ Mods: {
 					Tooltip: ""
 				}
 
+				dustQuantity: {
+					Label: 粒子数量
+					Tooltip: ""
+				}
+
 				colorVector: {
 					Label: 颜色系数向量
 					Tooltip: ""
@@ -723,7 +728,7 @@ Mods: {
 				}
 
 				isLighterDecider: {
-					Label: 挥砍效果亮度标准值
+					Label: 强光武器亮度标准值
 					Tooltip: ""
 				}
 
@@ -824,16 +829,6 @@ Mods: {
 
 				TeleprotEffectActive: {
 					Label: 启用传送物品使用特效(未完成)
-					Tooltip: ""
-				}
-
-				dustQuantity: {
-					Label: 粒子数量
-					Tooltip: ""
-				}
-
-				itemHighLight: {
-					Label: 武器本体高亮
 					Tooltip: ""
 				}
 			}

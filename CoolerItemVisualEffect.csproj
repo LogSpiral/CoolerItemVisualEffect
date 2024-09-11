@@ -22,6 +22,11 @@
 	  <ProjectReference Include="..\LogSpiralLibrary\LogSpiralLibrary.csproj" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Reference Include="NetSimplified">
+	    <HintPath>lib\NetSimplified.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+	<ItemGroup>
 	  <PackageReference Update="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.1" />
 	</ItemGroup>
 	<ItemGroup>

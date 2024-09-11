@@ -663,7 +663,7 @@ Mods: {
 			}
 
 			ConfigurationCIVE: {
-				DisplayName: 更酷的物品视效设置
+				DisplayName: Configuration CIVE
 
 				Headers: {
 					MeleeModifyPart: "[i:1199]Melee Visual Effect Settings"
@@ -673,167 +673,162 @@ Mods: {
 				}
 
 				SwordModifyActive: {
-					Label: 启用近战修改
+					Label: Use Melee Modification
 					Tooltip: ""
 				}
 
 				swooshActionStyle: {
-					Label: 执行序列
+					Label: Executing Sequence
 					Tooltip: ""
 				}
 
 				imageIndex: {
-					Label: 刀光样式
+					Label: Style Of Slashing
 					Tooltip: ""
 				}
 
 				animateIndex: {
-					Label: 刀光动效贴图样式
+					Label: Style Of Slashing Animation Texture
 					Tooltip: ""
 				}
 
 				swooshTimeLeft: {
-					Label: 剑气残留时间
+					Label: LeftTime Of Swoosh
 					Tooltip: ""
 				}
 
 				shake: {
-					Label: 震屏力度
+					Label: The Strength Of Screen Shaking
 					Tooltip: ""
 				}
 
 				swingAttackTime: {
-					Label: 斩击用时上限
+					Label: Max Time Of Cut Down(Useless now)
 					Tooltip: ""
 				}
 
 				glowLight: {
-					Label: 武器附魔光泽
-					Tooltip: ""
-				}
-
-				colorVector: {
-					Label: 颜色系数向量
-					Tooltip: ""
-				}
-
-				alphaFactor: {
-					Label: 透明度系数
-					Tooltip: ""
-				}
-
-				isLighterDecider: {
-					Label: 挥砍效果亮度标准值
-					Tooltip: ""
-				}
-
-				itemAdditive: {
-					Label: 武器本体加法混合模式
-					Tooltip: ""
-				}
-
-				heatMapCreateStyle: {
-					Label: 热度图生成模式
-					Tooltip: ""
-				}
-
-				heatMapFactorStyle: {
-					Label: 热度图插值模式
-					Tooltip: ""
-				}
-
-				hueOffsetRange: {
-					Label: 色调偏移量范围
-					Tooltip: ""
-				}
-
-				hueOffsetValue: {
-					Label: 色调偏移量
-					Tooltip: ""
-				}
-
-				saturationScalar: {
-					Label: 饱和度系数
-					Tooltip: ""
-				}
-
-				luminosityRange: {
-					Label: 亮度偏移范围
-					Tooltip: ""
-				}
-
-				directOfHeatMap: {
-					Label: 色彩偏离角度
-					Tooltip: ""
-				}
-
-				heatMapColors: {
-					Label: 指定热度图颜色列表
-					Tooltip: ""
-				}
-
-				showHeatMap: {
-					Label: 展示当前武器的热度图
-					Tooltip: ""
-				}
-
-				distortConfigs: {
-					Label: 空气扭曲设置
-					Tooltip: 如果太卡了首先关掉这个
-				}
-
-				bloomConfigs: {
-					Label: 外发光设置
-					Tooltip: 以前是它最吃配置
-				}
-
-				maskConfigs: {
-					Label: 星空遮罩设置
-					Tooltip: 这玩意得配合外发光才好看呜
-				}
-
-				useWeaponDisplay: {
-					Label: 武器背显开关
-					Tooltip: ""
-				}
-
-				firstWeaponDisplay: {
-					Label: 选人界面武器背显开关
-					Tooltip: ""
-				}
-
-				weaponScale: {
-					Label: 武器显示尺寸
-					Tooltip: ""
-				}
-
-				ItemDropEffectActive: {
-					Label: 启用掉落物品额外光效
-					Tooltip: ""
-				}
-
-				ItemInventoryEffectActive: {
-					Label: 启用背包物品额外光效
-					Tooltip: ""
-				}
-
-				VanillaProjectileDrawModifyActive: {
-					Label: 启用弹幕优化绘制
-					Tooltip: ""
-				}
-
-				TeleprotEffectActive: {
-					Label: 启用传送物品使用特效(未完成)
+					Label: Item Glow Light As Enchanted Item In Minecraft
 					Tooltip: ""
 				}
 
 				dustQuantity: {
-					Label: 粒子数量
+					Label: Dust Amount
 					Tooltip: ""
 				}
 
-				itemHighLight: {
-					Label: 武器本体高亮
+				colorVector: {
+					Label: Color Coefficient Vector
+					Tooltip: ""
+				}
+
+				alphaFactor: {
+					Label: Coefficient Of Opacity
+					Tooltip: ""
+				}
+
+				isLighterDecider: {
+					Label: Standard of Bright Sword
+					Tooltip: ""
+				}
+
+				itemAdditive: {
+					Label: Weapon And Weapon Swing Effects Are Translucent And Highlighted
+					Tooltip: ""
+				}
+
+				heatMapCreateStyle: {
+					Label: Heat Map Create Style
+					Tooltip: ""
+				}
+
+				heatMapFactorStyle: {
+					Label: Style Of HeatMap Factor
+					Tooltip: ""
+				}
+
+				hueOffsetRange: {
+					Label: The Offset Range Of Hue
+					Tooltip: ""
+				}
+
+				hueOffsetValue: {
+					Label: The Offset Value Of Original Hue[i:2870]
+					Tooltip: ""
+				}
+
+				saturationScalar: {
+					Label: Coefficient Of Saturation
+					Tooltip: ""
+				}
+
+				luminosityRange: {
+					Label: The Offset Value Of Original Luminosity
+					Tooltip: ""
+				}
+
+				directOfHeatMap: {
+					Label: Offset Angle Of ColorBar
+					Tooltip: ""
+				}
+
+				heatMapColors: {
+					Label: List Of Color Of Designated HeatMap
+					Tooltip: ""
+				}
+
+				showHeatMap: {
+					Label: Show The Heat Map
+					Tooltip: ""
+				}
+
+				distortConfigs: {
+					Label: Air Distort Effect
+					Tooltip: ""
+				}
+
+				bloomConfigs: {
+					Label: Bloom Effect
+					Tooltip: ""
+				}
+
+				maskConfigs: {
+					Label: Star Sky Mask Effect
+					Tooltip: ""
+				}
+
+				useWeaponDisplay: {
+					Label: Weapon display switch
+					Tooltip: ""
+				}
+
+				firstWeaponDisplay: {
+					Label: Weapon display in player interface
+					Tooltip: ""
+				}
+
+				weaponScale: {
+					Label: Weapon display size
+					Tooltip: ""
+				}
+
+				ItemDropEffectActive: {
+					Label: Active Extra Glow Effect To Item In World.
+					Tooltip: ""
+				}
+
+				ItemInventoryEffectActive: {
+					Label: Active Extra Glow Effect To Item In Inventory.
+					Tooltip: ""
+				}
+
+				VanillaProjectileDrawModifyActive: {
+					Label: Active Extra Draw Effect To Proejectile.
+					Tooltip: ""
+				}
+
+				TeleprotEffectActive: {
+					Label: Active Teleport Extra Effect(WIP)
 					Tooltip: ""
 				}
 			}
@@ -842,28 +837,28 @@ Mods: {
 				// Tooltip: ""
 				
 				intensity: {
-					Label: 扭曲强度
-					Tooltip: 拉得越大越明显
+					Label: Intensity
+					Tooltip: The lager the value, the Significant it will be
 				}
 
 				rotation: {
-					Label: 角偏移量
-					Tooltip: 不是很重要的莫名奇妙的设置
+					Label: Angle offset
+					Tooltip: not significant :P
 				}
 
 				colorOffset: {
-					Label: 色差距离
-					Tooltip: 你可以试试拉满或者拉一半
+					Label: color Offset
+					Tooltip: You can try to set it to max value or half
 				}
 
 				tier: {
-					Label: 阶数
-					Tooltip: 反直觉的是，0是采样次数最多的，卡了就改2，配置好可以用0
+					Label: Tier
+					Tooltip: ""
 				}
 
 				Available: {
-					Label: 启用
-					Tooltip: 空气扭曲，启动！
+					Label: Active
+					Tooltip: Air Distort, Active!
 				}
 
 				Tooltip: ""
@@ -873,28 +868,28 @@ Mods: {
 				// Tooltip: ""
 				
 				threshold: {
-					Label: 阈值
-					Tooltip: 亮度高于这个值的像素会进行外发光
+					Label: Threshold
+					Tooltip: The Pixel brighter than this value Blooming
 				}
 
 				intensity: {
-					Label: 强度
-					Tooltip: 要瞎了要瞎了
+					Label: Intensity
+					Tooltip: Oh my eyes
 				}
 
 				range: {
-					Label: 范围
-					Tooltip: 点亮一大片！
+					Label: Step
+					Tooltip: Lit up a huge range
 				}
 
 				times: {
-					Label: 迭代次数
-					Tooltip: 迭代太多次绝对会亮瞎眼而卡爆的吧
+					Label: Iteration Count
+					Tooltip: It'll be laggy if this value too big
 				}
 
 				Available: {
-					Label: 启用
-					Tooltip: 外发光，启动！
+					Label: Active
+					Tooltip: Bloom, Active!
 				}
 
 				Tooltip: ""
@@ -904,43 +899,43 @@ Mods: {
 				// Tooltip: ""
 				
 				SkyStyle: {
-					Label: 星空样式
-					Tooltip: 现在你可以两种星空里切换了(x
+					Label: Star Sky Style
+					Tooltip: Now you can Choose several types of Sky(x
 				}
 
 				glowColor: {
-					Label: 主体颜色
+					Label: Main color
 					Tooltip: ""
 				}
 
 				boundColor: {
-					Label: 边界颜色
+					Label: Boundary color
 					Tooltip: ""
 				}
 
 				tier1: {
-					Label: 边界阈值
-					Tooltip: 低于这个值的会替换为主体颜色
+					Label: Boundary Threshold
+					Tooltip: Replace to Main Color if Darker than this Value
 				}
 
 				tier2: {
-					Label: 遮罩阈值
-					Tooltip: 高于这个值的会替换为星空遮罩
+					Label: Mask Threshold
+					Tooltip: Replace to Mask Texture if Lighter than this Value
 				}
 
 				lightAsAlpha: {
-					Label: 是否让亮度参与透明度的生成
-					Tooltip: 你可以关了试试，我也不知道为什么我要你选这个
+					Label: Let brightness influences Opacity or not
+					Tooltip: You can try to switch off it
 				}
 
 				inverse: {
-					Label: 亮度反向
-					Tooltip: 现在最暗的被换成星空了
+					Label: Inverse the brightness
+					Tooltip: Now the Dark one Replaced to Mask
 				}
 
 				Available: {
-					Label: 启用
-					Tooltip: 星空遮罩，启动！
+					Label: Active
+					Tooltip: Mask, Active!
 				}
 
 				Tooltip: ""

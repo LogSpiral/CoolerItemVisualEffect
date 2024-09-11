@@ -1,6 +1,7 @@
 displayName = CoolerItemVisualEffect(更酷的物品视觉效果)
 author = 错数螺线Log_Spiral
-version = 0.1.17.1
+version = 0.1.17.2
 homepage = https://github.com/LogSpiral
 includeSource = true
 modReferences = LogSpiralLibrary
+dllReferences = NetSimplified
