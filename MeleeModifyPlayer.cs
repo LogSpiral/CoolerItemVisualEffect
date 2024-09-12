@@ -30,6 +30,13 @@ namespace CoolerItemVisualEffect
     public class MeleeModifierItem : GlobalItem
     {
         public static int[] vanillaSlashItems = [ItemID.NightsEdge, ItemID.TrueNightsEdge, ItemID.TheHorsemansBlade, ItemID.Excalibur, ItemID.TrueExcalibur, ItemID.TerraBlade];
+        public override bool AltFunctionUse(Item item, Player player)
+        {
+            var mplr = player.GetModPlayer<MeleeModifyPlayer>();
+            if (mplr.ConfigurationSwoosh.SwordModifyActive && mplr.IsMeleeBroadSword)
+                return true;
+            return base.AltFunctionUse(item, player);
+        }
         public override void UseStyle(Item item, Player player, Rectangle heldItemFrame)
         {
             var mplr = player.GetModPlayer<MeleeModifyPlayer>();

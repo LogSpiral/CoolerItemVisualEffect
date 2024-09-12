@@ -2,7 +2,7 @@
 <Sequence name="HeavyChop" AuthorName="错数螺线" Description="纯粹的重斩" FileName="HeavyChop" DisplayName="纯重斩HeavyChop" ModName="CoolerItemVisualEffect" createTime="638595957270040415" lastModifyDate="638595957270040418" passWord="" Finished="True">
   <Group>
     <Wraper condition="Always">
-      <Action mode="0" Cycle="1" ModifyData="(1.00,1.00,1.00,1.00,0,1.00)" name="LogSpiralLibrary/SwooshInfo" />
+      <Action mode="0" Cycle="1" ModifyData="(1.00|1.00|1.00|1.00|0|1.00)" name="LogSpiralLibrary/SwooshInfo" />
     </Wraper>
   </Group>
 </Sequence>

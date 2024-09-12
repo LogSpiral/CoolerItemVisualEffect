@@ -2,17 +2,17 @@
 <Sequence name="StormySlash" AuthorName="错数螺线" Description="非常爽口的连斩" FileName="StormySlash" DisplayName="风暴斩击Stormy" ModName="CoolerItemVisualEffect" createTime="638595945860084983" lastModifyDate="638595956792974134" passWord="" Finished="True">
   <Group>
     <Wraper condition="Always">
-      <Action mode="0" Cycle="3" ModifyData="(1.00,3.00,1.00,1.00,0,1.00)" name="LogSpiralLibrary/SwooshInfo" />
+      <Action mode="0" Cycle="3" ModifyData="(1.00|3.00|1.00|1.00|0|1.00)" name="LogSpiralLibrary/SwooshInfo" />
     </Wraper>
   </Group>
   <Group>
     <Wraper condition="Always">
-      <Action mode="1" Cycle="4" ModifyData="(1.00,2.00,1.00,1.00,0,1.00)" name="LogSpiralLibrary/SwooshInfo" />
+      <Action mode="1" Cycle="4" ModifyData="(1.00|2.00|1.00|1.00|0|1.00)" name="LogSpiralLibrary/SwooshInfo" />
     </Wraper>
   </Group>
   <Group>
     <Wraper condition="Always">
-      <Action mode="0" Cycle="1" ModifyData="(1.00,2.50,1.00,1.00,0,1.00)" name="LogSpiralLibrary/SwooshInfo" />
+      <Action mode="0" Cycle="1" ModifyData="(1.00|2.50|1.00|1.00|0|1.00)" name="LogSpiralLibrary/SwooshInfo" />
     </Wraper>
   </Group>
 </Sequence>
