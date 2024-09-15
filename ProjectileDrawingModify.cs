@@ -94,6 +94,9 @@ namespace CoolerItemVisualEffect
         {
             if (!ConfigurationCIVE.ConfigCIVEInstance.VanillaProjectileDrawModifyActive) goto mylabel;
             SpriteBatch spriteBatch = Main.spriteBatch;
+            //spriteBatch.Draw4C(TextureAssets.Extra[98].Value, projectile.Center - Main.screenPosition, null, Color.Cyan with { A = 0 }, Color.Cyan with { A = 0}, Color.Blue with { A = 0 }, Color.Blue with { A = 0 }, projectile.rotation, new Vector2(36), new Vector2(1,3), 0, 0);
+            //spriteBatch.Draw(TextureAssets.Extra[98].Value, projectile.Center - Main.screenPosition, null, Color.White with { A = 0 }, projectile.rotation, new Vector2(36), new Vector2(1, 3) * .75f, 0, 0);
+
             switch (projectile.type)
             {
                 case ProjectileID.NightBeam:

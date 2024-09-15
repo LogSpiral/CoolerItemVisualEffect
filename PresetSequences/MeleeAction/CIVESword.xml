@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Sequence name="CIVESword" AuthorName="LSL" Description="Auto Spawn By LogSpiralLibrary." FileName="CIVESword" DisplayName="CIVESword" ModName="CoolerItemVisualEffect" createTime="638594198586058809" lastModifyDate="638595768585923049" passWord="" Finished="True">
+<Sequence name="CIVESword" AuthorName="错数螺线LogSpiral" Description="更酷刀光默认序列!The Default Sequence" FileName="CIVESword" DisplayName="酷剑CIVESword" ModName="CoolerItemVisualEffect" createTime="638594198586058809" lastModifyDate="638620308843383771" passWord="" Finished="True">
   <Group>
     <Wraper condition="Always">
       <Action mode="0" Cycle="3" ModifyData="(1.00|3.00|1.00|1.00|0|1.00)" name="LogSpiralLibrary/SwooshInfo" />
@@ -7,7 +7,7 @@
   </Group>
   <Group>
     <Wraper condition="Always">
-      <Action mode="1" Cycle="4" ModifyData="(1.00|2.00|1.00|1.00|0|1.00)" name="LogSpiralLibrary/SwooshInfo" />
+      <Action mode="1" Cycle="4" ModifyData="(1.00|2.00|0.40|0.65|0|1.00)" name="LogSpiralLibrary/SwooshInfo" />
     </Wraper>
   </Group>
   <Group>
@@ -17,10 +17,10 @@
   </Group>
   <Group>
     <Wraper condition="TimeNight">
-      <Action givenCycle="3" ModifyData="(1.00|1.00|1.00|1.00|0|1.00)" rangeOffsetMin="0" rangeOffsetMax="2" name="LogSpiralLibrary/RapidlyStabInfo" />
+      <Action givenCycle="3" ModifyData="(1.00|1.00|0.55|0.40|5|1.00)" rangeOffsetMin="0" rangeOffsetMax="2" name="LogSpiralLibrary/RapidlyStabInfo" />
     </Wraper>
     <Wraper condition="Always">
-      <Action Cycle="2" ModifyData="(1.50|2.00|5.00|3.25|20|1.30)" name="LogSpiralLibrary/StabInfo" />
+      <Action Cycle="2" ModifyData="(1.50|2.00|5.00|0.95|5|1.30)" name="LogSpiralLibrary/StabInfo" />
     </Wraper>
   </Group>
 </Sequence>

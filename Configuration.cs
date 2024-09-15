@@ -135,9 +135,9 @@ namespace CoolerItemVisualEffect
         public float glowLight = 0.1f;*/  //改
 
         [Increment(0.05f)]
-        [DefaultValue(1f)]
+        [DefaultValue(0.35f)]
         [Range(0f, 1f)]
-        public float dustQuantity = 1f;
+        public float dustQuantity = 0.35f;
 
         //[SeparatePage]
         [Header("RenderingPart")]
@@ -254,9 +254,9 @@ namespace CoolerItemVisualEffect
         {
             public bool Available { get; set; } = true;
             [Range(0, 1f)]
-            public float threshold = 0f;
+            public float threshold = 0.35f;
             [Range(0, 1f)]
-            public float intensity = 0.35f;
+            public float intensity = 0.12f;
             [Range(1f, 12f)]
             public float range = 1;
             [Range(1, 5)]

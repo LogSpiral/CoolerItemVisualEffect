@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Sequence name="PureStab" AuthorName="错数螺线" Description="突突突!!" FileName="PureStab" DisplayName="纯穿刺Stab" ModName="CoolerItemVisualEffect" createTime="638595963392921030" lastModifyDate="638595965474288672" passWord="" Finished="True">
+<Sequence name="PureStab" AuthorName="错数螺线" Description="突突突!!" FileName="PureStab" DisplayName="纯穿刺Stab" ModName="CoolerItemVisualEffect" createTime="638595963392921030" lastModifyDate="638620311416220090" passWord="" Finished="True">
   <Group>
     <Wraper condition="Always">
-      <Action Cycle="4" ModifyData="(1.00|1.00|1.00|1.00|0|1.00)" name="LogSpiralLibrary/StabInfo" />
+      <Action Cycle="4" ModifyData="(1.00|1.50|1.00|0.45|0|0.75)" name="LogSpiralLibrary/StabInfo" />
     </Wraper>
   </Group>
   <Group>
     <Wraper condition="Always">
-      <Action givenCycle="3" ModifyData="(1.00|2.00|1.00|1.00|0|1.00)" rangeOffsetMin="0" rangeOffsetMax="4" name="LogSpiralLibrary/RapidlyStabInfo" />
+      <Action givenCycle="3" ModifyData="(1.00|3.00|1.00|0.75|0|1.00)" rangeOffsetMin="0" rangeOffsetMax="4" name="LogSpiralLibrary/RapidlyStabInfo" />
     </Wraper>
   </Group>
   <Group>
     <Wraper condition="Always">
-      <Action Cycle="2" ModifyData="(1.20|3.00|3.50|2.40|10|1.10)" name="LogSpiralLibrary/StabInfo" />
+      <Action Cycle="2" ModifyData="(1.20|3.00|3.50|1.50|10|1.10)" name="LogSpiralLibrary/StabInfo" />
     </Wraper>
   </Group>
 </Sequence>
