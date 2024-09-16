@@ -648,7 +648,7 @@ namespace CoolerItemVisualEffect
             standardColor = player.GetModPlayer<MeleeModifyPlayer>().mainColor,//
             //standardGlowTexture = ModContent.Request<Texture2D>(GlowTexture).Value,
             standardTimer = player.itemAnimationMax,
-            vertexStandard = new VertexDrawInfoStandardInfo() with
+            vertexStandard = Main.netMode == NetmodeID.Server ? default : new VertexDrawInfoStandardInfo() with
             {
                 active = true,
                 heatMap = player.GetModPlayer<MeleeModifyPlayer>().heatMap ?? LogSpiralLibraryMod.HeatMap[0].Value,
