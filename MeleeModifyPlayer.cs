@@ -12,6 +12,8 @@ using Terraria.ModLoader;
 using System.Linq;
 using System.IO;
 using MonoMod.Cil;
+using Terraria;
+using Terraria.ID;
 
 namespace CoolerItemVisualEffect
 {
@@ -97,6 +99,7 @@ namespace CoolerItemVisualEffect
             flag &= item.pick == 0;
             flag &= item.axe == 0;
             flag &= item.hammer == 0;
+            flag &= item.type != ItemID.GravediggerShovel;
             return flag;
         }
         public bool IsMeleeBroadSword => MeleeBroadSwordCheck(player.HeldItem);
@@ -138,7 +141,7 @@ namespace CoolerItemVisualEffect
             c.EmitLdarg0();
             c.EmitDelegate<Func<Player, bool>>
                 (
-                player => 
+                player =>
                 {
                     var mplr = player.GetModPlayer<MeleeModifyPlayer>();
                     return !(mplr.ConfigurationSwoosh.SwordModifyActive && mplr.IsMeleeBroadSword);
@@ -631,7 +634,7 @@ namespace CoolerItemVisualEffect
     {
         public override bool? CanHitNPC(NPC target)
         {
-            if(target.isLikeATownNPC && player.HeldItem.type == ItemID.Flymeal) return true;
+            if (target.isLikeATownNPC && player.HeldItem.type == ItemID.Flymeal) return true;
             return base.CanHitNPC(target);
         }
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -685,62 +688,117 @@ namespace CoolerItemVisualEffect
             else
                 base.InitializeSequence(modName, fileName);
         }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            #region *复杂的伤害计算*
+            var plr = player;
+            var vec = ((MeleeAction)currentData).targetedVector;
+
+            var itemRectangle = Utils.CenteredRectangle(plr.Center + vec * .5f, vec);
+            var sItem = plr.HeldItem;
+            float num = 1000f; // to reduce patches, set to 1000, and then turn it into a multiplier later
+            if (!sItem.DamageType.UseStandardCritCalcs)
+                goto skipStandardCritCalcs;
+
+            int weaponCrit = plr.GetWeaponCrit(sItem);
+
+            skipStandardCritCalcs:
+            plr.ApplyBannerOffenseBuff(target, ref modifiers);
+
+            if (plr.parryDamageBuff && sItem.melee)
+            {
+                modifiers.ScalingBonusDamage += 4f; //num *= 5;
+                plr.parryDamageBuff = false;
+                plr.ClearBuff(198);
+            }
+            if (sItem.type == ItemID.BreakerBlade && target.life >= target.lifeMax * 9 / 10)
+                num = (int)((float)num * 2.5f);
+
+            if (sItem.type == ItemID.HamBat)
+            {
+                int num3 = 0;
+                if (plr.FindBuffIndex(26) != -1)
+                    num3 = 1;
+
+                if (plr.FindBuffIndex(206) != -1)
+                    num3 = 2;
+
+                if (plr.FindBuffIndex(207) != -1)
+                    num3 = 3;
+
+                float num4 = 1f + 0.05f * (float)num3;
+                num = (int)((float)num * num4);
+            }
+
+            if (sItem.type == ItemID.Keybrand)
+            {
+                float t = (float)target.life / (float)target.lifeMax;
+                float lerpValue = Utils.GetLerpValue(1f, 0.1f, t, clamped: true);
+                float num5 = 1f * lerpValue;
+                num = (int)((float)num * (1f + num5));
+                Vector2 point = itemRectangle.Center.ToVector2();
+                Vector2 positionInWorld = target.Hitbox.ClosestPointInRect(point);
+                ParticleOrchestrator.RequestParticleSpawn(clientOnly: false, ParticleOrchestraType.Keybrand, new ParticleOrchestraSettings
+                {
+                    PositionInWorld = positionInWorld
+                }, plr.whoAmI);
+            }
+
+            /*
+			int num6 = Main.DamageVar(num, luck);
+			*/
+            modifiers.SourceDamage *= num / 1000f;
+            float armorPenetrationPercent = 0f;
+            if (sItem.type == ItemID.Flymeal && target.isLikeATownNPC)
+            {
+                armorPenetrationPercent = 1f;
+                if (target.type == NPCID.Nurse)
+                    modifiers.TargetDamageMultiplier *= 2; //num6 *= 2;
+            }
+            ParticleOrchestraType? particle = sItem.type switch
+            {
+                ItemID.SlapHand => ParticleOrchestraType.SlapHand,
+                ItemID.WaffleIron => ParticleOrchestraType.WaffleIron,
+                ItemID.Flymeal => ParticleOrchestraType.FlyMeal,
+                ItemID.NightsEdge => ParticleOrchestraType.NightsEdge,
+                ItemID.TrueNightsEdge => ParticleOrchestraType.TrueNightsEdge,
+                ItemID.Excalibur => ParticleOrchestraType.Excalibur,
+                ItemID.TrueExcalibur => ParticleOrchestraType.TrueExcalibur,
+                ItemID.TerraBlade => ParticleOrchestraType.TerraBlade,
+                _ => null
+            };
+            if (particle != null) 
+            {
+                ParticleOrchestraSettings particleOrchestraSettings = default;
+                particleOrchestraSettings.PositionInWorld = target.Center;
+                ParticleOrchestraSettings settings = particleOrchestraSettings;
+                ParticleOrchestrator.RequestParticleSpawn(clientOnly: false, particle.Value, settings, plr.whoAmI);
+            }
+
+
+            plr.StatusToNPC(sItem.type, target.whoAmI);
+            if (target.life > 5)
+                plr.OnHit(target.Center.X, target.Center.Y, target);
+
+            /*
+			num6 += nPC.checkArmorPenetration(armorPenetration, armorPenetrationPercent);
+			*/
+            modifiers.ArmorPenetration += plr.GetWeaponArmorPenetration(sItem);
+            modifiers.ScalingArmorPenetration += armorPenetrationPercent;
+            CombinedHooks.ModifyPlayerHitNPCWithItem(plr, sItem, target, ref modifiers);
+            #endregion
+            base.ModifyHitNPC(target, ref modifiers);
+        }
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             //if (!target.CanBeChasedBy()) return;
             try
             {
-                #region *复杂的伤害计算*
-                int num = Projectile.damage;
                 var sItem = player.HeldItem;
                 var vec = ((MeleeAction)currentData).targetedVector;
                 var itemRectangle = Utils.CenteredRectangle(player.Center + vec * .5f, vec);
-                int num2 = Item.NPCtoBanner(target.BannerID());
-                if (num2 > 0 && player.HasNPCBannerBuff(num2))
-                    num = ((!Main.expertMode) ? ((int)((float)num * ItemID.Sets.BannerStrength[Item.BannerToItem(num2)].NormalDamageDealt)) : ((int)((float)num * ItemID.Sets.BannerStrength[Item.BannerToItem(num2)].ExpertDamageDealt)));
-
-                if (player.parryDamageBuff && sItem.DamageType.CountsAsClass(DamageClass.Melee))
-                {
-                    num *= 5;
-                    player.parryDamageBuff = false;
-                    player.ClearBuff(198);
-                }
-
-                if (sItem.type == ItemID.BreakerBlade && (float)target.life >= (float)target.lifeMax * 0.9f)
-                    num = (int)((float)num * 2f);
-
-                if (sItem.type == ItemID.HamBat)
-                {
-                    int num3 = 0;
-                    if (player.FindBuffIndex(26) != -1)
-                        num3 = 1;
-
-                    if (player.FindBuffIndex(206) != -1)
-                        num3 = 2;
-
-                    if (player.FindBuffIndex(207) != -1)
-                        num3 = 3;
-
-                    float num4 = 1f + 0.05f * (float)num3;
-                    num = (int)((float)num * num4);
-                }
-
-                if (sItem.type == ItemID.Keybrand)
-                {
-                    float t = (float)target.life / (float)target.lifeMax;
-                    float lerpValue = Utils.GetLerpValue(1f, 0.1f, t, clamped: true);
-                    float num5 = 1.5f * lerpValue;
-                    num = (int)((float)num * (1f + num5));
-                    Vector2 point = itemRectangle.Center.ToVector2();
-                    Vector2 positionInWorld = target.Hitbox.ClosestPointInRect(point);
-                    ParticleOrchestrator.RequestParticleSpawn(clientOnly: false, ParticleOrchestraType.Keybrand, new ParticleOrchestraSettings
-                    {
-                        PositionInWorld = positionInWorld
-                    }, player.whoAmI);
-                }
-                #endregion
                 CombinedHooks.OnPlayerHitNPCWithItem(player, sItem, target, hit, damageDone);
-                player.ApplyNPCOnHitEffects(player.HeldItem, itemRectangle, num, hit.Knockback, target.whoAmI, hit.Damage, damageDone);
+                player.ApplyNPCOnHitEffects(player.HeldItem, itemRectangle, damageDone, hit.Knockback, target.whoAmI, hit.Damage, damageDone);
 
 
                 if (sItem.type == ItemID.TheHorsemansBlade && target.CanBeChasedBy())
