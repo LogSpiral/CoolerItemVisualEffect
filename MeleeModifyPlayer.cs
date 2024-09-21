@@ -44,7 +44,7 @@ namespace CoolerItemVisualEffect
             var mplr = player.GetModPlayer<MeleeModifyPlayer>();
             if (player.itemAnimation == player.itemAnimationMax && player.ownedProjectileCounts[ModContent.ProjectileType<CIVESword>()] == 0 && mplr.ConfigurationSwoosh.SwordModifyActive && mplr.IsMeleeBroadSword)
             {
-                Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, default, ModContent.ProjectileType<CIVESword>(), 1, 1, player.whoAmI);
+                Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, default, ModContent.ProjectileType<CIVESword>(), player.HeldItem.damage, player.HeldItem.knockBack, player.whoAmI);
             }
             base.UseStyle(item, player, heldItemFrame);
         }
