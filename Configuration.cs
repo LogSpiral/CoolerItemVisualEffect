@@ -21,9 +21,9 @@ using System.Collections;
 //using CoolerItemVisualEffect.ConfigSLer;
 using LogSpiralLibrary.CodeLibrary.DataStructures;
 using LogSpiralLibrary;
-using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures;
 using NetSimplified;
 using NetSimplified.Syncing;
+using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Melee;
 
 namespace CoolerItemVisualEffect
 {

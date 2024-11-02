@@ -14,6 +14,10 @@ using System.IO;
 using MonoMod.Cil;
 using Terraria;
 using Terraria.ID;
+using Terraria.Audio;
+using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Melee;
+using NetSimplified;
+using NetSimplified.Syncing;
 
 namespace CoolerItemVisualEffect
 {
@@ -646,32 +650,52 @@ namespace CoolerItemVisualEffect
         public bool UseSwordModify => player.GetModPlayer<MeleeModifyPlayer>().UseSwordModify || (meleeSequence.currentData != null && ((meleeSequence.currentData.counter < meleeSequence.currentData.Cycle || (meleeSequence.currentData.counter == meleeSequence.currentData.Cycle && meleeSequence.currentData.timer > 0)) && !meleeSequence.currentWrapper.finished));
         public override string Texture => $"Terraria/Images/Item_{ItemID.TerraBlade}";
         public ConfigurationCIVE ConfigurationSwoosh => player.GetModPlayer<MeleeModifyPlayer>().ConfigurationSwoosh;
-        public override StandardInfo StandardInfo => base.StandardInfo with
+        public override StandardInfo StandardInfo
         {
-            standardColor = player.GetModPlayer<MeleeModifyPlayer>().mainColor,//
-            //standardGlowTexture = ModContent.Request<Texture2D>(GlowTexture).Value,
-            standardTimer = player.itemAnimationMax,
-            vertexStandard = Main.netMode == NetmodeID.Server ? default : new VertexDrawInfoStandardInfo() with
+            get
             {
-                active = true,
-                heatMap = player.GetModPlayer<MeleeModifyPlayer>().heatMap ?? LogSpiralLibraryMod.HeatMap[0].Value,
-                renderInfos = [[ConfigurationSwoosh.distortConfigs.effectInfo], [ConfigurationSwoosh.maskConfigs.maskEffectInfo, ConfigurationSwoosh.bloomConfigs.effectInfo]],
+                var plr = player;
+                var item = plr.HeldItem;
+                if (item.flame && !TextureAssets.ItemFlame[item.type].IsLoaded)
+                {
+                    Main.instance.LoadItemFlames(item.type);
+                }
+                if (item.glowMask != -1 && !TextureAssets.GlowMask[item.glowMask].IsLoaded)
+                {
+                    Main.Assets.Request<Texture2D>(TextureAssets.GlowMask[item.glowMask].Name);
+                }
+                var rectangle = Main.itemAnimations[item.type]?.GetFrame(TextureAssets.Item[item.type].Value);
+                var result = base.StandardInfo with
+                {
+                    standardColor = plr.GetModPlayer<MeleeModifyPlayer>().mainColor * .25f,//
+                                            //standardGlowTexture = ModContent.Request<Texture2D>(GlowTexture).Value,
+                    standardTimer = plr.itemAnimationMax,
+                    vertexStandard = Main.netMode == NetmodeID.Server ? default : new VertexDrawInfoStandardInfo() with
+                    {
+                        active = true,
+                        heatMap = plr.GetModPlayer<MeleeModifyPlayer>().heatMap ?? LogSpiralLibraryMod.HeatMap[0].Value,
+                        renderInfos = [[ConfigurationSwoosh.distortConfigs.effectInfo], [ConfigurationSwoosh.maskConfigs.maskEffectInfo, ConfigurationSwoosh.bloomConfigs.effectInfo]],
 
-                scaler = (player.HeldItem.type == ItemID.TrueExcalibur ? 1.5f : 1) * MeleeModifyPlayer.GetWeaponTextureFromItem(player.HeldItem).Size().Length() * 1.25f * player.GetAdjustedItemScale(player.HeldItem),
-                timeLeft = ConfigurationSwoosh.swooshTimeLeft,
-                colorVec = ConfigurationSwoosh.colorVector.AlphaVector,
-                swooshTexIndex = (ConfigurationSwoosh.animateIndex, ConfigurationSwoosh.imageIndex)
-            },
-            itemType = player.HeldItem.type,
-            soundStyle = player.HeldItem.UseSound,
-            dustAmount = player.GetModPlayer<MeleeModifyPlayer>().ConfigurationSwoosh.dustQuantity
-        };
+                        scaler = (item.type == ItemID.TrueExcalibur ? 1.5f : 1) * (rectangle == null ? MeleeModifyPlayer.GetWeaponTextureFromItem(item).Size() : rectangle.Value.Size()).Length() * 1.25f * plr.GetAdjustedItemScale(item),
+                        timeLeft = ConfigurationSwoosh.swooshTimeLeft,
+                        colorVec = ConfigurationSwoosh.colorVector.AlphaVector,
+                        swooshTexIndex = (ConfigurationSwoosh.animateIndex, ConfigurationSwoosh.imageIndex)
+                    },
+                    standardGlowTexture = item.glowMask != -1 ? TextureAssets.GlowMask[item.glowMask].Value : (item.flame ? TextureAssets.ItemFlame[item.type].Value : null),
+                    itemType = item.type,
+                    soundStyle = item.UseSound,
+                    dustAmount = plr.GetModPlayer<MeleeModifyPlayer>().ConfigurationSwoosh.dustQuantity,
+                    frame = rectangle
+                };
+                return result;
+            }
+        }
         public override bool PreDraw(ref Color lightColor)
         {
             if (currentData != null && UseSwordModify)
             {
                 meleeSequence.active = true;
-                meleeSequence.currentData.Draw(Main.spriteBatch, TextureAssets.Item[player.HeldItem.type].Value);
+                meleeSequence.currentData.Draw(Main.spriteBatch, MeleeModifyPlayer.GetWeaponTextureFromItem(player.HeldItem));
             }
             return false;
         }
@@ -702,7 +726,7 @@ namespace CoolerItemVisualEffect
 
             int weaponCrit = plr.GetWeaponCrit(sItem);
 
-            skipStandardCritCalcs:
+        skipStandardCritCalcs:
             plr.ApplyBannerOffenseBuff(target, ref modifiers);
 
             if (plr.parryDamageBuff && sItem.melee)
@@ -767,7 +791,7 @@ namespace CoolerItemVisualEffect
                 ItemID.TerraBlade => ParticleOrchestraType.TerraBlade,
                 _ => null
             };
-            if (particle != null) 
+            if (particle != null)
             {
                 ParticleOrchestraSettings particleOrchestraSettings = default;
                 particleOrchestraSettings.PositionInWorld = target.Center;

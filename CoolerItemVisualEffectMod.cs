@@ -4,6 +4,8 @@ global using Terraria.DataStructures;
 global using Terraria.ID;
 global using Terraria.ModLoader;
 global using LogSpiralLibrary.CodeLibrary;
+global using MeleeSequence = LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Sequence<LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Melee.MeleeAction>;
+
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria.GameContent;
