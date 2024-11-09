@@ -80,8 +80,6 @@ namespace CoolerItemVisualEffect
     }
     public class MeleeModifyPlayer : ModPlayer
     {
-
-
         #region 基本量声明
         ConfigurationCIVE configurationSwoosh;
         public ConfigurationCIVE ConfigurationSwoosh
@@ -108,6 +106,8 @@ namespace CoolerItemVisualEffect
             flag &= item.axe == 0;
             flag &= item.hammer == 0;
             flag &= item.type != ItemID.GravediggerShovel;
+            flag &= item.type != ItemID.Sickle;
+
             return flag;
         }
         public bool IsMeleeBroadSword => MeleeBroadSwordCheck(player.HeldItem);

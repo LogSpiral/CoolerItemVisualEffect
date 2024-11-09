@@ -332,7 +332,7 @@ namespace CoolerItemVisualEffect
         public float directOfHeatMap = MathHelper.Pi;
 
         [CustomPreview<ColorListPreview>]
-        public List<Color> heatMapColors;
+        public List<Color> heatMapColors = [Color.Blue, Color.Green, Color.Yellow];
 
         /*[CustomModConfigItem(typeof(AvailableConfigElement))]
         public HeatMapDesignateMode heatMapDesignateMode;

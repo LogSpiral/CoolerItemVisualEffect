@@ -23,7 +23,7 @@ namespace CoolerItemVisualEffect
     {
         public static void DrawUltraSwoosh(SpriteBatch spriteBatch, Vector2 center, ConfigurationCIVE config, Texture2D heatMap = null, int? baseTex = null, int? aniTex = null, Vector3? alphaVector = null)
         {
-
+            var adjustedClippingRectangle = spriteBatch.GraphicsDevice.ScissorRectangle;
             VertexDrawInfo.UIDrawing = true;
             UltraSwoosh[] ultraSwooshes = new UltraSwoosh[1];
             MeleeModifyPlayer mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
@@ -35,7 +35,13 @@ namespace CoolerItemVisualEffect
                 VertexDrawInfo.DrawVertexInfo(ultraSwooshes, typeof(UltraSwoosh), spriteBatch, null, null, null);
             else
                 VertexDrawInfo.DrawVertexInfo(ultraSwooshes, typeof(UltraSwoosh), spriteBatch, null, null, null);
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+
+
+            spriteBatch.GraphicsDevice.ScissorRectangle = adjustedClippingRectangle;
+
+            spriteBatch.GraphicsDevice.RasterizerState = UIElement.OverflowHiddenRasterizerState;
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, UIElement.OverflowHiddenRasterizerState, null, Main.UIScaleMatrix);
             VertexDrawInfo.UIDrawing = false;
         }
 
