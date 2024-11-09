@@ -24,6 +24,7 @@ using LogSpiralLibrary;
 using NetSimplified;
 using NetSimplified.Syncing;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Melee;
+using LogSpiralLibrary.CodeLibrary.ConfigModification;
 
 namespace CoolerItemVisualEffect
 {
@@ -68,8 +69,43 @@ namespace CoolerItemVisualEffect
             }
         }
     }
+    [AutoSync]
+    public class SyncMeleeModifyActive : NetModule
+    {
+        public int plrIndex;
+        public bool active;
+        public static SyncMeleeModifyActive Get(int plrIndex, bool active)
+        {
+            var result = NetModuleLoader.Get<SyncMeleeModifyActive>();
+            result.plrIndex = plrIndex;
+            result.active = active;
+            return result;
+        }
+        public override void Receive()
+        {
+            var plr = Main.player[plrIndex];
+            var MMPlr = plr.GetModPlayer<MeleeModifyPlayer>();
+            MMPlr.ConfigurationSwoosh.SwordModifyActive = active;
+            if (MMPlr.heatMap != null && MMPlr.hsl != default)
+                MeleeModifyPlayer.UpdateHeatMap(ref MMPlr.heatMap, MMPlr.hsl, MMPlr.ConfigurationSwoosh, MeleeModifyPlayer.GetWeaponTextureFromItem(plr.HeldItem));
+            if (Main.dedServ)
+            {
+                Get(plrIndex, active).Send(-1, plrIndex);
+            }
+        }
+    }
+    [HorizonOverflowEnable]
     public class ConfigurationCIVE : ModConfig
     {
+        //public ConfigurationCIVE()
+        //{
+        //    heatMapByFunction = new HeatMapByFunctionMode();
+        //    heatMapByFunction.SetOwner(this);
+
+        //    heatMapDesignateMode = new HeatMapDesignateMode();
+        //    heatMapDesignateMode.SetOwner(this);
+        //}
+
         public static ConfigurationCIVE ConfigCIVEInstance => ModContent.GetInstance<ConfigurationCIVE>();
 
         public override ConfigScope Mode => ConfigScope.ClientSide;
@@ -94,9 +130,9 @@ namespace CoolerItemVisualEffect
             }
             base.OnChanged();
         }
-
         [Header("MeleeModifyPart")]
         [DefaultValue(true)]
+        [CustomPreview<ActivePreview>]
         public bool SwordModifyActive = true;
 
         [CustomModConfigItem(typeof(SequenceDefinitionElement<MeleeAction>))]
@@ -106,12 +142,16 @@ namespace CoolerItemVisualEffect
         [DefaultValue(7)]
         [Range(0, 11)]
         [Slider]
-        public int imageIndex = 7;//改
+        [CustomPreview<BaseTexPreview>]
+        [DrawTicks]
+        public int imageIndex = 7;
 
         [DefaultValue(3)]
         [Range(0, 5)]
         [Slider]
-        public int animateIndex = 3;//改
+        [CustomPreview<AnimationTexPreview>]
+        [DrawTicks]
+        public int animateIndex = 3;
 
         [DefaultValue(10)]
         [Range(0, 60)]
@@ -141,17 +181,20 @@ namespace CoolerItemVisualEffect
 
         //[SeparatePage]
         [Header("RenderingPart")]
+        [CustomPreview<ColorVectorPreview>]
         public ColorVector colorVector = new ColorVector();//{ heatMapAlpha = 1, normalize = true }
 
 
         [Increment(0.05f)]
         [DefaultValue(1.5f)]
         [Range(0f, 3f)]
+        [CustomPreview<AlphaScalerPreview>]
         public float alphaFactor = 1.5f;//暂定预览
 
         [Increment(0.05f)]
         [Range(0f, 1f)]
         [DefaultValue(0.2f)]
+        [CustomPreview<LightStandardPreview>]
         public float isLighterDecider = 0.2f;//黑白名单形式?
 
 
@@ -189,43 +232,129 @@ namespace CoolerItemVisualEffect
 
         [DrawTicks]
         [DefaultValue(HeatMapCreateStyle.ByFunction)]
+        [CustomPreview<HeatMapCreatePreview>]
         public HeatMapCreateStyle heatMapCreateStyle = HeatMapCreateStyle.ByFunction;
 
         [DrawTicks]
         [DefaultValue(HeatMapFactorStyle.Linear)]
+        [CustomPreview<HeatMapFactorPreview>]
         public HeatMapFactorStyle heatMapFactorStyle = HeatMapFactorStyle.Linear;//改为拖动曲线?
 
-
+        //[CustomModConfigItem(typeof(AvailableConfigElement))]
+        //public HeatMapByFunctionMode heatMapByFunction;
         [DefaultValue(0.2f)]
         [Increment(0.01f)]
         [Range(-1f, 1f)]
+        [CustomPreview<HueOffsetRangePreview>]
         public float hueOffsetRange = 0.2f;
 
         [DefaultValue(0f)]
         [Increment(0.01f)]
         [Range(0f, 1f)]
+        [CustomPreview<HueOffsetPreview>]
         public float hueOffsetValue = 0f;
 
         [DefaultValue(5f)]
         [Increment(0.05f)]
         [Range(0f, 5f)]
+        [CustomPreview<SaturationScalarPreview>]
         public float saturationScalar = 5f;
 
         [DefaultValue(0.2f)]
         [Increment(0.05f)]
         [Range(0f, 1f)]
+        [CustomPreview<LuminosityRangePreview>]
         public float luminosityRange = 0.2f;
+        /*[JsonIgnore]
+        public float hueOffsetRange
+        {
+            get
+            {
+                heatMapByFunction.SetOwner(this);
+                return heatMapByFunction?.hueOffsetRange ?? 0.2f;
+            }
+            set 
+            {
+                heatMapByFunction.SetOwner(this);
+                heatMapByFunction.hueOffsetRange = value;
+            }
+        }
+
+        [JsonIgnore]
+        public float hueOffsetValue
+        {
+            get
+            {
+                heatMapByFunction.SetOwner(this);
+                return heatMapByFunction?.hueOffsetValue ?? 0f;
+            }
+            set
+            {
+                heatMapByFunction.SetOwner(this);
+                heatMapByFunction.hueOffsetValue = value;
+            }
+        }
+
+        [JsonIgnore]
+        public float saturationScalar
+        {
+            get
+            {
+                heatMapByFunction.SetOwner(this);
+                return heatMapByFunction?.saturationScalar ?? 5f;
+            }
+            set
+            {
+                heatMapByFunction.SetOwner(this);
+                heatMapByFunction.saturationScalar = value;
+            }
+        }
+
+        [JsonIgnore]
+        public float luminosityRange
+        {
+            get
+            {
+                heatMapByFunction.SetOwner(this);
+                return heatMapByFunction?.luminosityRange ?? 0.2f;
+            }
+            set
+            {
+                heatMapByFunction.SetOwner(this);
+                heatMapByFunction.luminosityRange = value;
+            }
+        }*/
 
         [DefaultValue(3.1415f)]
         [Range(0, 6.283f)]
         [Increment(0.05f)]
+        [CustomPreview<DirectionOfHeatMapPreview>]
         public float directOfHeatMap = MathHelper.Pi;
 
-        public List<Color> heatMapColors = new List<Color>() { Color.Blue, Color.Green, Color.Yellow };
+        [CustomPreview<ColorListPreview>]
+        public List<Color> heatMapColors;
+
+        /*[CustomModConfigItem(typeof(AvailableConfigElement))]
+        public HeatMapDesignateMode heatMapDesignateMode;
+
+        [JsonIgnore]
+        public List<Color> heatMapColors
+        {
+            get
+            {
+                heatMapDesignateMode.SetOwner(this);
+                return heatMapDesignateMode.heatMapColors;
+            }
+            set
+            {
+                heatMapDesignateMode.SetOwner(this);
+                heatMapDesignateMode.heatMapColors = value;
+            }
+        }*/
 
 
-        [DefaultValue(false)]
-        public bool showHeatMap = false;
+        //[DefaultValue(false)]
+        //public bool showHeatMap = false;
 
         [Header("EffectPart")]
         [CustomModConfigItem(typeof(AvailableConfigElement))]
@@ -284,6 +413,51 @@ namespace CoolerItemVisualEffect
 
         }
 
+        //public class HeatMapByFunctionMode : IAvailabilityChangableConfig
+        //{
+        //    public void SetOwner(ConfigurationCIVE config) => owner = config;
+        //    [JsonIgnore]
+        //    ConfigurationCIVE owner;
+        //    [JsonIgnore]
+        //    public bool Available => owner != null && owner.heatMapCreateStyle == HeatMapCreateStyle.ByFunction;
+
+        //    [DefaultValue(0.2f)]
+        //    [Increment(0.01f)]
+        //    [Range(-1f, 1f)]
+        //    [CustomPreview<HueOffsetRangePreview>]
+        //    public float hueOffsetRange = 0.2f;
+
+        //    [DefaultValue(0f)]
+        //    [Increment(0.01f)]
+        //    [Range(0f, 1f)]
+        //    [CustomPreview<HueOffsetPreview>]
+        //    public float hueOffsetValue = 0f;
+
+        //    [DefaultValue(5f)]
+        //    [Increment(0.05f)]
+        //    [Range(0f, 5f)]
+        //    [CustomPreview<SaturationScalarPreview>]
+        //    public float saturationScalar = 5f;
+
+        //    [DefaultValue(0.2f)]
+        //    [Increment(0.05f)]
+        //    [Range(0f, 1f)]
+        //    [CustomPreview<LuminosityRangePreview>]
+        //    public float luminosityRange = 0.2f;
+
+        //}
+
+        //public class HeatMapDesignateMode : IAvailabilityChangableConfig
+        //{
+        //    public void SetOwner(ConfigurationCIVE config) => owner = config;
+
+        //    [JsonIgnore]
+        //    ConfigurationCIVE owner;
+        //    [JsonIgnore]
+        //    public bool Available => owner != null && owner.heatMapCreateStyle == HeatMapCreateStyle.Designate;
+
+        //    public List<Color> heatMapColors = new List<Color>() { Color.Blue, Color.Green, Color.Yellow };
+        //}
 
         [DefaultValue(true)]
 

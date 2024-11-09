@@ -18,6 +18,10 @@ using Terraria.Audio;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Melee;
 using NetSimplified;
 using NetSimplified.Syncing;
+using Terraria.GameInput;
+using Terraria.ModLoader.Config;
+using Terraria.ModLoader.Config.UI;
+using System.Reflection;
 
 namespace CoolerItemVisualEffect
 {
@@ -126,11 +130,34 @@ namespace CoolerItemVisualEffect
 
         #endregion
 
+        public static ModKeybind ModifyActiveKeybind { get; private set; }
+
         public override void Load()
         {
             On_Player.ItemCheck_EmitUseVisuals += On_Player_ItemCheck_EmitUseVisuals_CIVEMelee;
             IL_Player.ItemCheck_OwnerOnlyCode += ProjectileShootBan;
+            ModifyActiveKeybind = KeybindLoader.RegisterKeybind(Mod, "ModifyActive", "I");
+
+
+
             base.Load();
+        }
+
+        public override void ProcessTriggers(TriggersSet triggersSet)
+        {
+            if (ModifyActiveKeybind.JustReleased)
+            {
+                bool active = configurationSwoosh.SwordModifyActive ^= true;
+                if (Main.netMode == NetmodeID.MultiplayerClient)
+                    SyncMeleeModifyActive.Get(player.whoAmI, active).Send(-1, player.whoAmI);
+                for (int n = 0; n < 32; n++)
+                    Dust.NewDustPerfect(player.Center, Main.rand.Next([DustID.FireworkFountain_Blue]), Main.rand.NextVector2Unit() * 32).noGravity = true;
+                //, DustID.FireworkFountain_Green, DustID.FireworkFountain_Pink, DustID.FireworkFountain_Red, DustID.FireworkFountain_Yellow
+                Main.NewText(Language.GetOrRegister($"Mods.CoolerItemVisualEffect.Misc.MeleeModify{(active ? "Active" : "Deactive")}"));
+                if (Main.myPlayer == player.whoAmI)
+                    ConfigManager.Save(configurationSwoosh);
+            }
+            base.ProcessTriggers(triggersSet);
         }
 
         private void ProjectileShootBan(MonoMod.Cil.ILContext il)
@@ -517,12 +544,12 @@ namespace CoolerItemVisualEffect
 
                 Main.spriteBatch.Draw(LogSpiralLibraryMod.MagicZone[2].Value, player.Center + new Vector2(0, 128 - 256 * fac) - Main.screenPosition, null, Color.Cyan with { A = 0 } * _fac, 0, new Vector2(150), new Vector2(1, yscaler) * _fac, 0, 0);
             }
-            if (ConfigurationSwoosh.showHeatMap && heatMap != null && !Main.gameMenu && !drawInfo.headOnlyRender)
-            {
-                //Vector2 drawPos = player.whoAmI == Main.myPlayer ? new Vector2(600,400) : (player.Center - Main.screenPosition - Vector2.UnitY * 64);
-                Vector2 drawPos = player.Center - Main.screenPosition - Vector2.UnitY * 64;
-                Main.spriteBatch.Draw(heatMap, drawPos, null, Color.White, 0, new Vector2(150, .5f), new Vector2(1, 50f), SpriteEffects.None, 0);
-            }
+            //if (ConfigurationSwoosh.showHeatMap && heatMap != null && !Main.gameMenu && !drawInfo.headOnlyRender)
+            //{
+            //    //Vector2 drawPos = player.whoAmI == Main.myPlayer ? new Vector2(600,400) : (player.Center - Main.screenPosition - Vector2.UnitY * 64);
+            //    Vector2 drawPos = player.Center - Main.screenPosition - Vector2.UnitY * 64;
+            //    Main.spriteBatch.Draw(heatMap, drawPos, null, Color.White, 0, new Vector2(150, .5f), new Vector2(1, 50f), SpriteEffects.None, 0);
+            //}
             if (ConfigurationSwoosh.useWeaponDisplay && !drawInfo.headOnlyRender)
             {
                 if (Main.gameMenu && ConfigurationSwoosh.firstWeaponDisplay)//
@@ -667,8 +694,8 @@ namespace CoolerItemVisualEffect
                 var rectangle = Main.itemAnimations[item.type]?.GetFrame(TextureAssets.Item[item.type].Value);
                 var result = base.StandardInfo with
                 {
-                    standardColor = plr.GetModPlayer<MeleeModifyPlayer>().mainColor * .25f,//
-                                            //standardGlowTexture = ModContent.Request<Texture2D>(GlowTexture).Value,
+                    standardColor = plr.GetModPlayer<MeleeModifyPlayer>().mainColor,// * .25f
+                                                                                    //standardGlowTexture = ModContent.Request<Texture2D>(GlowTexture).Value,
                     standardTimer = plr.itemAnimationMax,
                     vertexStandard = Main.netMode == NetmodeID.Server ? default : new VertexDrawInfoStandardInfo() with
                     {
@@ -866,4 +893,5 @@ namespace CoolerItemVisualEffect
 
         //}
     }
+
 }

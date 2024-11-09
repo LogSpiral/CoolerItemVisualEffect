@@ -1,0 +1,357 @@
+Mods: {
+	CoolerItemVisualEffect: {
+		Configs: {
+			ColorVector: {
+				mapColorAlpha: {
+					Label: Gradient
+					Tooltip: Coefficient Of Gradient
+				}
+
+				weaponColorAlpha: {
+					Label: Diagonal
+					Tooltip: Coefficient Of Weapon Diagonal Color
+				}
+
+				heatMapAlpha: {
+					Label: HeatMap
+					Tooltip: Coefficient Of HeatMap
+				}
+
+				normalize: {
+					Label: Normalize
+					Tooltip: If set it to Yes,Dot Product:((1,1,1),ColorVector)) would be 1
+				}
+
+				Tooltip: ""
+
+				useLessValues: {
+					Label: use Less Values
+					Tooltip: ""
+				}
+			}
+
+			HeatMapCreateStyle: {
+				Tooltip: ""
+				ByFunction.Label: By Function
+				FromTexturePixel.Label: From Texture Pixel
+				Designate.Label: Designate
+			}
+
+			HeatMapFactorStyle: {
+				Tooltip: ""
+				Linear.Label: Linear
+				Floor.Label: Floor
+				Quadratic.Label: Quadratic
+				SquareRoot.Label: Square Root
+				SmoothFloor.Label: Smooth Floor
+			}
+
+			ConfigurationCIVE: {
+				DisplayName: Configuration CIVE
+
+				Headers: {
+					MeleeModifyPart: "[i:1199]Melee Visual Effect Settings"
+					RenderingPart: "[i:2012]Rendering Settings"
+					EffectPart: "[i:3541]Special Effect Settings"
+					MiscPart: "[i:1344]Misc Settings"
+				}
+
+				SwordModifyActive: {
+					Label: Use Melee Modification
+					Tooltip: ""
+				}
+
+				swooshActionStyle: {
+					Label: Executing Sequence
+					Tooltip: ""
+				}
+
+				imageIndex: {
+					Label: Style Of Slashing
+					Tooltip: ""
+				}
+
+				animateIndex: {
+					Label: Style Of Slashing Animation Texture
+					Tooltip: ""
+				}
+
+				swooshTimeLeft: {
+					Label: LeftTime Of Swoosh
+					Tooltip: ""
+				}
+
+				shake: {
+					Label: The Strength Of Screen Shaking
+					Tooltip: ""
+				}
+
+				swingAttackTime: {
+					Label: Max Time Of Cut Down(Useless now)
+					Tooltip: ""
+				}
+
+				glowLight: {
+					Label: Item Glow Light As Enchanted Item In Minecraft
+					Tooltip: ""
+				}
+
+				dustQuantity: {
+					Label: Dust Amount
+					Tooltip: ""
+				}
+
+				colorVector: {
+					Label: Color Coefficient Vector
+					Tooltip: ""
+				}
+
+				alphaFactor: {
+					Label: Coefficient Of Opacity
+					Tooltip: ""
+				}
+
+				isLighterDecider: {
+					Label: Standard of Bright Sword
+					Tooltip: ""
+				}
+
+				itemAdditive: {
+					Label: Weapon And Weapon Swing Effects Are Translucent And Highlighted
+					Tooltip: ""
+				}
+
+				heatMapCreateStyle: {
+					Label: Heat Map Create Style
+					Tooltip: ""
+				}
+
+				heatMapFactorStyle: {
+					Label: Style Of HeatMap Factor
+					Tooltip: ""
+				}
+
+				hueOffsetRange: {
+					Label: The Offset Range Of Hue
+					Tooltip: ""
+				}
+
+				hueOffsetValue: {
+					Label: The Offset Value Of Original Hue[i:2870]
+					Tooltip: ""
+				}
+
+				saturationScalar: {
+					Label: Coefficient Of Saturation
+					Tooltip: ""
+				}
+
+				luminosityRange: {
+					Label: The Offset Value Of Original Luminosity
+					Tooltip: ""
+				}
+
+				directOfHeatMap: {
+					Label: Offset Angle Of ColorBar
+					Tooltip: ""
+				}
+
+				heatMapColors: {
+					Label: List Of Color Of Designated HeatMap
+					Tooltip: ""
+				}
+
+				showHeatMap: {
+					Label: Show The Heat Map
+					Tooltip: ""
+				}
+
+				distortConfigs: {
+					Label: Air Distort Effect
+					Tooltip: ""
+				}
+
+				bloomConfigs: {
+					Label: Bloom Effect
+					Tooltip: ""
+				}
+
+				maskConfigs: {
+					Label: Star Sky Mask Effect
+					Tooltip: ""
+				}
+
+				useWeaponDisplay: {
+					Label: Weapon display switch
+					Tooltip: ""
+				}
+
+				firstWeaponDisplay: {
+					Label: Weapon display in player interface
+					Tooltip: ""
+				}
+
+				weaponScale: {
+					Label: Weapon display size
+					Tooltip: ""
+				}
+
+				ItemDropEffectActive: {
+					Label: Active Extra Glow Effect To Item In World.
+					Tooltip: ""
+				}
+
+				ItemInventoryEffectActive: {
+					Label: Active Extra Glow Effect To Item In Inventory.
+					Tooltip: ""
+				}
+
+				VanillaProjectileDrawModifyActive: {
+					Label: Active Extra Draw Effect To Proejectile.
+					Tooltip: ""
+				}
+
+				TeleprotEffectActive: {
+					Label: Active Teleport Extra Effect(WIP)
+					Tooltip: ""
+				}
+
+				heatMapByFunction: {
+					Label: heat Map By Function
+					Tooltip: ""
+				}
+
+				heatMapDesignateMode: {
+					Label: heat Map Designate Mode
+					Tooltip: ""
+				}
+			}
+
+			AirDistortConfigs: {
+				// Tooltip: ""
+				
+				intensity: {
+					Label: Intensity
+					Tooltip: The lager the value, the Significant it will be
+				}
+
+				rotation: {
+					Label: Angle offset
+					Tooltip: not significant :P
+				}
+
+				colorOffset: {
+					Label: color Offset
+					Tooltip: You can try to set it to max value or half
+				}
+
+				tier: {
+					Label: Tier
+					Tooltip: ""
+				}
+
+				Available: {
+					Label: Active
+					Tooltip: Air Distort, Active!
+				}
+
+				Tooltip: ""
+			}
+
+			BloomConfigs: {
+				// Tooltip: ""
+				
+				threshold: {
+					Label: Threshold
+					Tooltip: The Pixel brighter than this value Blooming
+				}
+
+				intensity: {
+					Label: Intensity
+					Tooltip: Oh my eyes
+				}
+
+				range: {
+					Label: Step
+					Tooltip: Lit up a huge range
+				}
+
+				times: {
+					Label: Iteration Count
+					Tooltip: It'll be laggy if this value too big
+				}
+
+				Available: {
+					Label: Active
+					Tooltip: Bloom, Active!
+				}
+
+				Tooltip: ""
+			}
+
+			MaskConfigs: {
+				// Tooltip: ""
+				
+				SkyStyle: {
+					Label: Star Sky Style
+					Tooltip: Now you can Choose several types of Sky(x
+				}
+
+				glowColor: {
+					Label: Main color
+					Tooltip: ""
+				}
+
+				boundColor: {
+					Label: Boundary color
+					Tooltip: ""
+				}
+
+				tier1: {
+					Label: Boundary Threshold
+					Tooltip: Replace to Main Color if Darker than this Value
+				}
+
+				tier2: {
+					Label: Mask Threshold
+					Tooltip: Replace to Mask Texture if Lighter than this Value
+				}
+
+				lightAsAlpha: {
+					Label: Let brightness influences Opacity or not
+					Tooltip: You can try to switch off it
+				}
+
+				inverse: {
+					Label: Inverse the brightness
+					Tooltip: Now the Dark one Replaced to Mask
+				}
+
+				Available: {
+					Label: Active
+					Tooltip: Mask, Active!
+				}
+
+				Tooltip: ""
+			}
+		}
+
+		Projectiles.CIVESword.DisplayName: C.I.V.E. Sword
+		Keybinds.ModifyActive.DisplayName: Fast enable/disable Melee Modification
+
+		Misc: {
+			MeleeModifyActive: Melee Modification enabled
+			MeleeModifyDeactive: Melee Modification disabled
+			UselessConfig:
+				'''
+				Sorry that this value
+				is useless now ;P
+				'''
+			UnavailableConfig:
+				'''
+				This value is useless now 
+				due to other settings(Heatmap mode Etc.)
+				'''
+		}
+	}
+}

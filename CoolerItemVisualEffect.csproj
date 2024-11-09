@@ -13,9 +13,6 @@
 		<None Remove="obj\**" />
 	</ItemGroup>
 	<ItemGroup>
-	  <None Remove="Localization\Config\zh-Hans - 复制.hjson" />
-	</ItemGroup>
-	<ItemGroup>
 		<PackageReference Include="Solaestas.tModLoader.ModBuilder" Version="1.3.0" />
 	</ItemGroup>
 	<ItemGroup>
@@ -28,10 +25,5 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <PackageReference Update="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.1" />
-	</ItemGroup>
-	<ItemGroup>
-	  <ResourceFile Update="Localization\Config\zh-Hans - 复制.hjson">
-	    <ModPath>%(Identity)</ModPath>
-	  </ResourceFile>
 	</ItemGroup>
 </Project>
