@@ -101,6 +101,11 @@ Mods: {
 					Tooltip: ""
 				}
 
+				weaponExtraLight: {
+					Label: Extra light of weapon
+					Tooltip: ""
+				}
+
 				colorVector: {
 					Label: Color Coefficient Vector
 					Tooltip: ""

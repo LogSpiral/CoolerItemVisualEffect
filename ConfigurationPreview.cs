@@ -16,12 +16,15 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using tModPorter;
 using FullSerializer;
 using Terraria.Localization;
+using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
+using Terraria;
 
 namespace CoolerItemVisualEffect
 {
     public static class PreviewHelper
     {
-        public static void DrawUltraSwoosh(SpriteBatch spriteBatch, Vector2 center, ConfigurationCIVE config, Texture2D heatMap = null, int? baseTex = null, int? aniTex = null, Vector3? alphaVector = null)
+        public static void DrawUltraSwoosh(SpriteBatch spriteBatch, Vector2 center, ConfigurationCIVE config, Texture2D heatMap = null, int? baseTex = null, int? aniTex = null, Vector3? alphaVector = null, Action<UltraSwoosh> otherOperation = null)
         {
             var adjustedClippingRectangle = spriteBatch.GraphicsDevice.ScissorRectangle;
             VertexDrawInfo.UIDrawing = true;
@@ -30,11 +33,38 @@ namespace CoolerItemVisualEffect
             UltraSwoosh.NewUltraSwoosh(mplr?.mainColor ?? Main.DiscoColor, ultraSwooshes, 30, 80, center, heatMap ?? (mplr?.heatMap ?? LogSpiralLibraryMod.HeatMap[1].Value), false, 0, 1, null, aniTex ?? config.animateIndex, baseTex ?? config.imageIndex, alphaVector ?? config.colorVector.AlphaVector, false);
             ultraSwooshes[0].weaponTex = TextureAssets.Item[mplr?.Player.HeldItem.type ?? ItemID.TerraBlade].Value;
             ultraSwooshes[0].Uptate();
+            otherOperation?.Invoke(ultraSwooshes[0]);
             spriteBatch.End();
             if (Main.gameMenu || !LogSpiralLibraryMod.CanUseRender)
                 VertexDrawInfo.DrawVertexInfo(ultraSwooshes, typeof(UltraSwoosh), spriteBatch, null, null, null);
             else
                 VertexDrawInfo.DrawVertexInfo(ultraSwooshes, typeof(UltraSwoosh), spriteBatch, null, null, null);
+
+
+
+            spriteBatch.GraphicsDevice.ScissorRectangle = adjustedClippingRectangle;
+
+            spriteBatch.GraphicsDevice.RasterizerState = UIElement.OverflowHiddenRasterizerState;
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, UIElement.OverflowHiddenRasterizerState, null, Main.UIScaleMatrix);
+            VertexDrawInfo.UIDrawing = false;
+        }
+
+        public static void DrawUltraStab(SpriteBatch spriteBatch, Vector2 center, ConfigurationCIVE config, Texture2D heatMap = null, int? baseTex = null, int? aniTex = null, Vector3? alphaVector = null, Action<UltraStab> otherOperation = null)
+        {
+            var adjustedClippingRectangle = spriteBatch.GraphicsDevice.ScissorRectangle;
+            VertexDrawInfo.UIDrawing = true;
+            UltraStab[] ultraStabs = new UltraStab[1];
+            MeleeModifyPlayer mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
+            UltraStab.NewUltraStab(mplr?.mainColor ?? Main.DiscoColor, ultraStabs, 30, 160, center, heatMap ?? (mplr?.heatMap ?? LogSpiralLibraryMod.HeatMap[1].Value)
+                , false, 0, 2, aniTex ?? -3, baseTex ?? 8, alphaVector ?? config.colorVector.AlphaVector, false);
+            ultraStabs[0].weaponTex = TextureAssets.Item[mplr?.Player.HeldItem.type ?? ItemID.TerraBlade].Value;
+            ultraStabs[0].Uptate();
+            otherOperation?.Invoke(ultraStabs[0]);
+            spriteBatch.End();
+            if (Main.gameMenu || !LogSpiralLibraryMod.CanUseRender)
+                VertexDrawInfo.DrawVertexInfo(ultraStabs, typeof(UltraSwoosh), spriteBatch, null, null, null);
+            else
+                VertexDrawInfo.DrawVertexInfo(ultraStabs, typeof(UltraSwoosh), spriteBatch, null, null, null);
 
 
 
@@ -85,6 +115,64 @@ namespace CoolerItemVisualEffect
             PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(drawRange.X + drawRange.Width - 110, drawRange.Center().Y), (ConfigurationCIVE)modConfig, null, data, null, null);
         }
     }
+    public class WeaponExtraLightPreview : SimplePreview<float> 
+    {
+        public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, float data, ModConfig pendingConfig)
+        {
+            var adjustedClippingRectangle = spriteBatch.GraphicsDevice.ScissorRectangle;
+            if (Main.gameMenu)
+                LogSpiralLibrarySystem.ModTime += .33f;
+            Item item = Main.gameMenu ? null : Main.LocalPlayer.HeldItem;
+            Texture2D texture = Main.gameMenu ? TextureAssets.Item[ItemID.TerraBlade].Value : MeleeModifyPlayer.GetWeaponTextureFromItem(item);
+            var nframe = Main.itemAnimations[Main.gameMenu ? ItemID.TerraBlade : item.type]?.GetFrame(texture);
+            CustomVertexInfo[] c = DrawingMethods.GetItemVertexes(new Vector2(0.1f,0.9f), 0, -MathHelper.PiOver2, texture, 1, 1f, drawRange.Center(), true, 1f, nframe);
+            Effect ItemEffect = LogSpiralLibraryMod.ItemEffectEX;
+            if (ItemEffect == null) return;
+            SamplerState sampler = SamplerState.AnisotropicWrap;
+            var projection =Main.gameMenu ? Matrix.CreateOrthographicOffCenter(0, Main.instance.Window.ClientBounds.Width, Main.instance.Window.ClientBounds.Height, 0, 0, 1) : Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
+            var model = Matrix.CreateTranslation(default);
+            var trans = Main.UIScaleMatrix;
+            RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
+            Matrix result = model * trans * projection;
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
+            ItemEffect.Parameters["uTransform"].SetValue(result);
+            ItemEffect.Parameters["uTime"].SetValue((float)LogSpiralLibraryMod.ModTime / 60f % 1);
+            ItemEffect.Parameters["uItemColor"].SetValue(Vector4.One);
+            ItemEffect.Parameters["uItemGlowColor"].SetValue(Vector4.One);
+            if (nframe != null)
+            {
+                Rectangle frame = nframe.Value;
+                Vector2 size = texture.Size();
+                ItemEffect.Parameters["uItemFrame"].SetValue(new Vector4(frame.TopLeft() / size, frame.Width / size.X, frame.Height / size.Y));
+            }
+            else
+                ItemEffect.Parameters["uItemFrame"].SetValue(new Vector4(0, 0, 1, 1));
+            Main.graphics.GraphicsDevice.Textures[0] = texture;
+            Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.Misc[0].Value;
+            Main.graphics.GraphicsDevice.Textures[2] = LogSpiralLibraryMod.BaseTex[15].Value;
+            Texture2D glow = null;
+            if (!Main.gameMenu) 
+            {
+                glow = item.glowMask != -1 ? TextureAssets.GlowMask[item.glowMask].Value : (item.flame ? TextureAssets.ItemFlame[item.type].Value : null);
+            }
+            Main.graphics.GraphicsDevice.Textures[3] = glow;
+
+            Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
+            Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;
+            Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
+            Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
+            ItemEffect.CurrentTechnique.Passes[0].Apply();
+            for (int n = 0; n < c.Length; n++) c[n].Color = (Main.gameMenu ? Color.DarkGreen : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>().mainColor) * data;
+            Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, c, 0, c.Length / 3);
+            Main.graphics.GraphicsDevice.RasterizerState = originalState;
+            Main.spriteBatch.End();
+            spriteBatch.GraphicsDevice.ScissorRectangle = adjustedClippingRectangle;
+
+            spriteBatch.GraphicsDevice.RasterizerState = UIElement.OverflowHiddenRasterizerState;
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, UIElement.OverflowHiddenRasterizerState, null, Main.UIScaleMatrix);
+        }
+    }
     public class ColorVectorPreview : SimplePreview<ColorVector>
     {
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, ColorVector data, ModConfig pendingConfig)
@@ -103,7 +191,9 @@ namespace CoolerItemVisualEffect
     {
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, float data, ModConfig pendingConfig)
         {
-            PreviewHelper.DrawSorry(spriteBatch, drawRange);
+            if (Main.gameMenu)
+                LogSpiralLibrarySystem.ModTime += .33f;
+            PreviewHelper.DrawUltraSwoosh(spriteBatch, drawRange.Center(), (ConfigurationCIVE)pendingConfig, null, null, null, null, u => u.alphaFactor = data);
 
         }
     }
@@ -336,7 +426,12 @@ namespace CoolerItemVisualEffect
     {
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, float data, ModConfig pendingConfig)
         {
-            PreviewHelper.DrawSorry(spriteBatch, drawRange);
+            if (Main.gameMenu)
+                LogSpiralLibrarySystem.ModTime += .33f;
+            PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(drawRange.X + drawRange.Width - 110, drawRange.Center().Y), (ConfigurationCIVE)pendingConfig, null, null, null, null, u => u.heatRotation = data);
+            PreviewHelper.DrawUltraStab(spriteBatch, new Vector2(drawRange.X + 20, drawRange.Center().Y), (ConfigurationCIVE)pendingConfig, null, null, null, null, u => u.heatRotation = data);
+
+            //PreviewHelper.DrawSorry(spriteBatch, drawRange);
         }
     }
     public class ColorListPreview : SimplePreview<List<Color>>//List<Color> //因为ConfigElement其实没有直接List<Color>类型的

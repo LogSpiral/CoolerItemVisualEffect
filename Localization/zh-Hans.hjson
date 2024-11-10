@@ -101,6 +101,11 @@ Mods: {
 					Tooltip: ""
 				}
 
+				weaponExtraLight: {
+					Label: 武器附魔光效
+					Tooltip: ""
+				}
+
 				colorVector: {
 					Label: 颜色系数向量
 					Tooltip: ""

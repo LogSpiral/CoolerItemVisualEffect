@@ -706,13 +706,16 @@ namespace CoolerItemVisualEffect
                         scaler = (item.type == ItemID.TrueExcalibur ? 1.5f : 1) * (rectangle == null ? MeleeModifyPlayer.GetWeaponTextureFromItem(item).Size() : rectangle.Value.Size()).Length() * 1.25f * plr.GetAdjustedItemScale(item),
                         timeLeft = ConfigurationSwoosh.swooshTimeLeft,
                         colorVec = ConfigurationSwoosh.colorVector.AlphaVector,
-                        swooshTexIndex = (ConfigurationSwoosh.animateIndex, ConfigurationSwoosh.imageIndex)
+                        swooshTexIndex = (ConfigurationSwoosh.animateIndex, ConfigurationSwoosh.imageIndex),
+                        alphaFactor = ConfigurationSwoosh.alphaFactor,
+                        heatRotation = ConfigurationSwoosh.directOfHeatMap
                     },
                     standardGlowTexture = item.glowMask != -1 ? TextureAssets.GlowMask[item.glowMask].Value : (item.flame ? TextureAssets.ItemFlame[item.type].Value : null),
                     itemType = item.type,
                     soundStyle = item.UseSound,
                     dustAmount = plr.GetModPlayer<MeleeModifyPlayer>().ConfigurationSwoosh.dustQuantity,
-                    frame = rectangle
+                    frame = rectangle,
+                    extraLight = ConfigurationSwoosh.weaponExtraLight
                 };
                 return result;
             }

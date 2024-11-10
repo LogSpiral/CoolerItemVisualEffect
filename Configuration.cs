@@ -181,6 +181,13 @@ namespace CoolerItemVisualEffect
 
         //[SeparatePage]
         [Header("RenderingPart")]
+        [Increment(0.05f)]
+        [DefaultValue(0.35f)]
+        [Range(0f, 1f)]
+        [CustomPreview<WeaponExtraLightPreview>]
+        public float weaponExtraLight = 0.35f;
+
+
         [CustomPreview<ColorVectorPreview>]
         public ColorVector colorVector = new ColorVector();//{ heatMapAlpha = 1, normalize = true }
 
