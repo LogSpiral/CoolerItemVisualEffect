@@ -401,7 +401,7 @@ namespace CoolerItemVisualEffect
             [Range(1f, 12f)]
             public float range = 1;
             [Range(1, 5)]
-            public int times = 3;
+            public int times = 2;
             [JsonIgnore]
             public bool additive = true;
 
