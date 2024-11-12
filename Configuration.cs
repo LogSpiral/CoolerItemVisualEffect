@@ -95,6 +95,7 @@ namespace CoolerItemVisualEffect
         }
     }
     [HorizonOverflowEnable]
+    [RenderDrawingPreviewNeeded]
     public class ConfigurationCIVE : ModConfig
     {
         //public ConfigurationCIVE()
@@ -365,11 +366,15 @@ namespace CoolerItemVisualEffect
 
         [Header("EffectPart")]
         [CustomModConfigItem(typeof(AvailableConfigElement))]
+        [CustomPreview<RenderEffectPreview>]
         public AirDistortConfigs distortConfigs = new AirDistortConfigs();
         [CustomModConfigItem(typeof(AvailableConfigElement))]
+        [CustomPreview<RenderEffectPreview>]
         public BloomConfigs bloomConfigs = new BloomConfigs();
         [CustomModConfigItem(typeof(AvailableConfigElement))]
+        [CustomPreview<RenderEffectPreview>]
         public MaskConfigs maskConfigs = new MaskConfigs();
+
         public class AirDistortConfigs : IAvailabilityChangableConfig
         {
             public bool Available { get; set; } = true;
@@ -399,8 +404,15 @@ namespace CoolerItemVisualEffect
             public int times = 3;
             [JsonIgnore]
             public bool additive = true;
+
+            [DefaultValue(true)]
+            public bool useDownSample = true;
+
+            [DefaultValue(true)]
+            public bool useModeMK = true;
+
             [JsonIgnore]
-            public BloomEffectInfo effectInfo => !Available ? default : new BloomEffectInfo(threshold, intensity, range, times, additive);// - 4 + 8 * Main.GlobalTimeWrappedHourly.CosFactor()
+            public BloomEffectInfo effectInfo => !Available ? default : new BloomEffectInfo(threshold, intensity, range, times, additive) with { useDownSample = useDownSample, useModeMK = useModeMK };// - 4 + 8 * Main.GlobalTimeWrappedHourly.CosFactor()
         }
         public class MaskConfigs : IAvailabilityChangableConfig
         {
@@ -419,6 +431,7 @@ namespace CoolerItemVisualEffect
                 new MaskEffectInfo(LogSpiralLibraryMod.Misc[20 + SkyStyle].Value, glowColor, tier1, tier2, default, true, false);
 
         }
+
 
         //public class HeatMapByFunctionMode : IAvailabilityChangableConfig
         //{
@@ -466,14 +479,16 @@ namespace CoolerItemVisualEffect
         //    public List<Color> heatMapColors = new List<Color>() { Color.Blue, Color.Green, Color.Yellow };
         //}
 
-        [DefaultValue(true)]
 
         [Header("MiscPart")]
+        [DefaultValue(false)]
+        [CustomPreview<UseRenderPVPreivew>]
+        public bool useRenderEffectPVInOtherConfig = false;
+
+        [DefaultValue(true)]
         public bool useWeaponDisplay = true;
 
         [DefaultValue(true)]
-
-
         public bool firstWeaponDisplay = true;
 
         [Increment(0.05f)]

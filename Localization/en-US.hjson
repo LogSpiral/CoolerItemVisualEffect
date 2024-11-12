@@ -186,6 +186,11 @@ Mods: {
 					Tooltip: ""
 				}
 
+				useRenderEffectPVInOtherConfig: {
+					Label: Apply special effect in other previews
+					Tooltip: ""
+				}
+
 				useWeaponDisplay: {
 					Label: Weapon display switch
 					Tooltip: ""
@@ -284,6 +289,20 @@ Mods: {
 				times: {
 					Label: Iteration Count
 					Tooltip: It'll be laggy if this value too big
+				}
+
+				useDownSample: {
+					Label: use Down Sample
+					Tooltip:
+						'''
+						Clearer when downsampling is not enabled, but the range is small.
+						Blurred but large in range when enabled
+						'''
+				}
+
+				useModeMK: {
+					Label: use more detailed sample mode
+					Tooltip: ""
 				}
 
 				Available: {

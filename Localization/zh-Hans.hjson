@@ -186,6 +186,11 @@ Mods: {
 					Tooltip: 这玩意得配合外发光才好看呜
 				}
 
+				useRenderEffectPVInOtherConfig: {
+					Label: 是否在非特效预览部分启用特效
+					Tooltip: ""
+				}
+
 				useWeaponDisplay: {
 					Label: 武器背显开关
 					Tooltip: ""
@@ -284,6 +289,20 @@ Mods: {
 				times: {
 					Label: 迭代次数
 					Tooltip: 迭代太多次绝对会亮瞎眼而卡爆的吧
+				}
+
+				useDownSample: {
+					Label: 启用降采样
+					Tooltip:
+						'''
+						不启用降采样时更加清晰，但是范围小
+						启用之后模糊但是范围大
+						'''
+				}
+
+				useModeMK: {
+					Label: 采用精细采样
+					Tooltip: ""
 				}
 
 				Available: {
