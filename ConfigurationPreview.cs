@@ -33,12 +33,13 @@ namespace CoolerItemVisualEffect
             VertexDrawInfo.UIDrawing = true;
             UltraSwoosh[] ultraSwooshes = new UltraSwoosh[1];
             MeleeModifyPlayer mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
-            UltraSwoosh.NewUltraSwoosh(mplr?.mainColor ?? Main.DiscoColor, ultraSwooshes, 30, 80 * k, center * k, heatMap ?? (mplr?.heatMap ?? LogSpiralLibraryMod.HeatMap[1].Value), false, 0, 1, null, aniTex ?? config.animateIndex, baseTex ?? config.imageIndex, alphaVector ?? config.colorVector.AlphaVector, false);
-            ultraSwooshes[0].weaponTex = TextureAssets.Item[mplr?.Player.HeldItem.type ?? ItemID.TerraBlade].Value;
+            UltraSwoosh.NewUltraSwoosh(mplr?.mainColor ?? Main.DiscoColor, ultraSwooshes, 30, 80 * k, center * k, heatMap ?? (mplr?.heatMap ?? LogSpiralLibraryMod.HeatMap[1].Value), false, 0, 1, null, aniTex ?? config.animateIndexSwoosh, baseTex ?? config.baseIndexSwoosh, alphaVector ?? config.colorVector.AlphaVector, false);
+            ultraSwooshes[0].weaponTex = MeleeModifyPlayer.GetWeaponTextureFromItem(mplr?.Player.HeldItem);
             ultraSwooshes[0].alphaFactor = config.alphaFactor;
             ultraSwooshes[0].heatRotation = config.directOfHeatMap;
             ultraSwooshes[0].ModityAllRenderInfo([[config.distortConfigs.effectInfo], [config.maskConfigs.maskEffectInfo, config.bloomConfigs.effectInfo]]);
             ultraSwooshes[0].Uptate();
+            ultraSwooshes[0].timeLeft++;
             otherOperation?.Invoke(ultraSwooshes[0]);
             spriteBatch.End();
             VertexDrawInfo.DrawVertexInfo(ultraSwooshes, typeof(UltraSwoosh), spriteBatch, useRenderEffect ?? config.useRenderEffectPVInOtherConfig ? Main.graphics.GraphicsDevice : null, LogSpiralLibraryMod.Instance.Render, LogSpiralLibraryMod.Instance.Render_Swap);
@@ -57,11 +58,13 @@ namespace CoolerItemVisualEffect
             UltraStab[] ultraStabs = new UltraStab[1];
             MeleeModifyPlayer mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
             UltraStab.NewUltraStab(mplr?.mainColor ?? Main.DiscoColor, ultraStabs, 30, 160 * k, center * k, heatMap ?? (mplr?.heatMap ?? LogSpiralLibraryMod.HeatMap[1].Value)
-                , false, 0, 2, aniTex ?? -3, baseTex ?? 8, alphaVector ?? config.colorVector.AlphaVector, false);
-            ultraStabs[0].weaponTex = TextureAssets.Item[mplr?.Player.HeldItem.type ?? ItemID.TerraBlade].Value;
+                , false, 0, 2, aniTex ?? config.animateIndexStab, baseTex ?? config.baseIndexStab, alphaVector ?? config.colorVector.AlphaVector, false);
+            ultraStabs[0].weaponTex = MeleeModifyPlayer.GetWeaponTextureFromItem(mplr?.Player.HeldItem);
             ultraStabs[0].alphaFactor = config.alphaFactor;
             ultraStabs[0].heatRotation = config.directOfHeatMap;
             ultraStabs[0].Uptate();
+            ultraStabs[0].timeLeft++;
+
             otherOperation?.Invoke(ultraStabs[0]);
             spriteBatch.End();
             ultraStabs[0].ModityAllRenderInfo([[config.distortConfigs.effectInfo], [config.maskConfigs.maskEffectInfo, config.bloomConfigs.effectInfo]]);
@@ -90,26 +93,71 @@ namespace CoolerItemVisualEffect
             spriteBatch.Draw(data ? TextureAssets.Npc[NPCID.SkeletronPrime].Value : TextureAssets.Npc[NPCID.SkeletronHead].Value, rectangle.Center(), data ? new Rectangle(0, 0, 140, 156) : null, Color.White, 0, data ? new Vector2(70, 78) : new Vector2(40, 51), 1f, 0, 0);
         }
     }
-    public class AnimationTexPreview : SimplePreview<int>
+    public class AnimationTexSwooshPreview : SimplePreview<int>
     {
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, int data, ModConfig modConfig)
         {
-            var tex = LogSpiralLibraryMod.AniTex[data + 11].Value;                //20 + 90
+            var tex = LogSpiralLibraryMod.AniTex_Swoosh[data].Value;                //20 + 90
             spriteBatch.Draw(tex, Utils.CenteredRectangle(new Vector2(drawRange.X + 110, drawRange.Center().Y), new Vector2(180)), Color.White);
             if (Main.gameMenu)
                 LogSpiralLibrarySystem.ModTime += .33f;
             PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(drawRange.X + drawRange.Width - 110, drawRange.Center().Y), (ConfigurationCIVE)modConfig, null, null, data, null);
         }
     }
-    public class BaseTexPreview : SimplePreview<int>
+    public class BaseTexSwooshPreview : SimplePreview<int>
     {
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, int data, ModConfig modConfig)
         {
-            var tex = LogSpiralLibraryMod.BaseTex[data].Value;                //20 + 90
+            var tex = LogSpiralLibraryMod.BaseTex_Swoosh[data].Value;                //20 + 90
             spriteBatch.Draw(tex, Utils.CenteredRectangle(new Vector2(drawRange.X + 110, drawRange.Center().Y), new Vector2(180)), Color.White);
             if (Main.gameMenu)
                 LogSpiralLibrarySystem.ModTime += .33f;
             PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(drawRange.X + drawRange.Width - 110, drawRange.Center().Y), (ConfigurationCIVE)modConfig, null, data, null, null);
+        }
+    }
+    public class AnimationTexStabPreview : SimplePreview<int>
+    {
+        public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, int data, ModConfig modConfig)
+        {
+            var tex = LogSpiralLibraryMod.AniTex_Stab[data].Value;                //20 + 90
+            spriteBatch.Draw(tex, Utils.CenteredRectangle(new Vector2(drawRange.X + 110, drawRange.Center().Y), new Vector2(180)), Color.White);
+            if (Main.gameMenu)
+                LogSpiralLibrarySystem.ModTime += .33f;
+            PreviewHelper.DrawUltraStab(spriteBatch, new Vector2(drawRange.X + drawRange.Width - 180, drawRange.Center().Y), (ConfigurationCIVE)modConfig, null, null, data, null);
+        }
+    }
+    public class BaseTexStabPreview : SimplePreview<int>
+    {
+        public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, int data, ModConfig modConfig)
+        {
+            var tex = LogSpiralLibraryMod.BaseTex_Stab[data].Value;                //20 + 90
+            spriteBatch.Draw(tex, Utils.CenteredRectangle(new Vector2(drawRange.X + 110, drawRange.Center().Y), new Vector2(180)), Color.White);
+            if (Main.gameMenu)
+                LogSpiralLibrarySystem.ModTime += .33f;
+            PreviewHelper.DrawUltraStab(spriteBatch, new Vector2(drawRange.X + drawRange.Width - 180, drawRange.Center().Y), (ConfigurationCIVE)modConfig, null, data, null, null);
+        }
+    }
+    public class TimeLeftPreview : SimplePreview<int>
+    {
+        static int timer;
+        static int timerMax;
+        static int coolDown;
+        public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, int data, ModConfig pendingConfig)
+        {
+            if (Main.gameMenu)
+                LogSpiralLibrarySystem.ModTime += .33f;
+            void ModifyTimer(VertexDrawInfo v)
+            {
+                var config = (ConfigurationCIVE)pendingConfig;
+                if (timer <= -30)
+                    timerMax = timer = config.swooshTimeLeft;
+                v.timeLeftMax = timerMax;
+                v.timeLeft = timer < 0 ? 0 : timer;
+            }
+            PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(drawRange.X + drawRange.Width - 110, drawRange.Center().Y), (ConfigurationCIVE)pendingConfig, otherOperation: ModifyTimer);
+            PreviewHelper.DrawUltraStab(spriteBatch, new Vector2(drawRange.X + 20, drawRange.Center().Y), (ConfigurationCIVE)pendingConfig, otherOperation: ModifyTimer);
+            timer--;
+
         }
     }
     public class WeaponExtraLightPreview : SimplePreview<float>
@@ -152,7 +200,7 @@ namespace CoolerItemVisualEffect
             Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.Misc[0].Value;
             Main.graphics.GraphicsDevice.Textures[2] = LogSpiralLibraryMod.BaseTex[15].Value;
             Texture2D glow = null;
-            if (!Main.gameMenu)
+            if (!Main.gameMenu && item.type != ItemID.None)
             {
                 glow = item.glowMask != -1 ? TextureAssets.GlowMask[item.glowMask].Value : (item.flame ? TextureAssets.ItemFlame[item.type].Value : null);
             }
@@ -454,7 +502,6 @@ namespace CoolerItemVisualEffect
             PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(drawRange.X + drawRange.Width - 110, drawRange.Center().Y), (ConfigurationCIVE)modConfig, heatMap, null, null, null);
         }
     }
-
     public class RenderEffectPreview : SimplePreview<object> //因为那几个通用的所以干脆obj得了
     {
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, object data, ModConfig pendingConfig)

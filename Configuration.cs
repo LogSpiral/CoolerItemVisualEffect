@@ -143,20 +143,35 @@ namespace CoolerItemVisualEffect
         [DefaultValue(7)]
         [Range(0, 11)]
         [Slider]
-        [CustomPreview<BaseTexPreview>]
+        [CustomPreview<BaseTexSwooshPreview>]
         [DrawTicks]
-        public int imageIndex = 7;
+        public int baseIndexSwoosh = 7;
 
         [DefaultValue(3)]
         [Range(0, 5)]
         [Slider]
-        [CustomPreview<AnimationTexPreview>]
+        [CustomPreview<AnimationTexSwooshPreview>]
         [DrawTicks]
-        public int animateIndex = 3;
+        public int animateIndexSwoosh = 3;
+
+        [DefaultValue(0)]
+        [Range(0, 2)]
+        [Slider]
+        [CustomPreview<BaseTexStabPreview>]
+        [DrawTicks]
+        public int baseIndexStab = 0;
+
+        [DefaultValue(5)]
+        [Range(0, 11)]
+        [Slider]
+        [CustomPreview<AnimationTexStabPreview>]
+        [DrawTicks]
+        public int animateIndexStab = 5;
 
         [DefaultValue(10)]
         [Range(0, 60)]
         [Slider]
+        [CustomPreview<TimeLeftPreview>]
         public int swooshTimeLeft = 10;//改
 
         [Increment(0.05f)]
@@ -375,62 +390,7 @@ namespace CoolerItemVisualEffect
         [CustomPreview<RenderEffectPreview>]
         public MaskConfigs maskConfigs = new MaskConfigs();
 
-        public class AirDistortConfigs : IAvailabilityChangableConfig
-        {
-            public bool Available { get; set; } = true;
-            [Range(0, 10f)]
-            [DefaultValue(6f)]
-            public float intensity = 6f;
-            [Range(0, MathHelper.TwoPi)]
-            public float rotation;
-            [Range(0, 1)]
-            [DefaultValue(0.5f)]
-            public float colorOffset = .5f;
-            //[Range(0, 2)]
-            //public int tier = 1;
-            [JsonIgnore]
-            public AirDistortEffectInfo effectInfo => !Available ? default : new AirDistortEffectInfo(intensity, rotation, colorOffset);
-        }
-        public class BloomConfigs : IAvailabilityChangableConfig
-        {
-            public bool Available { get; set; } = true;
-            [Range(0, 1f)]
-            public float threshold = 0.35f;
-            [Range(0, 1f)]
-            public float intensity = 0.12f;
-            [Range(1f, 12f)]
-            public float range = 1;
-            [Range(1, 5)]
-            public int times = 2;
-            [JsonIgnore]
-            public bool additive = true;
 
-            [DefaultValue(true)]
-            public bool useDownSample = true;
-
-            [DefaultValue(true)]
-            public bool useModeMK = true;
-
-            [JsonIgnore]
-            public BloomEffectInfo effectInfo => !Available ? default : new BloomEffectInfo(threshold, intensity, range, times, additive) with { useDownSample = useDownSample, useModeMK = useModeMK };// - 4 + 8 * Main.GlobalTimeWrappedHourly.CosFactor()
-        }
-        public class MaskConfigs : IAvailabilityChangableConfig
-        {
-            public bool Available { get; set; } = false;
-            [Range(0, 5)]
-            public int SkyStyle = 1;
-            public Color glowColor = new Color(152, 74, 255);//166,17,240//255,55,225//255,153,240
-            [Range(0, 1f)]
-            public float tier1 = 0.2f;
-            [Range(0, 1f)]
-            public float tier2 = 0.25f;
-            //public bool lightAsAlpha = true;
-            //public bool inverse;
-            [JsonIgnore]
-            public MaskEffectInfo maskEffectInfo => !Available ? default :
-                new MaskEffectInfo(LogSpiralLibraryMod.Misc[20 + SkyStyle].Value, glowColor, tier1, tier2, default, true, false);
-
-        }
 
 
         //public class HeatMapByFunctionMode : IAvailabilityChangableConfig

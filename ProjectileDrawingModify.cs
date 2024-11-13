@@ -411,8 +411,8 @@ namespace CoolerItemVisualEffect
                             CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
                             //var par = CoolerItemVisualEffect.ShaderSwooshEX.Parameters["heatRotation"];
                             //var wht = (par.Annotations, par.ColumnCount, par.RowCount, par.ParameterType, par.Elements, par.Name, par.ParameterClass, par.Semantic, par.StructureMembers);            Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.BaseTex[instance.ImageIndex].Value;
-                            Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.BaseTex[ConfigurationCIVE.ConfigCIVEInstance.imageIndex].Value;
-                            Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.AniTex[ConfigurationCIVE.ConfigCIVEInstance.animateIndex + 11].Value;
+                            Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.BaseTex_Swoosh[ConfigurationCIVE.ConfigCIVEInstance.baseIndexSwoosh].Value;
+                            Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.AniTex_Swoosh[ConfigurationCIVE.ConfigCIVEInstance.animateIndexSwoosh].Value;
                             Main.graphics.GraphicsDevice.Textures[2] = TextureAssets.Item[ItemID.InfluxWaver].Value;//ModContent.Request<Texture2D>("CoolerItemVisualEffect/Weapons/FirstZenithProj_5").Value;
                             Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
                             Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;

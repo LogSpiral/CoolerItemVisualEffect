@@ -22,6 +22,7 @@ using Terraria.GameInput;
 using Terraria.ModLoader.Config;
 using Terraria.ModLoader.Config.UI;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace CoolerItemVisualEffect
 {
@@ -105,9 +106,7 @@ namespace CoolerItemVisualEffect
             flag &= item.pick == 0;
             flag &= item.axe == 0;
             flag &= item.hammer == 0;
-            flag &= item.type != ItemID.GravediggerShovel;
-            flag &= item.type != ItemID.Sickle;
-
+            flag &= !new int[] { ItemID.GravediggerShovel, ItemID.Sickle, ItemID.BreathingReed, ItemID.StaffofRegrowth }.Contains(item.type);
             return flag;
         }
         public bool IsMeleeBroadSword => MeleeBroadSwordCheck(player.HeldItem);
@@ -119,6 +118,8 @@ namespace CoolerItemVisualEffect
         public Color mainColor;
         public float hollowCheckScaler;
         public int lastWeaponHash;
+        static int lastWeaponType;
+        public static int LastWeaponType => lastWeaponType == ItemID.None ? ItemID.TerraBlade : lastWeaponType;
         public Vector3 hsl;
         public override void HideDrawLayers(PlayerDrawSet drawInfo)
         {
@@ -243,6 +244,7 @@ namespace CoolerItemVisualEffect
         /// <returns></returns>
         public static Texture2D GetWeaponTextureFromItem(Item item)
         {
+            if (item == null || item.type == ItemID.None) return TextureAssets.Item[LastWeaponType].Value;
             if (RefreshWeaponTexFunc)
             {
                 RefreshWeaponTexFunc = false;
@@ -498,6 +500,7 @@ namespace CoolerItemVisualEffect
                     }
                 }
                 modPlayer.lastWeaponHash = player.HeldItem.GetHashCode();
+                lastWeaponType = player.HeldItem.type;
                 var width = texture.Width;
                 var height = texture.Height;
                 var pixelColor = new Color[width * height];
@@ -706,7 +709,8 @@ namespace CoolerItemVisualEffect
                         scaler = (item.type == ItemID.TrueExcalibur ? 1.5f : 1) * (rectangle == null ? MeleeModifyPlayer.GetWeaponTextureFromItem(item).Size() : rectangle.Value.Size()).Length() * 1.25f * plr.GetAdjustedItemScale(item),
                         timeLeft = ConfigurationSwoosh.swooshTimeLeft,
                         colorVec = ConfigurationSwoosh.colorVector.AlphaVector,
-                        swooshTexIndex = (ConfigurationSwoosh.animateIndex, ConfigurationSwoosh.imageIndex),
+                        swooshTexIndex = (ConfigurationSwoosh.animateIndexSwoosh, ConfigurationSwoosh.baseIndexSwoosh),
+                        stabTexIndex = (ConfigurationSwoosh.animateIndexStab, ConfigurationSwoosh.baseIndexStab),
                         alphaFactor = ConfigurationSwoosh.alphaFactor,
                         heatRotation = ConfigurationSwoosh.directOfHeatMap
                     },
