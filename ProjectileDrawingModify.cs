@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using Terraria.GameContent;
 using LogSpiralLibrary;
-using LogSpiralLibrary.CodeLibrary.DataStructures;
+using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
 
 namespace CoolerItemVisualEffect
 {

@@ -20,6 +20,7 @@ using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using Terraria;
 using System.IO;
+using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
 
 namespace CoolerItemVisualEffect
 {
@@ -27,13 +28,11 @@ namespace CoolerItemVisualEffect
     {
         public static void DrawUltraSwoosh(SpriteBatch spriteBatch, Vector2 center, ConfigurationCIVE config, Texture2D heatMap = null, int? baseTex = null, int? aniTex = null, Vector3? alphaVector = null, bool? useRenderEffect = null, Action<UltraSwoosh> otherOperation = null)
         {
-            float k = 1f;
-            if (!Main.gameMenu) k = 1 / Main.UIScale;
             var adjustedClippingRectangle = spriteBatch.GraphicsDevice.ScissorRectangle;
             VertexDrawInfo.UIDrawing = true;
             UltraSwoosh[] ultraSwooshes = new UltraSwoosh[1];
             MeleeModifyPlayer mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
-            UltraSwoosh.NewUltraSwoosh(mplr?.mainColor ?? Main.DiscoColor, ultraSwooshes, 30, 80 * k, center * k, heatMap ?? (mplr?.heatMap ?? LogSpiralLibraryMod.HeatMap[1].Value), false, 0, 1, null, aniTex ?? config.animateIndexSwoosh, baseTex ?? config.baseIndexSwoosh, alphaVector ?? config.colorVector.AlphaVector, false);
+            UltraSwoosh.NewUltraSwoosh(mplr?.mainColor ?? Main.DiscoColor, ultraSwooshes, 30, 80, center, heatMap ?? (mplr?.heatMap ?? LogSpiralLibraryMod.HeatMap[1].Value), false, 0, 1, null, aniTex ?? config.animateIndexSwoosh, baseTex ?? config.baseIndexSwoosh, alphaVector ?? config.colorVector.AlphaVector, false);
             ultraSwooshes[0].weaponTex = MeleeModifyPlayer.GetWeaponTextureFromItem(mplr?.Player.HeldItem);
             ultraSwooshes[0].alphaFactor = config.alphaFactor;
             ultraSwooshes[0].heatRotation = config.directOfHeatMap;
@@ -51,13 +50,11 @@ namespace CoolerItemVisualEffect
 
         public static void DrawUltraStab(SpriteBatch spriteBatch, Vector2 center, ConfigurationCIVE config, Texture2D heatMap = null, int? baseTex = null, int? aniTex = null, Vector3? alphaVector = null, bool? useRenderEffect = null, Action<UltraStab> otherOperation = null)
         {
-            float k = 1f;
-            if (!Main.gameMenu) k = 1 / Main.UIScale;
             var adjustedClippingRectangle = spriteBatch.GraphicsDevice.ScissorRectangle;
             VertexDrawInfo.UIDrawing = true;
             UltraStab[] ultraStabs = new UltraStab[1];
             MeleeModifyPlayer mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
-            UltraStab.NewUltraStab(mplr?.mainColor ?? Main.DiscoColor, ultraStabs, 30, 160 * k, center * k, heatMap ?? (mplr?.heatMap ?? LogSpiralLibraryMod.HeatMap[1].Value)
+            UltraStab.NewUltraStab(mplr?.mainColor ?? Main.DiscoColor, ultraStabs, 30, 160, center, heatMap ?? (mplr?.heatMap ?? LogSpiralLibraryMod.HeatMap[1].Value)
                 , false, 0, 2, aniTex ?? config.animateIndexStab, baseTex ?? config.baseIndexStab, alphaVector ?? config.colorVector.AlphaVector, false);
             ultraStabs[0].weaponTex = MeleeModifyPlayer.GetWeaponTextureFromItem(mplr?.Player.HeldItem);
             ultraStabs[0].alphaFactor = config.alphaFactor;
@@ -149,7 +146,7 @@ namespace CoolerItemVisualEffect
             void ModifyTimer(VertexDrawInfo v)
             {
                 var config = (ConfigurationCIVE)pendingConfig;
-                if (timer <= -30)
+                if (timer <= -60)
                     timerMax = timer = config.swooshTimeLeft;
                 v.timeLeftMax = timerMax;
                 v.timeLeft = timer < 0 ? 0 : timer;
@@ -165,21 +162,18 @@ namespace CoolerItemVisualEffect
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, float data, ModConfig pendingConfig)
         {
             var adjustedClippingRectangle = spriteBatch.GraphicsDevice.ScissorRectangle;
-            float k = 1f;
             if (Main.gameMenu)
                 LogSpiralLibrarySystem.ModTime += .33f;
-            else
-                k = 1 / Main.UIScale;
             Item item = Main.gameMenu ? null : Main.LocalPlayer.HeldItem;
             Texture2D texture = Main.gameMenu ? TextureAssets.Item[ItemID.TerraBlade].Value : MeleeModifyPlayer.GetWeaponTextureFromItem(item);
             var nframe = Main.itemAnimations[Main.gameMenu ? ItemID.TerraBlade : item.type]?.GetFrame(texture);
-            CustomVertexInfo[] c = DrawingMethods.GetItemVertexes(new Vector2(0.1f, 0.9f), 0, -MathHelper.PiOver2, texture, 1, k, drawRange.Center() * k, true, 1f, nframe);
+            CustomVertexInfo[] c = DrawingMethods.GetItemVertexes(new Vector2(0.1f, 0.9f), 0, -MathHelper.PiOver2, texture, 1, 1, drawRange.Center(), true, 1f, nframe);
             Effect ItemEffect = LogSpiralLibraryMod.ItemEffectEX;
             if (ItemEffect == null) return;
             SamplerState sampler = SamplerState.AnisotropicWrap;
             var projection = Main.gameMenu ? Matrix.CreateOrthographicOffCenter(0, Main.instance.Window.ClientBounds.Width, Main.instance.Window.ClientBounds.Height, 0, 0, 1) : Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
             var model = Matrix.CreateTranslation(default);
-            var trans = Main.UIScaleMatrix;
+            var trans = Main.gameMenu ? Matrix.CreateScale(Main.instance.Window.ClientBounds.Width / (float)Main.screenWidth, Main.instance.Window.ClientBounds.Height / (float)Main.screenHeight, 1) : Matrix.Identity;
             RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
             Matrix result = model * trans * projection;
             Main.spriteBatch.End();

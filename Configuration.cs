@@ -19,12 +19,12 @@ using static CoolerItemVisualEffect.ConfigurationCIVE;
 using Terraria.GameContent.UI.States;
 using System.Collections;
 //using CoolerItemVisualEffect.ConfigSLer;
-using LogSpiralLibrary.CodeLibrary.DataStructures;
 using LogSpiralLibrary;
 using NetSimplified;
 using NetSimplified.Syncing;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Melee;
 using LogSpiralLibrary.CodeLibrary.ConfigModification;
+using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
 
 namespace CoolerItemVisualEffect
 {
@@ -161,7 +161,7 @@ namespace CoolerItemVisualEffect
         [DrawTicks]
         public int baseIndexStab = 0;
 
-        [DefaultValue(5)]
+        [DefaultValue(9)]
         [Range(0, 11)]
         [Slider]
         [CustomPreview<AnimationTexStabPreview>]
