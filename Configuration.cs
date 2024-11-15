@@ -98,6 +98,12 @@ namespace CoolerItemVisualEffect
     [RenderDrawingPreviewNeeded]
     public class ConfigurationCIVE : ModConfig
     {
+        [DefaultValue(true)]
+        public bool UsePreview;
+
+        [DefaultValue(false)]
+        [CustomPreview<UseRenderPVPreivew>]
+        public bool useRenderEffectPVInOtherConfig = false;
         //public ConfigurationCIVE()
         //{
         //    heatMapByFunction = new HeatMapByFunctionMode();
@@ -439,11 +445,9 @@ namespace CoolerItemVisualEffect
         //    public List<Color> heatMapColors = new List<Color>() { Color.Blue, Color.Green, Color.Yellow };
         //}
 
-
         [Header("MiscPart")]
-        [DefaultValue(false)]
-        [CustomPreview<UseRenderPVPreivew>]
-        public bool useRenderEffectPVInOtherConfig = false;
+
+
 
         [DefaultValue(true)]
         public bool useWeaponDisplay = true;

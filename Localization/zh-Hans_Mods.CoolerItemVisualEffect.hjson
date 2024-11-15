@@ -54,6 +54,11 @@ Configs: {
 			MiscPart: "[i:1344]杂项设置"
 		}
 
+		UsePreview: {
+			Label: 启用预览
+			Tooltip: ""
+		}
+
 		SwordModifyActive: {
 			Label: 启用近战修改
 			Tooltip: ""

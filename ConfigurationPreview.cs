@@ -83,14 +83,25 @@ namespace CoolerItemVisualEffect
             spriteBatch.DrawString(FontAssets.MouseText.Value, Language.GetOrRegister("Mods.CoolerItemVisualEffect.Misc.UnavailableConfig").Value, pos, Color.White);
         }
     }
-    public class ActivePreview : SimplePreview<bool>
+    public abstract class CIVEPreview<T> : SimplePreview<T> 
+    {
+        public override bool usePreview => ConfigurationCIVE.ConfigCIVEInstance.UsePreview;
+    }
+    public class UsePVPreview : CIVEPreview<bool> 
+    {
+        public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, bool data, ModConfig pendingConfig)
+        {
+
+        }
+    }
+    public class ActivePreview : CIVEPreview<bool>
     {
         public override void Draw(SpriteBatch spriteBatch, Rectangle rectangle, bool data, ModConfig modConfig)
         {
             spriteBatch.Draw(data ? TextureAssets.Npc[NPCID.SkeletronPrime].Value : TextureAssets.Npc[NPCID.SkeletronHead].Value, rectangle.Center(), data ? new Rectangle(0, 0, 140, 156) : null, Color.White, 0, data ? new Vector2(70, 78) : new Vector2(40, 51), 1f, 0, 0);
         }
     }
-    public class AnimationTexSwooshPreview : SimplePreview<int>
+    public class AnimationTexSwooshPreview : CIVEPreview<int>
     {
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, int data, ModConfig modConfig)
         {
@@ -101,7 +112,7 @@ namespace CoolerItemVisualEffect
             PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(drawRange.X + drawRange.Width - 110, drawRange.Center().Y), (ConfigurationCIVE)modConfig, null, null, data, null);
         }
     }
-    public class BaseTexSwooshPreview : SimplePreview<int>
+    public class BaseTexSwooshPreview : CIVEPreview<int>
     {
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, int data, ModConfig modConfig)
         {
@@ -112,7 +123,7 @@ namespace CoolerItemVisualEffect
             PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(drawRange.X + drawRange.Width - 110, drawRange.Center().Y), (ConfigurationCIVE)modConfig, null, data, null, null);
         }
     }
-    public class AnimationTexStabPreview : SimplePreview<int>
+    public class AnimationTexStabPreview : CIVEPreview<int>
     {
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, int data, ModConfig modConfig)
         {
@@ -123,7 +134,7 @@ namespace CoolerItemVisualEffect
             PreviewHelper.DrawUltraStab(spriteBatch, new Vector2(drawRange.X + drawRange.Width - 180, drawRange.Center().Y), (ConfigurationCIVE)modConfig, null, null, data, null);
         }
     }
-    public class BaseTexStabPreview : SimplePreview<int>
+    public class BaseTexStabPreview : CIVEPreview<int>
     {
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, int data, ModConfig modConfig)
         {
@@ -134,13 +145,14 @@ namespace CoolerItemVisualEffect
             PreviewHelper.DrawUltraStab(spriteBatch, new Vector2(drawRange.X + drawRange.Width - 180, drawRange.Center().Y), (ConfigurationCIVE)modConfig, null, data, null, null);
         }
     }
-    public class TimeLeftPreview : SimplePreview<int>
+    public class TimeLeftPreview : CIVEPreview<int>
     {
         static int timer;
         static int timerMax;
         static int coolDown;
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, int data, ModConfig pendingConfig)
         {
+
             if (Main.gameMenu)
                 LogSpiralLibrarySystem.ModTime += .33f;
             void ModifyTimer(VertexDrawInfo v)
@@ -157,7 +169,7 @@ namespace CoolerItemVisualEffect
 
         }
     }
-    public class WeaponExtraLightPreview : SimplePreview<float>
+    public class WeaponExtraLightPreview : CIVEPreview<float>
     {
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, float data, ModConfig pendingConfig)
         {
@@ -215,7 +227,7 @@ namespace CoolerItemVisualEffect
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, UIElement.OverflowHiddenRasterizerState, null, Main.UIScaleMatrix);
         }
     }
-    public class ColorVectorPreview : SimplePreview<ColorVector>
+    public class ColorVectorPreview : CIVEPreview<ColorVector>
     {
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, ColorVector data, ModConfig pendingConfig)
         {
@@ -229,7 +241,7 @@ namespace CoolerItemVisualEffect
 
         }
     }
-    public class AlphaScalerPreview : SimplePreview<float>
+    public class AlphaScalerPreview : CIVEPreview<float>
     {
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, float data, ModConfig pendingConfig)
         {
@@ -239,7 +251,7 @@ namespace CoolerItemVisualEffect
 
         }
     }
-    public class LightStandardPreview : SimplePreview<float>
+    public class LightStandardPreview : CIVEPreview<float>
     {
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, float data, ModConfig pendingConfig)
         {
@@ -247,7 +259,7 @@ namespace CoolerItemVisualEffect
 
         }
     }
-    public class HeatMapCreatePreview : SimplePreview<ConfigurationCIVE.HeatMapCreateStyle>
+    public class HeatMapCreatePreview : CIVEPreview<ConfigurationCIVE.HeatMapCreateStyle>
     {
         static Texture2D[] curHeatMaps = new Texture2D[3];
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, ConfigurationCIVE.HeatMapCreateStyle data, ModConfig pendingConfig)
@@ -278,7 +290,7 @@ namespace CoolerItemVisualEffect
 
         }
     }
-    public class HeatMapFactorPreview : SimplePreview<ConfigurationCIVE.HeatMapFactorStyle>
+    public class HeatMapFactorPreview : CIVEPreview<ConfigurationCIVE.HeatMapFactorStyle>
     {
         static Texture2D[] curHeatMaps = new Texture2D[5];
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, ConfigurationCIVE.HeatMapFactorStyle data, ModConfig pendingConfig)
@@ -309,7 +321,7 @@ namespace CoolerItemVisualEffect
 
         }
     }
-    public class HueOffsetRangePreview : SimplePreview<float>
+    public class HueOffsetRangePreview : CIVEPreview<float>
     {
         static Texture2D[] curHeatMaps = new Texture2D[60];
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, float data, ModConfig pendingConfig)
@@ -349,7 +361,7 @@ namespace CoolerItemVisualEffect
             config.hueOffsetRange = data;
         }
     }
-    public class HueOffsetPreview : SimplePreview<float>
+    public class HueOffsetPreview : CIVEPreview<float>
     {
         static Texture2D[] curHeatMaps = new Texture2D[60];
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, float data, ModConfig pendingConfig)
@@ -387,7 +399,7 @@ namespace CoolerItemVisualEffect
             config.hueOffsetValue = data;
         }
     }
-    public class SaturationScalarPreview : SimplePreview<float>
+    public class SaturationScalarPreview : CIVEPreview<float>
     {
         static Texture2D[] curHeatMaps = new Texture2D[60];
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, float data, ModConfig pendingConfig)
@@ -426,7 +438,7 @@ namespace CoolerItemVisualEffect
             config.saturationScalar = data;
         }
     }
-    public class LuminosityRangePreview : SimplePreview<float>
+    public class LuminosityRangePreview : CIVEPreview<float>
     {
         static Texture2D[] curHeatMaps = new Texture2D[60];
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, float data, ModConfig pendingConfig)
@@ -464,7 +476,7 @@ namespace CoolerItemVisualEffect
             config.luminosityRange = data;
         }
     }
-    public class DirectionOfHeatMapPreview : SimplePreview<float>
+    public class DirectionOfHeatMapPreview : CIVEPreview<float>
     {
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, float data, ModConfig pendingConfig)
         {
@@ -476,7 +488,7 @@ namespace CoolerItemVisualEffect
             //PreviewHelper.DrawSorry(spriteBatch, drawRange);
         }
     }
-    public class ColorListPreview : SimplePreview<List<Color>>//List<Color> //因为ConfigElement其实没有直接List<Color>类型的
+    public class ColorListPreview : CIVEPreview<List<Color>>//List<Color> //因为ConfigElement其实没有直接List<Color>类型的
     {
         Texture2D heatMap;
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, List<Color> data, ModConfig modConfig)//List<Color>
@@ -496,7 +508,7 @@ namespace CoolerItemVisualEffect
             PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(drawRange.X + drawRange.Width - 110, drawRange.Center().Y), (ConfigurationCIVE)modConfig, heatMap, null, null, null);
         }
     }
-    public class RenderEffectPreview : SimplePreview<object> //因为那几个通用的所以干脆obj得了
+    public class RenderEffectPreview : CIVEPreview<object> //因为那几个通用的所以干脆obj得了
     {
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, object data, ModConfig pendingConfig)
         {
@@ -506,7 +518,7 @@ namespace CoolerItemVisualEffect
             PreviewHelper.DrawUltraStab(spriteBatch, new Vector2(drawRange.X + 20, drawRange.Center().Y), (ConfigurationCIVE)pendingConfig, null, null, null, null, true);
         }
     }
-    public class UseRenderPVPreivew : SimplePreview<bool>
+    public class UseRenderPVPreivew : CIVEPreview<bool>
     {
         public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, bool data, ModConfig pendingConfig)
         {

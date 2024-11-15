@@ -54,6 +54,11 @@ Configs: {
 			MiscPart: "[i:1344]Misc Settings"
 		}
 
+		UsePreview: {
+			Label: Use Preview
+			Tooltip: ""
+		}
+
 		SwordModifyActive: {
 			Label: Use Melee Modification
 			Tooltip: ""
