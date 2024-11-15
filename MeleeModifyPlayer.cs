@@ -854,7 +854,7 @@ namespace CoolerItemVisualEffect
             {
                 var sItem = player.HeldItem;
                 var vec = ((MeleeAction)currentData).targetedVector;
-                var itemRectangle = Utils.CenteredRectangle(player.Center + vec * .5f, vec);
+                var itemRectangle = Utils.CenteredRectangle(player.Center + vec * .5f, new Vector2(MathF.Abs(vec.X), MathF.Abs(vec.Y)));
                 CombinedHooks.OnPlayerHitNPCWithItem(player, sItem, target, hit, damageDone);
                 player.ApplyNPCOnHitEffects(player.HeldItem, itemRectangle, damageDone, hit.Knockback, target.whoAmI, hit.Damage, damageDone);
 
@@ -867,9 +867,9 @@ namespace CoolerItemVisualEffect
                 //    ?.Invoke(player, new object[] { player.HeldItem, itemRectangle, num, knockback, target.whoAmI, damage, damage });
 
             }
-            catch
+            catch (Exception e) 
             {
-                Main.NewText("炸了！");
+                Main.NewText(e.Message);
             }
 
             player.GetModPlayer<LogSpiralLibraryPlayer>().strengthOfShake = ConfigurationSwoosh.shake * Main.rand.NextFloat(0.85f, 1.15f) * (damageDone / MathHelper.Clamp(player.HeldItem.damage, 1, int.MaxValue));//
