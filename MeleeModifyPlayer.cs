@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using Terraria.GameContent;
 using Terraria.Localization;
-using static CoolerItemVisualEffect.ConfigurationCIVE;
+using static CoolerItemVisualEffect.Config.MeleeConfig;
 using Terraria.GameContent.Drawing;
 using LogSpiralLibrary;
 using LogSpiralLibrary.CodeLibrary.DataStructures;
@@ -23,6 +23,13 @@ using Terraria.ModLoader.Config;
 using Terraria.ModLoader.Config.UI;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using CoolerItemVisualEffect.Config;
+using CoolerItemVisualEffect.Config.ConfigSLer;
+using Newtonsoft.Json;
+using tModPorter;
+using System.Configuration;
+using Terraria.GameContent.UI.Elements;
+using MonoMod.Utils;
 
 namespace CoolerItemVisualEffect
 {
@@ -40,12 +47,31 @@ namespace CoolerItemVisualEffect
     }
     public class MeleeModifierItem : GlobalItem
     {
+        static bool CheckRightUse(MeleeSequence sequence)
+        {
+            foreach (var group in sequence.Groups)
+            {
+                foreach (var wraper in group.wrapers)
+                {
+                    if (wraper.conditionDefinition.Name == "MouseRight")
+                        return true;
+                    else if (wraper.IsSequence && CheckRightUse(wraper.sequenceInfo))
+                        return true;
+                }
+            }
+            return false;
+        }
         public static int[] vanillaSlashItems = [ItemID.NightsEdge, ItemID.TrueNightsEdge, ItemID.TheHorsemansBlade, ItemID.Excalibur, ItemID.TrueExcalibur, ItemID.TerraBlade];
         public override bool AltFunctionUse(Item item, Player player)
         {
             var mplr = player.GetModPlayer<MeleeModifyPlayer>();
-            if (mplr.ConfigurationSwoosh.SwordModifyActive && mplr.IsMeleeBroadSword)
-                return true;
+            string key = $"{Mod.Name}/{typeof(CIVESword).Name}";
+            if (player.GetModPlayer<MeleeModifyPlayer>().ConfigurationSwoosh.swooshActionStyle is SequenceDefinition<MeleeAction> definition)
+                key = $"{definition.Mod}/{definition.Name}";
+            if (mplr.ConfigurationSwoosh.SwordModifyActive && mplr.IsMeleeBroadSword && SequenceManager<MeleeAction>.sequences.TryGetValue(key, out var value))
+            {
+                return CheckRightUse(value);
+            }
             return base.AltFunctionUse(item, player);
         }
         public override void UseStyle(Item item, Player player, Rectangle heldItemFrame)
@@ -79,23 +105,143 @@ namespace CoolerItemVisualEffect
             return base.CanHitPvp(item, player, target);
         }
     }
+    public class SyncWeaponGroup : NetModule
+    {
+        public byte plrIndex;
+        public List<WeaponSelector> list;
+        public Dictionary<string, MeleeConfig> dict;
+        public static SyncWeaponGroup Get(int plrIndex, List<WeaponSelector> list, Dictionary<string, MeleeConfig> dict)
+        {
+            var result = NetModuleLoader.Get<SyncWeaponGroup>();
+            result.plrIndex = (byte)plrIndex;
+            result.list = list;
+            result.dict = dict;
+            return result;
+        }
+        public static SyncWeaponGroup Get()
+        {
+            var result = NetModuleLoader.Get<SyncWeaponGroup>();
+            result.plrIndex = (byte)Main.myPlayer;
+            var mplr = Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
+            result.list = mplr.weaponGroup;
+            result.dict = mplr.meleeConfigs;
+            return result;
+        }
+        public override void Send(ModPacket p)
+        {
+            p.Write(plrIndex);
+            p.Write(dict != null);
+            if (dict != null)
+            {
+                p.Write(dict.Count);
+                foreach (var pair in dict)
+                {
+                    p.Write(pair.Key);
+                    p.Write(JsonConvert.SerializeObject(pair.Value));
+                }
+            }
+            p.Write(list != null);
+            if (list != null)
+            {
+                var content2 = JsonConvert.SerializeObject(list);
+                p.Write(content2);
+            }
+
+            base.Send(p);
+        }
+        public override void Read(BinaryReader r)
+        {
+            plrIndex = r.ReadByte();
+            if (r.ReadBoolean())
+            {
+                //dict = []; JsonConvert.PopulateObject(r.ReadString(), dict);
+                //dict = JsonConvert.DeserializeObject<Dictionary<string, MeleeConfig>>(r.ReadString());
+                int count = r.ReadInt32();
+                dict = [];
+                for (int n = 0; n < count; n++)
+                {
+                    var config = new MeleeConfig();
+                    config.heatMapColors.Clear();
+                    string key = r.ReadString();
+                    JsonConvert.PopulateObject(r.ReadString(), config);
+                    dict.Add(key, config);
+                }
+            }
+            if (r.ReadBoolean())
+            {
+                list = []; JsonConvert.PopulateObject(r.ReadString(), list);
+            }
+            base.Read(r);
+        }
+        public override void Receive()
+        {
+            var plr = Main.player[plrIndex];
+            var MMPlr = plr.GetModPlayer<MeleeModifyPlayer>();
+            if (list != null)
+            {
+                if (MMPlr.weaponGroup == null) MMPlr.weaponGroup = [];
+                else
+                    MMPlr.weaponGroup.Clear();
+                MMPlr.weaponGroup.AddRange(list);
+            }
+            if (dict != null)
+            {
+                if (MMPlr.meleeConfigs == null) MMPlr.meleeConfigs = [];
+                else
+                    MMPlr.meleeConfigs.Clear();
+                MMPlr.meleeConfigs.AddRange(dict);
+            }
+            //if (MMPlr.heatMap != null && MMPlr.hsl != default)
+            //    MeleeModifyPlayer.UpdateHeatMap(ref MMPlr.heatMap, MMPlr.hsl, MMPlr.ConfigurationSwoosh, MeleeModifyPlayer.GetWeaponTextureFromItem(plr.HeldItem));
+            if (Main.dedServ)
+            {
+                Get(plrIndex, list, dict).Send(-1, plrIndex);
+            }
+        }
+    }
     public class MeleeModifyPlayer : ModPlayer
     {
         #region 基本量声明
-        ConfigurationCIVE configurationSwoosh;
-        public ConfigurationCIVE ConfigurationSwoosh
+        MeleeConfig configurationSwoosh;
+        public MeleeConfig ConfigurationSwoosh
         {
             get
             {
+                if (weaponGroup != null)
+                    foreach (var pair in weaponGroup)
+                    {
+                        if (pair.CheckAvailabe(player.HeldItem))
+                        {
+                            if (pair.BindSequenceName == "" || pair.BindSequenceName == null) goto label;
+                            if (meleeConfigs != null && meleeConfigs.TryGetValue(pair.BindSequenceName, out var config))
+                                return config;
+                            else if (Main.myPlayer == player.whoAmI)
+                            {
+                                var configPath = Path.Combine(ConfigSLHelper.SavePath, pair.BindSequenceName + ConfigSLHelper.Extension);
+                                if (File.Exists(configPath))
+                                {
+                                    var meleeConfig = new MeleeConfig();
+                                    ConfigSLHelper.Load(meleeConfig, configPath, false, false);
+                                    meleeConfigs.Add(pair.BindSequenceName, meleeConfig);
+                                    return meleeConfig;
+                                }
+                                else goto label;
+                            }
+                            else goto label;
+                        }
+                    }
+                label:
                 if (configurationSwoosh == null)
                 {
-                    configurationSwoosh = Main.myPlayer == player.whoAmI ? ConfigCIVEInstance : new ConfigurationCIVE();
+                    configurationSwoosh = Main.myPlayer == player.whoAmI ? Instance : new MeleeConfig();
                 }
                 return configurationSwoosh;
             }
             set => configurationSwoosh = value;
         }
         Player player => Player;
+        public List<WeaponSelector> weaponGroup;
+        public Dictionary<string, MeleeConfig> meleeConfigs;
         public static bool MeleeBroadSwordCheck(Item item)
         {
             bool flag = MeleeCheck(item.DamageType);
@@ -109,8 +255,25 @@ namespace CoolerItemVisualEffect
             flag &= !new int[] { ItemID.GravediggerShovel, ItemID.Sickle, ItemID.BreathingReed, ItemID.StaffofRegrowth }.Contains(item.type);
             return flag;
         }
-        public bool IsMeleeBroadSword => MeleeBroadSwordCheck(player.HeldItem);
+        public bool IsMeleeBroadSword
+        {
+            get
+            {
+                if (weaponGroup != null)
+                    foreach (var selector in weaponGroup)
+                    {
+                        if (selector.CheckAvailabe(player.HeldItem))
+                            return true;
+                    }
+                return MeleeBroadSwordCheck(player.HeldItem);
+            }
+        }
         public bool UseSwordModify => ConfigurationSwoosh.SwordModifyActive && IsMeleeBroadSword && player.itemAnimation > 0;
+
+        public void WeaponGroupSyncing()
+        {
+            SyncWeaponGroup.Get(Player.whoAmI, weaponGroup, meleeConfigs).Send();
+        }
         #endregion
 
         #region 视觉效果相关
@@ -123,6 +286,7 @@ namespace CoolerItemVisualEffect
         public Vector3 hsl;
         public override void HideDrawLayers(PlayerDrawSet drawInfo)
         {
+
             if (UseSwordModify)
                 drawInfo.heldItem = new Item();
             //drawInfo.weaponDrawOrder = WeaponDrawOrder.BehindBackArm;
@@ -133,13 +297,58 @@ namespace CoolerItemVisualEffect
 
         public static ModKeybind ModifyActiveKeybind { get; private set; }
 
+        public override void OnEnterWorld()
+        {
+            SetUpWeaponGroupAndConfig();
+            //foreach(var pair in dict.OrderBy(pair => -pair.Key.index))
+            //    weaponGroup.Add(pair.Key, pair.Value);
+            base.OnEnterWorld();
+        }
+        void SetUpWeaponGroupAndConfig(bool forced = false)
+        {
+            if (player.whoAmI != Main.myPlayer) return;
+            if (weaponGroup == null && meleeConfigs == null)
+            {
+                weaponGroup = [];
+                meleeConfigs = [];
+            }
+            else
+            {
+                if (forced)
+                {
+                    weaponGroup.Clear();
+                    meleeConfigs.Clear();
+                }
+                else
+                    return;
+            }
+
+            if (!Directory.Exists(WeaponSelectorSystem.SavePath))
+                Directory.CreateDirectory(WeaponSelectorSystem.SavePath);
+            var tablePath = Path.Combine(WeaponSelectorSystem.SavePath, "indexTable.txt");
+            if (File.Exists(tablePath))
+            {
+                var indexTable = File.ReadAllLines(tablePath);
+                foreach (string path in indexTable)
+                {
+                    var selector = WeaponSelector.Load(Path.Combine(WeaponSelectorSystem.SavePath, path + WeaponSelectorSystem.Extension));
+                    var configPath = Path.Combine(ConfigSLHelper.SavePath, selector.BindSequenceName + ConfigSLHelper.Extension);
+                    if (File.Exists(configPath))
+                    {
+                        var meleeConfig = new MeleeConfig();
+                        ConfigSLHelper.Load(meleeConfig, configPath, false, false);
+                        meleeConfigs.Add(selector.BindSequenceName, meleeConfig);
+                    }
+                    weaponGroup.Add(selector);
+                }
+            }
+            WeaponGroupSyncing();
+        }
         public override void Load()
         {
             On_Player.ItemCheck_EmitUseVisuals += On_Player_ItemCheck_EmitUseVisuals_CIVEMelee;
             IL_Player.ItemCheck_OwnerOnlyCode += ProjectileShootBan;
             ModifyActiveKeybind = KeybindLoader.RegisterKeybind(Mod, "ModifyActive", "I");
-
-
 
             base.Load();
         }
@@ -263,7 +472,13 @@ namespace CoolerItemVisualEffect
         #region 辅助函数
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
         {
-            SyncConfigCIVE.Get(player.whoAmI, ConfigurationSwoosh).Send(toWho, fromWho);
+            if (configurationSwoosh == null)
+            {
+                configurationSwoosh = Main.myPlayer == player.whoAmI ? Instance : new MeleeConfig();
+            }
+            SetUpWeaponGroupAndConfig();
+            SyncMeleeConfig.Get(player.whoAmI, configurationSwoosh).Send(toWho, fromWho);
+            SyncWeaponGroup.Get(player.whoAmI, weaponGroup, meleeConfigs).Send(toWho, fromWho);
             base.SyncPlayer(toWho, fromWho, newPlayer);
         }
         public static bool SwordCheck(Item item)
@@ -280,7 +495,7 @@ namespace CoolerItemVisualEffect
             HeatMapFactorStyle.SmoothFloor => (t * colorCount).SmoothFloor() / colorCount,
             _ => t
         };
-        public static void UpdateHeatMap(ref Texture2D texture, Vector3 hsl, ConfigurationCIVE config, Texture2D itemTexture)
+        public static void UpdateHeatMap(ref Texture2D texture, Vector3 hsl, MeleeConfig config, Texture2D itemTexture)
         {
             var colors = new Color[300];
             ref Vector3 _color = ref hsl;
@@ -538,7 +753,7 @@ namespace CoolerItemVisualEffect
         {
             if (UseSwordModify)
                 drawInfo.heldItem = new Item();
-            if (ConfigurationSwoosh.TeleprotEffectActive && player.HeldItem.type == ItemID.MagicMirror && player.ItemAnimationActive)
+            if (MiscConfig.Instance.TeleprotEffectActive && player.HeldItem.type == ItemID.MagicMirror && player.ItemAnimationActive)
             {
                 var fac = player.itemAnimation / (float)player.itemAnimationMax;
                 var _fac = (fac * 2 % 1).HillFactor2() * (fac < .5f ? .5f : 1f);
@@ -553,9 +768,9 @@ namespace CoolerItemVisualEffect
             //    Vector2 drawPos = player.Center - Main.screenPosition - Vector2.UnitY * 64;
             //    Main.spriteBatch.Draw(heatMap, drawPos, null, Color.White, 0, new Vector2(150, .5f), new Vector2(1, 50f), SpriteEffects.None, 0);
             //}
-            if (ConfigurationSwoosh.useWeaponDisplay && !drawInfo.headOnlyRender)
+            if (MiscConfig.Instance.useWeaponDisplay && !drawInfo.headOnlyRender)
             {
-                if (Main.gameMenu && ConfigurationSwoosh.firstWeaponDisplay)//
+                if (Main.gameMenu && MiscConfig.Instance.firstWeaponDisplay)//
                 {
                     Item firstweapon = null;
                     for (int num2 = 0; num2 <= 58; num2++)
@@ -615,18 +830,18 @@ namespace CoolerItemVisualEffect
                 rectangle = animation.GetFrame(texture, -1);
                 origin = animation.GetFrame(texture).Size() * .5f;
             }
-            DrawData item = new DrawData(texture, value5, new Rectangle?(rectangle), drawInfo.colorArmorBody, rot, origin, ConfigurationSwoosh.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
+            DrawData item = new DrawData(texture, value5, new Rectangle?(rectangle), drawInfo.colorArmorBody, rot, origin, MiscConfig.Instance.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
             drawInfo.DrawDataCache.Add(item);
             if (holditem.glowMask >= 0)
             {
                 Texture2D glow = TextureAssets.GlowMask[holditem.glowMask].Value;
-                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, ConfigurationSwoosh.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
+                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, MiscConfig.Instance.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
                 drawInfo.DrawDataCache.Add(itemglow);
             }
             if (holditem.ModItem != null && ModContent.HasAsset(holditem.ModItem.Texture + "_Glow"))
             {
                 Texture2D glow = ModContent.Request<Texture2D>(holditem.ModItem.Texture + "_Glow").Value;
-                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, ConfigurationSwoosh.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
+                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, MiscConfig.Instance.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
                 drawInfo.DrawDataCache.Add(itemglow);
             }
         }
@@ -679,7 +894,7 @@ namespace CoolerItemVisualEffect
         }
         public bool UseSwordModify => player.GetModPlayer<MeleeModifyPlayer>().UseSwordModify || (meleeSequence.currentData != null && ((meleeSequence.currentData.counter < meleeSequence.currentData.Cycle || (meleeSequence.currentData.counter == meleeSequence.currentData.Cycle && meleeSequence.currentData.timer > 0)) && !meleeSequence.currentWrapper.finished));
         public override string Texture => $"Terraria/Images/Item_{ItemID.TerraBlade}";
-        public ConfigurationCIVE ConfigurationSwoosh => player.GetModPlayer<MeleeModifyPlayer>().ConfigurationSwoosh;
+        public MeleeConfig ConfigurationSwoosh => player.GetModPlayer<MeleeModifyPlayer>().ConfigurationSwoosh;
         public override StandardInfo StandardInfo
         {
             get
@@ -867,7 +1082,7 @@ namespace CoolerItemVisualEffect
                 //    ?.Invoke(player, new object[] { player.HeldItem, itemRectangle, num, knockback, target.whoAmI, damage, damage });
 
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 Main.NewText(e.Message);
             }
@@ -900,5 +1115,7 @@ namespace CoolerItemVisualEffect
 
         //}
     }
+
+
 
 }

@@ -1,4 +1,5 @@
-﻿using LogSpiralLibrary;
+﻿using CoolerItemVisualEffect.Config;
+using LogSpiralLibrary;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 
@@ -10,7 +11,7 @@ namespace CoolerItemVisualEffect
         public Color mainColor; 
         public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
-            if (!ConfigurationCIVE.ConfigCIVEInstance.ItemInventoryEffectActive) goto mylabel;
+            if (!MiscConfig.Instance.ItemInventoryEffectActive) goto mylabel;
             if (mainColor == default)
             {
                 var itemTex = TextureAssets.Item[item.type].Value;
@@ -39,7 +40,7 @@ namespace CoolerItemVisualEffect
         }
         public override void PostDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
         {
-            if (!ConfigurationCIVE.ConfigCIVEInstance.ItemDropEffectActive) goto mylabel;
+            if (!MiscConfig.Instance.ItemDropEffectActive) goto mylabel;
             if (mainColor == default)
             {
                 var itemTex = TextureAssets.Item[item.type].Value;

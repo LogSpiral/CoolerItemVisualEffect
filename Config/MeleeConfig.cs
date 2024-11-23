@@ -1,40 +1,29 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using LogSpiralLibrary.CodeLibrary.ConfigModification;
+using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
+using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Melee;
+using NetSimplified.Syncing;
+using NetSimplified;
 using Newtonsoft.Json;
-using Terraria.UI;
-using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using Terraria.ModLoader.Config;
-using Terraria.ModLoader.Config.UI;
-using Terraria.GameContent;
-using Terraria.UI.Chat;
-using System.Reflection;
-using Terraria.ModLoader.UI;
 using System.Linq;
-using ReLogic.Graphics;
-using Terraria.GameContent.UI.Elements;
-using static CoolerItemVisualEffect.ConfigurationCIVE;
-using Terraria.GameContent.UI.States;
-using System.Collections;
-//using CoolerItemVisualEffect.ConfigSLer;
-using LogSpiralLibrary;
-using NetSimplified;
-using NetSimplified.Syncing;
-using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Melee;
-using LogSpiralLibrary.CodeLibrary.ConfigModification;
-using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
+using System.Text;
+using System.Threading.Tasks;
+using Terraria.ModLoader.Config;
+using LogSpiralLibrary.CodeLibrary.UIGenericConfig;
+using Terraria.ModLoader.UI;
 
-namespace CoolerItemVisualEffect
+namespace CoolerItemVisualEffect.Config
 {
-    public class SyncConfigCIVE : NetModule
+    public class SyncMeleeConfig : NetModule
     {
         public int plrIndex;
-        public ConfigurationCIVE configuration;
-        public static SyncConfigCIVE Get(int plrIndex, ConfigurationCIVE configurationCIVE)
+        public MeleeConfig configuration;
+        public static SyncMeleeConfig Get(int plrIndex, MeleeConfig configurationCIVE)
         {
-            var result = NetModuleLoader.Get<SyncConfigCIVE>();
+            var result = NetModuleLoader.Get<SyncMeleeConfig>();
             result.plrIndex = plrIndex;
             result.configuration = configurationCIVE;
             return result;
@@ -50,7 +39,7 @@ namespace CoolerItemVisualEffect
         {
             plrIndex = r.ReadByte();
             string content = r.ReadString();
-            configuration = new ConfigurationCIVE();
+            configuration = new MeleeConfig();
             configuration.heatMapColors.Clear();
             JsonConvert.PopulateObject(content, configuration);
             //configuration = (ConfigurationCIVE)JsonConvert.DeserializeObject(content);
@@ -96,7 +85,7 @@ namespace CoolerItemVisualEffect
     }
     [HorizonOverflowEnable]
     [RenderDrawingPreviewNeeded]
-    public class ConfigurationCIVE : ModConfig
+    public class MeleeConfig : ModConfig
     {
         [DefaultValue(true)]
         public bool UsePreview;
@@ -104,16 +93,8 @@ namespace CoolerItemVisualEffect
         [DefaultValue(false)]
         [CustomPreview<UseRenderPVPreivew>]
         public bool useRenderEffectPVInOtherConfig = false;
-        //public ConfigurationCIVE()
-        //{
-        //    heatMapByFunction = new HeatMapByFunctionMode();
-        //    heatMapByFunction.SetOwner(this);
 
-        //    heatMapDesignateMode = new HeatMapDesignateMode();
-        //    heatMapDesignateMode.SetOwner(this);
-        //}
-
-        public static ConfigurationCIVE ConfigCIVEInstance => ModContent.GetInstance<ConfigurationCIVE>();
+        public static MeleeConfig Instance => ModContent.GetInstance<MeleeConfig>();
 
         public override ConfigScope Mode => ConfigScope.ClientSide;
 
@@ -131,10 +112,8 @@ namespace CoolerItemVisualEffect
                 //    MeleeModifyPlayer.UpdateHeatMap(ref MMPlr.heatMap, MMPlr.hsl, MMPlr.ConfigurationSwoosh, MeleeModifyPlayer.GetWeaponTextureFromItem(plr.HeldItem));
                 //}
             }
-            if (Main.netMode == NetmodeID.MultiplayerClient)
-            {
-                SyncConfigCIVE.Get(Main.myPlayer, this).Send();
-            }
+            if (GetHashCode() == Interface.modConfig?.modConfig?.GetHashCode())
+                SyncMeleeConfig.Get(Main.myPlayer, this).Send();
             base.OnChanged();
         }
         [Header("MeleeModifyPart")]
@@ -143,6 +122,7 @@ namespace CoolerItemVisualEffect
         public bool SwordModifyActive = true;
 
         [CustomModConfigItem(typeof(SequenceDefinitionElement<MeleeAction>))]
+        [CustomGenericConfigItem<GenericSequenceDefinitionElement<MeleeAction>>]//为自己的UI里编辑Config做手脚
         [TypeConverter(typeof(ToFromStringConverter<SequenceDefinition<MeleeAction>>))]
         public SequenceDefinition<MeleeAction> swooshActionStyle = new SequenceDefinition<MeleeAction>(nameof(CoolerItemVisualEffect), nameof(CIVESword));
 
@@ -220,11 +200,11 @@ namespace CoolerItemVisualEffect
         [CustomPreview<AlphaScalerPreview>]
         public float alphaFactor = 1.5f;//暂定预览
 
-        [Increment(0.05f)]
+        /*[Increment(0.05f)]
         [Range(0f, 1f)]
         [DefaultValue(0.2f)]
         [CustomPreview<LightStandardPreview>]
-        public float isLighterDecider = 0.2f;//黑白名单形式?
+        public float isLighterDecider = 0.2f;//黑白名单形式?*/
 
 
         /*[DefaultValue(false)]
@@ -361,6 +341,7 @@ namespace CoolerItemVisualEffect
         public float directOfHeatMap = MathHelper.Pi;
 
         [CustomPreview<ColorListPreview>]
+        [Expand(false)]
         public List<Color> heatMapColors = [Color.Blue, Color.Green, Color.Yellow];
 
         /*[CustomModConfigItem(typeof(AvailableConfigElement))]
@@ -387,12 +368,17 @@ namespace CoolerItemVisualEffect
 
         [Header("EffectPart")]
         [CustomModConfigItem(typeof(AvailableConfigElement))]
+        [CustomGenericConfigItem<GenericAvailableConfigElement>]
         [CustomPreview<RenderEffectPreview>]
         public AirDistortConfigs distortConfigs = new AirDistortConfigs();
+
         [CustomModConfigItem(typeof(AvailableConfigElement))]
+        [CustomGenericConfigItem<GenericAvailableConfigElement>]
         [CustomPreview<RenderEffectPreview>]
         public BloomConfigs bloomConfigs = new BloomConfigs();
+
         [CustomModConfigItem(typeof(AvailableConfigElement))]
+        [CustomGenericConfigItem<GenericAvailableConfigElement>]
         [CustomPreview<RenderEffectPreview>]
         public MaskConfigs maskConfigs = new MaskConfigs();
 
@@ -445,41 +431,7 @@ namespace CoolerItemVisualEffect
         //    public List<Color> heatMapColors = new List<Color>() { Color.Blue, Color.Green, Color.Yellow };
         //}
 
-        [Header("MiscPart")]
 
-
-
-        [DefaultValue(true)]
-        public bool useWeaponDisplay = true;
-
-        [DefaultValue(true)]
-        public bool firstWeaponDisplay = true;
-
-        [Increment(0.05f)]
-        [Range(0.5f, 2f)]
-        [DefaultValue(1f)]
-        [Slider]
-        public float weaponScale = 1f;
-
-        [DefaultValue(false)]
-
-
-        public bool ItemDropEffectActive = false;
-
-        [DefaultValue(false)]
-
-
-        public bool ItemInventoryEffectActive = false;
-
-        [DefaultValue(true)]
-
-
-        public bool VanillaProjectileDrawModifyActive = true;
-
-        [DefaultValue(false)]
-
-
-        public bool TeleprotEffectActive = false;
 
 
 

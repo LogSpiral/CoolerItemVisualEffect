@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Terraria.GameContent;
 using LogSpiralLibrary;
 using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
+using CoolerItemVisualEffect.Config;
 
 namespace CoolerItemVisualEffect
 {
@@ -92,7 +93,7 @@ namespace CoolerItemVisualEffect
         }
         public override bool PreDraw(Projectile projectile, ref Color lightColor)
         {
-            if (!ConfigurationCIVE.ConfigCIVEInstance.VanillaProjectileDrawModifyActive) goto mylabel;
+            if (!MiscConfig.Instance.VanillaProjectileDrawModifyActive) goto mylabel;
             SpriteBatch spriteBatch = Main.spriteBatch;
             //spriteBatch.Draw4C(TextureAssets.Extra[98].Value, projectile.Center - Main.screenPosition, null, Color.Cyan with { A = 0 }, Color.Cyan with { A = 0}, Color.Blue with { A = 0 }, Color.Blue with { A = 0 }, projectile.rotation, new Vector2(36), new Vector2(1,3), 0, 0);
             //spriteBatch.Draw(TextureAssets.Extra[98].Value, projectile.Center - Main.screenPosition, null, Color.White with { A = 0 }, projectile.rotation, new Vector2(36), new Vector2(1, 3) * .75f, 0, 0);
@@ -405,14 +406,14 @@ namespace CoolerItemVisualEffect
                             CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["gather"].SetValue(true);
                             CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["lightShift"].SetValue(0);
                             CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["distortScaler"].SetValue(0);
-                            CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["alphaFactor"].SetValue(ConfigurationCIVE.ConfigCIVEInstance.alphaFactor);
-                            CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(ConfigurationCIVE.ConfigCIVEInstance.alphaFactor == 0);
-                            var _v = ConfigurationCIVE.ConfigCIVEInstance.directOfHeatMap.ToRotationVector2();
+                            CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["alphaFactor"].SetValue(MeleeConfig.Instance.alphaFactor);
+                            CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["heatMapAlpha"].SetValue(MeleeConfig.Instance.alphaFactor == 0);
+                            var _v = MeleeConfig.Instance.directOfHeatMap.ToRotationVector2();
                             CoolerItemVisualEffectMod.ShaderSwooshEX.Parameters["heatRotation"].SetValue(Matrix.Identity with { M11 = _v.X, M12 = -_v.Y, M21 = _v.Y, M22 = _v.X });
                             //var par = CoolerItemVisualEffect.ShaderSwooshEX.Parameters["heatRotation"];
                             //var wht = (par.Annotations, par.ColumnCount, par.RowCount, par.ParameterType, par.Elements, par.Name, par.ParameterClass, par.Semantic, par.StructureMembers);            Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.BaseTex[instance.ImageIndex].Value;
-                            Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.BaseTex_Swoosh[ConfigurationCIVE.ConfigCIVEInstance.baseIndexSwoosh].Value;
-                            Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.AniTex_Swoosh[ConfigurationCIVE.ConfigCIVEInstance.animateIndexSwoosh].Value;
+                            Main.graphics.GraphicsDevice.Textures[0] = LogSpiralLibraryMod.BaseTex_Swoosh[MeleeConfig.Instance.baseIndexSwoosh].Value;
+                            Main.graphics.GraphicsDevice.Textures[1] = LogSpiralLibraryMod.AniTex_Swoosh[MeleeConfig.Instance.animateIndexSwoosh].Value;
                             Main.graphics.GraphicsDevice.Textures[2] = TextureAssets.Item[ItemID.InfluxWaver].Value;//ModContent.Request<Texture2D>("CoolerItemVisualEffect/Weapons/FirstZenithProj_5").Value;
                             Main.graphics.GraphicsDevice.SamplerStates[0] = sampler;
                             Main.graphics.GraphicsDevice.SamplerStates[1] = sampler;

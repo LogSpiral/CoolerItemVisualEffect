@@ -9,7 +9,7 @@ global using MeleeSequence = LogSpiralLibrary.CodeLibrary.DataStructures.Sequenc
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria.GameContent;
-using static CoolerItemVisualEffect.ConfigurationCIVE;
+using static CoolerItemVisualEffect.Config.MeleeConfig;
 using LogSpiralLibrary;
 using System.IO;
 using NetSimplified;

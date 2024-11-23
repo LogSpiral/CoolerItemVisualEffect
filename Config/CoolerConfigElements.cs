@@ -55,7 +55,7 @@
 //    public class CoolerPanelInfo : ComplexPanelInfo
 //    {
 //        public static Texture2D GetConfigStyleTex(ConfigTexStyle configTexStyle) => ModContent.Request<Texture2D>($"CoolerItemVisualEffect/ConfigTex/Template_{configTexStyle}").Value;
-        
+
 //        public override Texture2D StyleTexture { get => GetConfigStyleTex(configTexStyle); set { base.StyleTexture = value; Main.NewText("对这货赋值无效"); } }
 //        public ConfigTexStyle configTexStyle = ConfigTexStyle.DarkPurple;
 //        public override Rectangle DrawComplexPanel(SpriteBatch spriteBatch)
