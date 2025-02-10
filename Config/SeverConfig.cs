@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.Localization;
 using Terraria.ModLoader.Config;
 
 namespace CoolerItemVisualEffect.Config
@@ -29,5 +30,15 @@ namespace CoolerItemVisualEffect.Config
 
         [DefaultValue(true)]
         public bool AutoBalanceData = true;
+
+        public override bool AcceptClientChanges(ModConfig pendingConfig, int whoAmI, ref NetworkText message)
+        {
+            if (!NetMessage.DoesPlayerSlotCountAsAHost(whoAmI))
+            {
+                message = NetworkText.FromKey("tModLoader.ModConfigRejectChangesNotHost");
+                return false;
+            }
+            return true;
+        }
     }
 }
