@@ -17,6 +17,10 @@ using System.Reflection;
 using Terraria.ModLoader.Config.UI;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
+using System.Collections.Generic;
+using Terraria.ModLoader.Config;
+using CoolerItemVisualEffect.Config;
+using System.Linq;
 namespace CoolerItemVisualEffect
 {
     public class CoolerItemVisualEffectMod : Mod
@@ -57,11 +61,97 @@ namespace CoolerItemVisualEffect
 
             base.HandlePacket(reader, whoAmI);
         }
+        public void RegisterCategory(Mod qot, List<KeyValuePair<string, ModConfig>> variables, int itemIconID = 0, 
+            Func<Texture2D> getIconTexture = null, Func<string> getLabel = null, Func<string> getTooltip = null)
+            => qot.Call("RegisterCategory", this, variables, itemIconID, getIconTexture, getLabel, getTooltip);
+
+        public void RegisterCategory(Mod qot, ModConfig modConfig, List<string> variables, int itemIconID = 0,
+            Func<Texture2D> getIconTexture = null, Func<string> getLabel = null, Func<string> getTooltip = null)
+            => RegisterCategory(qot, (from name in variables select new KeyValuePair<string, ModConfig>(name, modConfig)).ToList(),
+                itemIconID, getIconTexture, getLabel, getTooltip);
+
+        public void RegisterCategory(Mod qot, List<(ModConfig, List<string>)> variables, int itemIconID = 0, Func<Texture2D> getIconTexture = null,
+            Func<string> getLabel = null, Func<string> getTooltip = null)
+        {
+            List<KeyValuePair<string, ModConfig>> list = [];
+            foreach (var pair in variables)
+                list.AddRange((from name in pair.Item2 select new KeyValuePair<string, ModConfig>(name, pair.Item1)).ToList());
+            RegisterCategory(qot, list, itemIconID, getIconTexture, getLabel, getTooltip);
+        }
+
+
         public override void Load()
         {
             AddContent<NetModuleLoader>();
 
+            if (ModLoader.TryGetMod("ImproveGame", out var qot))
+            {
+                RegisterCategory(qot, [
+                    (SeverConfig.Instance,[nameof(SeverConfig.meleeModifyLevel)]),
+                (MeleeConfig.Instance,
+                [
+                     nameof(MeleeConfig.SwordModifyActive),
+                     nameof(MeleeConfig.swooshActionStyle),
+                     nameof(MeleeConfig.swooshActionStyle),
+                     nameof(MeleeConfig.baseIndexSwoosh),
+                     nameof(MeleeConfig.animateIndexSwoosh),
+                     nameof(MeleeConfig.baseIndexStab),
+                     nameof(MeleeConfig.animateIndexStab),
+                     nameof(MeleeConfig.swooshTimeLeft),
+                     nameof(MeleeConfig.shake),
+                     nameof(MeleeConfig.dustQuantity)
+                ])],
+                ItemID.TitaniumSword, null, () => "近战设置", () => "拜托这早就不只是视觉上的修改了");
+
+                RegisterCategory(qot, MeleeConfig.Instance,
+                [
+                     nameof(MeleeConfig.weaponExtraLight),
+                     nameof(MeleeConfig.colorVector),
+                     nameof(MeleeConfig.alphaFactor),
+                     nameof(MeleeConfig.heatMapCreateStyle),
+                     nameof(MeleeConfig.heatMapFactorStyle),
+                     nameof(MeleeConfig.byFuncData),
+                     nameof(MeleeConfig.rgbData),
+                     nameof(MeleeConfig.hslData),
+                     nameof(MeleeConfig.designateData),
+                     nameof(MeleeConfig.directOfHeatMap)
+                ],
+                ItemID.RainbowWallpaper, null, () => "渲染设置", () => "说实在的没有预览功能再怎么好看的配置面板也没用(");
+
+                RegisterCategory(qot, MeleeConfig.Instance,
+                [
+                     nameof(MeleeConfig.distortConfigs),
+                     nameof(MeleeConfig.maskConfigs),
+                     nameof(MeleeConfig.dyeConfigs),
+                     nameof(MeleeConfig.bloomConfigs)
+                ],
+                ItemID.LastPrism, null, () => "特效设置", () => "亮瞎眼了啊喂，显卡要冒烟了啊喂");
+
+                RegisterCategory(qot, MiscConfig.Instance,
+                [
+                     nameof(MiscConfig.useWeaponDisplay),
+                     nameof(MiscConfig.firstWeaponDisplay),
+                     nameof(MiscConfig.weaponScale),
+                     nameof(MiscConfig.ItemDropEffectActive),
+                     nameof(MiscConfig.ItemInventoryEffectActive),
+                     nameof(MiscConfig.VanillaProjectileDrawModifyActive),
+                     nameof(MiscConfig.TeleprotEffectActive)
+                ],
+                ItemID.Cog, null, () => "杂项设置", () => "非常水");
+                qot.Call("SetAboutPage", this, () => "非常酷大剑转转转的配置中心！！！", (int)ItemID.IronShortsword, null, () => "关于大剑", () => "酷酷酷酷酷");
+            }
+
             base.Load();
+        }
+        public override void Unload()
+        {
+            if (ModLoader.TryGetMod("ImproveGame", out var qot))
+            {
+                qot.Call("RemoveCategory", this);
+                qot.Call("RemoveAboutPage", this);
+
+            }
+            base.Unload();
         }
     }
     /*public class CoolerItemVisualEffectSystem : ModSystem 

@@ -269,6 +269,26 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
 
             oldScreenHeight = Main.screenHeight;
         }
+
+        public void OnSetConfigElementValue(GenericConfigElement e, bool f)
+        {
+            SetConfigPending = f;
+            if (f && !ButtonAdded)
+            {
+                BasePanel.Append(SaveButton);
+                BasePanel.Append(RevertButton);
+                BasePanel.Append(DefaultButton);
+                ButtonAdded = true;
+            }
+            if (!f && ButtonAdded)
+            {
+                SaveButton.Remove();
+                RevertButton.Remove();
+                DefaultButton.Remove();
+                ButtonAdded = false;
+            }
+        }
+
         /// <summary>
         /// <br>加载当前设置的详细信息</br>
         /// <br>未完工，乐</br>
@@ -312,7 +332,7 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
                     continue;
                 UIModConfig.HandleHeader(UIList, ref top, ref order, variable);
 
-                GenericConfigElement.WrapIt(UIList, ref top, variable, mConfig, order++, onSetObj: onSetFunc, owner: configSLUI);//var (container, elem) = 
+                GenericConfigElement.WrapIt(UIList, ref top, variable, mConfig, order++, onSetObj: OnSetConfigElementValue, owner: configSLUI);//var (container, elem) = 
             }
             //UIList.Add(QuickTitleText(GetText("NotFinishYet"), 0.5f));
 

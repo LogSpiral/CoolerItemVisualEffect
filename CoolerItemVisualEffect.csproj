@@ -4,18 +4,8 @@
 	<PropertyGroup>
 		<AssemblyName>CoolerItemVisualEffect</AssemblyName>
 		<LangVersion>latest</LangVersion>
-		<Solaestas-UseAssetPath>false</Solaestas-UseAssetPath>
 		<Solaestas-UsePublicizer>True</Solaestas-UsePublicizer>
 	</PropertyGroup>
-	<ItemGroup>
-		<Compile Remove="obj\**" />
-		<EmbeddedResource Remove="obj\**" />
-		<None Remove="obj\**" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Solaestas-HjsonFile Remove="Localization\en-US_Mods.CoolerItemVisualEffect.hjson" />
-	  <Solaestas-HjsonFile Remove="Localization\zh-Hans_Mods.CoolerItemVisualEffect.hjson" />
-	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Solaestas.tModLoader.ModBuilder" Version="1.3.0" />
 	</ItemGroup>

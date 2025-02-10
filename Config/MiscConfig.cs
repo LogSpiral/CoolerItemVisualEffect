@@ -16,8 +16,9 @@ namespace CoolerItemVisualEffect.Config
         //[Header("MiscPart")]
         public static MiscConfig Instance => ModContent.GetInstance<MiscConfig>();
 
-        //[DefaultValue(true)]
-        //public bool usePreview = true;
+        [DefaultValue(true)]
+        [CustomPreview<UsePVPreview>]
+        public bool usePreview = true;
 
         [DefaultValue(true)]
         [CustomPreview<WeaponDisplayPreview>]

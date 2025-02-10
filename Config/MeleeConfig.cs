@@ -40,7 +40,7 @@ namespace CoolerItemVisualEffect.Config
             plrIndex = r.ReadByte();
             string content = r.ReadString();
             configuration = new MeleeConfig();
-            configuration.heatMapColors.Clear();
+            configuration.designateData?.colors.Clear();
             JsonConvert.PopulateObject(content, configuration);
             //configuration = (ConfigurationCIVE)JsonConvert.DeserializeObject(content);
             base.Read(r);
@@ -200,33 +200,12 @@ namespace CoolerItemVisualEffect.Config
         [CustomPreview<AlphaScalerPreview>]
         public float alphaFactor = 1.5f;//暂定预览
 
-        /*[Increment(0.05f)]
-        [Range(0f, 1f)]
-        [DefaultValue(0.2f)]
-        [CustomPreview<LightStandardPreview>]
-        public float isLighterDecider = 0.2f;//黑白名单形式?*/
-
-
-        /*[DefaultValue(false)]
-        public bool itemAdditive = false;
-
-        [DefaultValue(false)]
-        public bool itemHighLight
-        {
-            get => highLight;
-            set
-            {
-                highLight = value;
-            }
-        }
-        [JsonIgnore]
-        [DefaultValue(false)]
-        bool highLight = false;*/
-
         public enum HeatMapCreateStyle
         {
             ByFunction,
             FromTexturePixel,
+            CosineGenerate_RGB,
+            CosineGenerate_HSL,
             Designate
         }
 
@@ -249,90 +228,22 @@ namespace CoolerItemVisualEffect.Config
         [CustomPreview<HeatMapFactorPreview>]
         public HeatMapFactorStyle heatMapFactorStyle = HeatMapFactorStyle.Linear;//改为拖动曲线?
 
-        //[CustomModConfigItem(typeof(AvailableConfigElement))]
-        //public HeatMapByFunctionMode heatMapByFunction;
-        [DefaultValue(0.2f)]
-        [Increment(0.01f)]
-        [Range(-1f, 1f)]
-        [CustomPreview<HueOffsetRangePreview>]
-        public float hueOffsetRange = 0.2f;
+        [Expand(false)]
+        public ByFuncHeatMapData byFuncData = new();
 
-        [DefaultValue(0f)]
-        [Increment(0.01f)]
-        [Range(0f, 1f)]
-        [CustomPreview<HueOffsetPreview>]
-        public float hueOffsetValue = 0f;
+        [Expand(false)]
+        [CustomPreview<CosinePreview>]
+        public CosineGenerateHeatMapData_RGB rgbData = new();
 
-        [DefaultValue(5f)]
-        [Increment(0.05f)]
-        [Range(0f, 5f)]
-        [CustomPreview<SaturationScalarPreview>]
-        public float saturationScalar = 5f;
+        [Expand(false)]
+        [CustomPreview<CosinePreview>]
+        public CosineGenerateHeatMapData_HSL hslData = new();
 
-        [DefaultValue(0.2f)]
-        [Increment(0.05f)]
-        [Range(0f, 1f)]
-        [CustomPreview<LuminosityRangePreview>]
-        public float luminosityRange = 0.2f;
-        /*[JsonIgnore]
-        public float hueOffsetRange
-        {
-            get
-            {
-                heatMapByFunction.SetOwner(this);
-                return heatMapByFunction?.hueOffsetRange ?? 0.2f;
-            }
-            set 
-            {
-                heatMapByFunction.SetOwner(this);
-                heatMapByFunction.hueOffsetRange = value;
-            }
-        }
-
-        [JsonIgnore]
-        public float hueOffsetValue
-        {
-            get
-            {
-                heatMapByFunction.SetOwner(this);
-                return heatMapByFunction?.hueOffsetValue ?? 0f;
-            }
-            set
-            {
-                heatMapByFunction.SetOwner(this);
-                heatMapByFunction.hueOffsetValue = value;
-            }
-        }
-
-        [JsonIgnore]
-        public float saturationScalar
-        {
-            get
-            {
-                heatMapByFunction.SetOwner(this);
-                return heatMapByFunction?.saturationScalar ?? 5f;
-            }
-            set
-            {
-                heatMapByFunction.SetOwner(this);
-                heatMapByFunction.saturationScalar = value;
-            }
-        }
-
-        [JsonIgnore]
-        public float luminosityRange
-        {
-            get
-            {
-                heatMapByFunction.SetOwner(this);
-                return heatMapByFunction?.luminosityRange ?? 0.2f;
-            }
-            set
-            {
-                heatMapByFunction.SetOwner(this);
-                heatMapByFunction.luminosityRange = value;
-            }
-        }*/
+        [Expand(false)]
+        [CustomModConfigItem(typeof(DesignateColorConfigElement))]
+        [CustomGenericConfigItem<DesignateColorConfigElement_Generic>]
+        [CustomPreview<DesignedColorPreview>]
+        public DesignateHeatMapData designateData = new();
 
         [DefaultValue(3.1415f)]
         [Range(0, 6.283f)]
@@ -340,101 +251,26 @@ namespace CoolerItemVisualEffect.Config
         [CustomPreview<DirectionOfHeatMapPreview>]
         public float directOfHeatMap = MathHelper.Pi;
 
-        [CustomPreview<ColorListPreview>]
-        [Expand(false)]
-        public List<Color> heatMapColors = [Color.Blue, Color.Green, Color.Yellow];
-
-        /*[CustomModConfigItem(typeof(AvailableConfigElement))]
-        public HeatMapDesignateMode heatMapDesignateMode;
-
-        [JsonIgnore]
-        public List<Color> heatMapColors
-        {
-            get
-            {
-                heatMapDesignateMode.SetOwner(this);
-                return heatMapDesignateMode.heatMapColors;
-            }
-            set
-            {
-                heatMapDesignateMode.SetOwner(this);
-                heatMapDesignateMode.heatMapColors = value;
-            }
-        }*/
-
-
-        //[DefaultValue(false)]
-        //public bool showHeatMap = false;
-
         [Header("EffectPart")]
         [CustomModConfigItem(typeof(AvailableConfigElement))]
         [CustomGenericConfigItem<GenericAvailableConfigElement>]
         [CustomPreview<RenderEffectPreview>]
-        public AirDistortConfigs distortConfigs = new AirDistortConfigs();
+        public AirDistortConfigs distortConfigs = new ();
 
         [CustomModConfigItem(typeof(AvailableConfigElement))]
         [CustomGenericConfigItem<GenericAvailableConfigElement>]
         [CustomPreview<RenderEffectPreview>]
-        public BloomConfigs bloomConfigs = new BloomConfigs();
+        public MaskConfigs maskConfigs = new ();
 
         [CustomModConfigItem(typeof(AvailableConfigElement))]
         [CustomGenericConfigItem<GenericAvailableConfigElement>]
         [CustomPreview<RenderEffectPreview>]
-        public MaskConfigs maskConfigs = new MaskConfigs();
+        public DyeConfigs dyeConfigs = new();
 
-
-
-
-        //public class HeatMapByFunctionMode : IAvailabilityChangableConfig
-        //{
-        //    public void SetOwner(ConfigurationCIVE config) => owner = config;
-        //    [JsonIgnore]
-        //    ConfigurationCIVE owner;
-        //    [JsonIgnore]
-        //    public bool Available => owner != null && owner.heatMapCreateStyle == HeatMapCreateStyle.ByFunction;
-
-        //    [DefaultValue(0.2f)]
-        //    [Increment(0.01f)]
-        //    [Range(-1f, 1f)]
-        //    [CustomPreview<HueOffsetRangePreview>]
-        //    public float hueOffsetRange = 0.2f;
-
-        //    [DefaultValue(0f)]
-        //    [Increment(0.01f)]
-        //    [Range(0f, 1f)]
-        //    [CustomPreview<HueOffsetPreview>]
-        //    public float hueOffsetValue = 0f;
-
-        //    [DefaultValue(5f)]
-        //    [Increment(0.05f)]
-        //    [Range(0f, 5f)]
-        //    [CustomPreview<SaturationScalarPreview>]
-        //    public float saturationScalar = 5f;
-
-        //    [DefaultValue(0.2f)]
-        //    [Increment(0.05f)]
-        //    [Range(0f, 1f)]
-        //    [CustomPreview<LuminosityRangePreview>]
-        //    public float luminosityRange = 0.2f;
-
-        //}
-
-        //public class HeatMapDesignateMode : IAvailabilityChangableConfig
-        //{
-        //    public void SetOwner(ConfigurationCIVE config) => owner = config;
-
-        //    [JsonIgnore]
-        //    ConfigurationCIVE owner;
-        //    [JsonIgnore]
-        //    public bool Available => owner != null && owner.heatMapCreateStyle == HeatMapCreateStyle.Designate;
-
-        //    public List<Color> heatMapColors = new List<Color>() { Color.Blue, Color.Green, Color.Yellow };
-        //}
-
-
-
-
-
+        [CustomModConfigItem(typeof(AvailableConfigElement))]
+        [CustomGenericConfigItem<GenericAvailableConfigElement>]
+        [CustomPreview<RenderEffectPreview>]
+        public BloomConfigs bloomConfigs = new();
     }
     public class ColorVector
     {
@@ -489,23 +325,7 @@ namespace CoolerItemVisualEffect.Config
             return !v1.Equals(v2);
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is ColorVector vec)
-                return this == vec;
-            return false;
-            //if (ReferenceEquals(this, obj))
-            //{
-            //    return true;
-            //}
-
-            //if (ReferenceEquals(obj, null))
-            //{
-            //    return false;
-            //}
-
-            //throw new NotImplementedException();
-        }
+        public override bool Equals(object obj)=> obj is ColorVector vec && this == vec;
 
         public override int GetHashCode()
         {

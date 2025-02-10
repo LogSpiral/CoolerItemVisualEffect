@@ -33,6 +33,9 @@ Configs: {
 		ByFunction.Label: By Function
 		FromTexturePixel.Label: From Texture Pixel
 		Designate.Label: Designate
+		CosineGenerate.Label: Cosine Generate
+		CosineGenerate_RGB.Label: Cosine Generate_ R G B
+		CosineGenerate_HSL.Label: Cosine Generate_ H S L
 	}
 
 	HeatMapFactorStyle: {
@@ -164,7 +167,27 @@ Configs: {
 			Tooltip: ""
 		}
 
+		saturationRange: {
+			Label: The Offset Value Of Original Luminosity
+			Tooltip: ""
+		}
+
+		saturationOffsetValue: {
+			Label: The Offset Value Range Of Original Luminosity
+			Tooltip: ""
+		}
+
+		luminosityScalar: {
+			Label: Coefficient Of Luminosity
+			Tooltip: ""
+		}
+
 		luminosityRange: {
+			Label: The Offset Value Range Of Original Luminosity
+			Tooltip: ""
+		}
+
+		luminosityOffsetValue: {
 			Label: The Offset Value Of Original Luminosity
 			Tooltip: ""
 		}
@@ -199,8 +222,33 @@ Configs: {
 			Tooltip: ""
 		}
 
+		dyeConfigs: {
+			Label: Dye Effect
+			Tooltip: Which shade do you want today?
+		}
+
 		useRenderEffectPVInOtherConfig: {
 			Label: Apply special effect in other previews
+			Tooltip: ""
+		}
+
+		byFuncData: {
+			Label: by Func Data
+			Tooltip: ""
+		}
+
+		rgbData: {
+			Label: rgb Data
+			Tooltip: ""
+		}
+
+		hslData: {
+			Label: hsl Data
+			Tooltip: ""
+		}
+
+		designateData: {
+			Label: designate Data
 			Tooltip: ""
 		}
 	}
@@ -244,10 +292,245 @@ Configs: {
 		}
 
 		TeleprotEffectActive: {
-			Label: Active Teleport Extra Effect(WIP)
+			Label: Active Teleport Extra Effect
 			Tooltip: ""
 		}
 	}
+
+	SeverConfig: {
+		DisplayName: Sever Config
+
+		meleeModifyLevel: {
+			Label: Melee Modify Level
+			Tooltip:
+				'''
+				I know that somebody wants Cool Effects, but keep the balance as well.
+				So I add an option to select the modify-level(Finally)
+				The Host can set the modify-level
+				and all the player can set use the modification or not in their melee config.
+				'''
+		}
+
+		AutoBalanceData: {
+			Label: Auto Balance Damage
+			Tooltip:
+				'''
+				Reuqire "Overhaul" melee modify level
+				Handled by the host,
+				avoid imba modify
+
+				Will NOT INFLUENCE projectile damage
+
+				If the attack speed is doubled, the damage will be halved
+
+				A more detailed calculation formula is as follows
+				BaseDamage * TimeScaler 
+				    / sqrt(SizeScaler)
+				    / max(1,pow(KnockBackScaler,0.25)) 
+				    / (1 + 0.01 * CirtAdd + 0.2 * CirtMult)
+				'''
+		}
+	}
+
+	MeleeModifyLevel: {
+		Tooltip: ""
+		Vanilla.Label: Vanilla
+		VisualOnly.Label: Visual Only
+		Overhaul.Label: Overhaul
+	}
+
+	ByFuncHeatMapData: {
+		Tooltip: ""
+
+		H: {
+			Label: H
+			Tooltip: ""
+		}
+
+		S: {
+			Label: S
+			Tooltip: ""
+		}
+
+		L: {
+			Label: L
+			Tooltip: ""
+		}
+	}
+
+	HueInfo: {
+		Tooltip: ""
+
+		range: {
+			Label: range
+			Tooltip: ""
+		}
+
+		offset: {
+			Label: offset
+			Tooltip: ""
+		}
+	}
+
+	SaturationInfo: {
+		Tooltip: ""
+
+		scalar: {
+			Label: scalar
+			Tooltip: ""
+		}
+
+		range: {
+			Label: range
+			Tooltip: ""
+		}
+
+		offset: {
+			Label: offset
+			Tooltip: ""
+		}
+	}
+
+	LuminosityInfo: {
+		Tooltip: ""
+
+		scalar: {
+			Label: scalar
+			Tooltip: ""
+		}
+
+		range: {
+			Label: range
+			Tooltip: ""
+		}
+
+		offset: {
+			Label: offset
+			Tooltip: ""
+		}
+	}
+
+	CosineGenerateHeatMapData_RGB: {
+		Tooltip: ""
+
+		R: {
+			Label: R
+			Tooltip: ""
+		}
+
+		G: {
+			Label: G
+			Tooltip: ""
+		}
+
+		B: {
+			Label: B
+			Tooltip: ""
+		}
+
+		Global: {
+			Label: Global
+			Tooltip: ""
+		}
+
+		Cosines: {
+			Label: Cosines
+			Tooltip: ""
+		}
+
+		LineColors: {
+			Label: Line Colors
+			Tooltip: ""
+		}
+
+		LineColorMethods: {
+			Label: Line Color Methods
+			Tooltip: ""
+		}
+	}
+
+	CosineInfo: {
+		Tooltip: ""
+
+		valueOffset: {
+			Label: value Offset
+			Tooltip: ""
+		}
+
+		amplitude: {
+			Label: amplitude
+			Tooltip: ""
+		}
+
+		frequence: {
+			Label: frequence
+			Tooltip: ""
+		}
+
+		phase: {
+			Label: phase
+			Tooltip: ""
+		}
+	}
+
+	CosineGenerateHeatMapData_HSL: {
+		Tooltip: ""
+
+		H: {
+			Label: H
+			Tooltip: ""
+		}
+
+		S: {
+			Label: S
+			Tooltip: ""
+		}
+
+		L: {
+			Label: L
+			Tooltip: ""
+		}
+
+		Cosines: {
+			Label: Cosines
+			Tooltip: ""
+		}
+
+		LineColorMethods: {
+			Label: Line Color Methods
+			Tooltip: ""
+		}
+
+		LineColors: {
+			Label: Line Colors
+			Tooltip: ""
+		}
+	}
+
+	DesignateHeatMapData: {
+		Tooltip: ""
+
+		colors: {
+			Label: colors
+			Tooltip: ""
+		}
+	}
+
+	ColorInfo: {
+		Tooltip: ""
+
+		color: {
+			Label: color
+			Tooltip: ""
+		}
+
+		position: {
+			Label: position
+			Tooltip: ""
+		}
+	}
+
+	"CosineInfo[].Tooltip": ""
 }
 
 Projectiles.CIVESword.DisplayName: C.I.V.E. Sword

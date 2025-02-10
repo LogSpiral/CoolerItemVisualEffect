@@ -13,6 +13,50 @@ namespace CoolerItemVisualEffect
     /// </summary>
     public class ProjectileDrawingModify : GlobalProjectile
     {
+        public override Color? GetAlpha(Projectile projectile, Color lightColor)
+        {
+            if (ProjectileModificationPreview.PVDrawing)
+            {
+                return lightColor;
+            }
+            return base.GetAlpha(projectile, lightColor);
+        }
+
+        public override void Load()
+        {
+            On_Main.EntitySpriteDraw_DrawData += On_Main_EntitySpriteDraw_DrawData;
+            On_Main.EntitySpriteDraw_Texture2D_Vector2_Nullable1_Color_float_Vector2_float_SpriteEffects_float += On_Main_EntitySpriteDraw_Texture2D_Vector2_Nullable1_Color_float_Vector2_float_SpriteEffects_float;
+            On_Main.EntitySpriteDraw_Texture2D_Vector2_Nullable1_Color_float_Vector2_Vector2_SpriteEffects_float += On_Main_EntitySpriteDraw_Texture2D_Vector2_Nullable1_Color_float_Vector2_Vector2_SpriteEffects_float;
+            base.Load();
+        }
+
+        private void On_Main_EntitySpriteDraw_Texture2D_Vector2_Nullable1_Color_float_Vector2_Vector2_SpriteEffects_float(On_Main.orig_EntitySpriteDraw_Texture2D_Vector2_Nullable1_Color_float_Vector2_Vector2_SpriteEffects_float orig, Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float worthless)
+        {
+            if (texture.GetHashCode() == TextureAssets.Projectile[ProjectileID.EnchantedBeam].Value.GetHashCode())
+            {
+                int u = 0;
+            }
+            orig.Invoke(texture, position, sourceRectangle, color, rotation, origin, scale, effects, worthless);
+        }
+
+        private void On_Main_EntitySpriteDraw_Texture2D_Vector2_Nullable1_Color_float_Vector2_float_SpriteEffects_float(On_Main.orig_EntitySpriteDraw_Texture2D_Vector2_Nullable1_Color_float_Vector2_float_SpriteEffects_float orig, Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, float scale, SpriteEffects effects, float worthless)
+        {
+            if (texture.GetHashCode() == TextureAssets.Projectile[ProjectileID.EnchantedBeam].Value.GetHashCode())
+            {
+                int u = 0;
+            }
+            orig.Invoke(texture, position, sourceRectangle, color, rotation, origin, scale, effects, worthless);
+        }
+
+        private void On_Main_EntitySpriteDraw_DrawData(On_Main.orig_EntitySpriteDraw_DrawData orig, DrawData data)
+        {
+            if (data.texture.GetHashCode() == TextureAssets.Projectile[ProjectileID.EnchantedBeam].Value.GetHashCode())
+            {
+                int u = 0;
+            }
+            orig.Invoke(data);
+        }
+
         public override void OnSpawn(Projectile projectile, IEntitySource source)
         {
             //if (projectile.ModProjectile is VertexHammerProj vertexHammer)
@@ -75,6 +119,7 @@ namespace CoolerItemVisualEffect
                 case ProjectileID.BoneArrowFromMerchant:
                 case ProjectileID.BoneArrow:
                 case ProjectileID.BloodArrow:
+                case ProjectileID.ShimmerArrow:
                     {
                         if (ProjectileID.Sets.TrailingMode[projectile.type] == -1)// !Main.gamePaused && 
                         {
@@ -179,7 +224,8 @@ namespace CoolerItemVisualEffect
                                     {
                                         angleOffset = (float)LogSpiralLibraryMod.ModTime * MathHelper.Pi / 30f;
                                         centerOffset = new Vector2(projectile.width, projectile.height) * .5f;
-                                        ProjectileID.Sets.TrailCacheLength[ProjectileID.StarWrath] = 20;
+                                        ProjectileID.Sets.TrailCacheLength[ProjectileID.StarWrath] = 40;
+                                        mainColor *= .75f;
                                     }
                                     break;
                                 }
@@ -189,12 +235,17 @@ namespace CoolerItemVisualEffect
                                 {
                                     mainColor = Color.Blue;
                                     _scaler = 16;
+                                    ProjectileID.Sets.TrailCacheLength[ProjectileID.StarCannonStar] = 20;
+                                    ProjectileID.Sets.TrailCacheLength[ProjectileID.FallingStar] = 20;
+                                    ProjectileID.Sets.TrailCacheLength[ProjectileID.ManaCloakStar] = 20;
+
                                     break;
                                 }
                             case ProjectileID.SuperStar:
                                 {
                                     mainColor = Color.Yellow;
                                     _scaler = 16;
+                                    ProjectileID.Sets.TrailCacheLength[ProjectileID.SuperStar] = 15;
                                     break;
                                 }
                             case ProjectileID.HallowStar:
@@ -260,7 +311,7 @@ namespace CoolerItemVisualEffect
                         }
                         if (isBoomerang) { angleOffset = -MathHelper.PiOver4; _scaler = 8; facVel = 0; }//23
                         #region offsetAlpha
-                        if (projectile.tileCollide)
+                        if (projectile.tileCollide && !ProjectileModificationPreview.PVDrawing)
                         {
                             var vCenter = projectile.Center;
                             int t = 0;
@@ -270,7 +321,9 @@ namespace CoolerItemVisualEffect
                             {
                                 vCenter += projectile.velocity;
                                 t++;
-                                tile = Main.tile[(int)vCenter.X / 16, (int)vCenter.Y / 16];
+                                Point coord = new((int)vCenter.X / 16, (int)vCenter.Y / 16);
+                                if (coord.X > 0 && coord.X < Main.tile.Width && coord.Y > 0 && coord.Y < Main.tile.Height)
+                                    tile = Main.tile[coord];
                             }
                             mainColor *= MathHelper.Clamp((t - 1) / 30f, 0, 1);
                         }
@@ -311,15 +364,16 @@ namespace CoolerItemVisualEffect
                             f = 1 - f;
                             var _f = 6 * f / (3 * f + 1);//6 * f / (3 * f + 1) /(float)Math.Pow(f,instance.maxCount)
                             _f = MathHelper.Clamp(_f, 0, 1);
+                            _f = f * f;
                             mainColor.A = (byte)(_f * 255);
                             bars.Add(new CustomVertexInfo(positionArray1[i], mainColor * multiValue, new Vector3(1 - f, 1, alphaLight)));
                             mainColor.A = 0;
                             bars.Add(new CustomVertexInfo(positionArray2[i], mainColor * multiValue, new Vector3(0, 0, alphaLight)));
                         }
-                        List<CustomVertexInfo> _triangleList = new List<CustomVertexInfo>();
+                        List<CustomVertexInfo> _triangleList = [];
                         SamplerState sampler = SamplerState.AnisotropicWrap;
                         //RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
-                        var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
+                        var projection = Matrix.CreateOrthographicOffCenter(0, Main.gameMenu ? Main.instance.Window.ClientBounds.Width : Main.screenWidth, Main.gameMenu ? Main.instance.Window.ClientBounds.Height : Main.screenHeight, 0, 0, 1);
                         var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
                         var trans = Main.GameViewMatrix != null ? Main.GameViewMatrix.TransformationMatrix : Matrix.Identity;
                         var sb = Main.spriteBatch;
@@ -362,16 +416,26 @@ namespace CoolerItemVisualEffect
                                             angleOffset += MathHelper.TwoPi / 5;
                                             bars.Add(new CustomVertexInfo(projectile.oldPos[0] + (projectile.oldRot[0] + angleOffset).ToRotationVector2() * _scaler + centerOffset, default(Color), new Vector3(1, 1, alphaLight)));
                                             bars.Add(new CustomVertexInfo(projectile.oldPos[0] + centerOffset, default(Color), new Vector3(0, 0, alphaLight)));
+                                            float k = 1 - counter / 5f;
                                             for (int i = 0; i < max; i++)
                                             {
                                                 var f = i / (max - 1f);
                                                 f = 1 - f;
                                                 var _f = 6 * f / (3 * f + 1);//6 * f / (3 * f + 1) /(float)Math.Pow(f,instance.maxCount)
                                                 _f = MathHelper.Clamp(_f, 0, 1);
+                                                _f = f * f;
                                                 mainColor.A = (byte)(_f * 255);
-                                                bars.Add(new CustomVertexInfo(projectile.oldPos[i] + (projectile.oldRot[i] + angleOffset + (projectile.type == ProjectileID.StarWrath ? -MathHelper.TwoPi * (1 - f) / 4f : 0)).ToRotationVector2() * _scaler * (1 + MathF.Sqrt(1 - f) * 3) + centerOffset, mainColor * multiValue, new Vector3(1 - f, 1, alphaLight)));
+                                                bars.Add(new CustomVertexInfo(projectile.oldPos[i] + (projectile.oldRot[i] + angleOffset + (projectile.type == ProjectileID.StarWrath ? -MathHelper.TwoPi * (1 - f) / 4f : 0)).ToRotationVector2() * _scaler * (1 + MathF.Sqrt(1 - f) * 3) + centerOffset, mainColor * multiValue * k, new Vector3(1 - f, 1, alphaLight)));
                                                 mainColor.A = 0;
-                                                bars.Add(new CustomVertexInfo(projectile.oldPos[i] + centerOffset, mainColor * multiValue, new Vector3(0, 0, alphaLight)));
+                                                bars.Add(new CustomVertexInfo(projectile.oldPos[i] + centerOffset, mainColor * multiValue * k, new Vector3(0, 0, alphaLight)));
+                                            }
+                                            if (counter == 4)
+                                            {
+                                                var u = -projectile.velocity.SafeNormalize(default);
+                                                spriteBatch.DrawQuadraticLaser_PassNormal(projectile.Center - 24 * u, u, mainColor with { A = 255 }, LogSpiralLibraryMod.AniTex[8].Value, 128, 64, 0, 1, 0.25f, false);
+                                                spriteBatch.DrawQuadraticLaser_PassNormal(projectile.Center - 24 * u, u, mainColor with { A = 255 } * 1.5f, LogSpiralLibraryMod.AniTex[8].Value, 256, 32, 0, 1f, 0.25f, false);
+                                                spriteBatch.DrawQuadraticLaser_PassNormal(projectile.Center - 24 * u, u, mainColor with { A = 255 } * .5f, LogSpiralLibraryMod.AniTex[8].Value, 64, 128, 0, 1, 0.25f, false);
+
                                             }
                                             goto theLabel;
                                         }
@@ -420,8 +484,10 @@ namespace CoolerItemVisualEffect
                             Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
                             Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
                             //Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
+
                             CoolerItemVisualEffectMod.ShaderSwooshEX.CurrentTechnique.Passes[0].Apply();
                             Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, _triangleList.ToArray(), 0, _triangleList.Count / 3);
+
                             //Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
 
                             //sb.End();
@@ -454,19 +520,6 @@ namespace CoolerItemVisualEffect
                             projectile.oldPos[0] = projectile.Center;
                             projectile.oldRot[0] = projectile.rotation;
                         }
-                        //for (int k = projectile.oldPos.Length - 1; k > 0; k--)
-                        //{
-                        //    Vector2 drawPos = projectile.oldPos[k] - Main.screenPosition;
-                        //    var factor = 1 - k / (float)projectile.oldPos.Length;
-                        //    spriteBatch.Draw(projectileTexture, drawPos, null, Color.LimeGreen * factor, projectile.rotation - MathHelper.PiOver4, new Vector2(7.5f, 3.5f), (1 - 0.1f * k) * scaleVec, SpriteEffects.None, 0f);
-                        //}
-                        //var unit = (projectile.rotation - MathHelper.PiOver4).ToRotationVector2();
-                        //spriteBatch.Draw(projectileTexture, projectile.Center - Main.screenPosition - unit * 24, null, Color.White, projectile.rotation - MathHelper.PiOver4, new Vector2(7.5f, 3.5f), scaleVec, SpriteEffects.None, 0f);
-                        //var mainColor = Color.White;
-                        //switch (projectile.type) 
-                        //{
-
-                        //}
                         var mainColor = projectile.type switch
                         {
                             ProjectileID.TerraBeam => Color.LimeGreen,
@@ -479,55 +532,44 @@ namespace CoolerItemVisualEffect
                         };
                         #region offsetAlpha
                         {
-                            var vCenter = projectile.Center;
-                            int t = 0;
-                            var tile = Main.tile[(int)vCenter.X / 16, (int)vCenter.Y / 16];
-
-                            while (t < 30 && !(tile.HasTile && Main.tileSolid[tile.TileType]))
+                            if (!ProjectileModificationPreview.PVDrawing)
                             {
-                                vCenter += projectile.velocity;
-                                t++;
-                                tile = Main.tile[(int)vCenter.X / 16, (int)vCenter.Y / 16];
+                                var vCenter = projectile.Center;
+                                int t = 0;
+                                var tile = Main.tile[(int)vCenter.X / 16, (int)vCenter.Y / 16];
+
+                                while (t < 30 && !(tile.HasTile && Main.tileSolid[tile.TileType]))
+                                {
+                                    vCenter += projectile.velocity;
+                                    t++;
+                                    Point coord = new((int)vCenter.X / 16, (int)vCenter.Y / 16);
+                                    if (coord.X > 0 && coord.X < Main.tile.Width && coord.Y > 0 && coord.Y < Main.tile.Height)
+                                        tile = Main.tile[coord];
+                                }
+                                mainColor *= MathHelper.Clamp((t - 1) / 30f, 0, 1);
                             }
-                            mainColor *= MathHelper.Clamp((t - 1) / 30f, 0, 1);
+
+
                         }
                         #endregion
-                        //for (int k = projectile.oldPos.Length - 1; k > 0; k--)
-                        //{
-                        //    Vector2 drawPos = projectile.oldPos[k] - Main.screenPosition;
-                        //    var factor = 1 - k / (float)projectile.oldPos.Length;
-                        //    spriteBatch.Draw(projectileTexture, drawPos, null, mainColor with { A = 0 } * factor, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), (1 - 0.1f * k) * scaleVec, SpriteEffects.None, 0f);
-                        //}
-                        //lightColor = lightColor with { A = 0 };
-                        //if (projectile.type != ProjectileID.InfluxWaver)
-                        //{
-                        //    projectile.alpha = 0;
-                        //    projectile.scale = 1;
-                        //}
-                        //else 
-                        //{
-                        //    Main.NewText((projectile.alpha, projectile.scale));
-                        //}
                         var unit = (projectile.rotation - MathHelper.PiOver4).ToRotationVector2();
                         var center = projectile.Center - Main.screenPosition;
                         spriteBatch.Draw(projectileTexture, center - unit * 24, null, mainColor with { A = 0 }, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), scaleVec * new Vector2(.75f, 1.5f), SpriteEffects.None, 0f);
                         spriteBatch.Draw(projectileTexture, center - unit * 24, null, Color.White with { A = 0 }, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), scaleVec * new Vector2(.5f, 1), SpriteEffects.None, 0f);
-                        spriteBatch.DrawQuadraticLaser_PassNormal(projectile.Center - unit * 16, -unit, mainColor, LogSpiralLibraryMod.AniTex[10].Value, MathHelper.Clamp(length, 0, 16) * 4 + 36, 16);
-                        //spriteBatch.DrawQuadraticLaser_PassHeatMap(projectile.Center, -unit, GetTexture("HeatMap_11"), GetTexture("Style_10"), MathHelper.Clamp(length, 0, 16) * 4 + 28, 24);
                         spriteBatch.DrawEffectLine(projectile.Center - unit * 24, projectile.velocity.SafeNormalize(default), mainColor, LogSpiralLibraryMod.BaseTex[12].Value, 1, 0, 96, 15);
-                        //lightColor = lightColor with { A = 0};
-                        var projTex = TextureAssets.Projectile[projectile.type].Value;
+                        var asset = TextureAssets.Projectile[projectile.type];
+                        if (!asset.IsLoaded)
+                            Main.instance.LoadProjectile(projectile.type);
+                        var projTex = asset.Value;
                         Rectangle? rect = projectile.type == ProjectileID.SkyFracture ? projTex.Frame(14, 1, projectile.frame, 0) : null;
                         for (int n = 0; n < 4; n++)
                         {
                             var offset = Main.rand.NextVector2Unit() * Main.rand.NextFloat(Main.rand.NextFloat(12f)) - projectile.velocity * 3;
                             spriteBatch.Draw(projTex, center + offset, rect, Color.White with { A = 0 } * .5f * (1 - projectile.alpha / 255f), projectile.rotation, (rect != null ? rect.Value.Size() : projTex.Size()) * .5f, projectile.scale, 0, 0);
-                            //spriteBatch.Draw(projectileTexture, center - unit * 24 + offset, null, mainColor with { A = 0 } * .25f, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), scaleVec * new Vector2(.75f, 1.5f), SpriteEffects.None, 0f);
-                            //spriteBatch.Draw(projectileTexture, center - unit * 24 + offset, null, Color.White with { A = 0 } * .25f, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), scaleVec * new Vector2(.5f, 1), SpriteEffects.None, 0f);
                         }
                         spriteBatch.Draw(projTex, center - projectile.velocity * 3, rect, Color.White with { A = 0 } * (1 - projectile.alpha / 255f), projectile.rotation, (rect != null ? rect.Value.Size() : projTex.Size()) * .5f, projectile.scale, 0, 0);
 
-                        return false;//base.PreDraw(projectile,ref lightColor)
+                        return false;
                     }
                 case ProjectileID.Meowmere:
                     {
@@ -554,6 +596,7 @@ namespace CoolerItemVisualEffect
                 case ProjectileID.BoneArrowFromMerchant:
                 case ProjectileID.BoneArrow:
                 case ProjectileID.BloodArrow:
+                case ProjectileID.ShimmerArrow:
                     //case ProjectileID.BeeArrow: 
                     {
                         //if (!Main.gamePaused && ProjectileID.Sets.TrailingMode[projectile.type] == -1)// 
@@ -642,8 +685,31 @@ namespace CoolerItemVisualEffect
                                 {
                                     break;
                                 }
+                            case ProjectileID.ShimmerArrow:
+                                {
+                                    alpha = 1f;
+                                    mainColor = Main.DiscoColor;
+                                    break;
+                                }
                         }
                         spriteBatch.DrawShaderTail(projectile, LogSpiralLibraryMod.BaseTex[8].Value, LogSpiralLibraryMod.AniTex[2].Value, LogSpiralLibraryMod.BaseTex[12].Value, width, offset, alpha, true, false, mainColor);
+                        switch (projectile.type)
+                        {
+                            case ProjectileID.PhantasmArrow:
+                            case ProjectileID.MoonlordArrow:
+                            case ProjectileID.JestersArrow:
+                            case ProjectileID.HolyArrow:
+                            case ProjectileID.DD2BetsyArrow:
+                            case ProjectileID.ShimmerArrow:
+                            case ProjectileID.CursedArrow:
+                            case ProjectileID.IchorArrow:
+                            case ProjectileID.ChlorophyteArrow:
+                                var u = -projectile.velocity.SafeNormalize(default);
+                                spriteBatch.DrawQuadraticLaser_PassNormal(projectile.Center - 24 * u, u, mainColor with { A = 255 }, LogSpiralLibraryMod.AniTex[8].Value, 48, 24, 0, 1, 0.25f, true);
+                                spriteBatch.DrawQuadraticLaser_PassNormal(projectile.Center - 4 * u, u, mainColor with { A = 255 } * 1.5f, LogSpiralLibraryMod.AniTex[8].Value, 64, 16, 0, 1f, 0.25f, true);
+                                spriteBatch.DrawQuadraticLaser_PassNormal(projectile.Center - 4 * u, u, mainColor with { A = 255 } * .5f, LogSpiralLibraryMod.AniTex[8].Value, 32, 64, 0, 1, 0.25f, true);
+                                break;
+                        }
                         goto mylabel;
                     }
             }

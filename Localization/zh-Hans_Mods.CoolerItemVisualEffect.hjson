@@ -33,6 +33,9 @@ Configs: {
 		ByFunction.Label: 函数生成
 		FromTexturePixel.Label: 贴图像素
 		Designate.Label: 指定
+		// CosineGenerate.Label: Cosine Generate
+		CosineGenerate_RGB.Label: 余弦RGB
+		CosineGenerate_HSL.Label: 余弦HSL
 	}
 
 	HeatMapFactorStyle: {
@@ -164,8 +167,28 @@ Configs: {
 			Tooltip: ""
 		}
 
+		saturationRange: {
+			Label: 饱和度范围
+			Tooltip: ""
+		}
+
+		saturationOffsetValue: {
+			Label: 饱和度偏移量
+			Tooltip: ""
+		}
+
+		luminosityScalar: {
+			Label: 亮度系数
+			Tooltip: ""
+		}
+
 		luminosityRange: {
 			Label: 亮度偏移范围
+			Tooltip: ""
+		}
+
+		luminosityOffsetValue: {
+			Label: 亮度偏移量
 			Tooltip: ""
 		}
 
@@ -199,9 +222,34 @@ Configs: {
 			Tooltip: 这玩意得配合外发光才好看呜
 		}
 
+		dyeConfigs: {
+			Label: 染料设置
+			Tooltip: 今天你想染成什么颜色？
+		}
+
 		useRenderEffectPVInOtherConfig: {
 			Label: 是否在非特效预览部分启用特效
 			Tooltip: ""
+		}
+
+		byFuncData: {
+			Label: 函数生成模式相关数据
+			// Tooltip: ""
+		}
+
+		rgbData: {
+			Label: 余弦RGB相关数据
+			// Tooltip: ""
+		}
+
+		hslData: {
+			Label: 余弦HSL相关数据
+			// Tooltip: ""
+		}
+
+		designateData: {
+			Label: 指定颜色列表
+			// Tooltip: ""
 		}
 	}
 
@@ -244,10 +292,244 @@ Configs: {
 		}
 
 		TeleprotEffectActive: {
-			Label: 启用传送物品使用特效(未完成)
+			Label: 启用传送物品使用特效
 			Tooltip: ""
 		}
 	}
+
+	SeverConfig: {
+		DisplayName: 服务端设置
+
+		meleeModifyLevel: {
+			Label: 近战修改等级
+			Tooltip:
+				'''
+				我知道有人想看特效但是又不想改实际效果炸平衡
+				于是加了在服务端的修改等级的设置(总算)
+				由管理员设置修改的模式
+				非管理员也可以在近战设置选择是否启用自己的修改
+				'''
+		}
+
+		AutoBalanceData: {
+			Label: 自动平衡伤害
+			Tooltip:
+				'''
+				需要将上面的修改等级开为“大剑转转转”
+				由管理员控制
+				避免过于影响平衡的数据调整
+				不影响武器发出的弹幕的伤害
+
+				如果攻击速度变成原来的两倍，伤害会变成原来的一半
+
+				更详细的计算公式如下
+				基础伤害 * 时间系数 
+				    / 大小系数的平方根  
+				    / max(1,击退系数的四次方根) 
+				    / (1 + 0.01 * 暴击加成 + 0.2 * 暴击系数)
+				'''
+		}
+	}
+
+	MeleeModifyLevel: {
+		Tooltip: ""
+		Vanilla.Label: 原版(不修改)
+		VisualOnly.Label: 仅视觉
+		Overhaul.Label: 大剑转转转
+	}
+
+	ByFuncHeatMapData: {
+		// Tooltip: ""
+
+		H: {
+			Label: 色相
+			// Tooltip: ""
+		}
+
+		S: {
+			Label: 饱和度
+			// Tooltip: ""
+		}
+
+		L: {
+			Label: 亮度
+			// Tooltip: ""
+		}
+	}
+
+	HueInfo: {
+		// Tooltip: ""
+
+		range: {
+			Label: 范围
+			// Tooltip: ""
+		}
+
+		offset: {
+			Label: 偏移
+			// Tooltip: ""
+		}
+	}
+
+	SaturationInfo: {
+		// Tooltip: ""
+
+		scalar: {
+			Label: 系数
+			// Tooltip: ""
+		}
+
+		range: {
+			Label: 范围
+			// Tooltip: ""
+		}
+
+		offset: {
+			Label: 偏移
+			// Tooltip: ""
+		}
+	}
+
+	LuminosityInfo: {
+		// Tooltip: ""
+
+		scalar: {
+			Label: 系数
+			// Tooltip: ""
+		}
+
+		range: {
+			Label: 范围
+			// Tooltip: ""
+		}
+
+		offset: {
+			Label: 偏移
+			// Tooltip: ""
+		}
+	}
+
+	CosineGenerateHeatMapData_RGB: {
+		// Tooltip: ""
+
+		R: {
+			Label: 红
+			Tooltip: ""
+		}
+
+		G: {
+			Label: 绿
+			Tooltip: ""
+		}
+
+		B: {
+			Label: 蓝
+			Tooltip: ""
+		}
+
+		Global: {
+			Label: 全局控制
+			Tooltip: ""
+		}
+
+		Cosines: {
+			// Label: Cosines
+			// Tooltip: ""
+		}
+
+		LineColors: {
+			// Label: Line Colors
+			// Tooltip: ""
+		}
+
+		LineColorMethods: {
+			// Label: Line Color Methods
+			// Tooltip: ""
+		}
+	}
+
+	CosineInfo: {
+		// Tooltip: ""
+
+		valueOffset: {
+			Label: 常数项
+			// Tooltip: ""
+		}
+
+		amplitude: {
+			Label: 振幅
+			// Tooltip: ""
+		}
+
+		frequence: {
+			Label: 频率
+			// Tooltip: ""
+		}
+
+		phase: {
+			Label: 相位
+			// Tooltip: ""
+		}
+	}
+
+	CosineGenerateHeatMapData_HSL: {
+		// Tooltip: ""
+
+		H: {
+			// Label: H
+			// Tooltip: ""
+		}
+
+		S: {
+			// Label: S
+			// Tooltip: ""
+		}
+
+		L: {
+			// Label: L
+			// Tooltip: ""
+		}
+
+		Cosines: {
+			// Label: Cosines
+			// Tooltip: ""
+		}
+
+		LineColorMethods: {
+			// Label: Line Color Methods
+			// Tooltip: ""
+		}
+
+		LineColors: {
+			// Label: Line Colors
+			// Tooltip: ""
+		}
+	}
+
+	DesignateHeatMapData: {
+		// Tooltip: ""
+
+		colors: {
+			// Label: colors
+			// Tooltip: ""
+		}
+	}
+
+	ColorInfo: {
+		// Tooltip: ""
+
+		color: {
+			// Label: color
+			// Tooltip: ""
+		}
+
+		position: {
+			// Label: position
+			// Tooltip: ""
+		}
+	}
+
+	// "CosineInfo[].Tooltip": ""
 }
 
 Projectiles.CIVESword.DisplayName: CIVE剑

@@ -30,6 +30,7 @@ using tModPorter;
 using System.Configuration;
 using Terraria.GameContent.UI.Elements;
 using MonoMod.Utils;
+using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
 
 namespace CoolerItemVisualEffect
 {
@@ -40,9 +41,15 @@ namespace CoolerItemVisualEffect
         {
             Player player = Main.player[projectile.owner];
             var mplr = player.GetModPlayer<MeleeModifyPlayer>();
-            if (mplr.ConfigurationSwoosh.SwordModifyActive && mplr.IsMeleeBroadSword && vanillaSlashProjectiles.Contains(projectile.type))
+            if (mplr.BeAbleToOverhaul && vanillaSlashProjectiles.Contains(projectile.type))
                 projectile.Kill();
             base.AI(projectile);
+        }
+        public override bool PreDraw(Projectile projectile, ref Color lightColor)
+        {
+            if (SeverConfig.Instance.meleeModifyLevel == SeverConfig.MeleeModifyLevel.VisualOnly && vanillaSlashProjectiles.Contains(projectile.type) && Main.player[projectile.owner].GetModPlayer<MeleeModifyPlayer>().ConfigurationSwoosh.SwordModifyActive)
+                return false;
+            return base.PreDraw(projectile, ref lightColor);
         }
     }
     public class MeleeModifierItem : GlobalItem
@@ -68,7 +75,7 @@ namespace CoolerItemVisualEffect
             string key = $"{Mod.Name}/{typeof(CIVESword).Name}";
             if (player.GetModPlayer<MeleeModifyPlayer>().ConfigurationSwoosh.swooshActionStyle is SequenceDefinition<MeleeAction> definition)
                 key = $"{definition.Mod}/{definition.Name}";
-            if (mplr.ConfigurationSwoosh.SwordModifyActive && mplr.IsMeleeBroadSword && SequenceManager<MeleeAction>.sequences.TryGetValue(key, out var value))
+            if (mplr.BeAbleToOverhaul && SequenceManager<MeleeAction>.sequences.TryGetValue(key, out var value))
             {
                 return CheckRightUse(value);
             }
@@ -77,7 +84,7 @@ namespace CoolerItemVisualEffect
         public override void UseStyle(Item item, Player player, Rectangle heldItemFrame)
         {
             var mplr = player.GetModPlayer<MeleeModifyPlayer>();
-            if (player.itemAnimation == player.itemAnimationMax && player.ownedProjectileCounts[ModContent.ProjectileType<CIVESword>()] == 0 && mplr.ConfigurationSwoosh.SwordModifyActive && mplr.IsMeleeBroadSword)
+            if (player.itemAnimation == player.itemAnimationMax && player.ownedProjectileCounts[ModContent.ProjectileType<CIVESword>()] == 0 && mplr.BeAbleToOverhaul)
             {
                 Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, default, ModContent.ProjectileType<CIVESword>(), player.HeldItem.damage, player.HeldItem.knockBack, player.whoAmI);
             }
@@ -93,14 +100,14 @@ namespace CoolerItemVisualEffect
         public override bool? CanHitNPC(Item item, Player player, NPC target)
         {
             var mplr = player.GetModPlayer<MeleeModifyPlayer>();
-            if (mplr.ConfigurationSwoosh.SwordModifyActive && mplr.IsMeleeBroadSword)
+            if (mplr.BeAbleToOverhaul)
                 return false;
             return base.CanHitNPC(item, player, target);
         }
         public override bool CanHitPvp(Item item, Player player, Player target)
         {
             var mplr = player.GetModPlayer<MeleeModifyPlayer>();
-            if (mplr.ConfigurationSwoosh.SwordModifyActive && mplr.IsMeleeBroadSword)
+            if (mplr.BeAbleToOverhaul)
                 return false;
             return base.CanHitPvp(item, player, target);
         }
@@ -161,7 +168,7 @@ namespace CoolerItemVisualEffect
                 for (int n = 0; n < count; n++)
                 {
                     var config = new MeleeConfig();
-                    config.heatMapColors.Clear();
+                    config.designateData?.colors.Clear();
                     string key = r.ReadString();
                     JsonConvert.PopulateObject(r.ReadString(), config);
                     dict.Add(key, config);
@@ -231,10 +238,8 @@ namespace CoolerItemVisualEffect
                         }
                     }
                 label:
-                if (configurationSwoosh == null)
-                {
-                    configurationSwoosh = Main.myPlayer == player.whoAmI ? Instance : new MeleeConfig();
-                }
+                configurationSwoosh ??= Main.myPlayer == player.whoAmI ? Instance : new MeleeConfig();
+
                 return configurationSwoosh;
             }
             set => configurationSwoosh = value;
@@ -268,7 +273,9 @@ namespace CoolerItemVisualEffect
                 return MeleeBroadSwordCheck(player.HeldItem);
             }
         }
-        public bool UseSwordModify => ConfigurationSwoosh.SwordModifyActive && IsMeleeBroadSword && player.itemAnimation > 0;
+        public bool BeAbleToOverhaul => SeverConfig.Instance.meleeModifyLevel == SeverConfig.MeleeModifyLevel.Overhaul && ConfigurationSwoosh.SwordModifyActive && IsMeleeBroadSword;
+
+        public bool UseSwordModify => BeAbleToOverhaul && player.itemAnimation > 0;
 
         public void WeaponGroupSyncing()
         {
@@ -331,7 +338,10 @@ namespace CoolerItemVisualEffect
                 var indexTable = File.ReadAllLines(tablePath);
                 foreach (string path in indexTable)
                 {
-                    var selector = WeaponSelector.Load(Path.Combine(WeaponSelectorSystem.SavePath, path + WeaponSelectorSystem.Extension));
+                    var selectorPath = Path.Combine(WeaponSelectorSystem.SavePath, path + WeaponSelectorSystem.Extension);
+                    if (!File.Exists(selectorPath))
+                        continue;
+                    var selector = WeaponSelector.Load(selectorPath);
                     var configPath = Path.Combine(ConfigSLHelper.SavePath, selector.BindSequenceName + ConfigSLHelper.Extension);
                     if (File.Exists(configPath))
                     {
@@ -380,14 +390,7 @@ namespace CoolerItemVisualEffect
             c.Index++;
 
             c.EmitLdarg0();
-            c.EmitDelegate<Func<Player, bool>>
-                (
-                player =>
-                {
-                    var mplr = player.GetModPlayer<MeleeModifyPlayer>();
-                    return !(mplr.ConfigurationSwoosh.SwordModifyActive && mplr.IsMeleeBroadSword);
-                })
-                ;
+            c.EmitDelegate<Func<Player, bool>>(player => !player.GetModPlayer<MeleeModifyPlayer>().BeAbleToOverhaul);// && !(SeverConfig.Instance.meleeModifyLevel == SeverConfig.MeleeModifyLevel.VisualOnly && player.GetModPlayer<MeleeModifyPlayer>().configurationSwoosh.SwordModifyActive && MeleeModifyPlayer.MeleeBroadSwordCheck(player.HeldItem))
             c.EmitAnd();
 
 
@@ -411,7 +414,7 @@ namespace CoolerItemVisualEffect
         public override void PostUpdate()
         {
             if (IsMeleeBroadSword)
-                ItemID.Sets.SkipsInitialUseSound[player.HeldItem.type] = ConfigurationSwoosh.SwordModifyActive;
+                ItemID.Sets.SkipsInitialUseSound[player.HeldItem.type] = SeverConfig.Instance.meleeModifyLevel == SeverConfig.MeleeModifyLevel.Overhaul && ConfigurationSwoosh.SwordModifyActive;
             CheckItemChange(player);
 
             //Main.NewText((player.itemAnimation, player.itemAnimationMax, player.itemTime, player.itemTimeMax),Color.Red);
@@ -444,7 +447,7 @@ namespace CoolerItemVisualEffect
             }
             return null;
         }
-        public static List<(Func<Item, Texture2D> func, float priority)> weaponGetFunctions = new();
+        public static List<(Func<Item, Texture2D> func, float priority)> weaponGetFunctions = [];
         public static bool RefreshWeaponTexFunc;
         /// <summary>
         /// 如果你的武器贴图和"看上去"的不一样，用这个换成看上去的
@@ -559,112 +562,34 @@ namespace CoolerItemVisualEffect
                         {
                             currentColor[n + 1] = cs[_index[n]];
                         }
-                        switch (config.heatMapFactorStyle)
-                        {
-                            case HeatMapFactorStyle.Linear:
-                                {
-                                    for (int n = 0; n < 300; n++)
-                                    {
-                                        colors[n] = (n / 299f).ArrayLerp(currentColor);
-                                    }
-                                    break;
-                                }
-                            case HeatMapFactorStyle.Floor:
-                                {
-                                    for (int n = 0; n < 300; n++)
-                                    {
-                                        colors[n] = currentColor[n / 60];
-                                    }
-                                    break;
-                                }
-                            case HeatMapFactorStyle.Quadratic:
-                                {
-                                    for (int n = 0; n < 300; n++)
-                                    {
-                                        var fac = n / 299f;
-                                        fac *= fac;
-                                        colors[n] = fac.ArrayLerp(currentColor);
-                                    }
-                                    break;
-                                }
-                            case HeatMapFactorStyle.SquareRoot:
-                                {
-                                    for (int n = 0; n < 300; n++)
-                                    {
-                                        colors[n] = MathF.Sqrt(n / 299f).ArrayLerp(currentColor);
-                                    }
-                                    break;
-                                }
-                            case HeatMapFactorStyle.SmoothFloor:
-                                {
-                                    for (int n = 0; n < 300; n++)
-                                    {
-                                        colors[n] = ((n / 299f * 5).SmoothFloor() / 5f).ArrayLerp(currentColor);
-                                    }
-                                    break;
-                                }
-                        }
-
-
+                        for (int n = 0; n < 300; n++)
+                            colors[n] = GetHeatMapFactor(n / 299f, 6, config.heatMapFactorStyle).ArrayLerp(currentColor);
                         break;
                     }
                 case HeatMapCreateStyle.Designate:
                     {
-                        var list = config.heatMapColors;
-                        int count = list.Count;
-                        switch (count)
-                        {
-                            case 0:
-                                {
-                                    Main.NewText("更新热度图失败！请确保至少有一个颜色。", Color.DarkRed);
-                                    Main.NewText("Failed To Update The Heat Map! Please Ensure There's At Least One Color.", Color.DarkRed);
-                                    return;
-                                }
-                            case 1:
-                                {
-                                    var color = list[0];
-                                    for (int i = 0; i < 300; i++)
-                                    {
-                                        colors[i] = color;
-                                    }
-                                    break;
-                                }
-                            case 2:
-                                {
-                                    var color1 = list[0];
-                                    var color2 = list[1];
-                                    for (int i = 0; i < 300; i++)
-                                    {
-                                        colors[i] = Color.Lerp(color1, color2, GetHeatMapFactor(i / 299f, 2, config.heatMapFactorStyle));
-                                    }
-                                    break;
-                                }
-                            default:
-                                {
-                                    var array = list.ToArray();
-                                    for (int i = 0; i < 300; i++)
-                                    {
-                                        colors[i] = GetHeatMapFactor(i / 299f, list.Count, config.heatMapFactorStyle).ArrayLerp(array);
-                                    }
-                                    break;
-                                }
-                        }
+                        config.designateData.PreGetValue();
+                        for (int i = 0; i < 300; i++)
+                            colors[i] = config.designateData.GetValue(GetHeatMapFactor(i / 299f, 6, config.heatMapFactorStyle));
+                        break;
+                    }
+                case HeatMapCreateStyle.CosineGenerate_RGB:
+                    {
+                        for (int i = 0; i < 300; i++)
+                            colors[i] = config.rgbData.GetValue(GetHeatMapFactor(i / 299f, 6, config.heatMapFactorStyle));
+                        break;
+                    }
+                case HeatMapCreateStyle.CosineGenerate_HSL:
+                    {
+                        for (int i = 0; i < 300; i++)
+                            colors[i] = config.hslData.GetValue(GetHeatMapFactor(i / 299f, 6, config.heatMapFactorStyle));
                         break;
                     }
                 case HeatMapCreateStyle.ByFunction:
                 default:
                     {
                         for (int i = 0; i < 300; i++)
-                        {
-                            var f = GetHeatMapFactor(i / 299f, 6, config.heatMapFactorStyle);//分割成25次惹，f从1/25f到1//1 - 
-                                                                                             //f = f * f;// *f
-                            float h = (hsl.X + config.hueOffsetValue + config.hueOffsetRange * (2 * f - 1)) % 1;
-                            float s = MathHelper.Clamp(hsl.Y * config.saturationScalar, 0, 1);
-                            float l = MathHelper.Clamp(f > 0.5f ? hsl.Z * (2 - f * 2) + (f * 2 - 1) * Math.Max(hsl.Z, 0.5f + config.luminosityRange) : f * 2 * hsl.Z + (1 - f * 2) * Math.Min(hsl.Z, 0.5f - config.luminosityRange), 0, 1);
-                            while (h < 0) h++;
-                            var currentColor = Main.hslToRgb(h, s, l);
-                            colors[i] = currentColor;
-                        }
+                            colors[i] = config.byFuncData.GetColor(GetHeatMapFactor(i / 299f, 6, config.heatMapFactorStyle), hsl);
                         break;
                     }
             }
@@ -753,21 +678,6 @@ namespace CoolerItemVisualEffect
         {
             if (UseSwordModify)
                 drawInfo.heldItem = new Item();
-            if (MiscConfig.Instance.TeleprotEffectActive && player.HeldItem.type == ItemID.MagicMirror && player.ItemAnimationActive)
-            {
-                var fac = player.itemAnimation / (float)player.itemAnimationMax;
-                var _fac = (fac * 2 % 1).HillFactor2() * (fac < .5f ? .5f : 1f);
-                var yscaler = (.25f + fac * (fac - 1)) * 1.5f;
-                Main.spriteBatch.Draw(LogSpiralLibraryMod.MagicZone[2].Value, player.Center + new Vector2(0, -128 + 256 * fac) - Main.screenPosition, null, Color.Cyan with { A = 0 } * _fac, 0, new Vector2(150), new Vector2(1, yscaler) * _fac, 0, 0);
-
-                Main.spriteBatch.Draw(LogSpiralLibraryMod.MagicZone[2].Value, player.Center + new Vector2(0, 128 - 256 * fac) - Main.screenPosition, null, Color.Cyan with { A = 0 } * _fac, 0, new Vector2(150), new Vector2(1, yscaler) * _fac, 0, 0);
-            }
-            //if (ConfigurationSwoosh.showHeatMap && heatMap != null && !Main.gameMenu && !drawInfo.headOnlyRender)
-            //{
-            //    //Vector2 drawPos = player.whoAmI == Main.myPlayer ? new Vector2(600,400) : (player.Center - Main.screenPosition - Vector2.UnitY * 64);
-            //    Vector2 drawPos = player.Center - Main.screenPosition - Vector2.UnitY * 64;
-            //    Main.spriteBatch.Draw(heatMap, drawPos, null, Color.White, 0, new Vector2(150, .5f), new Vector2(1, 50f), SpriteEffects.None, 0);
-            //}
             if (MiscConfig.Instance.useWeaponDisplay && !drawInfo.headOnlyRender)
             {
                 if (Main.gameMenu && MiscConfig.Instance.firstWeaponDisplay)//
@@ -878,6 +788,59 @@ namespace CoolerItemVisualEffect
             return flag;
         }
         #endregion
+
+        UltraSwoosh currentSwoosh;
+        UltraSwoosh extraSwoosh;
+        public override void PreUpdate()
+        {
+            configurationSwoosh ??= Main.myPlayer == player.whoAmI ? Instance : new MeleeConfig();
+            if (SeverConfig.Instance.meleeModifyLevel == SeverConfig.MeleeModifyLevel.VisualOnly && configurationSwoosh.SwordModifyActive)
+            {
+                if (MeleeBroadSwordCheck(player.HeldItem))
+                {
+                    if (player.itemAnimationMax != 0 && player.itemAnimation == player.itemAnimationMax)
+                    {
+                        var timeLeft = configurationSwoosh.swooshTimeLeft;
+                        var length = TextureAssets.Item[player.HeldItem.type].Value.Size().Length() * 1.2f;
+                        var aniIdx = configurationSwoosh.animateIndexSwoosh;
+                        var baseIdx = configurationSwoosh.baseIndexSwoosh;
+                        var alphaVec = configurationSwoosh.colorVector.AlphaVector;
+                        var eVec = alphaVec with { Y = 0 };
+                        if (eVec.X == 0 && eVec.Z == 0)
+                            eVec = new(.5f, 0, .5f);
+
+                        currentSwoosh = UltraSwoosh.NewUltraSwoosh(Color.White, timeLeft, length, player.Center, heatMap, player.direction != 1, 0, 1f, (-1.5f, .25f), aniIdx, baseIdx, eVec);
+                        if (player.HeldItem.type == ItemID.TrueExcalibur)
+                            extraSwoosh = UltraSwoosh.NewUltraSwoosh(Color.White, timeLeft, length * 1.5f, player.Center, LogSpiralLibraryMod.HeatMap[5].Value, player.direction != 1, 0, 1, (-1.5f, .25f), aniIdx, baseIdx, alphaVec);
+                        currentSwoosh.ModityAllRenderInfo([[configurationSwoosh.distortConfigs.effectInfo], [configurationSwoosh.maskConfigs.maskEffectInfo, configurationSwoosh.dyeConfigs.dyeInfo, configurationSwoosh.bloomConfigs.effectInfo]]);
+                    }
+                    if (player.itemAnimation > 0 && currentSwoosh != null)
+                    {
+                        currentSwoosh.timeLeft++;
+                        float k = 1 - (float)player.itemAnimation / player.itemAnimationMax;
+
+                        if (player.direction == 1)
+                            currentSwoosh.angleRange = (-1.5f + k * .5f, MathHelper.Lerp(-1f, .25f, k));
+                        else
+                            currentSwoosh.angleRange = (-.5f, MathHelper.Lerp(-1f, .25f, k) + 1);
+                        currentSwoosh.center = player.Center;
+                        currentSwoosh.ColorVector = configurationSwoosh.colorVector.AlphaVector * k;
+
+                        if (extraSwoosh != null)
+                        {
+                            extraSwoosh.timeLeft++;
+                            extraSwoosh.angleRange = currentSwoosh.angleRange;
+                            extraSwoosh.center = currentSwoosh.center;
+                            var eVec = currentSwoosh.ColorVector with { Y = 0 };
+                            if (eVec.X == 0 && eVec.Z == 0)
+                                eVec = new Vector3(.5f, 0, .5f) * k;
+                            extraSwoosh.ColorVector = eVec;
+                        }
+                    }
+                }
+            }
+            base.PreUpdate();
+        }
     }
     public class CIVESword : MeleeSequenceProj
     {
@@ -915,11 +878,12 @@ namespace CoolerItemVisualEffect
                     standardColor = plr.GetModPlayer<MeleeModifyPlayer>().mainColor,// * .25f
                                                                                     //standardGlowTexture = ModContent.Request<Texture2D>(GlowTexture).Value,
                     standardTimer = plr.itemAnimationMax,
+                    standardShotCooldown = plr.itemTimeMax,
                     vertexStandard = Main.netMode == NetmodeID.Server ? default : new VertexDrawInfoStandardInfo() with
                     {
                         active = true,
                         heatMap = plr.GetModPlayer<MeleeModifyPlayer>().heatMap ?? LogSpiralLibraryMod.HeatMap[0].Value,
-                        renderInfos = [[ConfigurationSwoosh.distortConfigs.effectInfo], [ConfigurationSwoosh.maskConfigs.maskEffectInfo, ConfigurationSwoosh.bloomConfigs.effectInfo]],
+                        renderInfos = [[ConfigurationSwoosh.distortConfigs.effectInfo], [ConfigurationSwoosh.maskConfigs.maskEffectInfo, ConfigurationSwoosh.dyeConfigs.dyeInfo, ConfigurationSwoosh.bloomConfigs.effectInfo]],
 
                         scaler = (item.type == ItemID.TrueExcalibur ? 1.5f : 1) * (rectangle == null ? MeleeModifyPlayer.GetWeaponTextureFromItem(item).Size() : rectangle.Value.Size()).Length() * 1.25f * plr.GetAdjustedItemScale(item),
                         timeLeft = ConfigurationSwoosh.swooshTimeLeft,
@@ -941,16 +905,44 @@ namespace CoolerItemVisualEffect
         }
         public override bool PreDraw(ref Color lightColor)
         {
+            var dyeInfo = ConfigurationSwoosh.dyeConfigs.dyeInfo;
+            if (dyeInfo.Active && LogSpiralLibraryMod.CanUseRender) 
+            {
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+                dyeInfo.PreDraw(Main.spriteBatch, Main.instance.GraphicsDevice, LogSpiralLibraryMod.Instance.Render, LogSpiralLibraryMod.Instance.Render_Swap);
+            }
+
             if (currentData != null && UseSwordModify)
             {
                 meleeSequence.active = true;
                 meleeSequence.currentData.Draw(Main.spriteBatch, MeleeModifyPlayer.GetWeaponTextureFromItem(player.HeldItem));
             }
+            if (dyeInfo.Active && LogSpiralLibraryMod.CanUseRender)
+            {
+                Main.spriteBatch.End();
+                dyeInfo.PostDraw(Main.spriteBatch, Main.instance.GraphicsDevice, LogSpiralLibraryMod.Instance.Render, LogSpiralLibraryMod.Instance.Render_Swap);
+                dyeInfo.DrawToScreen(Main.spriteBatch, Main.instance.GraphicsDevice, LogSpiralLibraryMod.Instance.Render, LogSpiralLibraryMod.Instance.Render_Swap);
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+            //base.PreDraw(ref lightColor);
             return false;
         }
+        static float BalancingData(ActionModifyData orig,int cycle)
+        {
+            float k = 1f;
+            k /= MathF.Sqrt(orig.actionOffsetSize);
+            k *= orig.actionOffsetTimeScaler;
+            k /= MathF.Max(MathF.Pow(orig.actionOffsetKnockBack, .25f),1f);
+            k /= 1 + orig.actionOffsetCritMultiplyer * .2f + orig.actionOffsetCritAdder * .01f;
+            
+            return k / cycle / orig.actionOffsetDamage;// orig.actionOffsetDamage *
+        }
+        bool UseBalance => SeverConfig.Instance.AutoBalanceData && meleeSequence?.currentData != null;
         public override void AI()
         {
             base.AI();
+
         }
         public override void InitializeSequence(string modName, string fileName)
         {
@@ -963,9 +955,11 @@ namespace CoolerItemVisualEffect
         }
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
+
+
             #region *复杂的伤害计算*
             var plr = player;
-            var vec = ((MeleeAction)currentData).targetedVector;
+            var vec = currentData.targetedVector;
 
             var itemRectangle = Utils.CenteredRectangle(plr.Center + vec * .5f, vec);
             var sItem = plr.HeldItem;
@@ -1060,6 +1054,9 @@ namespace CoolerItemVisualEffect
             modifiers.ScalingArmorPenetration += armorPenetrationPercent;
             CombinedHooks.ModifyPlayerHitNPCWithItem(plr, sItem, target, ref modifiers);
             #endregion
+
+            if (UseBalance)
+                modifiers.SourceDamage *= BalancingData(currentData.ModifyData, currentData.Cycle);
             base.ModifyHitNPC(target, ref modifiers);
         }
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -1068,7 +1065,7 @@ namespace CoolerItemVisualEffect
             try
             {
                 var sItem = player.HeldItem;
-                var vec = ((MeleeAction)currentData).targetedVector;
+                var vec = currentData.targetedVector;
                 var itemRectangle = Utils.CenteredRectangle(player.Center + vec * .5f, new Vector2(MathF.Abs(vec.X), MathF.Abs(vec.Y)));
                 CombinedHooks.OnPlayerHitNPCWithItem(player, sItem, target, hit, damageDone);
                 player.ApplyNPCOnHitEffects(player.HeldItem, itemRectangle, damageDone, hit.Knockback, target.whoAmI, hit.Damage, damageDone);
@@ -1086,8 +1083,11 @@ namespace CoolerItemVisualEffect
             {
                 Main.NewText(e.Message);
             }
-
-            player.GetModPlayer<LogSpiralLibraryPlayer>().strengthOfShake = ConfigurationSwoosh.shake * Main.rand.NextFloat(0.85f, 1.15f) * (damageDone / MathHelper.Clamp(player.HeldItem.damage, 1, int.MaxValue));//
+            float delta = player.GetModPlayer<LogSpiralLibraryPlayer>().strengthOfShake;
+            base.OnHitNPC(target, hit, damageDone);
+            delta -= player.GetModPlayer<LogSpiralLibraryPlayer>().strengthOfShake;
+            player.GetModPlayer<LogSpiralLibraryPlayer>().strengthOfShake += (1 - ConfigurationSwoosh.shake) * delta;
+            //player.GetModPlayer<LogSpiralLibraryPlayer>().strengthOfShake = ConfigurationSwoosh.shake * Main.rand.NextFloat(0.85f, 1.15f) * (damageDone / MathHelper.Clamp(player.HeldItem.damage, 1, int.MaxValue));//
         }
         public override void OnHitPlayer(Player target, Player.HurtInfo info)
         {

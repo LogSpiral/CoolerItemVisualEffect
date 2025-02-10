@@ -1,5 +1,6 @@
 ﻿using CoolerItemVisualEffect.Config;
 using CoolerItemVisualEffect.Config.ConfigSLer;
+using LogSpiralLibrary;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures;
 using LogSpiralLibrary.CodeLibrary.UIGenericConfig;
 using Microsoft.Extensions.Options;
@@ -9,6 +10,7 @@ using Newtonsoft.Json;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -57,7 +59,7 @@ namespace CoolerItemVisualEffect
 
                 DataListElement.OverflowHidden = true;
 
-                DataList = new NestedUIList();
+                DataList = [];
                 DataList.Width.Set(-20, 1f);
                 DataList.Left.Set(0, 0f);
                 DataList.Height.Set(0, 1f);
@@ -223,7 +225,7 @@ namespace CoolerItemVisualEffect
 
                 DataListElement.OverflowHidden = true;
 
-                DataList = new NestedUIList();
+                DataList = [];
                 DataList.Width.Set(-20, 1f);
                 DataList.Left.Set(0, 0f);
                 DataList.Height.Set(0, 1f);
@@ -321,13 +323,14 @@ namespace CoolerItemVisualEffect
         [LabelKey($"{key}basedOnDefaultCondition.Label")]
         public bool basedOnDefaultCondition;
         [LabelKey($"{key}whiteList.Label")]
-        public bool whiteList;
+        [DefaultValue(true)]
+        public bool whiteList = true;
         [LabelKey($"{key}BindConfigName.Label")]
         [CustomGenericConfigItem<BindSequenceElement>]
         public string BindSequenceName;
         [LabelKey($"{key}weaponGroup.Label")]
         [CustomGenericConfigItem<WeaponGroupElement>]
-        public List<string> weaponGroup = new();
+        public List<string> weaponGroup = [];
         public WeaponSelector()
         {
             Name = Language.GetOrRegister("Mods.CoolerItemVisualEffect.WeaponSelector.DefaultName").Value;
@@ -684,6 +687,9 @@ namespace CoolerItemVisualEffect
         /// <param name="spriteBatch"></param>
         public override void DrawSelf(SpriteBatch spriteBatch)
         {
+            //SDFGraphics.Gallery(new Vector2(40, 400), default, new(40, 60), Color.Cyan, 4, Color.Blue, ModAsset.HeatMap_0.Value, Main.GlobalTimeWrappedHourly * .05f, .05f,SDFGraphics.GetMatrix(true));
+
+            //SDFGraphics.FumoFumoKoishi(new Vector2(200, 400));
             var innerList = UIList.GetType().GetField("_innerList", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(UIList) as UIElement;
             if (Scrollbar is not null && innerList is not null)
             {
@@ -724,6 +730,24 @@ namespace CoolerItemVisualEffect
             }
 
             oldScreenHeight = Main.screenHeight;
+        }
+        public void OnSetConfigElementValue(GenericConfigElement e,bool f) 
+        {
+            SetConfigPending = f;
+            if (f && !ButtonAdded)
+            {
+                BasePanel.Append(SaveButton);
+                BasePanel.Append(RevertButton);
+                BasePanel.Append(DefaultButton);
+                ButtonAdded = true;
+            }
+            if (!f && ButtonAdded)
+            {
+                SaveButton.Remove();
+                RevertButton.Remove();
+                DefaultButton.Remove();
+                ButtonAdded = false;
+            }
         }
         /// <summary>
         /// <br>加载当前设置的详细信息</br>
@@ -826,7 +850,7 @@ namespace CoolerItemVisualEffect
             {
                 if (variable.Name == "passWord" || Attribute.IsDefined(variable.MemberInfo, typeof(JsonIgnoreAttribute)))
                     continue;
-                GenericConfigElement.WrapIt(UIList, ref top, variable, selector, order++, onSetObj: onSetFunc, owner: WeaponSelectorSystem.Instance.WeaponSelectorUI);
+                GenericConfigElement.WrapIt(UIList, ref top, variable, selector, order++, onSetObj: OnSetConfigElementValue, owner: WeaponSelectorSystem.Instance.WeaponSelectorUI);
             }
 
             RefreshButton.SetImage(BackTexture);
@@ -865,7 +889,9 @@ namespace CoolerItemVisualEffect
                 var indexTable = File.ReadAllLines(tablePath);
                 foreach (string path in indexTable)
                 {
-                    UIList.Add(new WeaponSelectorInfoPanel(Path.Combine(SavePath, path + Extension)));//如果有就添加目标
+                    var pth = Path.Combine(SavePath, path + Extension);
+                    if (File.Exists(pth))
+                    UIList.Add(new WeaponSelectorInfoPanel(pth));//如果有就添加目标
                 }
             }
             pendingSelector = null;
