@@ -31,6 +31,7 @@ using System.Configuration;
 using Terraria.GameContent.UI.Elements;
 using MonoMod.Utils;
 using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
+using static Terraria.ModLoader.PlayerDrawLayer;
 
 namespace CoolerItemVisualEffect
 {
@@ -878,7 +879,7 @@ namespace CoolerItemVisualEffect
                     standardColor = plr.GetModPlayer<MeleeModifyPlayer>().mainColor,// * .25f
                                                                                     //standardGlowTexture = ModContent.Request<Texture2D>(GlowTexture).Value,
                     standardTimer = plr.itemAnimationMax,
-                    standardShotCooldown = plr.itemTimeMax,
+                    standardShotCooldown = CombinedHooks.TotalUseTime(plr.HeldItem.useTime, plr, plr.HeldItem),//plr.itemTimeMax,
                     vertexStandard = Main.netMode == NetmodeID.Server ? default : new VertexDrawInfoStandardInfo() with
                     {
                         active = true,
