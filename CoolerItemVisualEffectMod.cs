@@ -84,7 +84,7 @@ namespace CoolerItemVisualEffect
         {
             AddContent<NetModuleLoader>();
 
-            if (ModLoader.TryGetMod("ImproveGame", out var qot))
+            if (ModLoader.TryGetMod("ImproveGame", out var qot) && Main.netMode != NetmodeID.Server)
             {
                 RegisterCategory(qot, [
                     (SeverConfig.Instance,[nameof(SeverConfig.meleeModifyLevel)]),
