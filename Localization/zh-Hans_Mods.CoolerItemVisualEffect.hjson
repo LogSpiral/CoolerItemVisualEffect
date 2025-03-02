@@ -1,4 +1,6 @@
 Configs: {
+	ModernConfigTitle: 大剑配置中心
+
 	ColorVector: {
 		mapColorAlpha: {
 			Label: 单向渐变

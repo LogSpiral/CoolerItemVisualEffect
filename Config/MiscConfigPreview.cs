@@ -9,17 +9,18 @@ using System.Threading.Tasks;
 using Terraria.GameContent;
 using Terraria.ModLoader.Config;
 using Terraria.ModLoader.Config.UI;
+using Terraria.UI;
 
 namespace CoolerItemVisualEffect.Config
 {
     public abstract class MiscPreview<T> : SimplePreview<T>
     {
-        public override bool usePreview => MiscConfig.Instance.usePreview;
+        public override bool UsePreview => MiscConfig.Instance.usePreview;
     }
     public class WeaponDisplayPreview : MiscPreview<bool>
     {
         Player plr;
-        public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, bool data, ModConfig pendingConfig, ConfigElement configElement)
+        public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, bool data, OptionMetaData metaData)
         {
             if (plr == null)
             {
@@ -50,7 +51,7 @@ namespace CoolerItemVisualEffect.Config
             plr.inventory[0].damage = data ? 1 : 0;
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
-            Main.PlayerRenderer.DrawPlayer(Main.Camera, plr, drawRange.Center() + Main.screenPosition - new Vector2(21, 28), 0, default);
+            Main.PlayerRenderer.DrawPlayer(Main.Camera, plr, dimension.Center() + Main.screenPosition - new Vector2(21, 28), 0, default);
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
             MiscConfig.Instance.weaponScale = s;
@@ -60,7 +61,7 @@ namespace CoolerItemVisualEffect.Config
     {
         Player plr;
 
-        public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, float data, ModConfig pendingConfig, ConfigElement configElement)
+        public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, float data, OptionMetaData metaData)
         {
             if (plr == null)
             {
@@ -91,7 +92,7 @@ namespace CoolerItemVisualEffect.Config
             PreviewHelper.weaponScale = data;
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
-            Main.PlayerRenderer.DrawPlayer(Main.Camera, plr, drawRange.Center() + Main.screenPosition - new Vector2(21, 28), 0, default);
+            Main.PlayerRenderer.DrawPlayer(Main.Camera, plr, dimension.Center() + Main.screenPosition - new Vector2(21, 28), 0, default);
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
             MiscConfig.Instance.weaponScale = s;
@@ -99,9 +100,9 @@ namespace CoolerItemVisualEffect.Config
     }
     public class ItemEffectPreview : MiscPreview<bool>
     {
-        public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, bool data, ModConfig pendingConfig, ConfigElement configElement)
+        public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, bool data, OptionMetaData metaData)
         {
-            Vector2 center = drawRange.Center() + new Vector2(-144, 80);
+            Vector2 center = dimension.Center() + new Vector2(-144, 80);
             if (Main.gameMenu)
             {
                 LogSpiralLibrarySystem.ModTime += .33f;
@@ -127,11 +128,11 @@ namespace CoolerItemVisualEffect.Config
     {
 
         public static bool PVDrawing;
-        public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, bool data, ModConfig pendingConfig, ConfigElement configElement)
+        public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, bool data, OptionMetaData metaData)
         {
             var terraBeam = new Projectile();
             terraBeam.SetDefaults(ProjectileID.TerraBeam);
-            terraBeam.Center = drawRange.Center() + Main.screenPosition;
+            terraBeam.Center = dimension.Center() + Main.screenPosition;
             if (Main.gameMenu)
             {
                 LogSpiralLibrarySystem.ModTime += .33f;
@@ -183,7 +184,7 @@ namespace CoolerItemVisualEffect.Config
     }
     public class TeleportModificationPreview : MiscPreview<bool>
     {
-        public override void Draw(SpriteBatch spriteBatch, Rectangle drawRange, bool data, ModConfig pendingConfig, ConfigElement configElement)
+        public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, bool data, OptionMetaData metaData)
         {
             if (Main.gameMenu)
                 LogSpiralLibrarySystem.ModTime += .33;
@@ -194,7 +195,7 @@ namespace CoolerItemVisualEffect.Config
             SpriteEffects dir = 0;
             Color mainColor = Color.Cyan;
 
-            Vector2 center = drawRange.Center();
+            Vector2 center = dimension.Center();
 
             Color colorVortex = mainColor * 0.8f;
             colorVortex.A /= 2;

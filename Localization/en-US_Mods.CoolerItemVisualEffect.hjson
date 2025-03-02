@@ -1,4 +1,6 @@
 Configs: {
+	ModernConfigTitle: Config Center
+
 	ColorVector: {
 		mapColorAlpha: {
 			Label: Gradient
