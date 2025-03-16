@@ -943,7 +943,6 @@ namespace CoolerItemVisualEffect
         public override void AI()
         {
             base.AI();
-
         }
         public override void InitializeSequence(string modName, string fileName)
         {
