@@ -343,6 +343,8 @@ namespace CoolerItemVisualEffect
                     if (!File.Exists(selectorPath))
                         continue;
                     var selector = WeaponSelector.Load(selectorPath);
+                    weaponGroup.Add(selector);
+                    if (selector.BindSequenceName == null || selector.BindSequenceName.Length == 0 || meleeConfigs.ContainsKey(selector.BindSequenceName)) continue;
                     var configPath = Path.Combine(ConfigSLHelper.SavePath, selector.BindSequenceName + ConfigSLHelper.Extension);
                     if (File.Exists(configPath))
                     {
@@ -350,7 +352,6 @@ namespace CoolerItemVisualEffect
                         ConfigSLHelper.Load(meleeConfig, configPath, false, false);
                         meleeConfigs.Add(selector.BindSequenceName, meleeConfig);
                     }
-                    weaponGroup.Add(selector);
                 }
             }
             WeaponGroupSyncing();
@@ -660,7 +661,7 @@ namespace CoolerItemVisualEffect
                         vcolor += pixelColor[n].ToVector4() * weight;
                         count += weight;
                     }
-                    Vector2 coord = new Vector2(n % width, n / width);
+                    Vector2 coord = new(n % width, n / width);
                     coord /= new Vector2(width, height);
                     if (airCheck)
                         if (Math.Abs(1 - coord.X - coord.Y) * 0.7071067811f < 0.05f && pixelColor[n] != default && target == default)
@@ -715,7 +716,7 @@ namespace CoolerItemVisualEffect
         public void DrawWeapon(Player Player, Item holditem, PlayerDrawSet drawInfo)
         {
             Texture2D texture = GetWeaponTextureFromItem(holditem);
-            Rectangle rectangle = new Rectangle(0, 0, texture.Width, texture.Height);
+            Rectangle rectangle = new(0, 0, texture.Width, texture.Height);
             Vector2 origin = rectangle.Size() / 2f;
             Vector2 value5 = DrawPlayer_Head_GetSpecialDrawPosition(ref drawInfo, Vector2.Zero, new Vector2(0f, 8f));
             float rot = MathHelper.Pi;
@@ -741,18 +742,18 @@ namespace CoolerItemVisualEffect
                 rectangle = animation.GetFrame(texture, -1);
                 origin = animation.GetFrame(texture).Size() * .5f;
             }
-            DrawData item = new DrawData(texture, value5, new Rectangle?(rectangle), drawInfo.colorArmorBody, rot, origin, MiscConfig.Instance.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
+            DrawData item = new(texture, value5, new Rectangle?(rectangle), drawInfo.colorArmorBody, rot, origin, MiscConfig.Instance.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
             drawInfo.DrawDataCache.Add(item);
             if (holditem.glowMask >= 0)
             {
                 Texture2D glow = TextureAssets.GlowMask[holditem.glowMask].Value;
-                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, MiscConfig.Instance.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
+                DrawData itemglow = new(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, MiscConfig.Instance.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
                 drawInfo.DrawDataCache.Add(itemglow);
             }
             if (holditem.ModItem != null && ModContent.HasAsset(holditem.ModItem.Texture + "_Glow"))
             {
                 Texture2D glow = ModContent.Request<Texture2D>(holditem.ModItem.Texture + "_Glow").Value;
-                DrawData itemglow = new DrawData(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, MiscConfig.Instance.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
+                DrawData itemglow = new(glow, value5, new Rectangle?(rectangle), Color.White * (1 - drawInfo.shadow), rot, origin, MiscConfig.Instance.weaponScale * holditem.scale, drawInfo.playerEffect, 0);
                 drawInfo.DrawDataCache.Add(itemglow);
             }
         }
@@ -907,7 +908,7 @@ namespace CoolerItemVisualEffect
         public override bool PreDraw(ref Color lightColor)
         {
             var dyeInfo = ConfigurationSwoosh.dyeConfigs.dyeInfo;
-            if (dyeInfo.Active && LogSpiralLibraryMod.CanUseRender) 
+            if (dyeInfo.Active && LogSpiralLibraryMod.CanUseRender)
             {
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
@@ -929,19 +930,22 @@ namespace CoolerItemVisualEffect
             //base.PreDraw(ref lightColor);
             return false;
         }
-        static float BalancingData(ActionModifyData orig,int cycle)
+        static float BalancingData(ActionModifyData orig, int cycle)
         {
             float k = 1f;
             k /= MathF.Sqrt(orig.actionOffsetSize);
             k *= orig.actionOffsetTimeScaler;
-            k /= MathF.Max(MathF.Pow(orig.actionOffsetKnockBack, .25f),1f);
+            k /= MathF.Max(MathF.Pow(orig.actionOffsetKnockBack, .25f), 1f);
             k /= 1 + orig.actionOffsetCritMultiplyer * .2f + orig.actionOffsetCritAdder * .01f;
-            
+
             return k / cycle / orig.actionOffsetDamage;// orig.actionOffsetDamage *
         }
         bool UseBalance => SeverConfig.Instance.AutoBalanceData && meleeSequence?.currentData != null;
         public override void AI()
         {
+            var mplr = player.GetModPlayer<MeleeModifyPlayer>();
+            if (!mplr.ConfigurationSwoosh.SwordModifyActive)
+                Projectile.Kill();
             base.AI();
         }
         public override void InitializeSequence(string modName, string fileName)
@@ -1062,6 +1066,17 @@ namespace CoolerItemVisualEffect
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             //if (!target.CanBeChasedBy()) return;
+
+            SequencePlayer seqPlr = player.GetModPlayer<SequencePlayer>();
+            if (seqPlr.cachedTime >= StandardInfo.standardShotCooldown && player.HeldItem.shoot == ProjectileID.None)
+            {
+                seqPlr.cachedTime -= StandardInfo.standardShotCooldown;
+                player._spawnBloodButcherer = true;
+                player._spawnMuramasaCut = true;
+                player._spawnTentacleSpikes = true;
+                player._spawnVolcanoExplosion = true;
+            }
+
             try
             {
                 var sItem = player.HeldItem;
@@ -1077,7 +1092,6 @@ namespace CoolerItemVisualEffect
                 }
                 //(ApplyNPCOnHitEffects ??= typeof(Player).GetMethod(nameof(ApplyNPCOnHitEffects), BindingFlags.Instance | BindingFlags.NonPublic))
                 //    ?.Invoke(player, new object[] { player.HeldItem, itemRectangle, num, knockback, target.whoAmI, damage, damage });
-
             }
             catch (Exception e)
             {

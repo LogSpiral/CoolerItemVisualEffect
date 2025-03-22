@@ -228,6 +228,7 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
         /// <param name="spriteBatch"></param>
         public override void DrawSelf(SpriteBatch spriteBatch)
         {
+            
             var innerList = UIList.GetType().GetField("_innerList", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(UIList) as UIElement;
             if (Scrollbar is not null && innerList is not null)
             {
@@ -667,6 +668,7 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
     }
     public class ConfigSLer : ModItem
     {
+        public static Condition EmptyHandCondition = new Condition("Mods.CoolerItemVisualEffect.EmptyHand", () => Main.LocalPlayer.HeldItem.type == ItemID.None);
         public override void SetDefaults()
         {
             Item.width = 34;
@@ -694,7 +696,7 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
         public override bool AltFunctionUse(Player player) => true;
         public override void AddRecipes()
         {
-            CreateRecipe().Register();
+            CreateRecipe().AddCondition(EmptyHandCondition).Register();
         }
     }
 }

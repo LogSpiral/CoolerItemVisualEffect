@@ -85,13 +85,21 @@ namespace CoolerItemVisualEffect
         {
             AddContent<NetModuleLoader>();
 
+
+
+
+
+            base.Load();
+        }
+        public override void PostSetupContent()
+        {
             if (Main.netMode == NetmodeID.Server || !ModLoader.TryGetMod("ImproveGame", out var qot)) return;
 
             AddModernConfigTitle(qot, this, Language.GetOrRegister("Mods.CoolerItemVisualEffect.Configs.ModernConfigTitle"));
 
             SetAboutPage(qot, this, () => "非常酷大剑转转转的配置中心！！！", (int)ItemID.IronShortsword, null, () => "关于大剑", () => "酷酷酷酷酷");
 
-            
+
 
             RegisterCategory(qot, this, [
                 (SeverConfig.Instance,[nameof(SeverConfig.meleeModifyLevel)]),
@@ -151,10 +159,7 @@ namespace CoolerItemVisualEffect
              nameof(MiscConfig.TeleprotEffectActive)
             ],
             ItemID.Cog, null, () => "杂项设置", () => "非常水");
-
-
-
-            base.Load();
+            base.PostSetupContent();
         }
         public override void Unload()
         {

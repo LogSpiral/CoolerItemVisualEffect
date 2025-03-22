@@ -182,7 +182,7 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
                 if (!IsMouseHovering) return default;
                 Rectangle rect = GetDimensions().ToRectangle();
                 Vector2 target = (new Vector2(Main.mouseX, Main.mouseY) - rect.Center()) / new Vector2(rect.Width, rect.Height) * 2;
-                Vector2 result = new Vector2(MathHelper.SmoothStep(0, 1, Math.Abs(target.X)) * Math.Sign(target.X), MathHelper.SmoothStep(0, 1, Math.Abs(target.Y)) * Math.Sign(target.Y));
+                Vector2 result = new(MathHelper.SmoothStep(0, 1, Math.Abs(target.X)) * Math.Sign(target.X), MathHelper.SmoothStep(0, 1, Math.Abs(target.Y)) * Math.Sign(target.Y));
                 result *= rect.Size();
                 result *= new Vector2(0.0625f, 0.25f);
                 //float right = (464f - rect.Width) / 2;

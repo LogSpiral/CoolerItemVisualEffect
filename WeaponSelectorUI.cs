@@ -113,7 +113,7 @@ namespace CoolerItemVisualEffect
                 for (int n = 0; n < countRow; n++)
                 {
                     int countRom = (n == countRow - 1 ? list.Count % 8 : 8) + 1;
-                    SUIPanel panel = new SUIPanel();
+                    SUIPanel panel = new();
                     panel.Draggable = false;
                     panel.Width.Set(0, 1);
                     panel.Height.Set(60, 0);
@@ -124,7 +124,7 @@ namespace CoolerItemVisualEffect
                         int index = 8 * n + k;
                         if (index < list.Count)
                         {
-                            var str = list[k];
+                            var str = list[index];
                             type = int.TryParse(str, out var t) ? t : ModContent.TryFind<ModItem>(str, out var result) ? result.Type : 0;
                         }
                         var btn = QuickButton(TextureAssets.Item[type], "");
@@ -274,7 +274,7 @@ namespace CoolerItemVisualEffect
             void SetupList()
             {
                 DataList.Clear();//清空
-                CoolerUITextPanel<LocalizedText> curConfigPanel = new CoolerUITextPanel<LocalizedText>(Language.GetOrRegister("Mods.CoolerItemVisualEffect.WeaponSelector.CurrentConfig"));
+                CoolerUITextPanel<LocalizedText> curConfigPanel = new(Language.GetOrRegister("Mods.CoolerItemVisualEffect.WeaponSelector.CurrentConfig"));
                 curConfigPanel.OnLeftClick += (_, _) =>
                 {
                     Value = "";
@@ -289,7 +289,7 @@ namespace CoolerItemVisualEffect
                 {
                     if (Path.GetExtension(path) == Extension)
                     {
-                        CoolerUITextPanel<string> configPanel = new CoolerUITextPanel<string>(Path.GetFileNameWithoutExtension(path));
+                        CoolerUITextPanel<string> configPanel = new(Path.GetFileNameWithoutExtension(path));
                         configPanel.OnLeftClick += (_, elem) =>
                         {
                             Value = Path.GetFileNameWithoutExtension((elem as CoolerUITextPanel<string>).Text);
@@ -1367,15 +1367,15 @@ namespace CoolerItemVisualEffect
             if (player.itemAnimation == player.itemAnimationMax)
             {
                 if (WeaponSelectorUI.Visible)
-                    WeaponSelectorSystem.Instance.WeaponSelectorUI.Close();
+                    Instance.WeaponSelectorUI.Close();
                 else
-                    WeaponSelectorSystem.Instance.WeaponSelectorUI.Open();
+                    Instance.WeaponSelectorUI.Open();
             }
         }
         public override bool AltFunctionUse(Player player) => true;
         public override void AddRecipes()
         {
-            CreateRecipe().Register();
+            CreateRecipe().AddCondition(ConfigSLer.EmptyHandCondition).Register();
         }
     }
 }

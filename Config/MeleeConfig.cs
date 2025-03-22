@@ -124,7 +124,7 @@ namespace CoolerItemVisualEffect.Config
         [CustomModConfigItem(typeof(SequenceDefinitionElement<MeleeAction>))]
         [CustomGenericConfigItem<GenericSequenceDefinitionElement<MeleeAction>>]//为自己的UI里编辑Config做手脚
         [TypeConverter(typeof(ToFromStringConverter<SequenceDefinition<MeleeAction>>))]
-        public SequenceDefinition<MeleeAction> swooshActionStyle = new SequenceDefinition<MeleeAction>(nameof(CoolerItemVisualEffect), nameof(CIVESword));
+        public SequenceDefinition<MeleeAction> swooshActionStyle = new(nameof(CoolerItemVisualEffect), nameof(CIVESword));
 
         [DefaultValue(7)]
         [Range(0, 11)]
@@ -191,7 +191,7 @@ namespace CoolerItemVisualEffect.Config
 
 
         [CustomPreview<ColorVectorPreview>]
-        public ColorVector colorVector = new ColorVector();//{ heatMapAlpha = 1, normalize = true }
+        public ColorVector colorVector = new();//{ heatMapAlpha = 1, normalize = true }
 
 
         [Increment(0.05f)]
