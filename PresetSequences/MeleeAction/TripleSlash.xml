@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sequence name="TripleSlash" AuthorName="螺线" Description="From starbound" FileName="TripleSlash" DisplayName="三连斩TripleSlash" ModName="CoolerItemVisualEffect" createTime="638793714641694986" lastModifyDate="638793715946993424" passWord="" Finished="True">
+  <Group>
+    <Wraper>
+      <Action ModifyData="(1.00|1.00|1.00|1.00|0|1.00)" Cycle="1" mode="0" name="LogSpiralLibrary/SwooshInfo" />
+    </Wraper>
+  </Group>
+  <Group>
+    <Wraper>
+      <Action ModifyData="(1.00|1.00|1.00|1.00|0|1.00)" Cycle="1" name="LogSpiralLibrary/CutInfo" />
+    </Wraper>
+  </Group>
+  <Group>
+    <Wraper>
+      <Action ModifyData="(1.00|1.00|1.00|1.00|0|1.00)" Cycle="1" KValueRange="1.00" visualCentered="True" name="LogSpiralLibrary/StabInfo" />
+    </Wraper>
+  </Group>
+</Sequence>

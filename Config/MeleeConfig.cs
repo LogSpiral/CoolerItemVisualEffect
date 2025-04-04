@@ -1,6 +1,6 @@
 ﻿using LogSpiralLibrary.CodeLibrary.ConfigModification;
 using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
-using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Melee;
+using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee;
 using NetSimplified.Syncing;
 using NetSimplified;
 using Newtonsoft.Json;

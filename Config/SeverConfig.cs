@@ -24,7 +24,7 @@ namespace CoolerItemVisualEffect.Config
             VisualOnly,
             Overhaul
         }
-        [DefaultValue(MeleeModifyLevel.VisualOnly)]
+        [DefaultValue(MeleeModifyLevel.Overhaul)]
         [DrawTicks]
         public MeleeModifyLevel meleeModifyLevel = MeleeModifyLevel.VisualOnly;
 

@@ -4,7 +4,7 @@ global using Terraria.DataStructures;
 global using Terraria.ID;
 global using Terraria.ModLoader;
 global using LogSpiralLibrary.CodeLibrary;
-global using MeleeSequence = LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Sequence<LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Melee.MeleeAction>;
+global using MeleeSequence = LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Core.Sequence<LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee.MeleeAction>;
 
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -51,9 +51,14 @@ namespace CoolerItemVisualEffect
                         }
                         catch
                         {
-                            return null;
+                            return false;
                         }
-                        return null;
+                        return true;
+                    }
+                case "RegisterNoWeaponDisplayCondition": 
+                    {
+                        MeleeModifyPlayer.RegisterNoWeaponDisplayCondition(args[1] as Func<bool>, args[2] as string);
+                        return true;
                     }
                 default: return null;
             }

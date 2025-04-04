@@ -15,7 +15,7 @@ using MonoMod.Cil;
 using Terraria;
 using Terraria.ID;
 using Terraria.Audio;
-using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Melee;
+using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee;
 using NetSimplified;
 using NetSimplified.Syncing;
 using Terraria.GameInput;
@@ -32,6 +32,8 @@ using Terraria.GameContent.UI.Elements;
 using MonoMod.Utils;
 using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
 using static Terraria.ModLoader.PlayerDrawLayer;
+using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.System;
+using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Core;
 
 namespace CoolerItemVisualEffect
 {
@@ -676,11 +678,33 @@ namespace CoolerItemVisualEffect
                 UpdateHeatMap(ref modPlayer.heatMap, modPlayer.hsl, modPlayer.ConfigurationSwoosh, texture);
             }
         }
+
+        public bool ShouldWeaponDisplay
+        {
+            get
+            {
+                bool flag = MiscConfig.Instance.useWeaponDisplay;
+                flag &= !UseSwordModify;
+                foreach (var condition in noWeaponDisplayDelegate)
+                    if (condition?.Invoke() is bool f)
+                        flag &= !f;
+                return flag;
+            }
+        }
+        static List<Func<bool>> noWeaponDisplayDelegate = [];
+        static HashSet<string> registeredDelegateName = [];
+        public static void RegisterNoWeaponDisplayCondition(Func<bool> condition, string name)
+        {
+            if (registeredDelegateName.Contains(name))
+                throw new Exception("a condition with a same name has been added");
+            noWeaponDisplayDelegate.Add(condition);
+            registeredDelegateName.Add(name);
+        }
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
         {
             if (UseSwordModify)
                 drawInfo.heldItem = new Item();
-            if (MiscConfig.Instance.useWeaponDisplay && !drawInfo.headOnlyRender)
+            if (ShouldWeaponDisplay && !drawInfo.headOnlyRender)
             {
                 if (Main.gameMenu && MiscConfig.Instance.firstWeaponDisplay)//
                 {
