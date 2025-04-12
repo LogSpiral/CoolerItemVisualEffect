@@ -183,7 +183,7 @@ namespace CoolerItemVisualEffect.Config
             Item item = Main.gameMenu ? null : Main.LocalPlayer.HeldItem;
             Texture2D texture = Main.gameMenu ? TextureAssets.Item[ItemID.TerraBlade].Value : MeleeModifyPlayer.GetWeaponTextureFromItem(item);
             var nframe = Main.itemAnimations[Main.gameMenu ? ItemID.TerraBlade : item.type]?.GetFrame(texture);
-            CustomVertexInfo[] c = DrawingMethods.GetItemVertexes(new Vector2(0.1f, 0.9f), 0, -MathHelper.PiOver2, texture, 1, 1, dimension.Center(), true, 1f, nframe);
+            CustomVertexInfo[] c = DrawingMethods.GetItemVertexes(new Vector2(0.1f, 0.9f), -MathHelper.PiOver4, MathHelper.PiOver4, 0, texture, 1, 1, dimension.Center(), false, 1f, nframe);
             Effect ItemEffect = LogSpiralLibraryMod.ItemEffectEX;
             if (ItemEffect == null) return;
             SamplerState sampler = SamplerState.AnisotropicWrap;

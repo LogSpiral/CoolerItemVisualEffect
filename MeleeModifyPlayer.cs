@@ -34,6 +34,7 @@ using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
 using static Terraria.ModLoader.PlayerDrawLayer;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.System;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Core;
+using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee.StandardMelee;
 
 namespace CoolerItemVisualEffect
 {
@@ -964,7 +965,7 @@ namespace CoolerItemVisualEffect
 
             return k / cycle / orig.actionOffsetDamage;// orig.actionOffsetDamage *
         }
-        bool UseBalance => SeverConfig.Instance.AutoBalanceData && meleeSequence?.currentData != null;
+        bool UseBalance => SeverConfig.Instance.AutoBalanceData && meleeSequence?.currentData is LSLMelee;// meleeSequence?.currentData != null;
         public override void AI()
         {
             var mplr = player.GetModPlayer<MeleeModifyPlayer>();
