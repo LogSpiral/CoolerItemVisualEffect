@@ -13,11 +13,11 @@ using Terraria.GameContent;
 using Terraria.Utilities;
 using Terraria.ModLoader.Config.UI;
 using Terraria.UI.Chat;
-using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
 using Terraria.Audio;
 using CoolerItemVisualEffect.Config;
 using Terraria.GameInput;
 using CoolerItemVisualEffect.Config.ConfigSLer;
+using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.ComplexPanel;
 
 namespace CoolerItemVisualEffect.Config.ConfigSLer
 {

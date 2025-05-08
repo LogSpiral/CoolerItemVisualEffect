@@ -1,5 +1,6 @@
 ﻿using CoolerItemVisualEffect.Config;
 using LogSpiralLibrary;
+using LogSpiralLibrary.CodeLibrary.Utilties.Extensions;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 

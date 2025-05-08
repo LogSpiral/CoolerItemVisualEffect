@@ -5,6 +5,7 @@ using Terraria.GameContent;
 using LogSpiralLibrary;
 using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
 using CoolerItemVisualEffect.Config;
+using LogSpiralLibrary.CodeLibrary.Utilties.Extensions;
 
 namespace CoolerItemVisualEffect
 {

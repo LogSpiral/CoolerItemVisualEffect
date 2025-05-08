@@ -1,5 +1,4 @@
 ﻿using LogSpiralLibrary.CodeLibrary.ConfigModification;
-using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee;
 using NetSimplified.Syncing;
 using NetSimplified;
@@ -14,6 +13,8 @@ using System.Threading.Tasks;
 using Terraria.ModLoader.Config;
 using LogSpiralLibrary.CodeLibrary.UIGenericConfig;
 using Terraria.ModLoader.UI;
+using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingEffects;
+using LogSpiralLibrary.CodeLibrary.Utilties.BaseClasses;
 
 namespace CoolerItemVisualEffect.Config
 {
@@ -111,6 +112,7 @@ namespace CoolerItemVisualEffect.Config
                 //    var MMPlr = plr.GetModPlayer<MeleeModifyPlayer>();
                 //    MeleeModifyPlayer.UpdateHeatMap(ref MMPlr.heatMap, MMPlr.hsl, MMPlr.ConfigurationSwoosh, MeleeModifyPlayer.GetWeaponTextureFromItem(plr.HeldItem));
                 //}
+                MMPlr.RegisterCurrentCanvas();
             }
             if (GetHashCode() == Interface.modConfig?.modConfig?.GetHashCode())
                 SyncMeleeConfig.Get(Main.myPlayer, this).Send();

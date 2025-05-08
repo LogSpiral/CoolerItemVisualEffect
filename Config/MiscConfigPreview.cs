@@ -1,5 +1,6 @@
 ﻿using LogSpiralLibrary;
 using LogSpiralLibrary.CodeLibrary.ConfigModification;
+using LogSpiralLibrary.CodeLibrary.Utilties.Extensions;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -105,7 +106,7 @@ namespace CoolerItemVisualEffect.Config
             Vector2 center = dimension.Center() + new Vector2(-144, 80);
             if (Main.gameMenu)
             {
-                LogSpiralLibrarySystem.ModTime += .33f;
+                GlobalTimeSystem.GlobalTime += .33f;
                 center += new Vector2(880, 280);
             }
             spriteBatch.End();
@@ -135,7 +136,7 @@ namespace CoolerItemVisualEffect.Config
             terraBeam.Center = dimension.Center() + Main.screenPosition;
             if (Main.gameMenu)
             {
-                LogSpiralLibrarySystem.ModTime += .33f;
+                GlobalTimeSystem.GlobalTime += .33f;
                 terraBeam.Center += new Vector2(880, 280);
 
             }
@@ -187,7 +188,7 @@ namespace CoolerItemVisualEffect.Config
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, bool data, OptionMetaData metaData)
         {
             if (Main.gameMenu)
-                LogSpiralLibrarySystem.ModTime += .33;
+                GlobalTimeSystem.GlobalTime += .33;
             var fac = (float)(LogSpiralLibraryMod.ModTime % 60 / 60);
             var _fac = (fac * 2 % 1).HillFactor2() * (fac < .5f ? .5f : 1f);
             float rotation = (float)LogSpiralLibraryMod.ModTime * .05f;

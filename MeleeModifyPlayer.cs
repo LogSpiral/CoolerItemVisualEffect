@@ -30,11 +30,14 @@ using tModPorter;
 using System.Configuration;
 using Terraria.GameContent.UI.Elements;
 using MonoMod.Utils;
-using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
 using static Terraria.ModLoader.PlayerDrawLayer;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.System;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Core;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee.StandardMelee;
+using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingContents;
+using LogSpiralLibrary.CodeLibrary.Utilties.Extensions;
+using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
+using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingEffects;
 
 namespace CoolerItemVisualEffect
 {
@@ -308,13 +311,32 @@ namespace CoolerItemVisualEffect
 
         public static ModKeybind ModifyActiveKeybind { get; private set; }
 
+        public const string CANVASNAMEPREFIX = "CoolerItemVisualEffect:MeleeModify_";
+
+        public static string GetCanvasNameViaID(int whoami) => CANVASNAMEPREFIX + whoami;
+
+        public void RegisterCurrentCanvas()
+        {
+            RenderCanvasSystem.RegisterCanvasFactory(GetCanvasNameViaID(player.whoAmI), () =>
+            {
+                var config = ConfigurationSwoosh;
+                var canvas = new RenderingCanvas([
+                    [config.distortConfigs.EffectInstance],
+                    [config.maskConfigs.EffectInstance, config.dyeConfigs.EffectInstance, config.bloomConfigs.EffectInstance]]);
+                return canvas;
+
+            });
+        }
+
         public override void OnEnterWorld()
         {
             SetUpWeaponGroupAndConfig();
-            //foreach(var pair in dict.OrderBy(pair => -pair.Key.index))
-            //    weaponGroup.Add(pair.Key, pair.Value);
+
+            RegisterCurrentCanvas();
+
             base.OnEnterWorld();
         }
+
         void SetUpWeaponGroupAndConfig(bool forced = false)
         {
             if (player.whoAmI != Main.myPlayer) return;
@@ -359,6 +381,7 @@ namespace CoolerItemVisualEffect
             }
             WeaponGroupSyncing();
         }
+
         public override void Load()
         {
             On_Player.ItemCheck_EmitUseVisuals += On_Player_ItemCheck_EmitUseVisuals_CIVEMelee;
@@ -644,6 +667,7 @@ namespace CoolerItemVisualEffect
                         }
                     }
                 }
+                
                 modPlayer.lastWeaponHash = player.HeldItem.GetHashCode();
                 lastWeaponType = player.HeldItem.type;
                 var width = texture.Width;
@@ -677,6 +701,7 @@ namespace CoolerItemVisualEffect
                 var newColor = modPlayer.mainColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
                 modPlayer.hsl = Main.rgbToHsl(newColor);
                 UpdateHeatMap(ref modPlayer.heatMap, modPlayer.hsl, modPlayer.ConfigurationSwoosh, texture);
+                modPlayer.RegisterCurrentCanvas();
             }
         }
 
@@ -836,10 +861,28 @@ namespace CoolerItemVisualEffect
                         if (eVec.X == 0 && eVec.Z == 0)
                             eVec = new(.5f, 0, .5f);
 
-                        currentSwoosh = UltraSwoosh.NewUltraSwoosh(Color.White, timeLeft, length, player.Center, heatMap, player.direction != 1, 0, 1f, (-1.5f, .25f), aniIdx, baseIdx, eVec);
+                        string canvasName = GetCanvasNameViaID(player.whoAmI);
+
+                        var swoosh = currentSwoosh = UltraSwoosh.NewUltraSwoosh(canvasName, timeLeft, length, player.Center, (-1.5f, .25f));
+                        swoosh.heatMap = heatMap;
+                        swoosh.negativeDir = player.direction != -1;
+                        swoosh.rotation = 0f;
+                        swoosh.xScaler = 1f;
+                        swoosh.aniTexIndex = aniIdx;
+                        swoosh.baseTexIndex = baseIdx;
+                        swoosh.ColorVector = eVec;
+
                         if (player.HeldItem.type == ItemID.TrueExcalibur)
-                            extraSwoosh = UltraSwoosh.NewUltraSwoosh(Color.White, timeLeft, length * 1.5f, player.Center, LogSpiralLibraryMod.HeatMap[5].Value, player.direction != 1, 0, 1, (-1.5f, .25f), aniIdx, baseIdx, alphaVec);
-                        currentSwoosh.ModityAllRenderInfo([[configurationSwoosh.distortConfigs.effectInfo], [configurationSwoosh.maskConfigs.maskEffectInfo, configurationSwoosh.dyeConfigs.dyeInfo, configurationSwoosh.bloomConfigs.effectInfo]]);
+                        {
+                            swoosh = extraSwoosh = UltraSwoosh.NewUltraSwoosh(canvasName, timeLeft, length * 1.5f, player.Center, (-1.5f, .25f));
+                            swoosh.heatMap = LogSpiralLibraryMod.HeatMap[5].Value;
+                            swoosh.negativeDir = player.direction != -1;
+                            swoosh.rotation = 0f;
+                            swoosh.xScaler = 1f;
+                            swoosh.aniTexIndex = aniIdx;
+                            swoosh.baseTexIndex = baseIdx;
+                            swoosh.ColorVector = alphaVec;
+                        }
                     }
                     if (player.itemAnimation > 0 && currentSwoosh != null)
                     {
@@ -871,6 +914,79 @@ namespace CoolerItemVisualEffect
     }
     public class CIVESword : MeleeSequenceProj
     {
+        #region 标准参数设置
+
+        public override void UpdateStandardInfo(StandardInfo standardInfo, VertexDrawStandardInfo vertexStandard)
+        {
+            var plr = player;
+            var item = plr.HeldItem;
+
+            #region 加载原版贴图
+
+            if (item.flame && !TextureAssets.ItemFlame[item.type].IsLoaded)
+                Main.instance.LoadItemFlames(item.type);
+
+            if (item.glowMask != -1 && !TextureAssets.GlowMask[item.glowMask].IsLoaded)
+                Main.Assets.Request<Texture2D>(TextureAssets.GlowMask[item.glowMask].Name);
+
+            #endregion
+
+
+            var rectangle = Main.itemAnimations[item.type]?.GetFrame(TextureAssets.Item[item.type].Value);
+
+            #region 设置标准参数
+
+            standardInfo.standardScaler = 80;
+
+            standardInfo.standardColor = plr.GetModPlayer<MeleeModifyPlayer>().mainColor;
+
+            standardInfo.standardTimer = player.itemAnimationMax;
+
+            standardInfo.standardShotCooldown = CombinedHooks.TotalUseTime(plr.HeldItem.useTime, plr, plr.HeldItem);
+
+            standardInfo.standardGlowTexture = item.glowMask != -1 ? TextureAssets.GlowMask[item.glowMask].Value : (item.flame ? TextureAssets.ItemFlame[item.type].Value : null);
+
+            standardInfo.itemType = item.type;
+
+            standardInfo.soundStyle = item.UseSound;
+
+            standardInfo.dustAmount = player.GetModPlayer<MeleeModifyPlayer>().ConfigurationSwoosh.dustQuantity;
+
+            standardInfo.frame = rectangle;
+
+            standardInfo.extraLight = ConfigurationSwoosh.weaponExtraLight;
+
+            #endregion
+
+            #region 设置顶点绘制标准参数
+
+            if (Main.netMode == NetmodeID.Server) return;
+
+            vertexStandard.canvasName = MeleeModifyPlayer.GetCanvasNameViaID(player.whoAmI);
+
+            vertexStandard.heatMap = plr.GetModPlayer<MeleeModifyPlayer>().heatMap ?? LogSpiralLibraryMod.HeatMap[0].Value;
+
+            vertexStandard.scaler = (item.type == ItemID.TrueExcalibur ? 1.5f : 1) * (rectangle == null ? MeleeModifyPlayer.GetWeaponTextureFromItem(item).Size() : rectangle.Value.Size()).Length() * 1.25f * plr.GetAdjustedItemScale(item);
+
+            vertexStandard.timeLeft = ConfigurationSwoosh.swooshTimeLeft;
+
+            vertexStandard.colorVec = ConfigurationSwoosh.colorVector.AlphaVector;
+
+            vertexStandard.swooshTexIndex = (ConfigurationSwoosh.animateIndexSwoosh, ConfigurationSwoosh.baseIndexSwoosh);
+
+            vertexStandard.stabTexIndex = (ConfigurationSwoosh.animateIndexStab, ConfigurationSwoosh.baseIndexStab);
+
+            vertexStandard.alphaFactor = ConfigurationSwoosh.alphaFactor;
+
+            vertexStandard.heatRotation = ConfigurationSwoosh.directOfHeatMap;
+
+            #endregion
+
+        }
+
+        #endregion
+
+
         public override bool? CanHitNPC(NPC target)
         {
             if (target.isLikeATownNPC && player.HeldItem.type == ItemID.Flymeal) return true;
@@ -885,59 +1001,20 @@ namespace CoolerItemVisualEffect
         public bool UseSwordModify => player.GetModPlayer<MeleeModifyPlayer>().UseSwordModify || (meleeSequence.currentData != null && ((meleeSequence.currentData.counter < meleeSequence.currentData.Cycle || (meleeSequence.currentData.counter == meleeSequence.currentData.Cycle && meleeSequence.currentData.timer > 0)) && !meleeSequence.currentWrapper.finished));
         public override string Texture => $"Terraria/Images/Item_{ItemID.TerraBlade}";
         public MeleeConfig ConfigurationSwoosh => player.GetModPlayer<MeleeModifyPlayer>().ConfigurationSwoosh;
-        public override StandardInfo StandardInfo
-        {
-            get
-            {
-                var plr = player;
-                var item = plr.HeldItem;
-                if (item.flame && !TextureAssets.ItemFlame[item.type].IsLoaded)
-                {
-                    Main.instance.LoadItemFlames(item.type);
-                }
-                if (item.glowMask != -1 && !TextureAssets.GlowMask[item.glowMask].IsLoaded)
-                {
-                    Main.Assets.Request<Texture2D>(TextureAssets.GlowMask[item.glowMask].Name);
-                }
-                var rectangle = Main.itemAnimations[item.type]?.GetFrame(TextureAssets.Item[item.type].Value);
-                var result = base.StandardInfo with
-                {
-                    standardColor = plr.GetModPlayer<MeleeModifyPlayer>().mainColor,// * .25f
-                                                                                    //standardGlowTexture = ModContent.Request<Texture2D>(GlowTexture).Value,
-                    standardTimer = plr.itemAnimationMax,
-                    standardShotCooldown = CombinedHooks.TotalUseTime(plr.HeldItem.useTime, plr, plr.HeldItem),//plr.itemTimeMax,
-                    vertexStandard = Main.netMode == NetmodeID.Server ? default : new VertexDrawInfoStandardInfo() with
-                    {
-                        active = true,
-                        heatMap = plr.GetModPlayer<MeleeModifyPlayer>().heatMap ?? LogSpiralLibraryMod.HeatMap[0].Value,
-                        renderInfos = [[ConfigurationSwoosh.distortConfigs.effectInfo], [ConfigurationSwoosh.maskConfigs.maskEffectInfo, ConfigurationSwoosh.dyeConfigs.dyeInfo, ConfigurationSwoosh.bloomConfigs.effectInfo]],
 
-                        scaler = (item.type == ItemID.TrueExcalibur ? 1.5f : 1) * (rectangle == null ? MeleeModifyPlayer.GetWeaponTextureFromItem(item).Size() : rectangle.Value.Size()).Length() * 1.25f * plr.GetAdjustedItemScale(item),
-                        timeLeft = ConfigurationSwoosh.swooshTimeLeft,
-                        colorVec = ConfigurationSwoosh.colorVector.AlphaVector,
-                        swooshTexIndex = (ConfigurationSwoosh.animateIndexSwoosh, ConfigurationSwoosh.baseIndexSwoosh),
-                        stabTexIndex = (ConfigurationSwoosh.animateIndexStab, ConfigurationSwoosh.baseIndexStab),
-                        alphaFactor = ConfigurationSwoosh.alphaFactor,
-                        heatRotation = ConfigurationSwoosh.directOfHeatMap
-                    },
-                    standardGlowTexture = item.glowMask != -1 ? TextureAssets.GlowMask[item.glowMask].Value : (item.flame ? TextureAssets.ItemFlame[item.type].Value : null),
-                    itemType = item.type,
-                    soundStyle = item.UseSound,
-                    dustAmount = plr.GetModPlayer<MeleeModifyPlayer>().ConfigurationSwoosh.dustQuantity,
-                    frame = rectangle,
-                    extraLight = ConfigurationSwoosh.weaponExtraLight
-                };
-                return result;
-            }
-        }
+
         public override bool PreDraw(ref Color lightColor)
         {
-            var dyeInfo = ConfigurationSwoosh.dyeConfigs.dyeInfo;
+            var dyeInfo = ConfigurationSwoosh.dyeConfigs.EffectInstance;
+            var spriteBatch = Main.spriteBatch;
+            var graphicsDevice = Main.graphics.GraphicsDevice;
+
             if (dyeInfo.Active && LogSpiralLibraryMod.CanUseRender)
             {
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-                dyeInfo.PreDraw(Main.spriteBatch, Main.instance.GraphicsDevice, LogSpiralLibraryMod.Instance.Render, LogSpiralLibraryMod.Instance.Render_Swap);
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+                graphicsDevice.SetRenderTarget(LogSpiralLibraryMod.Instance.RenderOrig);
+                graphicsDevice.Clear(Color.Transparent);
             }
 
             if (currentData != null && UseSwordModify)
@@ -947,10 +1024,17 @@ namespace CoolerItemVisualEffect
             }
             if (dyeInfo.Active && LogSpiralLibraryMod.CanUseRender)
             {
-                Main.spriteBatch.End();
-                dyeInfo.PostDraw(Main.spriteBatch, Main.instance.GraphicsDevice, LogSpiralLibraryMod.Instance.Render, LogSpiralLibraryMod.Instance.Render_Swap);
-                dyeInfo.DrawToScreen(Main.spriteBatch, Main.instance.GraphicsDevice, LogSpiralLibraryMod.Instance.Render, LogSpiralLibraryMod.Instance.Render_Swap);
-                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+                var contentRender = LogSpiralLibraryMod.Instance.RenderOrig;
+                var assistRender = LogSpiralLibraryMod.Instance.Render;
+
+                spriteBatch.End();
+                dyeInfo.ProcessRender(Main.spriteBatch, Main.instance.GraphicsDevice, ref contentRender, ref assistRender);
+
+                spriteBatch.Begin();
+                spriteBatch.Draw(contentRender, Vector2.Zero, Color.White);
+                spriteBatch.End();
+
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             }
             //base.PreDraw(ref lightColor);
             return false;
