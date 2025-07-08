@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<Import Project="..\tModLoader.targets" />
 	<PropertyGroup>
-		<AssemblyName>CoolerItemVisualEffect</AssemblyName>
-		<LangVersion>latest</LangVersion>
-		<Solaestas-UsePublicizer>True</Solaestas-UsePublicizer>
+		<LangVersion>preview</LangVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Solaestas.tModLoader.ModBuilder" Version="1.6.1" />
@@ -27,8 +25,5 @@
 		<None Include="./description.txt;./description_workshop.txt;./description_workshop_en.txt">
 			<Visible>true</Visible>
 		</None>
-	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Update="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.1" />
 	</ItemGroup>
 </Project>

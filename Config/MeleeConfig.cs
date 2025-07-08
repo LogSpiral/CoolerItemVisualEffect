@@ -112,7 +112,7 @@ namespace CoolerItemVisualEffect.Config
                 //    var MMPlr = plr.GetModPlayer<MeleeModifyPlayer>();
                 //    MeleeModifyPlayer.UpdateHeatMap(ref MMPlr.heatMap, MMPlr.hsl, MMPlr.ConfigurationSwoosh, MeleeModifyPlayer.GetWeaponTextureFromItem(plr.HeldItem));
                 //}
-                MMPlr.RegisterCurrentCanvas();
+                MMPlr.RefreshConfigEffects();
             }
             if (GetHashCode() == Interface.modConfig?.modConfig?.GetHashCode())
                 SyncMeleeConfig.Get(Main.myPlayer, this).Send();

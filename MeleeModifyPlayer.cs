@@ -6,31 +6,17 @@ using Terraria.Localization;
 using static CoolerItemVisualEffect.Config.MeleeConfig;
 using Terraria.GameContent.Drawing;
 using LogSpiralLibrary;
-using LogSpiralLibrary.CodeLibrary.DataStructures;
-using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures;
-using Terraria.ModLoader;
 using System.Linq;
 using System.IO;
 using MonoMod.Cil;
-using Terraria;
-using Terraria.ID;
-using Terraria.Audio;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee;
 using NetSimplified;
-using NetSimplified.Syncing;
 using Terraria.GameInput;
 using Terraria.ModLoader.Config;
-using Terraria.ModLoader.Config.UI;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using CoolerItemVisualEffect.Config;
 using CoolerItemVisualEffect.Config.ConfigSLer;
 using Newtonsoft.Json;
-using tModPorter;
-using System.Configuration;
-using Terraria.GameContent.UI.Elements;
 using MonoMod.Utils;
-using static Terraria.ModLoader.PlayerDrawLayer;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.System;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Core;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee.StandardMelee;
@@ -311,22 +297,35 @@ namespace CoolerItemVisualEffect
 
         public static ModKeybind ModifyActiveKeybind { get; private set; }
 
+        #region Canvas
         public const string CANVASNAMEPREFIX = "CoolerItemVisualEffect:MeleeModify_";
 
         public static string GetCanvasNameViaID(int whoami) => CANVASNAMEPREFIX + whoami;
 
+        readonly AirDistortEffect airDistortEffect = new();
+
+        readonly MaskEffect maskEffect = new();
+
+        readonly DyeEffect dyeEfect = new();
+
+        readonly BloomEffect bloomEffect = new();
+
+        IRenderEffect[][] RenderEffects => field ??= [[airDistortEffect], [maskEffect, dyeEfect, bloomEffect]];
+
+        public void RefreshConfigEffects()
+        {
+            var config = ConfigurationSwoosh;
+            config?.distortConfigs?.CopyToInstance(airDistortEffect);
+            config?.maskConfigs?.CopyToInstance(maskEffect);
+            config?.dyeConfigs?.CopyToInstance(dyeEfect);
+            config?.bloomConfigs?.CopyToInstance(bloomEffect);
+        }
+
         public void RegisterCurrentCanvas()
         {
-            RenderCanvasSystem.RegisterCanvasFactory(GetCanvasNameViaID(player.whoAmI), () =>
-            {
-                var config = ConfigurationSwoosh;
-                var canvas = new RenderingCanvas([
-                    [config.distortConfigs.EffectInstance],
-                    [config.maskConfigs.EffectInstance, config.dyeConfigs.EffectInstance, config.bloomConfigs.EffectInstance]]);
-                return canvas;
-
-            });
+            RenderCanvasSystem.RegisterCanvasFactory(GetCanvasNameViaID(player.whoAmI), () => new(RenderEffects));
         }
+        #endregion
 
         public override void OnEnterWorld()
         {
@@ -667,7 +666,7 @@ namespace CoolerItemVisualEffect
                         }
                     }
                 }
-                
+
                 modPlayer.lastWeaponHash = player.HeldItem.GetHashCode();
                 lastWeaponType = player.HeldItem.type;
                 var width = texture.Width;
@@ -701,7 +700,7 @@ namespace CoolerItemVisualEffect
                 var newColor = modPlayer.mainColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
                 modPlayer.hsl = Main.rgbToHsl(newColor);
                 UpdateHeatMap(ref modPlayer.heatMap, modPlayer.hsl, modPlayer.ConfigurationSwoosh, texture);
-                modPlayer.RegisterCurrentCanvas();
+                modPlayer.RefreshConfigEffects();
             }
         }
 

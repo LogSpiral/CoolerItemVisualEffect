@@ -24,60 +24,88 @@ using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
 using Terraria.ModLoader.UI;
 using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingContents;
 using LogSpiralLibrary.CodeLibrary.Utilties.Extensions;
+using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingEffects;
 
 namespace CoolerItemVisualEffect.Config
 {
     public static class PreviewHelper
     {
-        public static Vector3 DefaultHSL => new (0.3227513f, 0.25301206f, 0.4882353f);
+        public static Vector3 DefaultHSL => new(0.3227513f, 0.25301206f, 0.4882353f);
         public static Texture2D previewHeatMap;
         public static float weaponScale;
         public static void DrawUltraSwoosh(SpriteBatch spriteBatch, Vector2 center, MeleeConfig config, Texture2D heatMap = null, int? baseTex = null, int? aniTex = null, Vector3? alphaVector = null, bool? useRenderEffect = null, Action<UltraSwoosh> otherOperation = null)
         {
 
-            //RenderCanvasSystem.UIDrawing = true;
-            //UltraSwoosh[] ultraSwooshes = new UltraSwoosh[1];
-            //MeleeModifyPlayer mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
-            //if (previewHeatMap == null)
-            //    MeleeModifyPlayer.UpdateHeatMap(ref previewHeatMap, DefaultHSL, config, TextureAssets.Item[ItemID.TerraBlade].Value);//hsl使用铸炼的泰拉刃生成
-            //UltraSwoosh.NewUltraSwoosh(mplr?.mainColor ?? Main.DiscoColor, ultraSwooshes, 30, 80, center, heatMap ?? mplr?.heatMap ?? previewHeatMap ?? LogSpiralLibraryMod.HeatMap[1].Value, false, 0, 1, null, aniTex ?? config.animateIndexSwoosh, baseTex ?? config.baseIndexSwoosh, alphaVector ?? config.colorVector.AlphaVector, false);
-            //ultraSwooshes[0].weaponTex = MeleeModifyPlayer.GetWeaponTextureFromItem(mplr?.Player.HeldItem);
-            //ultraSwooshes[0].alphaFactor = config.alphaFactor;
-            //ultraSwooshes[0].heatRotation = config.directOfHeatMap;
-            //ultraSwooshes[0].ModityAllRenderInfo([[config.distortConfigs.EffectInstance], [config.maskConfigs.EffectInstance, config.dyeConfigs.EffectInstance, config.bloomConfigs.EffectInstance]]);
-            //ultraSwooshes[0].Update();
-            //ultraSwooshes[0].timeLeft++;
-            ////ultraSwooshes[0].Counts = 45;
-            ////ultraSwooshes[0].Counts = (int)(7 + Math.Cos(LogSpiralLibraryMod.ModTime * 0.03) * 9);
-            //otherOperation?.Invoke(ultraSwooshes[0]);
-            //spriteBatch.End();
-            //VertexDrawInfo.DrawRenderDrawingContents(ultraSwooshes, typeof(UltraSwoosh), spriteBatch, useRenderEffect ?? config.useRenderEffectPVInOtherConfig ? Main.graphics.GraphicsDevice : null, LogSpiralLibraryMod.Instance.Render, LogSpiralLibraryMod.Instance.Render_Swap);
-            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
-            //RenderCanvasSystem.UIDrawing = false;
+            MeleeModifyPlayer mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
+            if (previewHeatMap == null)
+                MeleeModifyPlayer.UpdateHeatMap(ref previewHeatMap, DefaultHSL, config, TextureAssets.Item[ItemID.TerraBlade].Value);//hsl使用铸炼的泰拉刃生成
+
+            IRenderEffect[][] renderEffects = [[config.distortConfigs.EffectInstance], [config.maskConfigs.EffectInstance, config.dyeConfigs.EffectInstance, config.bloomConfigs.EffectInstance]];
+
+            RenderingCanvas renderingCanvas = new(useRenderEffect ?? config.useRenderEffectPVInOtherConfig ? renderEffects : []) { IsUILayer = true };
+
+
+            var content = new UltraSwoosh();
+            content.timeLeft = content.timeLeftMax = 30;
+            content.scaler = 80;
+            content.center = center;
+            content.angleRange = (-1.125f, 0.7125f);
+            content.aniTexIndex = aniTex ?? config.animateIndexSwoosh;
+            content.baseTexIndex = baseTex ?? config.baseIndexSwoosh;
+
+            content.heatMap = heatMap ?? mplr?.heatMap ?? previewHeatMap ?? LogSpiralLibraryMod.HeatMap[1].Value;
+            content.ColorVector = alphaVector ?? config.colorVector.AlphaVector;
+
+            content.weaponTex = MeleeModifyPlayer.GetWeaponTextureFromItem(mplr?.Player.HeldItem);
+            content.alphaFactor = config.alphaFactor;
+            content.heatRotation = config.directOfHeatMap;
+            content.Update();
+            content.timeLeft++;
+            otherOperation?.Invoke(content);
+
+            renderingCanvas.Add(content);
+
+            spriteBatch.End();
+            renderingCanvas.DrawContents(spriteBatch, Main.graphics.GraphicsDevice);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
         }
 
         public static void DrawUltraStab(SpriteBatch spriteBatch, Vector2 center, MeleeConfig config, Texture2D heatMap = null, int? baseTex = null, int? aniTex = null, Vector3? alphaVector = null, bool? useRenderEffect = null, Action<UltraStab> otherOperation = null)
         {
-            //RenderCanvasSystem.UIDrawing = true;
+            MeleeModifyPlayer mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
+            if (previewHeatMap == null)
+                MeleeModifyPlayer.UpdateHeatMap(ref previewHeatMap, DefaultHSL, config, TextureAssets.Item[ItemID.TerraBlade].Value);//hsl使用铸炼的泰拉刃生成
 
-            //UltraStab[] ultraStabs = new UltraStab[1];
-            //MeleeModifyPlayer mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
-            //if (previewHeatMap == null)
-            //    MeleeModifyPlayer.UpdateHeatMap(ref previewHeatMap, DefaultHSL, config, TextureAssets.Item[ItemID.TerraBlade].Value);
-            //UltraStab.NewUltraStab(mplr?.mainColor ?? Main.DiscoColor, ultraStabs, 30, 160, center, heatMap ?? mplr?.heatMap ?? previewHeatMap ?? LogSpiralLibraryMod.HeatMap[1].Value
-            //    , false, 0, 2, aniTex ?? config.animateIndexStab, baseTex ?? config.baseIndexStab, alphaVector ?? config.colorVector.AlphaVector, false);
-            //ultraStabs[0].weaponTex = MeleeModifyPlayer.GetWeaponTextureFromItem(mplr?.Player.HeldItem);
-            //ultraStabs[0].alphaFactor = config.alphaFactor;
-            //ultraStabs[0].heatRotation = config.directOfHeatMap;
-            //ultraStabs[0].Update();
-            //ultraStabs[0].timeLeft++;
+            IRenderEffect[][] renderEffects = [[config.distortConfigs.EffectInstance], [config.maskConfigs.EffectInstance, config.dyeConfigs.EffectInstance, config.bloomConfigs.EffectInstance]];
 
-            //otherOperation?.Invoke(ultraStabs[0]);
-            //spriteBatch.End();
-            //ultraStabs[0].ModityAllRenderInfo([[config.distortConfigs.EffectInstance], [config.maskConfigs.EffectInstance, config.dyeConfigs.EffectInstance, config.bloomConfigs.EffectInstance]]);
-            //VertexDrawInfo.DrawRenderDrawingContents(ultraStabs, typeof(UltraStab), spriteBatch, useRenderEffect ?? config.useRenderEffectPVInOtherConfig ? Main.graphics.GraphicsDevice : null, LogSpiralLibraryMod.Instance.Render, LogSpiralLibraryMod.Instance.Render_Swap);
-            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
-            //RenderCanvasSystem.UIDrawing = false;
+            RenderingCanvas renderingCanvas = new(useRenderEffect ?? config.useRenderEffectPVInOtherConfig ? renderEffects : []) { IsUILayer = true };
+
+
+            var content = new UltraStab();
+            content.timeLeft = content.timeLeftMax = 30;
+            content.scaler = 160;
+            content.center = center;
+            content.aniTexIndex = aniTex ?? config.animateIndexStab;
+            content.baseTexIndex = baseTex ?? config.baseIndexStab;
+
+            content.heatMap = heatMap ?? mplr?.heatMap ?? previewHeatMap ?? LogSpiralLibraryMod.HeatMap[1].Value;
+            content.ColorVector = alphaVector ?? config.colorVector.AlphaVector;
+
+            content.weaponTex = MeleeModifyPlayer.GetWeaponTextureFromItem(mplr?.Player.HeldItem);
+            content.alphaFactor = config.alphaFactor;
+            content.heatRotation = config.directOfHeatMap;
+            content.Update();
+            content.timeLeft++;
+            otherOperation?.Invoke(content);
+
+            renderingCanvas.Add(content);
+
+            spriteBatch.End();
+            renderingCanvas.DrawContents(spriteBatch, Main.graphics.GraphicsDevice);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+
         }
 
         public static void DrawSorry(SpriteBatch spriteBatch, Rectangle rectangle)

@@ -38,9 +38,11 @@ namespace CoolerItemVisualEffect.Config
 
         public Color GetValue(float t)
         {
-            int count = colors.Count;
-            if (colors == null || count == 0)
+            if(colors is null or { Count : 0})
                 return Color.Transparent;
+
+            int count = colors.Count;
+
             if (count == 1) return colors[0].color;
 
             ColorInfo current = colors[0];
