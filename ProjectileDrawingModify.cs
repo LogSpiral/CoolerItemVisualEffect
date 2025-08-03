@@ -316,7 +316,7 @@ namespace CoolerItemVisualEffect
                         {
                             var vCenter = projectile.Center;
                             int t = 0;
-                            var tile = Main.tile[(int)vCenter.X / 16, (int)vCenter.Y / 16];
+                            var tile = Framing.GetTileSafely((int)vCenter.X / 16, (int)vCenter.Y / 16);
 
                             while (t < 30 && !(tile.HasTile && (Main.tileSolid[tile.TileType])))// || tile.TileType == TileID.TargetDummy
                             {
@@ -324,7 +324,7 @@ namespace CoolerItemVisualEffect
                                 t++;
                                 Point coord = new((int)vCenter.X / 16, (int)vCenter.Y / 16);
                                 if (coord.X > 0 && coord.X < Main.tile.Width && coord.Y > 0 && coord.Y < Main.tile.Height)
-                                    tile = Main.tile[coord];
+                                    tile = Framing.GetTileSafely(coord);
                             }
                             mainColor *= MathHelper.Clamp((t - 1) / 30f, 0, 1);
                         }
@@ -537,7 +537,7 @@ namespace CoolerItemVisualEffect
                             {
                                 var vCenter = projectile.Center;
                                 int t = 0;
-                                var tile = Main.tile[(int)vCenter.X / 16, (int)vCenter.Y / 16];
+                                var tile = Framing.GetTileSafely((int)vCenter.X / 16, (int)vCenter.Y / 16)  ;
 
                                 while (t < 30 && !(tile.HasTile && Main.tileSolid[tile.TileType]))
                                 {
@@ -545,7 +545,7 @@ namespace CoolerItemVisualEffect
                                     t++;
                                     Point coord = new((int)vCenter.X / 16, (int)vCenter.Y / 16);
                                     if (coord.X > 0 && coord.X < Main.tile.Width && coord.Y > 0 && coord.Y < Main.tile.Height)
-                                        tile = Main.tile[coord];
+                                        tile = Framing.GetTileSafely(coord);
                                 }
                                 mainColor *= MathHelper.Clamp((t - 1) / 30f, 0, 1);
                             }
