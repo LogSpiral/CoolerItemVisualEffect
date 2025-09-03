@@ -4,6 +4,7 @@ using LogSpiralLibrary;
 using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingContents;
 using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingEffects;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee;
+using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee.Core;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee.StandardMelee;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Core;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Core.BuiltInGroups.Arguments;
@@ -257,7 +258,7 @@ public class MeleeModifyPlayer : ModPlayer
                     }
                 }
 #endif
-            label:
+        label:
             configurationSwoosh ??= Main.myPlayer == Player.whoAmI ? Instance : new MeleeConfig();
 
             return configurationSwoosh;
@@ -315,7 +316,7 @@ public class MeleeModifyPlayer : ModPlayer
         SyncWeaponGroup.Get(Player.whoAmI, weaponGroup, meleeConfigs).Send();
     }
 
-#endregion 基本量声明
+    #endregion 基本量声明
 
     #region 视觉效果相关
 
@@ -979,7 +980,8 @@ public class CIVESword : MeleeSequenceProj
 {
     #region 标准参数设置
 
-    public override void UpdateStandardInfo(StandardInfo standardInfo, VertexDrawStandardInfo vertexStandard)
+    //public override void UpdateStandardInfo(StandardInfo standardInfo, VertexDrawStandardInfo vertexStandard)
+    public override void InitializeStandardInfo(StandardInfo standardInfo, VertexDrawStandardInfo vertexStandard)
     {
         var plr = Player;
         var item = plr.HeldItem;
@@ -1042,6 +1044,9 @@ public class CIVESword : MeleeSequenceProj
 
         vertexStandard.heatRotation = ConfigurationSwoosh.directOfHeatMap;
 
+        if (ConfigurationSwoosh.dyeConfigs is { Available: true } dyeConfig)
+            vertexStandard.SetDyeShaderID(dyeConfig.Dye.Type);
+
         #endregion 设置顶点绘制标准参数
     }
 
@@ -1072,6 +1077,14 @@ public class CIVESword : MeleeSequenceProj
 
         if (dyeInfo.Active && LogSpiralLibraryMod.CanUseRender)
         {
+            spriteBatch.End();
+            spriteBatch.Begin();
+            graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
+            graphicsDevice.Clear(Color.Transparent);
+            spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
             graphicsDevice.SetRenderTarget(LogSpiralLibraryMod.Instance.RenderOrig);
             graphicsDevice.Clear(Color.Transparent);
         }
@@ -1087,13 +1100,17 @@ public class CIVESword : MeleeSequenceProj
             spriteBatch.End();
             dyeInfo.ProcessRender(Main.spriteBatch, Main.instance.GraphicsDevice, ref contentRender, ref assistRender);
 
+
+
             spriteBatch.Begin();
+            graphicsDevice.SetRenderTarget(Main.screenTarget);
+            graphicsDevice.Clear(Color.Transparent);
+            spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
             spriteBatch.Draw(contentRender, Vector2.Zero, Color.White);
             spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
-        base.PreDraw(ref lightColor);
         return false;
     }
 
