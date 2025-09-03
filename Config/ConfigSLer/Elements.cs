@@ -1,23 +1,25 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿#if false
+
+
+using CoolerItemVisualEffect.Config.ConfigSLer;
+using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.ComplexPanel;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
 using System;
 using System.IO;
 using System.Linq;
+using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
+using Terraria.GameInput;
 using Terraria.Localization;
+using Terraria.ModLoader.Config.UI;
 using Terraria.UI;
+using Terraria.UI.Chat;
+using Terraria.Utilities;
 using static CoolerItemVisualEffect.Config.ConfigSLer.ConfigSLHelper;
 using static CoolerItemVisualEffect.Config.ConfigSLer.CoolerPanelInfo;
-using Terraria.GameContent;
-using Terraria.Utilities;
-using Terraria.ModLoader.Config.UI;
-using Terraria.UI.Chat;
-using Terraria.Audio;
-using CoolerItemVisualEffect.Config;
-using Terraria.GameInput;
-using CoolerItemVisualEffect.Config.ConfigSLer;
-using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.ComplexPanel;
 
 namespace CoolerItemVisualEffect.Config.ConfigSLer
 {
@@ -35,6 +37,7 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
         Silver,
         Holy
     }
+
     public class CoolerPanelInfo : ComplexPanelInfo
     {
         public static bool KeepOrigin => currentStyle == ConfigTexStyle.Origin;
@@ -45,8 +48,11 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
 
         public static Texture2D GetConfigStyleTex(ConfigTexStyle configTexStyle) => ModContent.Request<Texture2D>($"CoolerItemVisualEffect/Config/ConfigTex/Template_{configTexStyle}").Value;
 
-        public override Texture2D StyleTexture { get => GetConfigStyleTex(configTexStyle); set { base.StyleTexture = value; Main.NewText("对这货赋值无效"); } }
+        public override Texture2D StyleTexture
+        { get => GetConfigStyleTex(configTexStyle); set { base.StyleTexture = value; Main.NewText("对这货赋值无效"); } }
+
         public ConfigTexStyle configTexStyle = ConfigTexStyle.DarkPurple;
+
         public override Rectangle DrawComplexPanel(SpriteBatch spriteBatch)
         {
             if (configTexStyle == 0)
@@ -61,6 +67,7 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
             }
         }
     }
+
     //下面几个都抄写或魔改自qol，感谢Cyril和局长
     public class SUIPanel : UIElement
     {
@@ -70,6 +77,7 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
         public float border;
         public bool CalculateBorder;
         public CoolerPanelInfo panelInfo;
+
         public SUIPanel(float border = 3, bool CalculateBorder = true)
         {
             SetPadding(10f);
@@ -87,11 +95,13 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
             panelInfo.backgroundFrame = new Rectangle(4, 4, 28, 28);
             panelInfo.backgroundUnitSize = new Vector2(28, 28) * 2f;
         }
+
         public override void Recalculate()
         {
             base.Recalculate();
             //panelInfo.destination = GetDimensions().ToRectangle();
         }
+
         public override void DrawSelf(SpriteBatch spriteBatch)
         {
             CalculatedStyle dimenstions = GetDimensions();
@@ -123,12 +133,14 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
         {
             Dragging = false;
         }
+
         public override void OnInitialize()
         {
             //panelInfo.backgroundTexture = Main.Assets.Request<Texture2D>("Images/UI/HotbarRadial_1").Value;
             //panelInfo.backgroundFrame = new Rectangle(4, 4, 28, 28);
             //panelInfo.backgroundUnitSize = new Vector2(28, 28) * 2f;
         }
+
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -137,7 +149,6 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
             {
                 Main.LocalPlayer.mouseInterface = true;
                 panelInfo.mainColor = KeepOrigin ? CoolerUIPanel.BackgroundDefaultUnselectedColor : Color.White;
-
             }
 
             if (Dragging)
@@ -152,29 +163,38 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
 
         public event ElementEvent OnDrag;
     }
+
     public class CoolerUIPanel : SUIPanel
     {
         #region 默认配色们
+
         public static Color BackgroundDefaultSelectedColor => new(89, 116, 213);
         public static Color BackgroundDefaultUnselectedColor => new(39, 46, 100);
         public static Color GlowDefaultSelectedColor => Color.Lerp(Color.Cyan, Color.Blue, .25f);
         public static Color GlowDefaultUnselectedColor => new(62, 80, 146);
         public static Color MainDefaultSelectedColor => Color.White;
         public static Color MainDefaultUnselectedColor => (Color.White * .8f) with { A = 255 };
-        #endregion
+
+        #endregion 默认配色们
+
         public int[] timers = new int[1];
+
         public int HoverCounter
         {
             get => timers[0];
             set => timers[0] = value;
         }
+
         public float HoverFactor => MathHelper.SmoothStep(0, 1, HoverCounter / 15f);
         public virtual float OverrideScaler => MathHelper.SmoothStep(1, 1.2f, HoverCounter / 15f);
+
         public virtual Color ModifyGlowColor(Color color)
         {
             return color;
         }
+
         public virtual float GlowShakingStrength => 0f;
+
         public virtual Vector2 OverrideOffsetPosition
         {
             get
@@ -192,6 +212,7 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
                 //return (new Vector2(Main.mouseX, Main.mouseY) - result) * .0625f;
             }
         }
+
         public CoolerUIPanel(float border = 3, bool CalculateBorder = true, Vector2 shakeRange = default, Color? glowEffectColorS = null, Color? glowEffectColorU = null, Color? backGroundColorS = null, Color? backGrounColorU = null, Color? mainColorS = null, Color? mainColorU = null) : base(border, CalculateBorder)
         {
             GlowEffectColorS = glowEffectColorS ?? GlowDefaultSelectedColor;
@@ -203,6 +224,7 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
             ShakeRange = shakeRange;
             //panelInfo.scaler = 1f;
         }
+
         public Color GlowEffectColorS;
         public Color GlowEffectColorU;
         public Color BackGroundColorS;
@@ -210,6 +232,7 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
         public Color MainColorS;
         public Color MainColorU;
         public Vector2 ShakeRange;
+
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -225,14 +248,17 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
             panelInfo.mainColor = KeepOrigin ? IsMouseHovering ? BackGroundColorS : BackGrounColorU : Color.Lerp(MainColorU, MainColorS, factor);
             panelInfo.glowShakingStrength = MathHelper.Lerp(ShakeRange.X, ShakeRange.Y, factor);
         }
+
         public override void OnInitialize()
         {
             base.OnInitialize();
         }
     }
+
     public class ConfigItemPanel : CoolerUIPanel
     {
         #region 文件相关
+
         public string FilePath { get; private set; }
         public string Name { get; private set; }
         private string _inputName;  // 用于先装输入缓存的
@@ -240,14 +266,17 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
         private int _cursorTimer;
         private bool _oldMouseLeft;
         private string _selectedButtonName = "";
-        #endregion
+
+        #endregion 文件相关
 
         #region 控件
+
         public UIText NameText;
         public UIText PathText;
         public UIImageButton RenameButton;
         public CoolerUIPanel PathPanel;
-        #endregion
+
+        #endregion 控件
 
         public ConfigItemPanel(string filePath) : base()
         {
@@ -367,7 +396,6 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
                 PaddingTop = 0f,
                 BackGroundColorS = Color.Transparent,
                 BackGrounColorU = Color.Transparent
-
             };
             PathPanel.SetSize(new(Width.Pixels + loadConfigButton.Left.Pixels - 44f, 23f));
             Append(PathPanel);
@@ -383,7 +411,6 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
             BackGroundColorS = Color.Cyan with { A = 0 } * .25f;
             BackGrounColorU = Color.Blue with { A = 127 } * .5f;
             Height = StyleDimension.FromPixels(PathPanel.Top.Pixels + PathPanel.Height.Pixels + 22f);
-
         }
 
         private void DetailButtonClick(UIMouseEvent evt, UIElement listeningElement)
@@ -448,6 +475,7 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
                 configSLUI.CacheSetupConfig = true;
             }
         }
+
         private void DeleteButtonClick(UIMouseEvent evt, UIElement listeningElement)
         {
             SoundEngine.PlaySound(SoundID.MenuTick);
@@ -518,6 +546,7 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
             //panelInfo.glowShakingStrength = HoverFactor;
             //panelInfo.glowHueOffsetRange = .1f;
         }
+
         public override void LeftMouseDown(UIMouseEvent evt)
         {
             base.LeftMouseDown(evt);
@@ -610,12 +639,14 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
         }
 
         public static bool KeyTyped(Keys key) => Main.keyState.IsKeyDown(key) && !Main.oldKeyState.IsKeyDown(key);
+
         public override void OnInitialize()
         {
             base.OnInitialize();
             //panelInfo.backgroundTexture = null;
         }
     }
+
     public class CoolerImageButton : UIElement
     {
         public string HoverText = "";
@@ -626,6 +657,7 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
         public Color currentColor;
         public SoundStyle? PlaySound { get; private set; }
         public ConfigTexStyle configTexStyle;
+
         public CoolerImageButton(Asset<Texture2D> texture, Color activeColor = default, Color inactiveColor = default)
         {
             if (texture is not null)
@@ -640,6 +672,7 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
         }
 
         #region 各种设置方法
+
         public void SetCenter(int x, int y)
         {
             CalculatedStyle dimensions = GetDimensions();
@@ -667,7 +700,8 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
                 Height.Set(Texture.Height(), 0f);
             }
         }
-        #endregion
+
+        #endregion 各种设置方法
 
         public override void Update(GameTime gameTime)
         {
@@ -743,14 +777,16 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
             base.MouseOut(evt);
         }
     }
+
     public class CoolerImageButtonSplit : CoolerImageButton
     {
         public string HoverTextUp;
         public string HoverTextDown;
+
         public CoolerImageButtonSplit(Asset<Texture2D> texture, Color activeColor = default, Color inactiveColor = default) : base(texture, activeColor, inactiveColor)
         {
-
         }
+
         public override void DrawSelf(SpriteBatch spriteBatch)
         {
             Rectangle rectangle = GetDimensions().ToRectangle();
@@ -768,6 +804,7 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
             base.DrawSelf(spriteBatch);
         }
     }
+
     /// <summary>
     /// 宽度默认 20
     /// </summary>
@@ -783,11 +820,13 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
 
         // 用于拖动内滚动条
         private float offsetY;
+
         public bool dragging;
 
         public bool Visible;
         public int timer;
         public float factor => MathHelper.SmoothStep(0, 1, timer / 15f);
+
         public float ViewPosition
         {
             get => viewPosition;
@@ -795,6 +834,7 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
         }
 
         private float _bufferViewPosition;
+
         /// <summary>
         /// 缓冲距离, 不想使用动画就直接设置 <see cref="ViewPosition"/>
         /// </summary>
@@ -862,7 +902,6 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
         {
             SoundEngine.PlaySound(SoundID.MenuTick);
             timer++;
-
         }
 
         public virtual void InnerMouseOut()
@@ -907,6 +946,7 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
         }
 
         public readonly Color hoveredColor = new(220, 220, 220);
+
         public override void DrawSelf(SpriteBatch spriteBatch)
         {
             if (!Visible)
@@ -1022,9 +1062,11 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
                 _color = value;
             }
         }
+
         public Color ColorActive;
         public Color ColorInactive;
         public Color currentColor;
+
         public CoolerUITextPanel(T text, float textScale = 1f, bool large = false, Color activeColor = default, Color inactiveColor = default)
         {
             SetText(text, textScale, large);
@@ -1122,3 +1164,4 @@ namespace CoolerItemVisualEffect.Config.ConfigSLer
         }
     }
 }
+#endif

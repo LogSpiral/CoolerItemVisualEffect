@@ -9,7 +9,8 @@ namespace CoolerItemVisualEffect
     public class ItemDrawingModify : GlobalItem
     {
         public override bool InstancePerEntity => true;
-        public Color mainColor; 
+        public Color mainColor;
+
         public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
             if (!MiscConfig.Instance.ItemInventoryEffectActive) goto mylabel;
@@ -39,6 +40,7 @@ namespace CoolerItemVisualEffect
         mylabel:
             base.PostDrawInInventory(item, spriteBatch, position, frame, drawColor, itemColor, origin, scale);
         }
+
         public override void PostDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
         {
             if (!MiscConfig.Instance.ItemDropEffectActive) goto mylabel;
@@ -65,7 +67,7 @@ namespace CoolerItemVisualEffect
                 mainColor = new Color(vcolor.X, vcolor.Y, vcolor.Z, vcolor.W);
             }
             item.ShaderItemEffectInWorld(spriteBatch, LogSpiralLibraryMod.Misc[0].Value, mainColor, rotation);
-        mylabel: 
+        mylabel:
             base.PostDrawInWorld(item, spriteBatch, lightColor, alphaColor, rotation, scale, whoAmI);
         }
     }

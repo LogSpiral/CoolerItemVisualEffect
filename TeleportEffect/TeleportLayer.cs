@@ -3,18 +3,12 @@ using LogSpiralLibrary;
 using LogSpiralLibrary.CodeLibrary.Utilties.Extensions;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.GameContent;
-using Terraria.ModLoader;
 
 namespace CoolerItemVisualEffect.TeleportEffect
 {
     internal class TeleportLayer : PlayerDrawLayer
     {
-
         public override void Draw(ref PlayerDrawSet drawInfo)
         {
             var player = drawInfo.drawPlayer;
@@ -50,18 +44,19 @@ namespace CoolerItemVisualEffect.TeleportEffect
             drawInfo.DrawDataCache.Add(new(voidTex, center, null, mainColor, -rotation, voidOrigin, scale, dir ^ SpriteEffects.FlipHorizontally, 0));
             drawInfo.DrawDataCache.Add(new(voidTex, center, null, mainColor * 0.8f, rotation * 0.5f, voidOrigin, scale * 0.9f, dir, 0));
             drawInfo.DrawDataCache.Add(new(vortexTex, center, null, colorVortex, -rotation * 0.7f, vortexTex.Size() * .5f, scale, dir ^ SpriteEffects.FlipHorizontally, 0));
-            drawInfo.DrawDataCache.Add(new(vortexTex, center, null, Color.White with { A = 0 } , -rotation * 1.4f, vortexTex.Size() * .5f, scale * .85f, dir ^ SpriteEffects.FlipHorizontally, 0));
-
+            drawInfo.DrawDataCache.Add(new(vortexTex, center, null, Color.White with { A = 0 }, -rotation * 1.4f, vortexTex.Size() * .5f, scale * .85f, dir ^ SpriteEffects.FlipHorizontally, 0));
         }
+
         public override Position GetDefaultPosition() => new Multiple()
         {
             { new Between(PlayerDrawLayers.Tails, PlayerDrawLayers.Wings),info => info.drawPlayer.itemAnimationMax != 0 && info.drawPlayer.itemAnimation / (float)info.drawPlayer.itemAnimationMax <= .5f},
             { new Between(PlayerDrawLayers.BeetleBuff, PlayerDrawLayers.EyebrellaCloud),info => info.drawPlayer.itemAnimationMax != 0 && info.drawPlayer.itemAnimation / (float)info.drawPlayer.itemAnimationMax > .5f}
-
         };
-        static readonly int[] TeleportItems
+
+        private static readonly int[] TeleportItems
             = [ItemID.MagicMirror,ItemID.CellPhone,ItemID.MagicConch, ItemID.IceMirror,ItemID.DemonConch,
             ItemID.Shellphone,ItemID.ShellphoneHell,ItemID.ShellphoneOcean,ItemID.ShellphoneSpawn,ItemID.RecallPotion,ItemID.WormholePotion,ItemID.TeleportationPotion, ItemID.PotionOfReturn];
+
         public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
         {
             var plr = drawInfo.drawPlayer;

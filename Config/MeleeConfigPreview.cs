@@ -1,30 +1,17 @@
 ﻿using LogSpiralLibrary;
 using LogSpiralLibrary.CodeLibrary.ConfigModification;
-using LogSpiralLibrary.CodeLibrary.DataStructures;
+using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
+using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingContents;
+using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingEffects;
+using LogSpiralLibrary.CodeLibrary.Utilties.Extensions;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.GameContent;
-using Terraria.ModLoader.Config;
-using Terraria.ModLoader.Config.UI;
-using Terraria.UI;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using tModPorter;
-using FullSerializer;
 using Terraria.Localization;
-using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures;
-using Microsoft.Xna.Framework.Graphics.PackedVector;
-using Terraria;
-using System.IO;
-using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
-using Terraria.ModLoader.UI;
-using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingContents;
-using LogSpiralLibrary.CodeLibrary.Utilties.Extensions;
-using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingEffects;
+using Terraria.ModLoader.Config;
+using Terraria.UI;
 
 namespace CoolerItemVisualEffect.Config
 {
@@ -33,9 +20,9 @@ namespace CoolerItemVisualEffect.Config
         public static Vector3 DefaultHSL => new(0.3227513f, 0.25301206f, 0.4882353f);
         public static Texture2D previewHeatMap;
         public static float weaponScale;
+
         public static void DrawUltraSwoosh(SpriteBatch spriteBatch, Vector2 center, MeleeConfig config, Texture2D heatMap = null, int? baseTex = null, int? aniTex = null, Vector3? alphaVector = null, bool? useRenderEffect = null, Action<UltraSwoosh> otherOperation = null)
         {
-
             MeleeModifyPlayer mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
             if (previewHeatMap == null)
                 MeleeModifyPlayer.UpdateHeatMap(ref previewHeatMap, DefaultHSL, config, TextureAssets.Item[ItemID.TerraBlade].Value);//hsl使用铸炼的泰拉刃生成
@@ -43,7 +30,6 @@ namespace CoolerItemVisualEffect.Config
             IRenderEffect[][] renderEffects = [[config.distortConfigs.EffectInstance], [config.maskConfigs.EffectInstance, config.dyeConfigs.EffectInstance, config.bloomConfigs.EffectInstance]];
 
             RenderingCanvas renderingCanvas = new(useRenderEffect ?? config.useRenderEffectPVInOtherConfig ? renderEffects : []) { IsUILayer = true };
-
 
             var content = new UltraSwoosh();
             content.timeLeft = content.timeLeftMax = 30;
@@ -68,7 +54,6 @@ namespace CoolerItemVisualEffect.Config
             spriteBatch.End();
             renderingCanvas.DrawContents(spriteBatch, Main.graphics.GraphicsDevice);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
-
         }
 
         public static void DrawUltraStab(SpriteBatch spriteBatch, Vector2 center, MeleeConfig config, Texture2D heatMap = null, int? baseTex = null, int? aniTex = null, Vector3? alphaVector = null, bool? useRenderEffect = null, Action<UltraStab> otherOperation = null)
@@ -80,7 +65,6 @@ namespace CoolerItemVisualEffect.Config
             IRenderEffect[][] renderEffects = [[config.distortConfigs.EffectInstance], [config.maskConfigs.EffectInstance, config.dyeConfigs.EffectInstance, config.bloomConfigs.EffectInstance]];
 
             RenderingCanvas renderingCanvas = new(useRenderEffect ?? config.useRenderEffectPVInOtherConfig ? renderEffects : []) { IsUILayer = true };
-
 
             var content = new UltraStab();
             content.timeLeft = content.timeLeftMax = 30;
@@ -104,8 +88,6 @@ namespace CoolerItemVisualEffect.Config
             spriteBatch.End();
             renderingCanvas.DrawContents(spriteBatch, Main.graphics.GraphicsDevice);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
-
-
         }
 
         public static void DrawSorry(SpriteBatch spriteBatch, Rectangle rectangle)
@@ -113,23 +95,26 @@ namespace CoolerItemVisualEffect.Config
             Vector2 pos = rectangle.Left() + new Vector2(20, 0);
             spriteBatch.DrawString(FontAssets.MouseText.Value, Language.GetOrRegister("Mods.CoolerItemVisualEffect.Misc.UselessConfig").Value, pos, Color.White);
         }
+
         public static void DrawUnavailable(SpriteBatch spriteBatch, Rectangle rectangle)
         {
             Vector2 pos = rectangle.Left() + new Vector2(20, 0);
             spriteBatch.DrawString(FontAssets.MouseText.Value, Language.GetOrRegister("Mods.CoolerItemVisualEffect.Misc.UnavailableConfig").Value, pos, Color.White);
         }
     }
+
     public abstract class MeleePreview<T> : SimplePreview<T>
     {
         public override bool UsePreview => MeleeConfig.Instance.UsePreview;
     }
+
     public class UsePVPreview : MeleePreview<bool>
     {
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, bool data, OptionMetaData metaData)
         {
-
         }
     }
+
     public class ActivePreview : MeleePreview<bool>
     {
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, bool data, OptionMetaData metaData)
@@ -137,6 +122,7 @@ namespace CoolerItemVisualEffect.Config
             spriteBatch.Draw(data ? TextureAssets.Npc[NPCID.SkeletronPrime].Value : TextureAssets.Npc[NPCID.SkeletronHead].Value, dimension.Center(), data ? new Rectangle(0, 0, 140, 156) : null, Color.White, 0, data ? new Vector2(70, 78) : new Vector2(40, 51), 1f, 0, 0);
         }
     }
+
     public class AnimationTexSwooshPreview : MeleePreview<int>
     {
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, int data, OptionMetaData metaData)
@@ -148,6 +134,7 @@ namespace CoolerItemVisualEffect.Config
             PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), (MeleeConfig)metaData.config, null, null, data, null);
         }
     }
+
     public class BaseTexSwooshPreview : MeleePreview<int>
     {
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, int data, OptionMetaData metaData)
@@ -159,6 +146,7 @@ namespace CoolerItemVisualEffect.Config
             PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), (MeleeConfig)metaData.config, null, data, null, null);
         }
     }
+
     public class AnimationTexStabPreview : MeleePreview<int>
     {
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, int data, OptionMetaData metaData)
@@ -170,6 +158,7 @@ namespace CoolerItemVisualEffect.Config
             PreviewHelper.DrawUltraStab(spriteBatch, new Vector2(dimension.X + dimension.Width - 180, dimension.Center().Y), (MeleeConfig)metaData.config, null, null, data, null);
         }
     }
+
     public class BaseTexStabPreview : MeleePreview<int>
     {
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, int data, OptionMetaData metaData)
@@ -181,11 +170,13 @@ namespace CoolerItemVisualEffect.Config
             PreviewHelper.DrawUltraStab(spriteBatch, new Vector2(dimension.X + dimension.Width - 180, dimension.Center().Y), (MeleeConfig)metaData.config, null, data, null, null);
         }
     }
+
     public class TimeLeftPreview : MeleePreview<int>
     {
-        static int timer;
-        static int timerMax;
-        static int coolDown;
+        private static int timer;
+        private static int timerMax;
+        private static int coolDown;
+
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, int data, OptionMetaData metaData)
         {
             var config = (MeleeConfig)metaData.config;
@@ -202,9 +193,9 @@ namespace CoolerItemVisualEffect.Config
             PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), config, otherOperation: ModifyTimer);
             PreviewHelper.DrawUltraStab(spriteBatch, new Vector2(dimension.X + 20, dimension.Center().Y), config, otherOperation: ModifyTimer);
             timer--;
-
         }
     }
+
     public class WeaponExtraLightPreview : MeleePreview<float>
     {
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, float data, OptionMetaData metaData)
@@ -259,6 +250,7 @@ namespace CoolerItemVisualEffect.Config
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
         }
     }
+
     public class ColorVectorPreview : MeleePreview<ColorVector>
     {
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, ColorVector data, OptionMetaData metaData)
@@ -270,9 +262,9 @@ namespace CoolerItemVisualEffect.Config
             PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + 200, dimension.Center().Y), (MeleeConfig)metaData.config, null, null, null, data.AlphaVector * Vector3.UnitZ);
 
             PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), (MeleeConfig)metaData.config, null, null, null, data.AlphaVector);
-
         }
     }
+
     public class AlphaScalerPreview : MeleePreview<float>
     {
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, float data, OptionMetaData metaData)
@@ -280,20 +272,21 @@ namespace CoolerItemVisualEffect.Config
             if (Main.gameMenu)
                 GlobalTimeSystem.GlobalTime += .33f;
             PreviewHelper.DrawUltraSwoosh(spriteBatch, dimension.Center(), (MeleeConfig)metaData.config, null, null, null, null, null, u => u.alphaFactor = data);
-
         }
     }
+
     public class LightStandardPreview : MeleePreview<float>
     {
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, float data, OptionMetaData metaData)
         {
             PreviewHelper.DrawSorry(spriteBatch, dimension.ToRectangle());
-
         }
     }
+
     public class HeatMapCreatePreview : MeleePreview<MeleeConfig.HeatMapCreateStyle>
     {
-        static Texture2D[] curHeatMaps = new Texture2D[5];
+        private static Texture2D[] curHeatMaps = new Texture2D[5];
+
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, MeleeConfig.HeatMapCreateStyle data, OptionMetaData metaData)
         {
             var config = (MeleeConfig)metaData.config;
@@ -321,12 +314,13 @@ namespace CoolerItemVisualEffect.Config
             }
             spriteBatch.Draw(Main.Assets.Request<Texture2D>("Images/UI/TexturePackButtons").Value, new Vector2(dimension.X + 20, dimension.Center().Y + ((int)data - 2) * 45), new Rectangle(32, 32, 32, 32), Color.White, 0, new Vector2(16), 1, 0, 0);
             config.heatMapCreateStyle = data;
-
         }
     }
+
     public class HeatMapFactorPreview : MeleePreview<MeleeConfig.HeatMapFactorStyle>
     {
-        static Texture2D[] curHeatMaps = new Texture2D[5];
+        private static Texture2D[] curHeatMaps = new Texture2D[5];
+
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, MeleeConfig.HeatMapFactorStyle data, OptionMetaData metaData)
         {
             var config = (MeleeConfig)metaData.config;
@@ -349,18 +343,18 @@ namespace CoolerItemVisualEffect.Config
                         MeleeModifyPlayer.UpdateHeatMap(ref mplr.heatMap, mplr.hsl, config, MeleeModifyPlayer.GetWeaponTextureFromItem(Main.LocalPlayer.HeldItem));
                     else
                         MeleeModifyPlayer.UpdateHeatMap(ref PreviewHelper.previewHeatMap, PreviewHelper.DefaultHSL, config, TextureAssets.Item[ItemID.TerraBlade].Value);
-
                 }
                 //tex.Dispose();
             }
             spriteBatch.Draw(Main.Assets.Request<Texture2D>("Images/UI/TexturePackButtons").Value, new Vector2(dimension.X + 20, dimension.Center().Y + ((int)data - 2) * 45), new Rectangle(32, 32, 32, 32), Color.White, 0, new Vector2(16), 1, 0, 0);
             config.heatMapFactorStyle = data;
-
         }
     }
+
     public class HeatMapRelatedDatePreview : MeleePreview<float>
     {
-        static Texture2D[] curHeatMaps = new Texture2D[60];
+        private static Texture2D[] curHeatMaps = new Texture2D[60];
+
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, float data, OptionMetaData metaData)
         {
             var config = (MeleeConfig)metaData.config;
@@ -395,19 +389,18 @@ namespace CoolerItemVisualEffect.Config
                     else
                         MeleeModifyPlayer.UpdateHeatMap(ref PreviewHelper.previewHeatMap, PreviewHelper.DefaultHSL, config, TextureAssets.Item[ItemID.TerraBlade].Value);
                     spriteBatch.Draw(tex, Utils.CenteredRectangle(new Vector2(dimension.X + 130, dimension.Center().Y + 70), new Vector2(180, 30)), Color.White);
-
                 }
                 //tex.Dispose();
-
             }
 
             spriteBatch.Draw(Main.Assets.Request<Texture2D>("Images/UI/TexturePackButtons").Value, new Vector2(dimension.X + 20, dimension.Center().Y + MathHelper.Lerp(-90, 30, Utils.GetLerpValue(range.Min, range.Max, data))), new Rectangle(32, 32, 32, 32), Color.White, 0, new Vector2(16), 1, 0, 0);
             metaData.Value = data;
         }
     }
+
     public class CosinePreview : MeleePreview<ICosineData>
     {
-        static Texture2D curHeatMap;
+        private static Texture2D curHeatMap;
 
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, ICosineData data, OptionMetaData metaData)
         {
@@ -457,23 +450,20 @@ namespace CoolerItemVisualEffect.Config
                     prevP = currentP;
                 }
                 counter++;
-
             }
-
 
             MeleeModifyPlayer.UpdateHeatMap(ref curHeatMap, default, config, TextureAssets.Item[ItemID.TerraBlade].Value);
 
             spriteBatch.Draw(curHeatMap, dimension.ToRectangle().BottomLeft() + new Vector2(20, -40), null, Color.White, 0, default, new Vector2(subW / 300f, 20f), 0, 0);
 
             spriteBatch.Draw(curHeatMap, dimension.ToRectangle().BottomLeft() + new Vector2(40 + subW, -40), null, Color.White, 0, default, new Vector2(subW / 300f, 20f), 0, 0);
-
         }
     }
+
     public class DesignedColorPreview : MeleePreview<DesignateHeatMapData>
     {
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, DesignateHeatMapData data, OptionMetaData metaData)
         {
-
             var config = (MeleeConfig)metaData.config;
             if (config.heatMapCreateStyle != MeleeConfig.HeatMapCreateStyle.Designate)
             {
@@ -491,6 +481,7 @@ namespace CoolerItemVisualEffect.Config
             PreviewHelper.DrawUltraStab(spriteBatch, new Vector2(dimension.X + 20, dimension.Center().Y), (MeleeConfig)metaData.config, null, null, null, null);
         }
     }
+
     public class DirectionOfHeatMapPreview : MeleePreview<float>
     {
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, float data, OptionMetaData metaData)
@@ -503,9 +494,11 @@ namespace CoolerItemVisualEffect.Config
             //PreviewHelper.DrawSorry(spriteBatch, dimension);
         }
     }
+
     public class ColorListPreview : MeleePreview<List<Color>>//List<Color> //因为ConfigElement其实没有直接List<Color>类型的
     {
-        Texture2D heatMap;
+        private Texture2D heatMap;
+
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, List<Color> data, OptionMetaData metaData)//List<Color>
         {
             var config = (MeleeConfig)metaData.config;
@@ -523,6 +516,7 @@ namespace CoolerItemVisualEffect.Config
             PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), (MeleeConfig)metaData.config, heatMap, null, null, null);
         }
     }
+
     public class RenderEffectPreview : MeleePreview<object> //因为那几个通用的所以干脆obj得了
     {
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, object data, OptionMetaData metaData)
@@ -533,6 +527,7 @@ namespace CoolerItemVisualEffect.Config
             PreviewHelper.DrawUltraStab(spriteBatch, new Vector2(dimension.X + 20, dimension.Center().Y), (MeleeConfig)metaData.config, null, null, null, null, true);
         }
     }
+
     public class UseRenderPVPreivew : MeleePreview<bool>
     {
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, bool data, OptionMetaData metaData)

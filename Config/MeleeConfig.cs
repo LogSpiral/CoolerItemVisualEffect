@@ -1,20 +1,16 @@
 ﻿using LogSpiralLibrary.CodeLibrary.ConfigModification;
+using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingEffects;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee;
-using NetSimplified.Syncing;
+using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Core.Definition;
+using LogSpiralLibrary.CodeLibrary.Utilties.BaseClasses;
 using NetSimplified;
+using NetSimplified.Syncing;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ModLoader.Config;
-using LogSpiralLibrary.CodeLibrary.UIGenericConfig;
 using Terraria.ModLoader.UI;
-using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingEffects;
-using LogSpiralLibrary.CodeLibrary.Utilties.BaseClasses;
 
 namespace CoolerItemVisualEffect.Config
 {
@@ -22,6 +18,7 @@ namespace CoolerItemVisualEffect.Config
     {
         public int plrIndex;
         public MeleeConfig configuration;
+
         public static SyncMeleeConfig Get(int plrIndex, MeleeConfig configurationCIVE)
         {
             var result = NetModuleLoader.Get<SyncMeleeConfig>();
@@ -29,6 +26,7 @@ namespace CoolerItemVisualEffect.Config
             result.configuration = configurationCIVE;
             return result;
         }
+
         public override void Send(ModPacket p)
         {
             p.Write((byte)plrIndex);
@@ -36,6 +34,7 @@ namespace CoolerItemVisualEffect.Config
             p.Write(content);
             base.Send(p);
         }
+
         public override void Read(BinaryReader r)
         {
             plrIndex = r.ReadByte();
@@ -46,6 +45,7 @@ namespace CoolerItemVisualEffect.Config
             //configuration = (ConfigurationCIVE)JsonConvert.DeserializeObject(content);
             base.Read(r);
         }
+
         public override void Receive()
         {
             var plr = Main.player[plrIndex];
@@ -59,11 +59,13 @@ namespace CoolerItemVisualEffect.Config
             }
         }
     }
+
     [AutoSync]
     public class SyncMeleeModifyActive : NetModule
     {
         public int plrIndex;
         public bool active;
+
         public static SyncMeleeModifyActive Get(int plrIndex, bool active)
         {
             var result = NetModuleLoader.Get<SyncMeleeModifyActive>();
@@ -71,6 +73,7 @@ namespace CoolerItemVisualEffect.Config
             result.active = active;
             return result;
         }
+
         public override void Receive()
         {
             var plr = Main.player[plrIndex];
@@ -84,6 +87,7 @@ namespace CoolerItemVisualEffect.Config
             }
         }
     }
+
     [HorizonOverflowEnable]
     [RenderDrawingPreviewNeeded]
     public class MeleeConfig : ModConfig
@@ -95,8 +99,12 @@ namespace CoolerItemVisualEffect.Config
         [CustomPreview<UseRenderPVPreivew>]
         public bool useRenderEffectPVInOtherConfig = false;
 
-        public static MeleeConfig Instance => ModContent.GetInstance<MeleeConfig>();
-
+        public static MeleeConfig Instance { get; private set; }
+        public override void OnLoaded()
+        {
+            Instance = this;
+            base.OnLoaded();
+        }
         public override ConfigScope Mode => ConfigScope.ClientSide;
 
         public override void OnChanged()
@@ -106,7 +114,7 @@ namespace CoolerItemVisualEffect.Config
                 var plr = Main.LocalPlayer;
                 var MMPlr = plr.GetModPlayer<MeleeModifyPlayer>();
                 MeleeModifyPlayer.UpdateHeatMap(ref MMPlr.heatMap, MMPlr.hsl, MMPlr.ConfigurationSwoosh, MeleeModifyPlayer.GetWeaponTextureFromItem(plr.HeldItem));
-                //foreach (var plr in Main.player) 
+                //foreach (var plr in Main.player)
                 //{
                 //    if (plr == null || !plr.active) continue;
                 //    var MMPlr = plr.GetModPlayer<MeleeModifyPlayer>();
@@ -118,13 +126,13 @@ namespace CoolerItemVisualEffect.Config
                 SyncMeleeConfig.Get(Main.myPlayer, this).Send();
             base.OnChanged();
         }
+
         [Header("MeleeModifyPart")]
         [DefaultValue(true)]
         [CustomPreview<ActivePreview>]
         public bool SwordModifyActive = true;
 
         [CustomModConfigItem(typeof(SequenceDefinitionElement<MeleeAction>))]
-        [CustomGenericConfigItem<GenericSequenceDefinitionElement<MeleeAction>>]//为自己的UI里编辑Config做手脚
         [TypeConverter(typeof(ToFromStringConverter<SequenceDefinition<MeleeAction>>))]
         public SequenceDefinition<MeleeAction> swooshActionStyle = new(nameof(CoolerItemVisualEffect), nameof(CIVESword));
 
@@ -167,7 +175,6 @@ namespace CoolerItemVisualEffect.Config
         [Range(0f, 1f)]
         public float shake = 1f;//改
 
-
         /*[Increment(1f)]
         [DefaultValue(6f)]
         [Range(2f, 10f)]
@@ -191,10 +198,8 @@ namespace CoolerItemVisualEffect.Config
         [CustomPreview<WeaponExtraLightPreview>]
         public float weaponExtraLight = 0.35f;
 
-
         [CustomPreview<ColorVectorPreview>]
         public ColorVector colorVector = new();//{ heatMapAlpha = 1, normalize = true }
-
 
         [Increment(0.05f)]
         [DefaultValue(1.5f)]
@@ -243,7 +248,6 @@ namespace CoolerItemVisualEffect.Config
 
         [Expand(false)]
         [CustomModConfigItem(typeof(DesignateColorConfigElement))]
-        [CustomGenericConfigItem<DesignateColorConfigElement_Generic>]
         [CustomPreview<DesignedColorPreview>]
         public DesignateHeatMapData designateData = new();
 
@@ -255,25 +259,22 @@ namespace CoolerItemVisualEffect.Config
 
         [Header("EffectPart")]
         [CustomModConfigItem(typeof(AvailableConfigElement))]
-        [CustomGenericConfigItem<GenericAvailableConfigElement>]
         [CustomPreview<RenderEffectPreview>]
-        public AirDistortConfigs distortConfigs = new ();
+        public AirDistortConfigs distortConfigs = new();
 
         [CustomModConfigItem(typeof(AvailableConfigElement))]
-        [CustomGenericConfigItem<GenericAvailableConfigElement>]
         [CustomPreview<RenderEffectPreview>]
-        public MaskConfigs maskConfigs = new ();
+        public MaskConfigs maskConfigs = new();
 
         [CustomModConfigItem(typeof(AvailableConfigElement))]
-        [CustomGenericConfigItem<GenericAvailableConfigElement>]
         [CustomPreview<RenderEffectPreview>]
         public DyeConfigs dyeConfigs = new();
 
         [CustomModConfigItem(typeof(AvailableConfigElement))]
-        [CustomGenericConfigItem<GenericAvailableConfigElement>]
         [CustomPreview<RenderEffectPreview>]
         public BloomConfigs bloomConfigs = new();
     }
+
     public class ColorVector
     {
         [Range(0, 1f)]
@@ -290,6 +291,7 @@ namespace CoolerItemVisualEffect.Config
 
         [DefaultValue(true)]
         public bool normalize = true;
+
         [JsonIgnore]
         public Vector3 AlphaVector
         {
@@ -322,12 +324,13 @@ namespace CoolerItemVisualEffect.Config
                 v1.heatMapAlpha == v2.heatMapAlpha &&
                 v1.normalize == v2.normalize;
         }
+
         public static bool operator !=(ColorVector v1, ColorVector v2)
         {
             return !v1.Equals(v2);
         }
 
-        public override bool Equals(object obj)=> obj is ColorVector vec && this == vec;
+        public override bool Equals(object obj) => obj is ColorVector vec && this == vec;
 
         public override int GetHashCode()
         {

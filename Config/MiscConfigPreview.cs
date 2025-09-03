@@ -2,14 +2,7 @@
 using LogSpiralLibrary.CodeLibrary.ConfigModification;
 using LogSpiralLibrary.CodeLibrary.Utilties.Extensions;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.GameContent;
-using Terraria.ModLoader.Config;
-using Terraria.ModLoader.Config.UI;
 using Terraria.UI;
 
 namespace CoolerItemVisualEffect.Config
@@ -18,9 +11,11 @@ namespace CoolerItemVisualEffect.Config
     {
         public override bool UsePreview => MiscConfig.Instance.usePreview;
     }
+
     public class WeaponDisplayPreview : MiscPreview<bool>
     {
-        Player plr;
+        private Player plr;
+
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, bool data, OptionMetaData metaData)
         {
             if (plr == null)
@@ -58,9 +53,10 @@ namespace CoolerItemVisualEffect.Config
             MiscConfig.Instance.weaponScale = s;
         }
     }
+
     public class WeaponScalePreview : MiscPreview<float>
     {
-        Player plr;
+        private Player plr;
 
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, float data, OptionMetaData metaData)
         {
@@ -99,6 +95,7 @@ namespace CoolerItemVisualEffect.Config
             MiscConfig.Instance.weaponScale = s;
         }
     }
+
     public class ItemEffectPreview : MiscPreview<bool>
     {
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, bool data, OptionMetaData metaData)
@@ -122,13 +119,13 @@ namespace CoolerItemVisualEffect.Config
                 };
                 item.ShaderItemEffectInWorld(spriteBatch, LogSpiralLibraryMod.Misc[0].Value, Color.Green, 0);
             }
-
         }
     }
+
     public class ProjectileModificationPreview : MiscPreview<bool>
     {
-
         public static bool PVDrawing;
+
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, bool data, OptionMetaData metaData)
         {
             var terraBeam = new Projectile();
@@ -138,7 +135,6 @@ namespace CoolerItemVisualEffect.Config
             {
                 GlobalTimeSystem.GlobalTime += .33f;
                 terraBeam.Center += new Vector2(880, 280);
-
             }
 
             terraBeam.alpha = 0;
@@ -183,6 +179,7 @@ namespace CoolerItemVisualEffect.Config
             PVDrawing = false;
         }
     }
+
     public class TeleportModificationPreview : MiscPreview<bool>
     {
         public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, bool data, OptionMetaData metaData)

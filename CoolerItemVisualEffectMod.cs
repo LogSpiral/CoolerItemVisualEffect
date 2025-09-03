@@ -1,40 +1,32 @@
+global using LogSpiralLibrary.CodeLibrary;
 global using Microsoft.Xna.Framework;
 global using Terraria;
 global using Terraria.DataStructures;
 global using Terraria.ID;
 global using Terraria.ModLoader;
-global using LogSpiralLibrary.CodeLibrary;
-global using MeleeSequence = LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Core.Sequence<LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee.MeleeAction>;
-
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using Terraria.GameContent;
-using static CoolerItemVisualEffect.Config.MeleeConfig;
-using LogSpiralLibrary;
-using System.IO;
-using NetSimplified;
-using System.Reflection;
-using Terraria.ModLoader.Config.UI;
-using Terraria.GameContent.UI.Elements;
-using Terraria.UI;
-using System.Collections.Generic;
-using Terraria.ModLoader.Config;
 using CoolerItemVisualEffect.Config;
-using System.Linq;
+using LogSpiralLibrary;
+using Microsoft.Xna.Framework.Graphics;
+using NetSimplified;
+using System;
+using System.IO;
 using Terraria.Localization;
-using System.Collections;
-using LogSpiralLibrary.CodeLibrary.ConfigModification;
 using static LogSpiralLibrary.ImproveGame_ModernConfigCrossModHelper;
+
 namespace CoolerItemVisualEffect
 {
     public class CoolerItemVisualEffectMod : Mod
     {
         #region Effects
+
         internal static Effect ShaderSwooshEX => LogSpiralLibraryMod.ShaderSwooshEX;
         internal static Effect ShaderSwooshUL => LogSpiralLibraryMod.ShaderSwooshUL;
         internal static Effect RenderEffect => LogSpiralLibraryMod.RenderEffect;
-        #endregion
+
+        #endregion Effects
+
         #region 辅助函数
+
         public override object Call(params object[] args)
         {
             if (args.Length == 0 || args[0] is not string str)
@@ -45,7 +37,6 @@ namespace CoolerItemVisualEffect
                     {
                         try
                         {
-
                             MeleeModifyPlayer.weaponGetFunctions.Add(((Func<Item, Texture2D> func, float priority))(args[1], args[2]));
                             MeleeModifyPlayer.RefreshWeaponTexFunc = true;
                         }
@@ -55,7 +46,7 @@ namespace CoolerItemVisualEffect
                         }
                         return true;
                     }
-                case "RegisterNoWeaponDisplayCondition": 
+                case "RegisterNoWeaponDisplayCondition":
                     {
                         MeleeModifyPlayer.RegisterNoWeaponDisplayCondition(args[1] as Func<bool>, args[2] as string);
                         return true;
@@ -63,14 +54,15 @@ namespace CoolerItemVisualEffect
                 default: return null;
             }
         }
-        #endregion
+
+        #endregion 辅助函数
+
         public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
             NetModule.ReceiveModule(reader, whoAmI);
 
             base.HandlePacket(reader, whoAmI);
         }
-
 
         /*static PropertyFieldWrapper GetWrapper(Type type, string optionName)
         {
@@ -86,25 +78,21 @@ namespace CoolerItemVisualEffect
                 throw new Exception($"Field \"{optionName}\" not found in type \"{type.Name}\"");
             return result;
         }*/
+
         public override void Load()
         {
             AddContent<NetModuleLoader>();
 
-
-
-
-
             base.Load();
         }
+
         public override void PostSetupContent()
         {
-            if (Main.netMode == NetmodeID.Server || !ModLoader.TryGetMod("ImproveGame", out var qot)) return;
+            if (Main.dedServ || !ModLoader.TryGetMod("ImproveGame", out var qot)) return;
 
             AddModernConfigTitle(qot, this, Language.GetOrRegister("Mods.CoolerItemVisualEffect.Configs.ModernConfigTitle"));
 
             SetAboutPage(qot, this, () => "非常酷大剑转转转的配置中心！！！", (int)ItemID.IronShortsword, null, () => "关于大剑", () => "酷酷酷酷酷");
-
-
 
             RegisterCategory(qot, this, [
                 (SeverConfig.Instance,[nameof(SeverConfig.meleeModifyLevel)]),
@@ -166,18 +154,18 @@ namespace CoolerItemVisualEffect
             ItemID.Cog, null, () => "杂项设置", () => "非常水");
             base.PostSetupContent();
         }
+
         public override void Unload()
         {
-            if (ModLoader.TryGetMod("ImproveGame", out var qot))
-            {
-                qot.Call("RemoveCategory", this);
-                qot.Call("RemoveAboutPage", this);
-                //这个我不是很确定是否需要
-            }
+            if (Main.dedServ || !ModLoader.TryGetMod("ImproveGame", out var qot)) return;
+            qot.Call("RemoveCategory", this);
+            qot.Call("RemoveAboutPage", this);
+            //这个我不是很确定是否需要
             base.Unload();
         }
     }
-    /*public class CoolerItemVisualEffectSystem : ModSystem 
+
+    /*public class CoolerItemVisualEffectSystem : ModSystem
     {
         public override void Load()
         {
@@ -191,14 +179,13 @@ namespace CoolerItemVisualEffect
             orig.Invoke(self);
             if (self.modConfig.Name != "ConfigurationCIVE" || Main.gameMenu)
                 return;
-            if (previewPanel == null) 
+            if (previewPanel == null)
             {
                 previewPanel = new UIPanel();
                 previewPanel.Left.Set(40, 1);
                 previewPanel.Top.Set(0, 0);
                 previewPanel.Width.Set(0, 1f);
                 previewPanel.Height.Set(0, 1);
-
 
                 var drawer = new PreviewDrawer();
                 drawer.Width.Set(0, 1);
@@ -212,7 +199,7 @@ namespace CoolerItemVisualEffect
         }
         public static UIPanel previewPanel;
     }
-    public class PreviewDrawer : UIElement 
+    public class PreviewDrawer : UIElement
     {
         public override void DrawSelf(SpriteBatch spriteBatch)
         {

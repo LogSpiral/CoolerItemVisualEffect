@@ -1,15 +1,11 @@
-﻿using CoolerItemVisualEffect.Config.ConfigSLer;
-using LogSpiralLibrary.CodeLibrary.UIGenericConfig;
+﻿// using CoolerItemVisualEffect.Config.ConfigSLer;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.GameContent;
 using Terraria.ModLoader.Config;
 using Terraria.ModLoader.Config.UI;
-using Terraria.ModLoader.UI;
 using Terraria.UI;
 
 namespace CoolerItemVisualEffect.Config
@@ -19,9 +15,11 @@ namespace CoolerItemVisualEffect.Config
         public class ColorInfo
         {
             public Color color;
+
             [Range(0f, 1f)]
             public float position;
         }
+
         public List<ColorInfo> colors
             = [
                 new() { color = Color.Blue,position = .0f},
@@ -33,12 +31,11 @@ namespace CoolerItemVisualEffect.Config
         {
             if (colors == null || colors.Count < 2) return;
             colors.Sort((c1, c2) => Math.Sign(c1.position - c2.position));
-
         }
 
         public Color GetValue(float t)
         {
-            if(colors is null or { Count : 0})
+            if (colors is null or { Count: 0 })
                 return Color.Transparent;
 
             int count = colors.Count;
@@ -62,11 +59,13 @@ namespace CoolerItemVisualEffect.Config
             return Color.Lerp(previous.color, current.color, Utils.GetLerpValue(previous.position, current.position, t));
         }
     }
+
     public class DesignatedSingleColor : UIElement
     {
         public ConfigElement owner;
         public bool Dragging;
         public DesignateHeatMapData.ColorInfo ColorInfo;
+
         public override void RightClick(UIMouseEvent evt)//打开当前颜色的编辑UI
         {
             owner.Height.Pixels = 270;
@@ -79,8 +78,8 @@ namespace CoolerItemVisualEffect.Config
             var memberInfo = new PropertyFieldWrapper(ColorInfo.GetType().GetField("color"));
             if (owner is DesignateColorConfigElement)
                 UIModConfig.WrapIt(owner, ref top, memberInfo, ColorInfo, 0);
-            else
-                GenericConfigElement.WrapIt(owner, ref top, memberInfo, ColorInfo, 0, onSetObj: ConfigSLSystem.Instance.configSLUI.OnSetConfigElementValue, owner: WeaponSelectorSystem.Instance.WeaponSelectorUI);
+            //else
+            //    GenericConfigElement.WrapIt(owner, ref top, memberInfo, ColorInfo, 0, onSetObj: ConfigSLSystem.Instance.configSLUI.OnSetConfigElementValue, owner: WeaponSelectorSystem.Instance.WeaponSelectorUI);
             if (owner.Parent != null)
             {
                 owner.Parent.Height.Pixels = 270;
@@ -88,12 +87,14 @@ namespace CoolerItemVisualEffect.Config
             }
             base.RightClick(evt);
         }
+
         public override void LeftMouseDown(UIMouseEvent evt) //开始拖动
         {
             if (evt.Target != this) return;
             Dragging = true;
             base.LeftMouseDown(evt);
         }
+
         public override void LeftMouseUp(UIMouseEvent evt) //结束
         {
             Dragging = false;
@@ -111,21 +112,22 @@ namespace CoolerItemVisualEffect.Config
                     Top.Percent = .5f;
                 designate1.Value = data;
             }
-            else if (owner is DesignateColorConfigElement_Generic designate2)
-            {
-                var data = designate2.designatedColorBar.data;
-                if (m > 1 && data.colors.Count > 2)
-                {
-                    Remove();
-                    data.colors.Remove(ColorInfo);
-                }
-                else
-                    Top.Percent = .5f;
-                designate2.Value = data;
-            }
+            //else if (owner is DesignateColorConfigElement_Generic designate2)
+            //{
+            //    var data = designate2.designatedColorBar.data;
+            //    if (m > 1 && data.colors.Count > 2)
+            //    {
+            //        Remove();
+            //        data.colors.Remove(ColorInfo);
+            //    }
+            //    else
+            //        Top.Percent = .5f;
+            //    designate2.Value = data;
+            //}
             Recalculate();
             base.LeftMouseUp(evt);
         }
+
         public override void Update(GameTime gameTime) //调整位置或者移除
         {
             if (!Dragging || Parent == null) return;
@@ -143,6 +145,7 @@ namespace CoolerItemVisualEffect.Config
             Recalculate();
             base.Update(gameTime);
         }
+
         public override void DrawSelf(SpriteBatch spriteBatch)//绘制颜色标
         {
             var dimension = GetDimensions();
@@ -154,6 +157,7 @@ namespace CoolerItemVisualEffect.Config
             base.DrawSelf(spriteBatch);
         }
     }
+
     public class DesignatedColorBar : UIElement
     {
         public ConfigElement owner;
@@ -162,10 +166,10 @@ namespace CoolerItemVisualEffect.Config
 
         public override void OnInitialize()
         {
-
             base.OnInitialize();
         }
-        public void AddCurrentDatas() 
+
+        public void AddCurrentDatas()
         {
             foreach (var c in data.colors)
             {
@@ -182,6 +186,7 @@ namespace CoolerItemVisualEffect.Config
                 Append(singleColor);
             }
         }
+
         public override void LeftClick(UIMouseEvent evt)//单点添加单色
         {
             if (evt.Target != this) return;
@@ -204,10 +209,12 @@ namespace CoolerItemVisualEffect.Config
             owner?.SetObject(data);
             base.LeftClick(evt);
         }
+
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
         }
+
         public override void DrawSelf(SpriteBatch spriteBatch)//需要预留一些空白空间来添加单色
         {
             var dimension = GetDimensions();
@@ -222,9 +229,11 @@ namespace CoolerItemVisualEffect.Config
             base.DrawSelf(spriteBatch);
         }
     }
+
     public class DesignateColorConfigElement : ConfigElement<DesignateHeatMapData>
     {
         public DesignatedColorBar designatedColorBar;
+
         public override void OnBind()
         {
             Height.Pixels = 100;
@@ -242,24 +251,26 @@ namespace CoolerItemVisualEffect.Config
             base.OnBind();
         }
     }
-    public class DesignateColorConfigElement_Generic : GenericConfigElement<DesignateHeatMapData>
-    {
-        public DesignatedColorBar designatedColorBar;
-        public override void OnBind()
-        {
-            Height.Pixels = 100;
-            designatedColorBar = new DesignatedColorBar()
-            {
-                data = Value,
-                Width = new(-40, 1f),
-                Height = new(50, 0f),
-                Left = new(20, 0),
-                Top = new(30, 0),
-                owner = this
-            };
-            Append(designatedColorBar);
-            designatedColorBar.AddCurrentDatas();
-            base.OnBind();
-        }
-    }
+    
+    //public class DesignateColorConfigElement_Generic : GenericConfigElement<DesignateHeatMapData>
+    //{
+    //    public DesignatedColorBar designatedColorBar;
+
+    //    public override void OnBind()
+    //    {
+    //        Height.Pixels = 100;
+    //        designatedColorBar = new DesignatedColorBar()
+    //        {
+    //            data = Value,
+    //            Width = new(-40, 1f),
+    //            Height = new(50, 0f),
+    //            Left = new(20, 0),
+    //            Top = new(30, 0),
+    //            owner = this
+    //        };
+    //        Append(designatedColorBar);
+    //        designatedColorBar.AddCurrentDatas();
+    //        base.OnBind();
+    //    }
+    //}
 }

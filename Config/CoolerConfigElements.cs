@@ -25,7 +25,6 @@
 
 //namespace CoolerItemVisualEffect
 //{
-
 //    public enum ConfigTexStyle : byte
 //    {
 //        /*原始*/
@@ -142,7 +141,6 @@
 //        }
 //        public override void DrawSelf(SpriteBatch spriteBatch)
 //        {
-
 //            if (KeepOrigin)
 //            {
 //                base.DrawSelf(spriteBatch);
@@ -483,7 +481,6 @@
 //                if (index < 0) index += max;
 //                var scale = MathF.Sqrt(1 - offsetY * offsetY);
 
-
 //                var position = texVec + offsetY * 72 * Vector2.UnitY * scaler * (KeepOrigin ? .5f : 1f);
 //                var text = valueStrings[index];
 //                var scalesqr = scale * scale;
@@ -496,7 +493,6 @@
 //                    spriteBatch.Draw(texture, position, new Rectangle(172, 0, 14, 40), color, 0, new Vector2(14, 13.5f), new Vector2(MathF.Sqrt(_boxScaler.X), _boxScaler.Y), 0, 0);
 //                    spriteBatch.Draw(texture, position, new Rectangle(198, 0, 10, 40), color, 0, new Vector2(-8 * MathF.Sqrt(_boxScaler.X), 13.5f), new Vector2(MathF.Sqrt(_boxScaler.X) * 1.75f, _boxScaler.Y), 0, 0);
 //                }
-
 
 //                DrawCoolerColorCodedStringWithShadow(spriteBatch, texture, font, text, position, Color.Lerp(mainColor, Color.White, 0.5f) * scalesqr, Color.White * scalesqr, 0, default, new Vector2(.8f) * scaler * scale, style);
 //                //spriteBatch.Draw(TextureAssets.MagicPixel.Value, texVec + offsetY * 72 * Vector2.UnitY * scaler, new Rectangle(0, 0, 1, 1), Color.Red, 0, new Vector2(.5f), 4f, 0, 0);
@@ -606,7 +602,6 @@
 
 //            sb.Draw(colorSlider, new Vector2(num2 + 167f * scale * perc, num3 + 4f * scale), null, Color.White, 0f, colorSlider.Size() * 0.5f, scale, SpriteEffects.None, 0f);
 
-
 //            if (Main.mouseX >= rectangle.X && Main.mouseX <= rectangle.X + rectangle.Width)
 //            {
 //                IngameOptions.inBar = flag;
@@ -709,8 +704,6 @@
 //                TextDisplayFunction = () => Index + 1 + ": " + TList[Index];
 //            }
 
-
-
 //            if (RangeAttribute != null && RangeAttribute.Min is T && RangeAttribute.Max is T)
 //            {
 //                Min = (T)RangeAttribute.Min;
@@ -771,7 +764,7 @@
 //        /// <summary>
 //        /// 优化版的WrapIt函数
 //        /// 支持自己抄写再魔改的<see cref="CollectionElement">
-//        /// 
+//        ///
 //        /// </summary>
 //        /// <param name="parent"></param>
 //        /// <param name="top"></param>
@@ -1016,7 +1009,7 @@
 //            //    var texture = base.CollapsedTexture.Value;
 //            //    var name = "Collapsed";
 //            //    int i = 0;
-//            //    while (i < 6) 
+//            //    while (i < 6)
 //            //    {
 //            //        FileStream fileStream = new FileStream($"E:/tmlUI/CoolerUI_{name}.png", FileMode.OpenOrCreate);
 //            //        texture.SaveAsPng(fileStream, texture.Width, texture.Height);

@@ -1,11 +1,11 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CoolerItemVisualEffect.Config;
+using LogSpiralLibrary;
+using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
+using LogSpiralLibrary.CodeLibrary.Utilties.Extensions;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria.GameContent;
-using LogSpiralLibrary;
-using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
-using CoolerItemVisualEffect.Config;
-using LogSpiralLibrary.CodeLibrary.Utilties.Extensions;
 
 namespace CoolerItemVisualEffect
 {
@@ -23,57 +23,7 @@ namespace CoolerItemVisualEffect
             return base.GetAlpha(projectile, lightColor);
         }
 
-        public override void Load()
-        {
-            On_Main.EntitySpriteDraw_DrawData += On_Main_EntitySpriteDraw_DrawData;
-            On_Main.EntitySpriteDraw_Texture2D_Vector2_Nullable1_Color_float_Vector2_float_SpriteEffects_float += On_Main_EntitySpriteDraw_Texture2D_Vector2_Nullable1_Color_float_Vector2_float_SpriteEffects_float;
-            On_Main.EntitySpriteDraw_Texture2D_Vector2_Nullable1_Color_float_Vector2_Vector2_SpriteEffects_float += On_Main_EntitySpriteDraw_Texture2D_Vector2_Nullable1_Color_float_Vector2_Vector2_SpriteEffects_float;
-            base.Load();
-        }
 
-        private void On_Main_EntitySpriteDraw_Texture2D_Vector2_Nullable1_Color_float_Vector2_Vector2_SpriteEffects_float(On_Main.orig_EntitySpriteDraw_Texture2D_Vector2_Nullable1_Color_float_Vector2_Vector2_SpriteEffects_float orig, Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float worthless)
-        {
-            if (texture.GetHashCode() == TextureAssets.Projectile[ProjectileID.EnchantedBeam].Value.GetHashCode())
-            {
-                int u = 0;
-            }
-            orig.Invoke(texture, position, sourceRectangle, color, rotation, origin, scale, effects, worthless);
-        }
-
-        private void On_Main_EntitySpriteDraw_Texture2D_Vector2_Nullable1_Color_float_Vector2_float_SpriteEffects_float(On_Main.orig_EntitySpriteDraw_Texture2D_Vector2_Nullable1_Color_float_Vector2_float_SpriteEffects_float orig, Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, float scale, SpriteEffects effects, float worthless)
-        {
-            if (texture.GetHashCode() == TextureAssets.Projectile[ProjectileID.EnchantedBeam].Value.GetHashCode())
-            {
-                int u = 0;
-            }
-            orig.Invoke(texture, position, sourceRectangle, color, rotation, origin, scale, effects, worthless);
-        }
-
-        private void On_Main_EntitySpriteDraw_DrawData(On_Main.orig_EntitySpriteDraw_DrawData orig, DrawData data)
-        {
-            if (data.texture.GetHashCode() == TextureAssets.Projectile[ProjectileID.EnchantedBeam].Value.GetHashCode())
-            {
-                int u = 0;
-            }
-            orig.Invoke(data);
-        }
-
-        public override void OnSpawn(Projectile projectile, IEntitySource source)
-        {
-            //if (projectile.ModProjectile is VertexHammerProj vertexHammer)
-            //{
-            //    var player = vertexHammer.Player;
-            //    var modplr = player.GetModPlayer<CoolerItemVisualEffectPlayer>();
-            //    if (modplr.colorInfo.tex == null)
-            //    {
-            //        Main.RunOnMainThread(() => modplr.colorInfo.tex = new Texture2D(Main.graphics.GraphicsDevice, 300, 1));
-            //    }
-            //    CoolerItemVisualEffectPlayer.ChangeItemTex(player);
-            //    CoolerItemVisualEffectMod.UpdateHeatMap(ref modplr.colorInfo.tex, modplr.hsl, modplr.ConfigurationSwoosh, TextureAssets.Item[player.HeldItem.type].Value);
-            //    vertexHammer.heatMap = modplr.colorInfo.tex;
-            //}
-            base.OnSpawn(projectile, source);
-        }
         public override void PostAI(Projectile projectile)
         {
             switch (projectile.type)
@@ -122,7 +72,7 @@ namespace CoolerItemVisualEffect
                 case ProjectileID.BloodArrow:
                 case ProjectileID.ShimmerArrow:
                     {
-                        if (ProjectileID.Sets.TrailingMode[projectile.type] == -1)// !Main.gamePaused && 
+                        if (ProjectileID.Sets.TrailingMode[projectile.type] == -1)// !Main.gamePaused &&
                         {
                             for (int n = projectile.oldPos.Length - 1; n > 0; n--)
                             {
@@ -137,6 +87,7 @@ namespace CoolerItemVisualEffect
             }
             base.PostAI(projectile);
         }
+
         public override bool PreDraw(Projectile projectile, ref Color lightColor)
         {
             if (!MiscConfig.Instance.VanillaProjectileDrawModifyActive) goto mylabel;
@@ -167,8 +118,7 @@ namespace CoolerItemVisualEffect
                 case ProjectileID.Bananarang:
                 case ProjectileID.Shroomerang:
                     {
-
-                        //if (!Main.gamePaused && ProjectileID.Sets.TrailingMode[projectile.type] == -1)// 
+                        //if (!Main.gamePaused && ProjectileID.Sets.TrailingMode[projectile.type] == -1)//
                         //{
                         //    for (int n = projectile.oldPos.Length - 1; n > 0; n--)
                         //    {
@@ -311,7 +261,9 @@ namespace CoolerItemVisualEffect
                                 }
                         }
                         if (isBoomerang) { angleOffset = -MathHelper.PiOver4; _scaler = 8; facVel = 0; }//23
+
                         #region offsetAlpha
+
                         if (projectile.tileCollide && !ProjectileModificationPreview.PVDrawing)
                         {
                             var vCenter = projectile.Center;
@@ -328,7 +280,9 @@ namespace CoolerItemVisualEffect
                             }
                             mainColor *= MathHelper.Clamp((t - 1) / 30f, 0, 1);
                         }
-                        #endregion
+
+                        #endregion offsetAlpha
+
                         var multiValue = 1 - projectile.localAI[0] / 90f;
 
                         if (projectile.type == ProjectileID.DeathSickle) mainColor *= facVel;
@@ -436,7 +390,6 @@ namespace CoolerItemVisualEffect
                                                 spriteBatch.DrawQuadraticLaser_PassNormal(projectile.Center - 24 * u, u, mainColor with { A = 255 }, LogSpiralLibraryMod.AniTex[8].Value, 128, 64, 0, 1, 0.25f, false);
                                                 spriteBatch.DrawQuadraticLaser_PassNormal(projectile.Center - 24 * u, u, mainColor with { A = 255 } * 1.5f, LogSpiralLibraryMod.AniTex[8].Value, 256, 32, 0, 1f, 0.25f, false);
                                                 spriteBatch.DrawQuadraticLaser_PassNormal(projectile.Center - 24 * u, u, mainColor with { A = 255 } * .5f, LogSpiralLibraryMod.AniTex[8].Value, 64, 128, 0, 1, 0.25f, false);
-
                                             }
                                             goto theLabel;
                                         }
@@ -531,13 +484,15 @@ namespace CoolerItemVisualEffect
                             ProjectileID.SkyFracture => Color.Lerp(Color.LightCyan, Color.Cyan, .5f),
                             _ => default
                         };
+
                         #region offsetAlpha
+
                         {
                             if (!ProjectileModificationPreview.PVDrawing)
                             {
                                 var vCenter = projectile.Center;
                                 int t = 0;
-                                var tile = Framing.GetTileSafely((int)vCenter.X / 16, (int)vCenter.Y / 16)  ;
+                                var tile = Framing.GetTileSafely((int)vCenter.X / 16, (int)vCenter.Y / 16);
 
                                 while (t < 30 && !(tile.HasTile && Main.tileSolid[tile.TileType]))
                                 {
@@ -549,10 +504,10 @@ namespace CoolerItemVisualEffect
                                 }
                                 mainColor *= MathHelper.Clamp((t - 1) / 30f, 0, 1);
                             }
-
-
                         }
-                        #endregion
+
+                        #endregion offsetAlpha
+
                         var unit = (projectile.rotation - MathHelper.PiOver4).ToRotationVector2();
                         var center = projectile.Center - Main.screenPosition;
                         spriteBatch.Draw(projectileTexture, center - unit * 24, null, mainColor with { A = 0 }, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), scaleVec * new Vector2(.75f, 1.5f), SpriteEffects.None, 0f);
@@ -598,9 +553,9 @@ namespace CoolerItemVisualEffect
                 case ProjectileID.BoneArrow:
                 case ProjectileID.BloodArrow:
                 case ProjectileID.ShimmerArrow:
-                    //case ProjectileID.BeeArrow: 
+                    //case ProjectileID.BeeArrow:
                     {
-                        //if (!Main.gamePaused && ProjectileID.Sets.TrailingMode[projectile.type] == -1)// 
+                        //if (!Main.gamePaused && ProjectileID.Sets.TrailingMode[projectile.type] == -1)//
                         //{
                         //    for (int n = projectile.oldPos.Length - 1; n > 0; n--)
                         //    {
@@ -717,6 +672,7 @@ namespace CoolerItemVisualEffect
         mylabel:
             return base.PreDraw(projectile, ref lightColor);
         }
+
         public override void PostDraw(Projectile projectile, Color lightColor)
         {
             base.PostDraw(projectile, lightColor);

@@ -1,10 +1,6 @@
 ﻿using LogSpiralLibrary.CodeLibrary.ConfigModification;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ModLoader.Config;
 
 namespace CoolerItemVisualEffect.Config
@@ -13,6 +9,7 @@ namespace CoolerItemVisualEffect.Config
     public class MiscConfig : ModConfig
     {
         public override ConfigScope Mode => ConfigScope.ClientSide;
+
         //[Header("MiscPart")]
         public static MiscConfig Instance => ModContent.GetInstance<MiscConfig>();
 
