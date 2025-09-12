@@ -1,4 +1,5 @@
-﻿using LogSpiralLibrary;
+﻿using CoolerItemVisualEffect.MeleeModify;
+using LogSpiralLibrary;
 using LogSpiralLibrary.CodeLibrary.ConfigModification;
 using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
 using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingContents;

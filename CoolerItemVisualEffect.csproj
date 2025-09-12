@@ -13,13 +13,10 @@
 		<Reference Include="NetSimplified">
 			<HintPath>lib\NetSimplified.dll</HintPath>
 		</Reference>
-		<ModReference Include="lib\*.dll"/>
+		<ModReference Include="lib\*.dll" />
 	</ItemGroup>
 	<ItemGroup>
-		<AdditionalFiles Include="**/*.xml;**/*.xnb"
-						 Exclude="bin/**/*;obj/**/*"
-						 Pack="true"
-						 ModPath="%(Identity)"/>
+		<AdditionalFiles Include="**/*.xml;**/*.xnb" Exclude="bin/**/*;obj/**/*" Pack="true" ModPath="%(Identity)" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="./description.txt;./description_workshop.txt;./description_workshop_en.txt">

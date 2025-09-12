@@ -1,4 +1,5 @@
 ﻿// using CoolerItemVisualEffect.Config.ConfigSLer;
+using CoolerItemVisualEffect.MeleeModify;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;

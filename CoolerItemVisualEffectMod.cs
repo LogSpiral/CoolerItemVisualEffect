@@ -5,6 +5,7 @@ global using Terraria.DataStructures;
 global using Terraria.ID;
 global using Terraria.ModLoader;
 using CoolerItemVisualEffect.Config;
+using CoolerItemVisualEffect.MeleeModify;
 using LogSpiralLibrary;
 using Microsoft.Xna.Framework.Graphics;
 using NetSimplified;
