@@ -24,7 +24,7 @@ public partial class CIVESword
 
     private static void GeneralShootSupport(MeleeAction info) 
     {
-        if (info.Projectile.owner != Main.myPlayer) return;
+        if (!info.IsLocalProjectile) return;
         if (info.Owner is not Player plr) return;
         int dmg = info.CurrentDamage;
         int type = plr.HeldItem.shoot;

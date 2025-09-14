@@ -3,5 +3,5 @@ author = 错数螺线Log_Spiral
 version = 0.1.20.0
 homepage = https://github.com/LogSpiral
 includeSource = true
-modReferences = LogSpiralLibrary
+modReferences = SilkyUIFramework, PropertyPanelLibrary, LogSpiralLibrary
 dllReferences = NetSimplified
