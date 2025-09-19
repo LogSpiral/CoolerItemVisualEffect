@@ -578,7 +578,7 @@ ConfigSLer: {
 	Save: 保存
 }
 
-WeaponSelector: {
+WeaponGroup: {
 	basedOnDefaultCondition.Label: 基于默认条件(白名单下从默认增加，黑名单从默认剔除)
 	whiteList.Label: 采用白名单(否则黑名单)
 	BindConfigName.Label: 采用配置(留空使用当前配置)
@@ -598,7 +598,7 @@ Items: {
 			'''
 	}
 
-	WeaponSelectorItem: {
+	WeaponGroupManager: {
 		DisplayName: 武器分组管理器
 		Tooltip: 左键或右键打开界面对分组进行管理
 	}

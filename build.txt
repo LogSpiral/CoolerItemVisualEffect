@@ -1,7 +1,6 @@
-displayName = CoolerItemVisualEffect(更酷的物品视觉效果)
+displayName = C.I.V.E.
 author = 错数螺线Log_Spiral
 version = 0.1.20.0
-homepage = https://github.com/LogSpiral
-includeSource = true
+homepage = https://github.com/LogSpiral/CoolerItemVisualEffect
 modReferences = SilkyUIFramework, PropertyPanelLibrary, LogSpiralLibrary
 dllReferences = NetSimplified

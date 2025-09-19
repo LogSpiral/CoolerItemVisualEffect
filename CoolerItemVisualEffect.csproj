@@ -23,4 +23,10 @@
 			<Visible>true</Visible>
 		</None>
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Common\Config\Datas\DesignateHeatMap\UI\PropertyPanel\" />
+	  <Folder Include="UIBase\" />
+	  <Folder Include="UI\WeaponGroup\" />
+	  <Folder Include="UI\ConfigSaveLoader\" />
+	</ItemGroup>
 </Project>
