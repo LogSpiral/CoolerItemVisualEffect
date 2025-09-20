@@ -58,9 +58,9 @@ public partial class MeleeModifyPlayer
             float k = 1 - (float)Player.itemAnimation / Player.itemAnimationMax;
 
             if (Player.direction == 1)
-                currentSwoosh.angleRange = (-1.5f + k * .5f, MathHelper.Lerp(-1f, .25f, k));
+                currentSwoosh.angleRange = (1.5f - k * .5f, -.0625f - MathHelper.Lerp(-1f, .25f, k));
             else
-                currentSwoosh.angleRange = (-.5f, MathHelper.Lerp(-1f, .25f, k) + 1);
+                currentSwoosh.angleRange = (2.5f - k * .5f, 1 - .0625f - MathHelper.Lerp(-1f, .25f, k));
             currentSwoosh.center = Player.Center;
             currentSwoosh.ColorVector = configurationSwoosh.colorVector.AlphaVector * k;
 

@@ -46,7 +46,7 @@ public partial class MeleeModifyPlayer
             }
 #endif
         label:
-            configurationSwoosh ??= Main.myPlayer == Player.whoAmI ? Instance : new MeleeConfig();
+            configurationSwoosh ??= Main.myPlayer == Player.whoAmI ? MeleeConfig.Instance : new MeleeConfig();
 
             return configurationSwoosh;
         }

@@ -41,7 +41,6 @@ public partial class MeleeModifyPlayer : ModPlayer
             ItemID.Sets.SkipsInitialUseSound[Player.HeldItem.type] =
                 SeverConfig.Instance.meleeModifyLevel == SeverConfig.MeleeModifyLevel.Overhaul
                 && ConfigurationSwoosh.SwordModifyActive;
-
         MeleeModifyPlayerUtils.CheckItemChange(Player);
         base.PostUpdate();
     }

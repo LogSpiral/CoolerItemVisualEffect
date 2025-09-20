@@ -32,7 +32,7 @@ public static partial class WeaponDisplayUtils
     private static bool CheckDisplayPlayer(Player player)
     {
         return
-            player.active || Main.gameMenu
+            (player.active || Main.gameMenu)
             && !player.dead
             && player.itemAnimation == 0
             && player.ItemTimeIsZero;
