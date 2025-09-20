@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace CoolerItemVisualEffect;
 
@@ -22,13 +23,17 @@ public static class CoolerItemVisualEffectHelper
         float count = 0;
         for (int i = 0; i < cs.Length; i++)
         {
+            // 当前像素不为空像素
+            // 并且上下左右像素不存在或不为空
+            // 此时进行加权平均
             if (cs[i] != default
                 && (i - w < 0 || cs[i - w] != default)
                 && (i - 1 < 0 || cs[i - 1] != default)
                 && (i + w >= cs.Length || cs[i + w] != default)
                 && (i + 1 >= cs.Length || cs[i + 1] != default))
             {
-                var weight = (float)((i + 1) % w * (he - i / w)) / w / he;
+                var weight = (i % w + 1f) / w;
+                weight *= (he - i / w) / (float)he;
                 vcolor += cs[i].ToVector4() * weight;
                 count += weight;
             }

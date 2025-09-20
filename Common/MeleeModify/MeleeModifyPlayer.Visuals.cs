@@ -25,4 +25,11 @@ public partial class MeleeModifyPlayer
         set;
     }
     public Vector3 WeaponHSL { get; set; }
+
+    public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
+    {
+        if (UseSwordModify)
+            drawInfo.heldItem.type = ItemID.None;
+        base.ModifyDrawInfo(ref drawInfo);
+    }
 }
