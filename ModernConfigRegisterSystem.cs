@@ -17,7 +17,7 @@ public class ModernConfigRegisterSystem : ModSystem
         SetAboutPage(qot, Mod, () => "非常酷大剑转转转的配置中心！！！", ItemID.IronShortsword, null, () => "关于大剑", () => "酷酷酷酷酷");
 
         RegisterCategory(qot, Mod, [
-            (SeverConfig.Instance,[nameof(SeverConfig.meleeModifyLevel)]),
+            (ServerConfig.Instance,[nameof(ServerConfig.meleeModifyLevel)]),
         (MeleeConfig.Instance,
         [
              nameof(MeleeConfig.UsePreview),

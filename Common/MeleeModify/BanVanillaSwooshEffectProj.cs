@@ -25,7 +25,7 @@ public class BanVanillaSwooshEffectProj : GlobalProjectile
 
     public override bool PreDraw(Projectile projectile, ref Color lightColor)
     {
-        if (SeverConfig.Instance.meleeModifyLevel == SeverConfig.MeleeModifyLevel.VisualOnly 
+        if (ServerConfig.Instance.meleeModifyLevel == ServerConfig.MeleeModifyLevel.VisualOnly 
             && VanillaSlashProjectiles.Contains(projectile.type) 
             && Main.player[projectile.owner]
                 .GetModPlayer<MeleeModifyPlayer>()

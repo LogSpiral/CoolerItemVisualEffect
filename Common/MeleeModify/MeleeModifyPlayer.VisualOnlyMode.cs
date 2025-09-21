@@ -14,7 +14,7 @@ public partial class MeleeModifyPlayer
     {
         configurationSwoosh ??= Main.myPlayer == Player.whoAmI ? MeleeConfig.Instance : new MeleeConfig();
 
-        if (SeverConfig.Instance.meleeModifyLevel != SeverConfig.MeleeModifyLevel.VisualOnly) return;
+        if (ServerConfig.Instance.meleeModifyLevel != ServerConfig.MeleeModifyLevel.VisualOnly) return;
         if (!configurationSwoosh.SwordModifyActive) return;
         if (!MeleeModifyPlayerUtils.MeleeBroadSwordCheck(Player.HeldItem)) return;
 

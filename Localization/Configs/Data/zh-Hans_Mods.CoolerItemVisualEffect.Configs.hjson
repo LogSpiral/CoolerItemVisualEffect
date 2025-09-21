@@ -20,6 +20,8 @@ ColorVector: {
 		Label: 单位化(归一化)
 		Tooltip: 如果启用将会使最终结果各分量加起来为1
 	}
+
+	// Tooltip: ""
 }
 
 HeatMapCreateStyle: {
@@ -113,7 +115,7 @@ LuminosityInfo: {
 		// Tooltip: ""
 	}
 
-    Offset: {
+	Offset: {
 		Label: 偏移
 		// Tooltip: ""
 	}
@@ -186,17 +188,17 @@ CosineGenerateHeatMapData_HSL: {
 	// Tooltip: ""
 
 	Hue: {
-		// Label: H
+		// Label: Hue
 		// Tooltip: ""
 	}
 
 	Saturation: {
-		// Label: S
+		// Label: Saturation
 		// Tooltip: ""
 	}
 
 	Luminosity: {
-		// Label: L
+		// Label: Luminosity
 		// Tooltip: ""
 	}
 
@@ -220,7 +222,7 @@ DesignateHeatMapData: {
 	// Tooltip: ""
 
 	Colors: {
-		// Label: colors
+		// Label: Colors
 		// Tooltip: ""
 	}
 }
@@ -229,12 +231,12 @@ ColorInfo: {
 	// Tooltip: ""
 
 	Color: {
-		// Label: color
+		// Label: Color
 		// Tooltip: ""
 	}
 
 	Position: {
-		// Label: position
+		// Label: Position
 		// Tooltip: ""
 	}
 }

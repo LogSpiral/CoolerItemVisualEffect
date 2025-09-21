@@ -24,7 +24,7 @@ namespace CoolerItemVisualEffect.Common.Config;
 public class MeleeConfig : ModConfig
 {
     [DefaultValue(true)] 
-    public bool UsePreview { get; } = true;
+    public bool UsePreview = true;
 
     [DefaultValue(false)]
     [CustomPreview<UseRenderPVPreivew>]

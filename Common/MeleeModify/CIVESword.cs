@@ -165,7 +165,7 @@ public partial class CIVESword : MeleeSequenceProj
         return k / cycle / orig.Damage;// orig.actionOffsetDamage *
     }
 
-    private bool UseBalance => SeverConfig.Instance.AutoBalanceData && CurrentElement is LSLMelee;// meleeSequence?.currentData != null;
+    private bool UseBalance => ServerConfig.Instance.AutoBalanceData && CurrentElement is LSLMelee;// meleeSequence?.currentData != null;
 
     public override void AI()
     {

@@ -17,7 +17,7 @@ public class MiscConfig : ModConfig
 
     [DefaultValue(true)]
     [CustomPreview<UsePVPreview>]
-    public bool UsePreview { get; } = true;
+    public bool UsePreview = true;
 
     [DefaultValue(true)]
     [CustomPreview<WeaponDisplayPreview>]

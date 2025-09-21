@@ -7,9 +7,9 @@ using Terraria.ModLoader.Config;
 
 namespace CoolerItemVisualEffect.Common.Config;
 
-public class SeverConfig : ModConfig
+public class ServerConfig : ModConfig
 {
-    public static SeverConfig Instance { get; private set; }
+    public static ServerConfig Instance { get; private set; }
 
     public override void OnLoaded()
     {
@@ -31,7 +31,7 @@ public class SeverConfig : ModConfig
     public MeleeModifyLevel meleeModifyLevel = MeleeModifyLevel.VisualOnly;
 
     [DefaultValue(true)] 
-    public bool AutoBalanceData { get; } = true;
+    public bool AutoBalanceData = true;
 
     public override bool AcceptClientChanges(ModConfig pendingConfig, int whoAmI, ref NetworkText message)
     {

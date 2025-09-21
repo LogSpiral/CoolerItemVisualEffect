@@ -1,6 +1,6 @@
-DisplayName: Misc Config
+﻿DisplayName: Misc Config
 
-usePreview: {
+UsePreview: {
 	Label: Use Preview
 	Tooltip: ""
 }

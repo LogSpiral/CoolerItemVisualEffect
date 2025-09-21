@@ -24,7 +24,7 @@ public partial class MeleeModifyPlayer : ModPlayer
     /// 判定当前是否可以处于近战序列状态
     /// </summary>
     public bool BeAbleToOverhaul =>
-        SeverConfig.Instance.meleeModifyLevel == SeverConfig.MeleeModifyLevel.Overhaul
+        ServerConfig.Instance.meleeModifyLevel == ServerConfig.MeleeModifyLevel.Overhaul
         && ConfigurationSwoosh.SwordModifyActive
         && IsMeleeBroadSword;
 
@@ -39,7 +39,7 @@ public partial class MeleeModifyPlayer : ModPlayer
     {
         if (IsMeleeBroadSword)
             ItemID.Sets.SkipsInitialUseSound[Player.HeldItem.type] =
-                SeverConfig.Instance.meleeModifyLevel == SeverConfig.MeleeModifyLevel.Overhaul
+                ServerConfig.Instance.meleeModifyLevel == ServerConfig.MeleeModifyLevel.Overhaul
                 && ConfigurationSwoosh.SwordModifyActive;
         MeleeModifyPlayerUtils.CheckItemChange(Player);
         base.PostUpdate();

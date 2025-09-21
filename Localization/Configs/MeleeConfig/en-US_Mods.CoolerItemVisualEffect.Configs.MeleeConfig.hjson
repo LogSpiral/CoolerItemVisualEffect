@@ -1,4 +1,4 @@
-DisplayName: Melee Config
+﻿DisplayName: Melee Config
 
 Headers: {
 	MeleeModifyPart: "[i:1199]Melee Visual Effect Settings"
