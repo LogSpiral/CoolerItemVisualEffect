@@ -1,5 +1,4 @@
-﻿using CoolerItemVisualEffect.Common.Config;
-using CoolerItemVisualEffect.Common.MeleeModify;
+﻿using CoolerItemVisualEffect.Common.MeleeModify;
 using LogSpiralLibrary;
 using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
 using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingContents;
@@ -27,7 +26,7 @@ public static class PreviewHelper
 
     public static void DrawUltraSwoosh(SpriteBatch spriteBatch, Vector2 center, MeleeConfig config, Texture2D heatMap = null, int? baseTex = null, int? aniTex = null, Vector3? alphaVector = null, bool? useRenderEffect = null, Action<UltraSwoosh> otherOperation = null)
     {
-        MeleeModifyPlayer mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
+        var mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
         if (PreviewAssistantHeatMap == null)
             MeleeModifyPlayerUtils.UpdateHeatMap(PreviewAssistantHeatMap, DefaultHSL, config, TextureAssets.Item[ItemID.TerraBlade].Value);//hsl使用铸炼的泰拉刃生成
 
@@ -62,7 +61,7 @@ public static class PreviewHelper
 
     public static void DrawUltraStab(SpriteBatch spriteBatch, Vector2 center, MeleeConfig config, Texture2D heatMap = null, int? baseTex = null, int? aniTex = null, Vector3? alphaVector = null, bool? useRenderEffect = null, Action<UltraStab> otherOperation = null)
     {
-        MeleeModifyPlayer mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
+        var mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
         if (PreviewAssistantHeatMap == null)
             MeleeModifyPlayerUtils.UpdateHeatMap(PreviewAssistantHeatMap, DefaultHSL, config, TextureAssets.Item[ItemID.TerraBlade].Value);//hsl使用铸炼的泰拉刃生成
 
@@ -96,13 +95,13 @@ public static class PreviewHelper
 
     public static void DrawSorry(SpriteBatch spriteBatch, Rectangle rectangle)
     {
-        Vector2 pos = rectangle.Left() + new Vector2(20, 0);
+        var pos = rectangle.Left() + new Vector2(20, 0);
         spriteBatch.DrawString(FontAssets.MouseText.Value, Language.GetOrRegister("Mods.CoolerItemVisualEffect.Misc.UselessConfig").Value, pos, Color.White);
     }
 
     public static void DrawUnavailable(SpriteBatch spriteBatch, Rectangle rectangle)
     {
-        Vector2 pos = rectangle.Left() + new Vector2(20, 0);
+        var pos = rectangle.Left() + new Vector2(20, 0);
         spriteBatch.DrawString(FontAssets.MouseText.Value, Language.GetOrRegister("Mods.CoolerItemVisualEffect.Misc.UnavailableConfig").Value, pos, Color.White);
     }
 }

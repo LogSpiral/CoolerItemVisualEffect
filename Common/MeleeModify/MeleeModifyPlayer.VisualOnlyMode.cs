@@ -27,9 +27,9 @@ public partial class MeleeModifyPlayer
             var alphaVec = configurationSwoosh.colorVector.AlphaVector;
             var eVec = alphaVec with { Y = 0 };
             if (eVec.X == 0 && eVec.Z == 0)
-                eVec = new(.5f, 0, .5f);
+                eVec = new Vector3(.5f, 0, .5f);
 
-            string canvasName = GetCanvasNameViaID(Player.whoAmI);
+            var canvasName = GetCanvasNameViaID(Player.whoAmI);
 
             var swoosh = currentSwoosh = UltraSwoosh.NewUltraSwoosh(canvasName, timeLeft, length, Player.Center, (-1.5f, .25f));
             swoosh.heatMap = HeatMap;
@@ -55,7 +55,7 @@ public partial class MeleeModifyPlayer
         if (Player.itemAnimation > 0 && currentSwoosh != null)
         {
             currentSwoosh.timeLeft++;
-            float k = 1 - (float)Player.itemAnimation / Player.itemAnimationMax;
+            var k = 1 - (float)Player.itemAnimation / Player.itemAnimationMax;
 
             if (Player.direction == 1)
                 currentSwoosh.angleRange = (1.5f - k * .5f, -.0625f - MathHelper.Lerp(-1f, .25f, k));

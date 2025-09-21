@@ -1,20 +1,16 @@
-﻿using CoolerItemVisualEffect.Common.Config;
-using CoolerItemVisualEffect.Common.Config.Datas.ColorVectorData;
-using CoolerItemVisualEffect.Common.Config.Datas.CosineGenerateHeatMapData;
-using CoolerItemVisualEffect.Common.Config.Datas.DesignateHeatMap;
+﻿using CoolerItemVisualEffect.Common.Config.Data.ColorVectorData;
+using CoolerItemVisualEffect.Common.Config.Data.CosineGenerateHeatMapData;
+using CoolerItemVisualEffect.Common.Config.Data.DesignateHeatMap;
 using CoolerItemVisualEffect.Common.MeleeModify;
 using LogSpiralLibrary;
 using LogSpiralLibrary.CodeLibrary.ConfigModification;
 using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
 using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingContents;
-using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingEffects;
 using LogSpiralLibrary.CodeLibrary.Utilties.Extensions;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria.GameContent;
-using Terraria.Localization;
 using Terraria.ModLoader.Config;
 using Terraria.UI;
 
@@ -50,7 +46,7 @@ public class AnimationTexSwooshPreview : MeleePreview<int>
         spriteBatch.Draw(tex, Utils.CenteredRectangle(new Vector2(dimension.X + 110, dimension.Center().Y), new Vector2(180)), Color.White);
         if (Main.gameMenu)
             GlobalTimeSystem.GlobalTime += .33f;
-        PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), (MeleeConfig)metaData.config, null, null, data, null);
+        PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), (MeleeConfig)metaData.config, null, null, data);
     }
 }
 
@@ -62,7 +58,7 @@ public class BaseTexSwooshPreview : MeleePreview<int>
         spriteBatch.Draw(tex, Utils.CenteredRectangle(new Vector2(dimension.X + 110, dimension.Center().Y), new Vector2(180)), Color.White);
         if (Main.gameMenu)
             GlobalTimeSystem.GlobalTime += .33f;
-        PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), (MeleeConfig)metaData.config, null, data, null, null);
+        PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), (MeleeConfig)metaData.config, null, data);
     }
 }
 
@@ -74,7 +70,7 @@ public class AnimationTexStabPreview : MeleePreview<int>
         spriteBatch.Draw(tex, Utils.CenteredRectangle(new Vector2(dimension.X + 110, dimension.Center().Y), new Vector2(180)), Color.White);
         if (Main.gameMenu)
             GlobalTimeSystem.GlobalTime += .33f;
-        PreviewHelper.DrawUltraStab(spriteBatch, new Vector2(dimension.X + dimension.Width - 180, dimension.Center().Y), (MeleeConfig)metaData.config, null, null, data, null);
+        PreviewHelper.DrawUltraStab(spriteBatch, new Vector2(dimension.X + dimension.Width - 180, dimension.Center().Y), (MeleeConfig)metaData.config, null, null, data);
     }
 }
 
@@ -86,7 +82,7 @@ public class BaseTexStabPreview : MeleePreview<int>
         spriteBatch.Draw(tex, Utils.CenteredRectangle(new Vector2(dimension.X + 110, dimension.Center().Y), new Vector2(180)), Color.White);
         if (Main.gameMenu)
             GlobalTimeSystem.GlobalTime += .33f;
-        PreviewHelper.DrawUltraStab(spriteBatch, new Vector2(dimension.X + dimension.Width - 180, dimension.Center().Y), (MeleeConfig)metaData.config, null, data, null, null);
+        PreviewHelper.DrawUltraStab(spriteBatch, new Vector2(dimension.X + dimension.Width - 180, dimension.Center().Y), (MeleeConfig)metaData.config, null, data);
     }
 }
 
@@ -121,18 +117,18 @@ public class WeaponExtraLightPreview : MeleePreview<float>
     {
         if (Main.gameMenu)
             GlobalTimeSystem.GlobalTime += .33f;
-        Item item = Main.gameMenu ? null : Main.LocalPlayer.HeldItem;
-        Texture2D texture = Main.gameMenu ? TextureAssets.Item[ItemID.TerraBlade].Value : MeleeModifyPlayerUtils.GetWeaponTextureFromItem(item);
+        var item = Main.gameMenu ? null : Main.LocalPlayer.HeldItem;
+        var texture = Main.gameMenu ? TextureAssets.Item[ItemID.TerraBlade].Value : MeleeModifyPlayerUtils.GetWeaponTextureFromItem(item);
         var nframe = Main.itemAnimations[Main.gameMenu ? ItemID.TerraBlade : item.type]?.GetFrame(texture);
-        CustomVertexInfo[] c = DrawingMethods.GetItemVertexes(new Vector2(0.1f, 0.9f), -MathHelper.PiOver4, MathHelper.PiOver4, 0, texture, 1, 1, dimension.Center(), false, 1f, nframe);
-        Effect ItemEffect = LogSpiralLibraryMod.ItemEffectEX;
+        var c = DrawingMethods.GetItemVertexes(new Vector2(0.1f, 0.9f), -MathHelper.PiOver4, MathHelper.PiOver4, 0, texture, 1, 1, dimension.Center(), false, 1f, nframe);
+        var ItemEffect = LogSpiralLibraryMod.ItemEffectEX;
         if (ItemEffect == null) return;
-        SamplerState sampler = SamplerState.AnisotropicWrap;
+        var sampler = SamplerState.AnisotropicWrap;
         var projection = Main.gameMenu ? Matrix.CreateOrthographicOffCenter(0, Main.instance.Window.ClientBounds.Width, Main.instance.Window.ClientBounds.Height, 0, 0, 1) : Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
         var model = Matrix.CreateTranslation(default);
         var trans = Main.gameMenu ? Matrix.CreateScale(Main.instance.Window.ClientBounds.Width / (float)Main.screenWidth, Main.instance.Window.ClientBounds.Height / (float)Main.screenHeight, 1) : Matrix.Identity;
-        RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
-        Matrix result = model * trans * projection;
+        var originalState = Main.graphics.GraphicsDevice.RasterizerState;
+        var result = model * trans * projection;
         Main.spriteBatch.End();
         Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
         ItemEffect.Parameters["uTransform"].SetValue(result);
@@ -141,8 +137,8 @@ public class WeaponExtraLightPreview : MeleePreview<float>
         ItemEffect.Parameters["uItemGlowColor"].SetValue(Vector4.One);
         if (nframe != null)
         {
-            Rectangle frame = nframe.Value;
-            Vector2 size = texture.Size();
+            var frame = nframe.Value;
+            var size = texture.Size();
             ItemEffect.Parameters["uItemFrame"].SetValue(new Vector4(frame.TopLeft() / size, frame.Width / size.X, frame.Height / size.Y));
         }
         else
@@ -162,7 +158,7 @@ public class WeaponExtraLightPreview : MeleePreview<float>
         Main.graphics.GraphicsDevice.SamplerStates[2] = sampler;
         Main.graphics.GraphicsDevice.SamplerStates[3] = sampler;
         ItemEffect.CurrentTechnique.Passes[0].Apply();
-        for (int n = 0; n < c.Length; n++) c[n].Color = (Main.gameMenu ? Color.DarkGreen : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>().MainColor) * data;
+        for (var n = 0; n < c.Length; n++) c[n].Color = (Main.gameMenu ? Color.DarkGreen : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>().MainColor) * data;
         Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, c, 0, c.Length / 3);
         Main.graphics.GraphicsDevice.RasterizerState = originalState;
         Main.spriteBatch.End();
@@ -211,10 +207,10 @@ public class HeatMapCreatePreview : MeleePreview<MeleeConfig.HeatMapCreateStyle>
         var config = (MeleeConfig)metaData.config;
 
         //Texture2D[] curHeatMaps = new Texture2D[3];
-        MeleeModifyPlayer mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
+        var mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
         if (Main.gameMenu)
             GlobalTimeSystem.GlobalTime += .33f;
-        for (int n = 0; n < 5; n++)
+        for (var n = 0; n < 5; n++)
         {
             config.heatMapCreateStyle = (MeleeConfig.HeatMapCreateStyle)n;
             var tex = curHeatMaps[n];
@@ -224,7 +220,7 @@ public class HeatMapCreatePreview : MeleePreview<MeleeConfig.HeatMapCreateStyle>
             spriteBatch.Draw(tex, Utils.CenteredRectangle(new Vector2(dimension.X + 130, dimension.Center().Y + (n - 2) * 45), new Vector2(180, 20)), Color.White);
             if (n == (int)data)
             {
-                PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), config, tex, null, null, null);
+                PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), config, tex);
                 if (mplr != null)
                     MeleeModifyPlayerUtils.UpdateHeatMap(mplr.HeatMap, mplr.WeaponHSL, config, MeleeModifyPlayerUtils.GetWeaponTextureFromItem(Main.LocalPlayer.HeldItem));
                 else
@@ -246,10 +242,10 @@ public class HeatMapFactorPreview : MeleePreview<MeleeConfig.HeatMapFactorStyle>
         var config = (MeleeConfig)metaData.config;
 
         //Texture2D[] curHeatMaps = new Texture2D[5];
-        MeleeModifyPlayer mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
+        var mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
         if (Main.gameMenu)
             GlobalTimeSystem.GlobalTime += .33f;
-        for (int n = 0; n < 5; n++)
+        for (var n = 0; n < 5; n++)
         {
             config.heatMapFactorStyle = (MeleeConfig.HeatMapFactorStyle)n;
             var tex = curHeatMaps[n];
@@ -259,7 +255,7 @@ public class HeatMapFactorPreview : MeleePreview<MeleeConfig.HeatMapFactorStyle>
             spriteBatch.Draw(tex, Utils.CenteredRectangle(new Vector2(dimension.X + 130, dimension.Center().Y + (n - 2) * 45), new Vector2(180, 20)), Color.White);
             if (n == (int)data)
             {
-                PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), config, tex, null, null, null);
+                PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), config, tex);
                 if (mplr != null)
                     MeleeModifyPlayerUtils.UpdateHeatMap(mplr.HeatMap, mplr.WeaponHSL, config, MeleeModifyPlayerUtils.GetWeaponTextureFromItem(Main.LocalPlayer.HeldItem));
                 else
@@ -286,16 +282,16 @@ public class HeatMapRelatedDatePreview : MeleePreview<float>
         }
         if (Main.gameMenu)
             GlobalTimeSystem.GlobalTime += .33f;
-        MeleeModifyPlayer mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
+        var mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
         (float Min, float Max) range = (0f, 1f);
         var rangeAttribute = metaData.GetAttribute<RangeAttribute>();
         if (rangeAttribute != null)
             range = ((float)rangeAttribute.Min, (float)rangeAttribute.Max);
-        bool havntDraw = true;
-        float stp = (range.Max - range.Min) / 60f;
-        for (int n = 0; n < 60; n++)
+        var havntDraw = true;
+        var stp = (range.Max - range.Min) / 60f;
+        for (var n = 0; n < 60; n++)
         {
-            float r = MathHelper.Lerp(range.Min, range.Max, n / 59f);
+            var r = MathHelper.Lerp(range.Min, range.Max, n / 59f);
             metaData.Value = r;
             var tex = curHeatMaps[n];
             CoolerItemVisualEffectHelper.CreateHeatMapIfNull(ref tex);
@@ -305,7 +301,7 @@ public class HeatMapRelatedDatePreview : MeleePreview<float>
             if (Math.Abs(r - data) <= stp && havntDraw)
             {
                 havntDraw = false;
-                PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), config, tex, null, null, null);
+                PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), config, tex);
                 if (mplr != null)
                     MeleeModifyPlayerUtils.UpdateHeatMap(mplr.HeatMap, mplr.WeaponHSL, config, MeleeModifyPlayerUtils.GetWeaponTextureFromItem(Main.LocalPlayer.HeldItem));
                 else
@@ -342,38 +338,38 @@ public class CosinePreview : MeleePreview<ICosineData>
         if (Main.gameMenu)
             GlobalTimeSystem.GlobalTime += .33f;
 
-        int w = (int)dimension.Width;
-        int subW = w / 2 - 30;
-        float k = 1f / (subW - 1f);
-        float height = dimension.Height - 70;
-        float r = MathF.Min(subW, height) * .5f;
-        Vector2 topLeft = dimension.Position() + new Vector2(20, 20);
-        Vector2 centerP = topLeft + new Vector2(20 + subW * 1.5f, height * .5f);
-        int counter = 0;
-        Func<float, CosineInfo, Color>[] methods = data.LineColorMethods;
-        Color[] colors = data.LineColors;
+        var w = (int)dimension.Width;
+        var subW = w / 2 - 30;
+        var k = 1f / (subW - 1f);
+        var height = dimension.Height - 70;
+        var r = MathF.Min(subW, height) * .5f;
+        var topLeft = dimension.Position() + new Vector2(20, 20);
+        var centerP = topLeft + new Vector2(20 + subW * 1.5f, height * .5f);
+        var counter = 0;
+        var methods = data.LineColorMethods;
+        var colors = data.LineColors;
 
         foreach (var cosineInfo in data.Cosines)
         {
             Func<float, CosineInfo, Color> func = null;
             if (methods != null)
                 func = methods[counter];
-            Color color = Color.White;
+            var color = Color.White;
             if (colors != null)
                 color = colors[counter];
             Vector2 prev = default;
             Vector2 prevP = default;
 
-            for (int n = 0; n < subW; n++)
+            for (var n = 0; n < subW; n++)
             {
-                float t = n * k;
-                float value = MathHelper.Clamp(cosineInfo.GetValue(t), 0, 1f);
-                Vector2 current = topLeft + new Vector2(n, (1 - value) * height);
-                Vector2 currentP = centerP + (t * MathHelper.TwoPi).ToRotationVector2() * r * value;
+                var t = n * k;
+                var value = MathHelper.Clamp(cosineInfo.GetValue(t), 0, 1f);
+                var current = topLeft + new Vector2(n, (1 - value) * height);
+                var currentP = centerP + (t * MathHelper.TwoPi).ToRotationVector2() * r * value;
                 if (n > 0)
                 {
-                    spriteBatch.DrawLine(prev, current, func?.Invoke(t, cosineInfo) ?? color, 2, false, default);
-                    spriteBatch.DrawLine(prevP, currentP, func?.Invoke(t, cosineInfo) ?? color, 2, false, default);
+                    spriteBatch.DrawLine(prev, current, func?.Invoke(t, cosineInfo) ?? color, 2);
+                    spriteBatch.DrawLine(prevP, currentP, func?.Invoke(t, cosineInfo) ?? color, 2);
                 }
                 prev = current;
                 prevP = currentP;
@@ -401,13 +397,13 @@ public class DesignedColorPreview : MeleePreview<DesignateHeatMapData>
         }
         if (Main.gameMenu)
             GlobalTimeSystem.GlobalTime += .33f;
-        MeleeModifyPlayer mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
+        var mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
         if (mplr != null)
             MeleeModifyPlayerUtils.UpdateHeatMap(mplr.HeatMap, mplr.WeaponHSL, config, MeleeModifyPlayerUtils.GetWeaponTextureFromItem(Main.LocalPlayer.HeldItem));
         else
             MeleeModifyPlayerUtils.UpdateHeatMap(PreviewHelper.PreviewAssistantHeatMap, PreviewHelper.DefaultHSL, config, TextureAssets.Item[ItemID.TerraBlade].Value);
-        PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), (MeleeConfig)metaData.config, null, null, null, null);
-        PreviewHelper.DrawUltraStab(spriteBatch, new Vector2(dimension.X + 20, dimension.Center().Y), (MeleeConfig)metaData.config, null, null, null, null);
+        PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), (MeleeConfig)metaData.config);
+        PreviewHelper.DrawUltraStab(spriteBatch, new Vector2(dimension.X + 20, dimension.Center().Y), (MeleeConfig)metaData.config);
     }
 }
 
@@ -445,11 +441,11 @@ public class ColorListPreview : MeleePreview<List<Color>>
         }
         if (Main.gameMenu)
             GlobalTimeSystem.GlobalTime += .33f;
-        MeleeModifyPlayer mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
+        var mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
         MeleeModifyPlayerUtils.UpdateHeatMap(HeatMap, Main.gameMenu ? PreviewHelper.DefaultHSL : mplr.WeaponHSL, config, Main.gameMenu ? TextureAssets.Item[ItemID.TerraBlade].Value :  MeleeModifyPlayerUtils.GetWeaponTextureFromItem(Main.LocalPlayer.HeldItem));
         var tex = HeatMap;
         spriteBatch.Draw(tex, Utils.CenteredRectangle(new Vector2(dimension.X + 130, dimension.Center().Y), new Vector2(240, 40)), Color.White);
-        PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), (MeleeConfig)metaData.config, HeatMap, null, null, null);
+        PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), (MeleeConfig)metaData.config, HeatMap);
     }
 }
 

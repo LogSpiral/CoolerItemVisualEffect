@@ -104,9 +104,9 @@ public partial class ProjectileDrawingModify
             case ProjectileID.IchorArrow:
             case ProjectileID.ChlorophyteArrow:
                 var u = -projectile.velocity.SafeNormalize(default);
-                spriteBatch.DrawQuadraticLaser_PassNormal(projectile.Center - 24 * u, u, mainColor with { A = 255 }, LogSpiralLibraryMod.AniTex[8].Value, 48, 24, 0, 1, 0.25f, true);
-                spriteBatch.DrawQuadraticLaser_PassNormal(projectile.Center - 4 * u, u, mainColor with { A = 255 } * 1.5f, LogSpiralLibraryMod.AniTex[8].Value, 64, 16, 0, 1f, 0.25f, true);
-                spriteBatch.DrawQuadraticLaser_PassNormal(projectile.Center - 4 * u, u, mainColor with { A = 255 } * .5f, LogSpiralLibraryMod.AniTex[8].Value, 32, 64, 0, 1, 0.25f, true);
+                spriteBatch.DrawQuadraticLaser_PassNormal(projectile.Center - 24 * u, u, mainColor with { A = 255 }, LogSpiralLibraryMod.AniTex[8].Value, 48, 24, 0, 1, 0.25f);
+                spriteBatch.DrawQuadraticLaser_PassNormal(projectile.Center - 4 * u, u, mainColor with { A = 255 } * 1.5f, LogSpiralLibraryMod.AniTex[8].Value, 64, 16, 0, 1f, 0.25f);
+                spriteBatch.DrawQuadraticLaser_PassNormal(projectile.Center - 4 * u, u, mainColor with { A = 255 } * .5f, LogSpiralLibraryMod.AniTex[8].Value, 32, 64, 0, 1, 0.25f);
                 break;
         }
     }

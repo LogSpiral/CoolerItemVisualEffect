@@ -1,5 +1,4 @@
-﻿using CoolerItemVisualEffect.Common.Config;
-using LogSpiralLibrary;
+﻿using LogSpiralLibrary;
 using LogSpiralLibrary.CodeLibrary.ConfigModification;
 using LogSpiralLibrary.CodeLibrary.Utilties.Extensions;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,7 +9,7 @@ namespace CoolerItemVisualEffect.Common.Config.Preview;
 
 public abstract class MiscPreview<T> : SimplePreview<T>
 {
-    public override bool UsePreview => MiscConfig.Instance.usePreview;
+    public override bool UsePreview => MiscConfig.Instance.UsePreview;
 }
 
 public class WeaponDisplayPreview : MiscPreview<bool>
@@ -21,19 +20,27 @@ public class WeaponDisplayPreview : MiscPreview<bool>
     {
         if (plr == null)
         {
-            plr = new Player();
-            plr.armor[1] = new Item(ItemID.HallowedPlateMail);
-            plr.armor[2] = new Item(ItemID.NebulaLeggings);
-            plr.armor[3] = new Item(ItemID.HeroShield);
-            plr.armor[4] = new Item(ItemID.PrinceCape);
-            plr.armor[5] = new Item(ItemID.LeinforsWings);
-            plr.dye[1] = new Item(ItemID.ReflectiveSilverDye);
-            plr.dye[3] = new Item(ItemID.PurpleDye);
-            plr.dye[4] = new Item(ItemID.PurpleDye);
-            plr.skinColor = new Color(255, 125, 90, 255);
-            plr.eyeColor = new Color(38, 38, 38, 255);
-            plr.hairColor = new Color(38, 38, 38, 255);
-            plr.hair = 85;
+            plr = new Player
+            {
+                armor =
+                {
+                    [1] = new Item(ItemID.HallowedPlateMail),
+                    [2] = new Item(ItemID.NebulaLeggings),
+                    [3] = new Item(ItemID.HeroShield),
+                    [4] = new Item(ItemID.PrinceCape),
+                    [5] = new Item(ItemID.LeinforsWings)
+                },
+                dye =
+                {
+                    [1] = new Item(ItemID.ReflectiveSilverDye),
+                    [3] = new Item(ItemID.PurpleDye),
+                    [4] = new Item(ItemID.PurpleDye)
+                },
+                skinColor = new Color(255, 125, 90, 255),
+                eyeColor = new Color(38, 38, 38, 255),
+                hairColor = new Color(38, 38, 38, 255),
+                hair = 85
+            };
             //plr.isFirstFractalAfterImage = true;
             plr.ResetVisibleAccessories();
             plr.UpdateDyes();
@@ -43,7 +50,7 @@ public class WeaponDisplayPreview : MiscPreview<bool>
             plr.active = true;
             plr.inventory[0].SetDefaults(ItemID.TerraBlade);
         }
-        float s = MiscConfig.Instance.weaponScale;
+        var s = MiscConfig.Instance.weaponScale;
         MiscConfig.Instance.weaponScale = PreviewHelper.WeaponScalePVAssistant;
         plr.inventory[0].damage = data ? 1 : 0;
         spriteBatch.End();
@@ -63,19 +70,27 @@ public class WeaponScalePreview : MiscPreview<float>
     {
         if (plr == null)
         {
-            plr = new Player();
-            plr.armor[1] = new Item(ItemID.HallowedPlateMail);
-            plr.armor[2] = new Item(ItemID.NebulaLeggings);
-            plr.armor[3] = new Item(ItemID.HeroShield);
-            plr.armor[4] = new Item(ItemID.PrinceCape);
-            plr.armor[5] = new Item(ItemID.LeinforsWings);
-            plr.dye[1] = new Item(ItemID.ReflectiveSilverDye);
-            plr.dye[3] = new Item(ItemID.PurpleDye);
-            plr.dye[4] = new Item(ItemID.PurpleDye);
-            plr.skinColor = new Color(255, 125, 90, 255);
-            plr.eyeColor = new Color(38, 38, 38, 255);
-            plr.hairColor = new Color(38, 38, 38, 255);
-            plr.hair = 85;
+            plr = new Player
+            {
+                armor =
+                {
+                    [1] = new Item(ItemID.HallowedPlateMail),
+                    [2] = new Item(ItemID.NebulaLeggings),
+                    [3] = new Item(ItemID.HeroShield),
+                    [4] = new Item(ItemID.PrinceCape),
+                    [5] = new Item(ItemID.LeinforsWings)
+                },
+                dye =
+                {
+                    [1] = new Item(ItemID.ReflectiveSilverDye),
+                    [3] = new Item(ItemID.PurpleDye),
+                    [4] = new Item(ItemID.PurpleDye)
+                },
+                skinColor = new Color(255, 125, 90, 255),
+                eyeColor = new Color(38, 38, 38, 255),
+                hairColor = new Color(38, 38, 38, 255),
+                hair = 85
+            };
             //plr.isFirstFractalAfterImage = true;
             plr.ResetVisibleAccessories();
             plr.UpdateDyes();
@@ -85,7 +100,7 @@ public class WeaponScalePreview : MiscPreview<float>
             plr.active = true;
             plr.inventory[0].SetDefaults(ItemID.TerraBlade);
         }
-        float s = MiscConfig.Instance.weaponScale;
+        var s = MiscConfig.Instance.weaponScale;
         MiscConfig.Instance.weaponScale = data;
         PreviewHelper.WeaponScalePVAssistant = data;
         spriteBatch.End();
@@ -101,7 +116,7 @@ public class ItemEffectPreview : MiscPreview<bool>
 {
     public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, bool data, OptionMetaData metaData)
     {
-        Vector2 center = dimension.Center() + new Vector2(-144, 80);
+        var center = dimension.Center() + new Vector2(-144, 80);
         if (Main.gameMenu)
         {
             GlobalTimeSystem.GlobalTime += .33f;
@@ -109,7 +124,7 @@ public class ItemEffectPreview : MiscPreview<bool>
         }
         spriteBatch.End();
         spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
-        spriteBatch.Draw(TextureAssets.Item[ItemID.TerraBlade].Value, center, null, Color.White, 0, new(23, 27), 1, 0, 0);
+        spriteBatch.Draw(TextureAssets.Item[ItemID.TerraBlade].Value, center, null, Color.White, 0, new Vector2(23, 27), 1, 0, 0);
         spriteBatch.End();
         spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
         if (data)
@@ -142,7 +157,7 @@ public class ProjectileModificationPreview : MiscPreview<bool>
         terraBeam.velocity = new Vector2(8, -8);
 
         terraBeam.position += new Vector2(-40, 40);
-        bool flag = MiscConfig.Instance.VanillaProjectileDrawModifyActive;
+        var flag = MiscConfig.Instance.VanillaProjectileDrawModifyActive;
         PVDrawing = true;
         MiscConfig.Instance.VanillaProjectileDrawModifyActive = data;
         spriteBatch.End();
@@ -152,18 +167,18 @@ public class ProjectileModificationPreview : MiscPreview<bool>
         terraBeam.position.X -= 120;
         terraBeam.position.Y -= 40;
 
-        for (int n = 0; n < terraBeam.oldPos.Length; n++)
+        for (var n = 0; n < terraBeam.oldPos.Length; n++)
         {
             terraBeam.oldPos[n] = terraBeam.Center + new Vector2(-16, 16) * n;
             terraBeam.oldRot[n] = n * .15f;
         }
         Main.instance.DrawProjDirect(terraBeam);
-        Vector2 pendVec = terraBeam.position;
+        var pendVec = terraBeam.position;
         terraBeam.SetDefaults(ProjectileID.HolyArrow);
         terraBeam.position = pendVec + new Vector2(128);
         terraBeam.rotation = MathHelper.PiOver2;
         terraBeam.velocity = new Vector2(1, 0);
-        for (int n = 0; n < terraBeam.oldPos.Length; n++)
+        for (var n = 0; n < terraBeam.oldPos.Length; n++)
         {
             terraBeam.oldPos[n] = terraBeam.Center + new Vector2(-16, 0) * n;
             terraBeam.oldRot[n] = MathHelper.PiOver2;
@@ -189,23 +204,23 @@ public class TeleportModificationPreview : MiscPreview<bool>
             GlobalTimeSystem.GlobalTime += .33;
         var fac = (float)(LogSpiralLibraryMod.ModTime % 60 / 60);
         var _fac = (fac * 2 % 1).HillFactor2() * (fac < .5f ? .5f : 1f);
-        float rotation = (float)LogSpiralLibraryMod.ModTime * .05f;
-        float scale = 3f * _fac;
+        var rotation = (float)LogSpiralLibraryMod.ModTime * .05f;
+        var scale = 3f * _fac;
         SpriteEffects dir = 0;
-        Color mainColor = Color.Cyan;
+        var mainColor = Color.Cyan;
 
-        Vector2 center = dimension.Center();
+        var center = dimension.Center();
 
-        Color colorVortex = mainColor * 0.8f;
+        var colorVortex = mainColor * 0.8f;
         colorVortex.A /= 2;
-        Color color1 = Color.Lerp(mainColor, Color.Black, 0.5f);
+        var color1 = Color.Lerp(mainColor, Color.Black, 0.5f);
         color1.A = mainColor.A;
-        float sinValue = 0.95f + (rotation * 0.75f).ToRotationVector2().Y * 0.1f;
+        var sinValue = 0.95f + (rotation * 0.75f).ToRotationVector2().Y * 0.1f;
         color1 *= sinValue;
-        float scale1 = 0.6f + scale * 0.6f * sinValue;
-        Texture2D voidTex = ModAsset.Extra_50.Value;
-        Vector2 voidOrigin = voidTex.Size() / 2f;
-        Texture2D vortexTex = ModAsset.Projectile_578.Value;//TextureAssets.Projectile[ProjectileID.DD2ApprenticeStorm].Value;//;
+        var scale1 = 0.6f + scale * 0.6f * sinValue;
+        var voidTex = ModAsset.Extra_50.Value;
+        var voidOrigin = voidTex.Size() / 2f;
+        var vortexTex = ModAsset.Projectile_578.Value;//TextureAssets.Projectile[ProjectileID.DD2ApprenticeStorm].Value;//;
         spriteBatch.Draw(voidTex, center, null, color1, -rotation + 0.35f, voidOrigin, scale1, dir ^ SpriteEffects.FlipHorizontally, 0);
         spriteBatch.Draw(voidTex, center, null, mainColor, -rotation, voidOrigin, scale, dir ^ SpriteEffects.FlipHorizontally, 0);
         spriteBatch.Draw(voidTex, center, null, mainColor * 0.8f, rotation * 0.5f, voidOrigin, scale * 0.9f, dir, 0);

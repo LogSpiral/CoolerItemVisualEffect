@@ -1,0 +1,12 @@
+MeleeModifyActive: Melee Modification enabled
+MeleeModifyDeactive: Melee Modification disabled
+UselessConfig:
+	'''
+	Sorry that this value
+	is useless now ;P
+	'''
+UnavailableConfig:
+	'''
+	This value is useless now 
+	due to other settings(Heatmap mode Etc.)
+	'''

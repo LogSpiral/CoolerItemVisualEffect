@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CoolerItemVisualEffect.Common.WeaponGroup;
+﻿namespace CoolerItemVisualEffect.Common.WeaponGroup;
 
 public class WeaponGroupManager : ModItem
 {

@@ -26,9 +26,9 @@ public partial class CIVESword
     {
         if (!info.IsLocalProjectile) return;
         if (info.Owner is not Player plr) return;
-        int dmg = info.CurrentDamage;
-        int type = plr.HeldItem.shoot;
-        int origCount = plr.ownedProjectileCounts[type];
+        var dmg = info.CurrentDamage;
+        var type = plr.HeldItem.shoot;
+        var origCount = plr.ownedProjectileCounts[type];
         plr.ownedProjectileCounts[type]++;
         if (origCount != 0 || ItemLoader.CanShoot(plr.HeldItem, plr))
             plr.ItemCheck_Shoot(plr.whoAmI, plr.HeldItem, dmg);
@@ -38,20 +38,20 @@ public partial class CIVESword
     {
         if (info.Owner is Player plr)
         {
-            SequencePlayer seqPlayer = plr.GetModPlayer<SequencePlayer>();
+            var seqPlayer = plr.GetModPlayer<SequencePlayer>();
 
-            int dmg = info.CurrentDamage;
+            var dmg = info.CurrentDamage;
             if (info.StandardInfo.standardShotCooldown > 0)
             {
-                float delta = info.StandardInfo.standardTimer * info.ModifyData.TimeScaler / info.CounterMax;
-                bool canShoot = plr.HeldItem.shoot > ProjectileID.None;
+                var delta = info.StandardInfo.standardTimer * info.ModifyData.TimeScaler / info.CounterMax;
+                var canShoot = plr.HeldItem.shoot > ProjectileID.None;
 
-                float m = Math.Max(info.StandardInfo.standardShotCooldown, delta);
+                var m = Math.Max(info.StandardInfo.standardShotCooldown, delta);
                 if (canShoot || seqPlayer.cachedTime < m)
                     seqPlayer.cachedTime += delta + 1;
                 if (seqPlayer.cachedTime > m)
                     seqPlayer.cachedTime = m;
-                int count = (int)(seqPlayer.cachedTime / info.StandardInfo.standardShotCooldown);
+                var count = (int)(seqPlayer.cachedTime / info.StandardInfo.standardShotCooldown);
                 if (canShoot)
                 {
                     seqPlayer.cachedTime -= info.StandardInfo.standardShotCooldown * count;
@@ -62,23 +62,23 @@ public partial class CIVESword
                     }
                 }
 
-                Vector2 orig = Main.MouseWorld;
-                Vector2 unit = orig - plr.Center;//.SafeNormalize(default) * 32f;
-                float angleMax = MathHelper.Pi / 6;
+                var orig = Main.MouseWorld;
+                var unit = orig - plr.Center;//.SafeNormalize(default) * 32f;
+                var angleMax = MathHelper.Pi / 6;
                 if (count % 2 == 1)
                 {
                     count--;
-                    Vector2 target = plr.Center + unit.RotatedBy(angleMax * Main.rand.NextFloat(-.5f, .5f));
+                    var target = plr.Center + unit.RotatedBy(angleMax * Main.rand.NextFloat(-.5f, .5f));
                     Main.mouseX = (int)(target.X - Main.screenPosition.X);
                     Main.mouseY = (int)(target.Y - Main.screenPosition.Y);
                     info.ShootExtraProjectile();
                 }
                 count /= 2;
-                for (int i = 0; i < count; i++)
+                for (var i = 0; i < count; i++)
                 {
-                    float angle = angleMax * MathF.Pow((i + 1f) / count, 2);
+                    var angle = angleMax * MathF.Pow((i + 1f) / count, 2);
 
-                    Vector2 target = plr.Center + unit.RotatedBy(angle);
+                    var target = plr.Center + unit.RotatedBy(angle);
                     Main.mouseX = (int)(target.X - Main.screenPosition.X);
                     Main.mouseY = (int)(target.Y - Main.screenPosition.Y);
                     info.ShootExtraProjectile();
@@ -100,20 +100,20 @@ public partial class CIVESword
     {
         if (info.Owner is Player plr)
         {
-            SequencePlayer seqPlayer = plr.GetModPlayer<SequencePlayer>();
+            var seqPlayer = plr.GetModPlayer<SequencePlayer>();
 
-            int dmg = info.CurrentDamage;
+            var dmg = info.CurrentDamage;
             if (info.StandardInfo.standardShotCooldown > 0)
             {
-                float delta = info.StandardInfo.standardTimer * info.ModifyData.TimeScaler / info.CounterMax;
-                bool canShoot = plr.HeldItem.shoot > ProjectileID.None;
+                var delta = info.StandardInfo.standardTimer * info.ModifyData.TimeScaler / info.CounterMax;
+                var canShoot = plr.HeldItem.shoot > ProjectileID.None;
 
-                float m = Math.Max(info.StandardInfo.standardShotCooldown, delta);
+                var m = Math.Max(info.StandardInfo.standardShotCooldown, delta);
                 if (canShoot || seqPlayer.cachedTime < m)
                     seqPlayer.cachedTime += delta + 1;
                 if (seqPlayer.cachedTime > m)
                     seqPlayer.cachedTime = m;
-                int count = (int)(seqPlayer.cachedTime / info.StandardInfo.standardShotCooldown);
+                var count = (int)(seqPlayer.cachedTime / info.StandardInfo.standardShotCooldown);
                 if (canShoot)
                 {
                     seqPlayer.cachedTime -= info.StandardInfo.standardShotCooldown * count;
@@ -124,23 +124,23 @@ public partial class CIVESword
                     }
                 }
 
-                Vector2 orig = Main.MouseWorld;
-                Vector2 unit = orig - plr.Center;//.SafeNormalize(default) * 32f;
-                float angleMax = MathHelper.Pi / 6;
+                var orig = Main.MouseWorld;
+                var unit = orig - plr.Center;//.SafeNormalize(default) * 32f;
+                var angleMax = MathHelper.Pi / 6;
                 if (count % 2 == 1)
                 {
                     count--;
-                    Vector2 target = plr.Center + unit.RotatedBy(angleMax * Main.rand.NextFloat(-.5f, .5f));
+                    var target = plr.Center + unit.RotatedBy(angleMax * Main.rand.NextFloat(-.5f, .5f));
                     Main.mouseX = (int)(target.X - Main.screenPosition.X);
                     Main.mouseY = (int)(target.Y - Main.screenPosition.Y);
                     info.ShootExtraProjectile();
                 }
                 count /= 2;
-                for (int i = 0; i < count; i++)
+                for (var i = 0; i < count; i++)
                 {
-                    float angle = angleMax * MathF.Pow((i + 1f) / count, 2);
+                    var angle = angleMax * MathF.Pow((i + 1f) / count, 2);
 
-                    Vector2 target = plr.Center + unit.RotatedBy(angle);
+                    var target = plr.Center + unit.RotatedBy(angle);
                     Main.mouseX = (int)(target.X - Main.screenPosition.X);
                     Main.mouseY = (int)(target.Y - Main.screenPosition.Y);
                     info.ShootExtraProjectile();
@@ -162,22 +162,22 @@ public partial class CIVESword
     {
         if (info.Owner is Player plr)
         {
-            SequencePlayer seqPlr = plr.GetModPlayer<SequencePlayer>();
-            int dmg = info.CurrentDamage;
+            var seqPlr = plr.GetModPlayer<SequencePlayer>();
+            var dmg = info.CurrentDamage;
             if (info.StandardInfo.standardShotCooldown > 0)
             {
-                float delta = info.StandardInfo.standardTimer * info.ModifyData.TimeScaler / info.CounterMax;
+                var delta = info.StandardInfo.standardTimer * info.ModifyData.TimeScaler / info.CounterMax;
                 seqPlr.cachedTime += delta + 1;
-                int count = (int)(seqPlr.cachedTime / info.StandardInfo.standardShotCooldown);
+                var count = (int)(seqPlr.cachedTime / info.StandardInfo.standardShotCooldown);
                 seqPlr.cachedTime -= count * info.StandardInfo.standardShotCooldown;
                 if (count > 0)
                 {
                     count--;
                     info.ShootExtraProjectile();
                 }
-                Vector2 orig = plr.Center;
-                Vector2 unit = (Main.MouseWorld - orig).SafeNormalize(default) * 64;
-                for (int i = 0; i < count; i++)
+                var orig = plr.Center;
+                var unit = (Main.MouseWorld - orig).SafeNormalize(default) * 64;
+                for (var i = 0; i < count; i++)
                 {
                     plr.Center += unit.RotatedBy(MathHelper.Pi / count * (i - (count - 1) * .5f));
                     info.ShootExtraProjectile();

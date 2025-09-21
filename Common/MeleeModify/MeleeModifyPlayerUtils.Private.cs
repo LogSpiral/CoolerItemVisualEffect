@@ -1,11 +1,8 @@
 ﻿using CoolerItemVisualEffect.Common.Config;
-using FullSerializer;
 using LogSpiralLibrary.CodeLibrary.Utilties.Extensions;
 using Microsoft.Xna.Framework.Graphics;
-using SixLabors.ImageSharp.ColorSpaces;
 using System;
 using System.Collections.Generic;
-using tModPorter;
 using static CoolerItemVisualEffect.Common.Config.MeleeConfig;
 
 namespace CoolerItemVisualEffect.Common.MeleeModify;
@@ -46,8 +43,8 @@ public static partial class MeleeModifyPlayerUtils
 
     private static void FillHeatMap(Color[] colors, Vector3 hsl, Texture2D itemTexture, MeleeConfig config)
     {
-        int length  = colors.Length;
-        float mLength = length - 1f;
+        var length  = colors.Length;
+        var mLength = length - 1f;
         switch (config.heatMapCreateStyle)
         {
             case HeatMapCreateStyle.FromTexturePixel:
@@ -58,26 +55,26 @@ public static partial class MeleeModifyPlayerUtils
             case HeatMapCreateStyle.Designate:
                 {
                     config.designateData.PreGetValue();
-                    for (int i = 0; i < length; i++)
+                    for (var i = 0; i < length; i++)
                         colors[i] = config.designateData.GetValue(GetHeatMapFactor(i / mLength, 6, config.heatMapFactorStyle));
                     break;
                 }
             case HeatMapCreateStyle.CosineGenerate_RGB:
                 {
-                    for (int i = 0; i < length; i++)
+                    for (var i = 0; i < length; i++)
                         colors[i] = config.rgbData.GetValue(GetHeatMapFactor(i / mLength, 6, config.heatMapFactorStyle));
                     break;
                 }
             case HeatMapCreateStyle.CosineGenerate_HSL:
                 {
-                    for (int i = 0; i < length; i++)
+                    for (var i = 0; i < length; i++)
                         colors[i] = config.hslData.GetValue(GetHeatMapFactor(i / mLength, 6, config.heatMapFactorStyle));
                     break;
                 }
             case HeatMapCreateStyle.ByFunction:
             default:
                 {
-                    for (int i = 0; i < length; i++)
+                    for (var i = 0; i < length; i++)
                         colors[i] = config.byFuncData.GetColor(GetHeatMapFactor(i / mLength, 6, config.heatMapFactorStyle), hsl);
                     break;
                 }
@@ -93,7 +90,7 @@ public static partial class MeleeModifyPlayerUtils
         itemTexture.GetData(cs);
         var currentColor = new Color[5];
         var infos = new (float? distance, int? index)[w * h];
-        for (int n = 0; n < w * h; n++)
+        for (var n = 0; n < w * h; n++)
         {
             var color = cs[n];
             if (color != default)
@@ -128,7 +125,7 @@ public static partial class MeleeModifyPlayerUtils
         {
             if (info.distance != null)
             {
-                for (int n = 0; n < 3; n++)
+                for (var n = 0; n < 3; n++)
                 {
                     var d = Math.Abs(info.distance.Value - _target[n]);
                     if (d < _dis[n])
@@ -139,13 +136,13 @@ public static partial class MeleeModifyPlayerUtils
                 }
             }
         }
-        for (int n = 0; n < 3; n++)
+        for (var n = 0; n < 3; n++)
         {
             currentColor[n + 1] = cs[_index[n]];
         }
-        int length = colors.Length;
-        float mLength = length - 1f;
-        for (int n = 0; n < length; n++)
+        var length = colors.Length;
+        var mLength = length - 1f;
+        for (var n = 0; n < length; n++)
             colors[n] = GetHeatMapFactor(n / mLength, 6, config.heatMapFactorStyle).ArrayLerp(currentColor);
     }
 }

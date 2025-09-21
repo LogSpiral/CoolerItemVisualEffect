@@ -1,0 +1,41 @@
+DisplayName: Misc Config
+
+usePreview: {
+	Label: Use Preview
+	Tooltip: ""
+}
+
+useWeaponDisplay: {
+	Label: Weapon display switch
+	Tooltip: ""
+}
+
+firstWeaponDisplay: {
+	Label: Weapon display in player interface
+	Tooltip: ""
+}
+
+weaponScale: {
+	Label: Weapon display size
+	Tooltip: ""
+}
+
+ItemDropEffectActive: {
+	Label: Active Extra Glow Effect To Item In World.
+	Tooltip: ""
+}
+
+ItemInventoryEffectActive: {
+	Label: Active Extra Glow Effect To Item In Inventory.
+	Tooltip: ""
+}
+
+VanillaProjectileDrawModifyActive: {
+	Label: Active Extra Draw Effect To Projectile.
+	Tooltip: ""
+}
+
+TeleportEffectActive: {
+	Label: Active Teleport Extra Effect
+	Tooltip: ""
+}

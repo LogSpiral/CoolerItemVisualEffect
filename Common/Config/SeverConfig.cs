@@ -1,6 +1,9 @@
 ﻿using System.ComponentModel;
 using Terraria.Localization;
 using Terraria.ModLoader.Config;
+// ReSharper disable FieldCanBeMadeReadOnly.Global
+// ReSharper disable InconsistentNaming
+// ReSharper disable ReplaceAutoPropertyWithComputedProperty
 
 namespace CoolerItemVisualEffect.Common.Config;
 
@@ -27,16 +30,13 @@ public class SeverConfig : ModConfig
     [DrawTicks]
     public MeleeModifyLevel meleeModifyLevel = MeleeModifyLevel.VisualOnly;
 
-    [DefaultValue(true)]
-    public bool AutoBalanceData = true;
+    [DefaultValue(true)] 
+    public bool AutoBalanceData { get; } = true;
 
     public override bool AcceptClientChanges(ModConfig pendingConfig, int whoAmI, ref NetworkText message)
     {
-        if (!NetMessage.DoesPlayerSlotCountAsAHost(whoAmI))
-        {
-            message = NetworkText.FromKey("tModLoader.ModConfigRejectChangesNotHost");
-            return false;
-        }
-        return true;
+        if (NetMessage.DoesPlayerSlotCountAsAHost(whoAmI)) return true;
+        message = NetworkText.FromKey("tModLoader.ModConfigRejectChangesNotHost");
+        return false;
     }
 }

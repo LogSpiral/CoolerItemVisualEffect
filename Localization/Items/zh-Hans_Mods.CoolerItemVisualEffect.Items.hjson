@@ -1,0 +1,12 @@
+ConfigSLer: {
+	DisplayName: 近战设置读写器
+	Tooltip:
+		'''
+		左键存入当前近战设置
+		右键打开界面以选择或编辑
+		'''
+}
+WeaponGroupManager: {
+	DisplayName: 武器分组管理器
+	Tooltip: 左键或右键打开界面对分组进行管理
+}

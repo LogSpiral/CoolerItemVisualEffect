@@ -64,14 +64,14 @@ public class ModernConfigRegisterSystem : ModSystem
 
         RegisterCategory(qot, Mod, MiscConfig.Instance,
         [
-             nameof(MiscConfig.usePreview),
+             nameof(MiscConfig.UsePreview),
              nameof(MiscConfig.useWeaponDisplay),
              nameof(MiscConfig.firstWeaponDisplay),
              nameof(MiscConfig.weaponScale),
              nameof(MiscConfig.ItemDropEffectActive),
              nameof(MiscConfig.ItemInventoryEffectActive),
              nameof(MiscConfig.VanillaProjectileDrawModifyActive),
-             nameof(MiscConfig.TeleprotEffectActive)
+             nameof(MiscConfig.TeleportEffectActive)
         ],
         ItemID.Cog, null, () => "杂项设置", () => "非常水");
     }

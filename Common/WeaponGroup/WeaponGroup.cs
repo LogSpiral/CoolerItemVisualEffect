@@ -1,6 +1,5 @@
 ﻿using CoolerItemVisualEffect.Common.MeleeModify;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -334,7 +333,7 @@ public class WeaponGroup
     public bool CheckAvailabe(Item item)
     {
         if (item.type == ItemID.None) return false;
-        bool defaultCondition = !whiteList;
+        var defaultCondition = !whiteList;
         if (basedOnDefaultCondition)
             defaultCondition = MeleeModifyPlayerUtils.MeleeBroadSwordCheck(item);
         if (whiteList)

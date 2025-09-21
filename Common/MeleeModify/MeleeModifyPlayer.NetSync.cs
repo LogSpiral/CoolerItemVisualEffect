@@ -1,11 +1,6 @@
 ﻿using CoolerItemVisualEffect.Common.Config;
 using CoolerItemVisualEffect.Common.Config.NetSync;
 using CoolerItemVisualEffect.Common.WeaponGroup;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoolerItemVisualEffect.Common.MeleeModify;
 

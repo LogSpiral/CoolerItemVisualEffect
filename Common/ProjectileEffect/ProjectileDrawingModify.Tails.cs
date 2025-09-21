@@ -18,19 +18,19 @@ public partial class ProjectileDrawingModify
         var spriteBatch = Main.spriteBatch;
         var bars = new List<CustomVertexInfo>();
         var max = projectile.oldPos.Length;
-        for (int n = 0; n < projectile.oldPos.Length; n++)
+        for (var n = 0; n < projectile.oldPos.Length; n++)
         {
             if (projectile.oldPos[n] == default) { max = n; break; }
         }
         if (max < 2) return;
 
-        float _scaler = 98f;
+        var _scaler = 98f;
         var mainColor = new Color(151, 145, 186);
-        float angleOffset = 0f;
+        var angleOffset = 0f;
         Vector2 centerOffset = default;
         var facVel = 1 - 1 / (projectile.velocity.Length() / 4 + 1);
         facVel *= 3;
-        bool isBoomerang = false;
+        var isBoomerang = false;
         switch (projectile.type)
         {
             case ProjectileID.NightBeam:
@@ -153,7 +153,7 @@ public partial class ProjectileDrawingModify
         if (projectile.tileCollide && !ProjectileModificationPreview.PVDrawing)
         {
             var vCenter = projectile.Center;
-            int t = 0;
+            var t = 0;
             var tile = Framing.GetTileSafely((int)vCenter.X / 16, (int)vCenter.Y / 16);
 
             while (t < 30 && !(tile.HasTile && Main.tileSolid[tile.TileType]))// || tile.TileType == TileID.TargetDummy
@@ -175,7 +175,7 @@ public partial class ProjectileDrawingModify
 
         var positionArray1 = new Vector2[max];
         var positionArray2 = new Vector2[max];
-        for (int n = 0; n < max; n++)
+        for (var n = 0; n < max; n++)
         {
             var f = n / (max - 1f);
             var __scaler = 1 + MathF.Sqrt(f) * facVel;
@@ -199,7 +199,7 @@ public partial class ProjectileDrawingModify
 
         bars.Add(new CustomVertexInfo(positionArray1[0], default(Color), new Vector3(1, 1, alphaLight)));
         bars.Add(new CustomVertexInfo(positionArray2[0], default(Color), new Vector3(0, 0, alphaLight)));
-        for (int i = 0; i < positionArray1.Length; i++)
+        for (var i = 0; i < positionArray1.Length; i++)
         {
             var f = i / (positionArray1.Length - 1f);
             f = 1 - f;
@@ -212,7 +212,7 @@ public partial class ProjectileDrawingModify
             bars.Add(new CustomVertexInfo(positionArray2[i], mainColor * multiValue, new Vector3(0, 0, alphaLight)));
         }
         List<CustomVertexInfo> _triangleList = [];
-        SamplerState sampler = SamplerState.AnisotropicWrap;
+        var sampler = SamplerState.AnisotropicWrap;
         //RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
         var projection = Matrix.CreateOrthographicOffCenter(0, Main.gameMenu ? Main.instance.Window.ClientBounds.Width : Main.screenWidth, Main.gameMenu ? Main.instance.Window.ClientBounds.Height : Main.screenHeight, 0, 0, 1);
         var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
@@ -225,9 +225,9 @@ public partial class ProjectileDrawingModify
 
             sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
             //projectile.DrawProjWithStarryTrail(spriteBatch, Main.rgbToHsl(mainColor).X, Color.White, 0);
-            int counter = 0;
+            var counter = 0;
         theLabel:
-            for (int i = 0; i < bars.Count - 2; i += 2)
+            for (var i = 0; i < bars.Count - 2; i += 2)
             {
                 _triangleList.Add(bars[i]);
                 _triangleList.Add(bars[i + 2]);
@@ -257,8 +257,8 @@ public partial class ProjectileDrawingModify
                             angleOffset += MathHelper.TwoPi / 5;
                             bars.Add(new CustomVertexInfo(projectile.oldPos[0] + (projectile.oldRot[0] + angleOffset).ToRotationVector2() * _scaler + centerOffset, default(Color), new Vector3(1, 1, alphaLight)));
                             bars.Add(new CustomVertexInfo(projectile.oldPos[0] + centerOffset, default(Color), new Vector3(0, 0, alphaLight)));
-                            float k = 1 - counter / 5f;
-                            for (int i = 0; i < max; i++)
+                            var k = 1 - counter / 5f;
+                            for (var i = 0; i < max; i++)
                             {
                                 var f = i / (max - 1f);
                                 f = 1 - f;
@@ -289,7 +289,7 @@ public partial class ProjectileDrawingModify
                 angleOffset += MathHelper.PiOver2;
                 bars.Add(new CustomVertexInfo(projectile.oldPos[0] + (projectile.oldRot[0] + angleOffset).ToRotationVector2() * _scaler + centerOffset, default(Color), new Vector3(1, 1, alphaLight)));
                 bars.Add(new CustomVertexInfo(projectile.oldPos[0] + centerOffset, default(Color), new Vector3(0, 0, alphaLight)));
-                for (int i = 0; i < max; i++)
+                for (var i = 0; i < max; i++)
                 {
                     var f = i / (max - 1f);
                     f = 1 - f;

@@ -1,0 +1,32 @@
+DisplayName: Sever Config
+
+meleeModifyLevel: {
+	Label: Melee Modify Level
+	Tooltip:
+		'''
+		I know that somebody wants Cool Effects, but keep the balance as well.
+		So I add an option to select the modify-level(Finally)
+		The Host can set the modify-level
+		and all the player can set use the modification or not in their melee config.
+		'''
+}
+
+AutoBalanceData: {
+	Label: Auto Balance Damage
+	Tooltip:
+		'''
+		Require "Overhaul" melee modify level
+		Handled by the host,
+		avoid IMBA modify
+
+		Will NOT INFLUENCE projectile damage
+
+		If the attack speed is doubled, the damage will be halved
+
+		A more detailed calculation formula is as follows
+		BaseDamage * TimeScaler 
+		    / sqrt(SizeScaler)
+		    / max(1,pow(KnockBackScaler,0.25)) 
+		    / (1 + 0.01 * CirtAdd + 0.2 * CirtMult)
+		'''
+}

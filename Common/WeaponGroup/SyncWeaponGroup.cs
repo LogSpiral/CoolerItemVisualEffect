@@ -63,13 +63,13 @@ public class SyncWeaponGroup : NetModule
         {
             //dict = []; JsonConvert.PopulateObject(r.ReadString(), dict);
             //dict = JsonConvert.DeserializeObject<Dictionary<string, MeleeConfig>>(r.ReadString());
-            int count = r.ReadInt32();
+            var count = r.ReadInt32();
             dict = [];
-            for (int n = 0; n < count; n++)
+            for (var n = 0; n < count; n++)
             {
                 var config = new MeleeConfig();
-                config.designateData?.colors.Clear();
-                string key = r.ReadString();
+                config.designateData?.Colors.Clear();
+                var key = r.ReadString();
                 JsonConvert.PopulateObject(r.ReadString(), config);
                 dict.Add(key, config);
             }

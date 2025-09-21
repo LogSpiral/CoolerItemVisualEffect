@@ -1,0 +1,203 @@
+DisplayName: Melee Config
+
+Headers: {
+	MeleeModifyPart: "[i:1199]Melee Visual Effect Settings"
+	RenderingPart: "[i:2012]Rendering Settings"
+	EffectPart: "[i:3541]Special Effect Settings"
+	MiscPart: "[i:1344]Misc Settings"
+}
+
+UsePreview: {
+	Label: Use Preview
+	Tooltip: ""
+}
+
+SwordModifyActive: {
+	Label: Use Melee Modification
+	Tooltip: ""
+}
+
+swooshActionStyle: {
+	Label: Executing Sequence
+	Tooltip: ""
+}
+
+baseIndexSwoosh: {
+	Label: Style Of Slashing Shape Texture
+	Tooltip: ""
+}
+
+animateIndexSwoosh: {
+	Label: Style Of Slashing Animation Texture
+	Tooltip: ""
+}
+
+baseIndexStab: {
+	Label: Style Of Stab Shape Texture
+	Tooltip: ""
+}
+
+animateIndexStab: {
+	Label: Style Of Stab Animation Texture
+	Tooltip: ""
+}
+
+swooshTimeLeft: {
+	Label: LeftTime Of Swoosh
+	Tooltip: ""
+}
+
+shake: {
+	Label: The Strength Of Screen Shaking
+	Tooltip: ""
+}
+
+swingAttackTime: {
+	Label: Max Time Of Cut Down(Useless now)
+	Tooltip: ""
+}
+
+glowLight: {
+	Label: Item Glow Light As Enchanted Item In Minecraft
+	Tooltip: ""
+}
+
+dustQuantity: {
+	Label: Dust Amount
+	Tooltip: ""
+}
+
+weaponExtraLight: {
+	Label: Extra light of weapon
+	Tooltip: ""
+}
+
+colorVector: {
+	Label: Color Coefficient Vector
+	Tooltip: ""
+}
+
+alphaFactor: {
+	Label: Coefficient Of Opacity
+	Tooltip: ""
+}
+
+isLighterDecider: {
+	Label: Standard of Bright Sword
+	Tooltip: ""
+}
+
+itemAdditive: {
+	Label: Weapon And Weapon Swing Effects Are Translucent And Highlighted
+	Tooltip: ""
+}
+
+heatMapCreateStyle: {
+	Label: Heat Map Create Style
+	Tooltip: ""
+}
+
+heatMapFactorStyle: {
+	Label: Style Of HeatMap Factor
+	Tooltip: ""
+}
+
+hueOffsetRange: {
+	Label: The Offset Range Of Hue
+	Tooltip: ""
+}
+
+hueOffsetValue: {
+	Label: The Offset Value Of Original Hue[i:2870]
+	Tooltip: ""
+}
+
+saturationScalar: {
+	Label: Coefficient Of Saturation
+	Tooltip: ""
+}
+
+saturationRange: {
+	Label: The Offset Value Of Original Luminosity
+	Tooltip: ""
+}
+
+saturationOffsetValue: {
+	Label: The Offset Value Range Of Original Luminosity
+	Tooltip: ""
+}
+
+luminosityScalar: {
+	Label: Coefficient Of Luminosity
+	Tooltip: ""
+}
+
+luminosityRange: {
+	Label: The Offset Value Range Of Original Luminosity
+	Tooltip: ""
+}
+
+luminosityOffsetValue: {
+	Label: The Offset Value Of Original Luminosity
+	Tooltip: ""
+}
+
+directOfHeatMap: {
+	Label: Offset Angle Of ColorBar
+	Tooltip: ""
+}
+
+heatMapColors: {
+	Label: List Of Color Of Designated HeatMap
+	Tooltip: ""
+}
+
+showHeatMap: {
+	Label: Show The Heat Map
+	Tooltip: ""
+}
+
+distortConfigs: {
+	Label: Air Distort Effect
+	Tooltip: ""
+}
+
+bloomConfigs: {
+	Label: Bloom Effect
+	Tooltip: ""
+}
+
+maskConfigs: {
+	Label: Star Sky Mask Effect
+	Tooltip: ""
+}
+
+dyeConfigs: {
+	Label: Dye Effect
+	Tooltip: Which shade do you want today?
+}
+
+useRenderEffectPVInOtherConfig: {
+	Label: Apply special effect in other previews
+	Tooltip: ""
+}
+
+byFuncData: {
+	Label: by Func Data
+	Tooltip: ""
+}
+
+rgbData: {
+	Label: rgb Data
+	Tooltip: ""
+}
+
+hslData: {
+	Label: hsl Data
+	Tooltip: ""
+}
+
+designateData: {
+	Label: designate Data
+	Tooltip: ""
+}

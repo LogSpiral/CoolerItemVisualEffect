@@ -1,0 +1,7 @@
+basedOnDefaultCondition.Label: Based on Default Condition(Add when whitelist and remove when blacklist)
+whiteList.Label: Use WhiteList Mode(turn off to use BlackListMode)
+BindConfigName.Label: Config of this Group(use current config by default)
+weaponGroup.Label: Weapon list
+Create: Create a new Group on Top Priority
+DefaultName: UserDefinedGroup
+CurrentConfig: Current Melee Config

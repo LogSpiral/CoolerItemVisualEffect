@@ -1,13 +1,5 @@
 ﻿using CoolerItemVisualEffect.Common.Config;
 using CoolerItemVisualEffect.Common.Config.Preview;
-using LogSpiralLibrary;
-using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
-using LogSpiralLibrary.CodeLibrary.Utilties.Extensions;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using Terraria;
-using Terraria.GameContent;
 
 namespace CoolerItemVisualEffect.ProjectileEffect;
 

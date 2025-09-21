@@ -62,7 +62,7 @@ public static partial class MeleeModifyPlayerUtils
 
     public static void CheckItemChange(Player player)
     {
-        MeleeModifyPlayer modPlayer = player.GetModPlayer<MeleeModifyPlayer>();
+        var modPlayer = player.GetModPlayer<MeleeModifyPlayer>();
         var hashCode = player.HeldItem.GetHashCode();
         if (Main.dedServ) return;
         if (modPlayer.LastWeaponHash == hashCode) return;
@@ -86,7 +86,7 @@ public static partial class MeleeModifyPlayerUtils
     }
     public static bool MeleeBroadSwordCheck(Item item)
     {
-        bool flag = MeleeClassCheck(item.DamageType);
+        var flag = MeleeClassCheck(item.DamageType);
         flag &= item.damage > 0;
         flag &= !item.noUseGraphic;
         flag &= !item.noMelee || VanillaSlashItems.Contains(item.type);

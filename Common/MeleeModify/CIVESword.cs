@@ -4,7 +4,6 @@ using LogSpiralLibrary;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee.Core;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee.StandardMelee;
-using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Core.Interfaces;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.System;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -157,7 +156,7 @@ public partial class CIVESword : MeleeSequenceProj
 
     private static float BalancingData(ActionModifyData orig, int cycle)
     {
-        float k = 1f;
+        var k = 1f;
         k /= MathF.Sqrt(orig.Size);
         k *= orig.TimeScaler;
         k /= MathF.Max(MathF.Pow(orig.KnockBack, .25f), 1f);
@@ -195,11 +194,11 @@ public partial class CIVESword : MeleeSequenceProj
 
         var itemRectangle = Utils.CenteredRectangle(plr.Center + vec * .5f, vec);
         var sItem = plr.HeldItem;
-        float num = 1000f; // to reduce patches, set to 1000, and then turn it into a multiplier later
+        var num = 1000f; // to reduce patches, set to 1000, and then turn it into a multiplier later
         if (!sItem.DamageType.UseStandardCritCalcs)
             goto skipStandardCritCalcs;
 
-        int weaponCrit = plr.GetWeaponCrit(sItem);
+        var weaponCrit = plr.GetWeaponCrit(sItem);
 
     skipStandardCritCalcs:
         plr.ApplyBannerOffenseBuff(target, ref modifiers);
@@ -215,7 +214,7 @@ public partial class CIVESword : MeleeSequenceProj
 
         if (sItem.type == ItemID.HamBat)
         {
-            int num3 = 0;
+            var num3 = 0;
             if (plr.FindBuffIndex(26) != -1)
                 num3 = 1;
 
@@ -225,18 +224,18 @@ public partial class CIVESword : MeleeSequenceProj
             if (plr.FindBuffIndex(207) != -1)
                 num3 = 3;
 
-            float num4 = 1f + 0.05f * (float)num3;
+            var num4 = 1f + 0.05f * (float)num3;
             num = (int)((float)num * num4);
         }
 
         if (sItem.type == ItemID.Keybrand)
         {
-            float t = (float)target.life / (float)target.lifeMax;
-            float lerpValue = Utils.GetLerpValue(1f, 0.1f, t, clamped: true);
-            float num5 = 1f * lerpValue;
+            var t = (float)target.life / (float)target.lifeMax;
+            var lerpValue = Utils.GetLerpValue(1f, 0.1f, t, clamped: true);
+            var num5 = 1f * lerpValue;
             num = (int)((float)num * (1f + num5));
-            Vector2 point = itemRectangle.Center.ToVector2();
-            Vector2 positionInWorld = target.Hitbox.ClosestPointInRect(point);
+            var point = itemRectangle.Center.ToVector2();
+            var positionInWorld = target.Hitbox.ClosestPointInRect(point);
             ParticleOrchestrator.RequestParticleSpawn(clientOnly: false, ParticleOrchestraType.Keybrand, new ParticleOrchestraSettings
             {
                 PositionInWorld = positionInWorld
@@ -247,7 +246,7 @@ public partial class CIVESword : MeleeSequenceProj
 			int num6 = Main.DamageVar(num, luck);
 			*/
         modifiers.SourceDamage *= num / 1000f;
-        float armorPenetrationPercent = 0f;
+        var armorPenetrationPercent = 0f;
         if (sItem.type == ItemID.Flymeal && target.isLikeATownNPC)
         {
             armorPenetrationPercent = 1f;
@@ -270,7 +269,7 @@ public partial class CIVESword : MeleeSequenceProj
         {
             ParticleOrchestraSettings particleOrchestraSettings = default;
             particleOrchestraSettings.PositionInWorld = target.Center;
-            ParticleOrchestraSettings settings = particleOrchestraSettings;
+            var settings = particleOrchestraSettings;
             ParticleOrchestrator.RequestParticleSpawn(clientOnly: false, particle.Value, settings, plr.whoAmI);
         }
 
@@ -296,7 +295,7 @@ public partial class CIVESword : MeleeSequenceProj
     {
         //if (!target.CanBeChasedBy()) return;
 
-        SequencePlayer seqPlr = Player.GetModPlayer<SequencePlayer>();
+        var seqPlr = Player.GetModPlayer<SequencePlayer>();
         if (seqPlr.cachedTime >= StandardInfo.standardShotCooldown && Player.HeldItem.shoot == ProjectileID.None)
         {
             seqPlr.cachedTime -= StandardInfo.standardShotCooldown;
@@ -325,7 +324,7 @@ public partial class CIVESword : MeleeSequenceProj
         {
             Main.NewText(e.Message);
         }
-        float delta = Player.GetModPlayer<LogSpiralLibraryPlayer>().strengthOfShake;
+        var delta = Player.GetModPlayer<LogSpiralLibraryPlayer>().strengthOfShake;
         base.OnHitNPC(target, hit, damageDone);
         delta -= Player.GetModPlayer<LogSpiralLibraryPlayer>().strengthOfShake;
         Player.GetModPlayer<LogSpiralLibraryPlayer>().strengthOfShake += (1 - ConfigurationSwoosh.shake) * delta;

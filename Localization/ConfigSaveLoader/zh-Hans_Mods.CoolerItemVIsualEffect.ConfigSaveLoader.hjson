@@ -1,0 +1,21 @@
+Refresh: 刷新
+TooManySameName: "///存储失败！/// 兄啊你同名的也太多了，请整理并且重命名一下吧"
+SameDefault: "///注意！/// 现在存储出的都是默认名，我帮你加了序号作为区分，记得及时整理"
+SavedAs: 配置已存储为文件
+DefaultName: 自定义设置
+LoadThisConfig: 将目前的配置设为这个
+Path: 文件路径：
+
+RenameTip: {
+	Exists: 已经存在一个相同名称的文件
+	TooLong: 名称不能超过40个字符
+	Illegal: 文件名不能包含以下字符： \\、/、:、*、?、\"、<、>、|
+}
+
+NotFinishYet: 此页面施工中......
+Succeed: \加载成功/！！
+Failed: /加载失败\
+Create: 新建一个配置
+Revert: 撤销改动
+Default: 设为默认值
+Save: 保存

@@ -51,7 +51,7 @@ public partial class ProjectileDrawingModify
                 {
                     if (ProjectileID.Sets.TrailingMode[projectile.type] == -1)
                     {
-                        for (int n = projectile.oldPos.Length - 1; n > 0; n--)
+                        for (var n = projectile.oldPos.Length - 1; n > 0; n--)
                         {
                             projectile.oldPos[n] = projectile.oldPos[n - 1];
                             projectile.oldRot[n] = projectile.oldRot[n - 1];

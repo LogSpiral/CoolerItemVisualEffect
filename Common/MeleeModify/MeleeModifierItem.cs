@@ -36,7 +36,7 @@ public class MeleeModifierItem : GlobalItem
     public override bool AltFunctionUse(Item item, Player player)
     {
         var mplr = player.GetModPlayer<MeleeModifyPlayer>();
-        string key = $"{Mod.Name}/{typeof(CIVESword).Name}";
+        var key = $"{Mod.Name}/{typeof(CIVESword).Name}";
         if (player.GetModPlayer<MeleeModifyPlayer>().ConfigurationSwoosh.swooshActionStyle is SequenceDefinition<MeleeAction> definition)
             key = $"{definition.Mod}/{definition.Name}";
         if (mplr.BeAbleToOverhaul && SequenceManager<MeleeAction>.Instance.Sequences.TryGetValue(key, out var value))

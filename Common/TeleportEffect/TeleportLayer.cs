@@ -3,7 +3,6 @@ using LogSpiralLibrary;
 using LogSpiralLibrary.CodeLibrary.Utilties.Extensions;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Linq;
 
 namespace CoolerItemVisualEffect.Common.TeleportEffect
 {
@@ -14,10 +13,10 @@ namespace CoolerItemVisualEffect.Common.TeleportEffect
             var player = drawInfo.drawPlayer;
             var fac = player.itemAnimation / (float)player.itemAnimationMax;
             var _fac = (fac * 2 % 1).HillFactor2() * (fac < .5f ? .5f : 1f);
-            float rotation = (float)LogSpiralLibraryMod.ModTime * .05f;
-            float scale = 2f * _fac;
+            var rotation = (float)LogSpiralLibraryMod.ModTime * .05f;
+            var scale = 2f * _fac;
             SpriteEffects dir = 0;
-            Color mainColor = Color.White;
+            var mainColor = Color.White;
             if (true)
                 mainColor = player.HeldItem.type switch
                 {
@@ -28,23 +27,23 @@ namespace CoolerItemVisualEffect.Common.TeleportEffect
                     _ => Color.White
                 };
 
-            Vector2 center = player.MountedCenter + new Vector2(0, player.gfxOffY) - Main.screenPosition;
+            var center = player.MountedCenter + new Vector2(0, player.gfxOffY) - Main.screenPosition;
 
-            Color colorVortex = mainColor * 0.8f;
+            var colorVortex = mainColor * 0.8f;
             colorVortex.A /= 2;
-            Color color1 = Color.Lerp(mainColor, Color.Black, 0.5f);
+            var color1 = Color.Lerp(mainColor, Color.Black, 0.5f);
             color1.A = mainColor.A;
-            float sinValue = 0.95f + (rotation * 0.75f).ToRotationVector2().Y * 0.1f;
+            var sinValue = 0.95f + (rotation * 0.75f).ToRotationVector2().Y * 0.1f;
             color1 *= sinValue;
-            float scale1 = 0.6f + scale * 0.6f * sinValue;
-            Texture2D voidTex = ModAsset.Extra_50.Value;
-            Vector2 voidOrigin = voidTex.Size() / 2f;
-            Texture2D vortexTex = ModAsset.Projectile_578.Value;//TextureAssets.Projectile[ProjectileID.DD2ApprenticeStorm].Value;//;
-            drawInfo.DrawDataCache.Add(new(voidTex, center, null, color1, -rotation + 0.35f, voidOrigin, scale1, dir ^ SpriteEffects.FlipHorizontally, 0));
-            drawInfo.DrawDataCache.Add(new(voidTex, center, null, mainColor, -rotation, voidOrigin, scale, dir ^ SpriteEffects.FlipHorizontally, 0));
-            drawInfo.DrawDataCache.Add(new(voidTex, center, null, mainColor * 0.8f, rotation * 0.5f, voidOrigin, scale * 0.9f, dir, 0));
-            drawInfo.DrawDataCache.Add(new(vortexTex, center, null, colorVortex, -rotation * 0.7f, vortexTex.Size() * .5f, scale, dir ^ SpriteEffects.FlipHorizontally, 0));
-            drawInfo.DrawDataCache.Add(new(vortexTex, center, null, Color.White with { A = 0 }, -rotation * 1.4f, vortexTex.Size() * .5f, scale * .85f, dir ^ SpriteEffects.FlipHorizontally, 0));
+            var scale1 = 0.6f + scale * 0.6f * sinValue;
+            var voidTex = ModAsset.Extra_50.Value;
+            var voidOrigin = voidTex.Size() / 2f;
+            var vortexTex = ModAsset.Projectile_578.Value;//TextureAssets.Projectile[ProjectileID.DD2ApprenticeStorm].Value;//;
+            drawInfo.DrawDataCache.Add(new DrawData(voidTex, center, null, color1, -rotation + 0.35f, voidOrigin, scale1, dir ^ SpriteEffects.FlipHorizontally));
+            drawInfo.DrawDataCache.Add(new DrawData(voidTex, center, null, mainColor, -rotation, voidOrigin, scale, dir ^ SpriteEffects.FlipHorizontally));
+            drawInfo.DrawDataCache.Add(new DrawData(voidTex, center, null, mainColor * 0.8f, rotation * 0.5f, voidOrigin, scale * 0.9f, dir));
+            drawInfo.DrawDataCache.Add(new DrawData(vortexTex, center, null, colorVortex, -rotation * 0.7f, vortexTex.Size() * .5f, scale, dir ^ SpriteEffects.FlipHorizontally));
+            drawInfo.DrawDataCache.Add(new DrawData(vortexTex, center, null, Color.White with { A = 0 }, -rotation * 1.4f, vortexTex.Size() * .5f, scale * .85f, dir ^ SpriteEffects.FlipHorizontally));
         }
 
         public override Position GetDefaultPosition() => new Multiple()
@@ -60,7 +59,7 @@ namespace CoolerItemVisualEffect.Common.TeleportEffect
         public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
         {
             var plr = drawInfo.drawPlayer;
-            return MiscConfig.Instance.TeleprotEffectActive && plr.ItemAnimationActive && TeleportItems.Contains(plr.HeldItem.type);
+            return MiscConfig.Instance.TeleportEffectActive && plr.ItemAnimationActive && TeleportItems.Contains(plr.HeldItem.type);
         }
     }
 }

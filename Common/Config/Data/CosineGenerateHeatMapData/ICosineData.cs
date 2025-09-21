@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CoolerItemVisualEffect.Common.Config.Datas.CosineGenerateHeatMapData;
+namespace CoolerItemVisualEffect.Common.Config.Data.CosineGenerateHeatMapData;
 
 public interface ICosineData
 {

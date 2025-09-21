@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using System;
 
 namespace CoolerItemVisualEffect;
 
@@ -21,7 +20,7 @@ public static class CoolerItemVisualEffectHelper
         texture.GetData(cs);
         Vector4 vcolor = default;
         float count = 0;
-        for (int i = 0; i < cs.Length; i++)
+        for (var i = 0; i < cs.Length; i++)
         {
             // 当前像素不为空像素
             // 并且上下左右像素不存在或不为空

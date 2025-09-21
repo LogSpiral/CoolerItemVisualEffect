@@ -1,4 +1,5 @@
 ﻿using LogSpiralLibrary;
+using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
 using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingEffects;
 
 namespace CoolerItemVisualEffect.Common.MeleeModify;
@@ -30,6 +31,6 @@ public partial class MeleeModifyPlayer
 
     public void RegisterCurrentCanvas()
     {
-        RenderCanvasSystem.RegisterCanvasFactory(GetCanvasNameViaID(Player.whoAmI), () => new(RenderEffects));
+        RenderCanvasSystem.RegisterCanvasFactory(GetCanvasNameViaID(Player.whoAmI), () => new RenderingCanvas(RenderEffects));
     }
 }

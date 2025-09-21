@@ -1,0 +1,41 @@
+DisplayName: 其它设置
+
+UsePreview: {
+	Label: 启用预览
+	Tooltip: ""
+}
+
+useWeaponDisplay: {
+	Label: 武器背显开关
+	Tooltip: ""
+}
+
+firstWeaponDisplay: {
+	Label: 选人界面武器背显开关
+	Tooltip: ""
+}
+
+weaponScale: {
+	Label: 武器显示尺寸
+	Tooltip: ""
+}
+
+ItemDropEffectActive: {
+	Label: 启用掉落物品额外光效
+	Tooltip: ""
+}
+
+ItemInventoryEffectActive: {
+	Label: 启用背包物品额外光效
+	Tooltip: ""
+}
+
+VanillaProjectileDrawModifyActive: {
+	Label: 启用弹幕优化绘制
+	Tooltip: ""
+}
+
+TeleportEffectActive: {
+	Label: 启用传送物品使用特效
+	Tooltip: ""
+}

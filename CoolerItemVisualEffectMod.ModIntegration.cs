@@ -9,7 +9,7 @@ public partial class CoolerItemVisualEffectMod
 {
     public override object Call(params object[] args)
     {
-        int length = args.Length;
+        var length = args.Length;
         if (length == 0 || args[0] is not string str)
             return base.Call(args);
         switch (str)

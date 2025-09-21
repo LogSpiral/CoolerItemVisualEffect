@@ -1,26 +1,6 @@
 ﻿// using CoolerItemVisualEffect.Config.ConfigSLer;
-using CoolerItemVisualEffect.MeleeModify;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Newtonsoft.Json;
-using ReLogic.Content;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using Terraria.Audio;
-using Terraria.GameContent;
-using Terraria.GameContent.UI.Elements;
-using Terraria.GameContent.UI.States;
-using Terraria.GameInput;
-using Terraria.Localization;
-using Terraria.ModLoader.Config;
-using Terraria.ModLoader.Config.UI;
-using Terraria.ModLoader.UI;
-using Terraria.UI;
-using Terraria.Utilities;
+
+
 // using static CoolerItemVisualEffect.WeaponGroupSystem;
 
 namespace CoolerItemVisualEffect.Common.WeaponGroup;

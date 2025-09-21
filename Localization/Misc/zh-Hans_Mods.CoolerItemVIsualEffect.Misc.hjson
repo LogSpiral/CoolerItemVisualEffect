@@ -1,0 +1,12 @@
+MeleeModifyActive: 启用近战修改
+MeleeModifyDeactive: 禁用近战修改
+UselessConfig:
+	'''
+	很抱歉我的老伙计
+	但是这个值现在没有任何用 ;P
+	'''
+UnavailableConfig:
+	'''
+	这个值因为其它设置而
+	目前不会起效(因为热度采样图生成模式等)
+	'''

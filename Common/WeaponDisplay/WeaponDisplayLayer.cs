@@ -1,7 +1,6 @@
 ﻿using CoolerItemVisualEffect.Common.Config;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace CoolerItemVisualEffect.Common.WeaponDisplay;
 
@@ -47,7 +46,7 @@ public partial class WeaponDisplayLayer : PlayerDrawLayer
         }
         else
         {
-            Item holditem = player.inventory[player.selectedItem];
+            var holditem = player.inventory[player.selectedItem];
             if (WeaponDisplayUtils.CheckDisplay(player, holditem))
                 DrawWeapon(player, holditem, drawInfo);
         }

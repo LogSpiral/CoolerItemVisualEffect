@@ -10,15 +10,15 @@ public partial class ProjectileDrawingModify
 {
     private static void DrawBeam(Projectile projectile)
     {
-        SpriteBatch spriteBatch = Main.spriteBatch;
-        Texture2D projectileTexture = LogSpiralLibraryMod.Misc[13].Value;//GetTexture("TerraShard");
+        var spriteBatch = Main.spriteBatch;
+        var projectileTexture = LogSpiralLibraryMod.Misc[13].Value;//GetTexture("TerraShard");
         var length = projectile.velocity.Length();
         var scaleVec = new Vector2(projectile.scale * 3 + 1f + MathHelper.Clamp(length / 4f, 0, 2), projectile.scale * 2);
         scaleVec = new Vector2(scaleVec.Y, scaleVec.X / 3f);
         scaleVec *= new Vector2(.5f, .75f);
         if (!Main.gamePaused)
         {
-            for (int k = projectile.oldPos.Length - 1; k > 0; k--)
+            for (var k = projectile.oldPos.Length - 1; k > 0; k--)
             {
                 projectile.oldPos[k] = projectile.oldPos[k - 1];
                 projectile.oldRot[k] = projectile.oldRot[k - 1];
@@ -43,7 +43,7 @@ public partial class ProjectileDrawingModify
             if (!ProjectileModificationPreview.PVDrawing)
             {
                 var vCenter = projectile.Center;
-                int t = 0;
+                var t = 0;
                 var tile = Framing.GetTileSafely((int)vCenter.X / 16, (int)vCenter.Y / 16);
 
                 while (t < 30 && !(tile.HasTile && Main.tileSolid[tile.TileType]))
@@ -69,8 +69,8 @@ public partial class ProjectileDrawingModify
         if (!asset.IsLoaded)
             Main.instance.LoadProjectile(projectile.type);
         var projTex = asset.Value;
-        Rectangle? rect = projectile.type == ProjectileID.SkyFracture ? projTex.Frame(14, 1, projectile.frame, 0) : null;
-        for (int n = 0; n < 4; n++)
+        Rectangle? rect = projectile.type == ProjectileID.SkyFracture ? projTex.Frame(14, 1, projectile.frame) : null;
+        for (var n = 0; n < 4; n++)
         {
             var offset = Main.rand.NextVector2Unit() * Main.rand.NextFloat(Main.rand.NextFloat(12f)) - projectile.velocity * 3;
             spriteBatch.Draw(projTex, center + offset, rect, Color.White with { A = 0 } * .5f * (1 - projectile.alpha / 255f), projectile.rotation, (rect != null ? rect.Value.Size() : projTex.Size()) * .5f, projectile.scale, 0, 0);

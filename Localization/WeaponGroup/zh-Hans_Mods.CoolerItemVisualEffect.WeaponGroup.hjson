@@ -1,0 +1,7 @@
+basedOnDefaultCondition.Label: 基于默认条件(白名单下从默认增加，黑名单从默认剔除)
+whiteList.Label: 采用白名单(否则黑名单)
+BindConfigName.Label: 采用配置(留空使用当前配置)
+weaponGroup.Label: 武器名单
+Create: 新建一个分组
+DefaultName: 自定义分组
+CurrentConfig: 当前近战设置

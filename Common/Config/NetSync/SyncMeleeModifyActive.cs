@@ -7,27 +7,27 @@ namespace CoolerItemVisualEffect.Common.Config.NetSync;
 [AutoSync]
 public class SyncMeleeModifyActive : NetModule
 {
-    public int plrIndex;
-    public bool active;
+    private int playerIndex;
+    private bool active;
 
     public static SyncMeleeModifyActive Get(int plrIndex, bool active)
     {
         var result = NetModuleLoader.Get<SyncMeleeModifyActive>();
-        result.plrIndex = plrIndex;
+        result.playerIndex = plrIndex;
         result.active = active;
         return result;
     }
 
     public override void Receive()
     {
-        var plr = Main.player[plrIndex];
+        var plr = Main.player[playerIndex];
         var mplr = plr.GetModPlayer<MeleeModifyPlayer>();
         mplr.ConfigurationSwoosh.SwordModifyActive = active;
         if (mplr.HeatMap != null && mplr.WeaponHSL != default)
             MeleeModifyPlayerUtils.UpdateHeatMap(mplr);
         if (Main.dedServ)
         {
-            Get(plrIndex, active).Send(-1, plrIndex);
+            Get(playerIndex, active).Send(-1, playerIndex);
         }
     }
 }

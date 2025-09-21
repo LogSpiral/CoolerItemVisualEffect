@@ -1,8 +1,8 @@
-﻿using CoolerItemVisualEffect.Common.Config.Datas.ByFuncHeatMap;
-using CoolerItemVisualEffect.Common.Config.Datas.ColorVectorData;
-using CoolerItemVisualEffect.Common.Config.Datas.CosineGenerateHeatMapData;
-using CoolerItemVisualEffect.Common.Config.Datas.DesignateHeatMap;
-using CoolerItemVisualEffect.Common.Config.Datas.DesignateHeatMap.UI.Vanilla;
+﻿using CoolerItemVisualEffect.Common.Config.Data.ByFuncHeatMap;
+using CoolerItemVisualEffect.Common.Config.Data.ColorVectorData;
+using CoolerItemVisualEffect.Common.Config.Data.CosineGenerateHeatMapData;
+using CoolerItemVisualEffect.Common.Config.Data.DesignateHeatMap;
+using CoolerItemVisualEffect.Common.Config.Data.DesignateHeatMap.UI.Vanilla;
 using CoolerItemVisualEffect.Common.Config.NetSync;
 using CoolerItemVisualEffect.Common.Config.Preview;
 using CoolerItemVisualEffect.Common.MeleeModify;
@@ -12,19 +12,19 @@ using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingEffects;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Core.Definition;
 using LogSpiralLibrary.CodeLibrary.Utilties.BaseClasses;
-using System;
 using System.ComponentModel;
 using Terraria.ModLoader.Config;
 using Terraria.ModLoader.UI;
-
+// ReSharper disable InconsistentNaming
+// ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace CoolerItemVisualEffect.Common.Config;
 
 [HorizonOverflowEnable]
 [RenderDrawingPreviewNeeded]
 public class MeleeConfig : ModConfig
 {
-    [DefaultValue(true)]
-    public bool UsePreview;
+    [DefaultValue(true)] 
+    public bool UsePreview { get; } = true;
 
     [DefaultValue(false)]
     [CustomPreview<UseRenderPVPreivew>]

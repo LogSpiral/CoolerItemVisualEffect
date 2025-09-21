@@ -1,10 +1,11 @@
 ﻿using CoolerItemVisualEffect.Common.Config.Preview;
 using LogSpiralLibrary.CodeLibrary.ConfigModification;
-using System;
 using System.ComponentModel;
 using Terraria.ModLoader.Config;
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 
-namespace CoolerItemVisualEffect.Common.Config.Datas.ByFuncHeatMap;
+namespace CoolerItemVisualEffect.Common.Config.Data.ByFuncHeatMap;
 
 public class ByFuncHeatMapData
 {
@@ -14,15 +15,15 @@ public class ByFuncHeatMapData
         [Increment(0.01f)]
         [Range(-1f, 1f)]
         [CustomPreview<HeatMapRelatedDatePreview>]
-        public float range = .2f;
+        public float Range { get; set; } = .2f;
 
         [DefaultValue(0f)]
         [Increment(0.01f)]
         [Range(0f, 1f)]
         [CustomPreview<HeatMapRelatedDatePreview>]
-        public float offset = 0f;
+        public float Offset { get; set; } = 0f;
 
-        public float GetValue(float t, float orig) => (orig + (t - .5f) * range + offset) % 1;
+        public float GetValue(float t, float orig) => (orig + (t - .5f) * Range + Offset) % 1;
     }
 
     public class SaturationInfo
@@ -31,21 +32,21 @@ public class ByFuncHeatMapData
         [Increment(0.05f)]
         [Range(0f, 5f)]
         [CustomPreview<HeatMapRelatedDatePreview>]
-        public float scalar = 1.2f;
+        public float Scalar { get; set; } = 1.2f;
 
         [DefaultValue(0f)]
         [Increment(0.05f)]
         [Range(0f, 2f)]
         [CustomPreview<HeatMapRelatedDatePreview>]
-        public float range = 0f;
+        public float Range { get; set; } = 0f;
 
         [DefaultValue(0.2f)]
         [Increment(0.05f)]
         [Range(-1f, 1f)]
         [CustomPreview<HeatMapRelatedDatePreview>]
-        public float offset = .2f;
+        public float Offset { get; set; } = .2f;
 
-        public float GetValue(float t, float orig) => MathHelper.Clamp(orig * scalar + (t - .5f) * range + offset, 0, 1);
+        public float GetValue(float t, float orig) => MathHelper.Clamp(orig * Scalar + (t - .5f) * Range + Offset, 0, 1);
     }
 
     public class LuminosityInfo
@@ -54,28 +55,28 @@ public class ByFuncHeatMapData
         [Increment(0.01f)]
         [Range(0f, 5f)]
         [CustomPreview<HeatMapRelatedDatePreview>]
-        public float scalar = 1f;
+        public float Scalar { get; set; } = 1f;
 
         [DefaultValue(0.2f)]
         [Increment(0.05f)]
         [Range(0f, 2f)]
         [CustomPreview<HeatMapRelatedDatePreview>]
-        public float range = .2f;
+        public float Range { get; set; } = .2f;
 
         [DefaultValue(0f)]
         [Increment(0.05f)]
         [Range(-1f, 1f)]
         [CustomPreview<HeatMapRelatedDatePreview>]
-        public float offset;
+        public float Offset { get; set; } = 0f;
 
-        public float GetValue(float t, float orig) => MathHelper.Clamp(orig * scalar + (t - .5f) * range + offset, 0, 1);
+        public float GetValue(float t, float orig) => MathHelper.Clamp(orig * Scalar + (t - .5f) * Range + Offset, 0, 1);
     }
 
-    public HueInfo H = new();
-    public SaturationInfo S = new();
-    public LuminosityInfo L = new();
-
-    public Vector3 GetValue(float t, Vector3 orig) => new(H.GetValue(t, orig.X), S.GetValue(t, orig.Y), L.GetValue(t, orig.Z));
+    public HueInfo Hue { get; set; } = new();
+    public SaturationInfo Saturation { get; set; } = new();
+    public LuminosityInfo Luminosity { get; set; } = new();
+    
+    public Vector3 GetValue(float t, Vector3 orig) => new(Hue.GetValue(t, orig.X), Saturation.GetValue(t, orig.Y), Luminosity.GetValue(t, orig.Z));
 
     public Color GetColor(float t, Vector3 hsl) => Main.hslToRgb(GetValue(t, hsl));
 }

@@ -1,6 +1,5 @@
 ﻿using CoolerItemVisualEffect.Common.Config;
 using System;
-using System.Linq;
 
 namespace CoolerItemVisualEffect.Common.MeleeModify;
 
@@ -17,7 +16,7 @@ public class BanVanillaSwooshEffectProj : GlobalProjectile
 
     public override void AI(Projectile projectile)
     {
-        Player player = Main.player[projectile.owner];
+        var player = Main.player[projectile.owner];
         var mplr = player.GetModPlayer<MeleeModifyPlayer>();
         if (mplr.BeAbleToOverhaul && VanillaSlashProjectiles.Contains(projectile.type))
             projectile.Kill();

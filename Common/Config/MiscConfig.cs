@@ -1,8 +1,9 @@
 ﻿using CoolerItemVisualEffect.Common.Config.Preview;
 using LogSpiralLibrary.CodeLibrary.ConfigModification;
-using System;
 using System.ComponentModel;
 using Terraria.ModLoader.Config;
+// ReSharper disable InconsistentNaming
+// ReSharper disable FieldCanBeMadeReadOnly.Global
 
 namespace CoolerItemVisualEffect.Common.Config;
 
@@ -16,7 +17,7 @@ public class MiscConfig : ModConfig
 
     [DefaultValue(true)]
     [CustomPreview<UsePVPreview>]
-    public bool usePreview = true;
+    public bool UsePreview { get; } = true;
 
     [DefaultValue(true)]
     [CustomPreview<WeaponDisplayPreview>]
@@ -47,5 +48,5 @@ public class MiscConfig : ModConfig
 
     [DefaultValue(false)]
     [CustomPreview<TeleportModificationPreview>]
-    public bool TeleprotEffectActive = false;
+    public bool TeleportEffectActive = false;
 }
