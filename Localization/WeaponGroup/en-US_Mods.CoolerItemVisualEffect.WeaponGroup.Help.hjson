@@ -1,0 +1,10 @@
+﻿Help: Help
+
+HelpPanel: {
+	DisplayName: Help Panel
+	Tooltip:
+		'''
+		This panel is used to help you know the usage of each component.
+		Hover the cursor on a component for more details.
+		'''
+}

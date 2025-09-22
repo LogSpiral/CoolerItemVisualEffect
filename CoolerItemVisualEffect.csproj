@@ -4,29 +4,36 @@
 		<LangVersion>preview</LangVersion>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Solaestas.tModLoader.ModBuilder" Version="1.6.1" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\LogSpiralLibrary\LogSpiralLibrary.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-		<Reference Include="NetSimplified">
-			<HintPath>lib\NetSimplified.dll</HintPath>
-		</Reference>
-		<ModReference Include="lib\*.dll" />
-	</ItemGroup>
-	<ItemGroup>
-		<AdditionalFiles Include="**/*.xml;**/*.xnb" Exclude="bin/**/*;obj/**/*" Pack="true" ModPath="%(Identity)" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="./description.txt;./description_workshop.txt;./description_workshop_en.txt">
-			<Visible>true</Visible>
-		</None>
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Common\Config\Data\DesignateHeatMap\UI\PropertyPanel\" />
-	  <Folder Include="UIBase\" />
-	  <Folder Include="UI\WeaponGroup\" />
-	  <Folder Include="UI\ConfigSaveLoader\" />
+        
+        <!-- 引用紫幽的nuget包 -->
+        <PackageReference Include="Solaestas.tModLoader.ModBuilder" Version="1.6.1" />
+
+        <!-- 引用Cyril的NetSimplified -->
+        <Reference Include="NetSimplified">
+            <HintPath>lib\NetSimplified.dll</HintPath>
+        </Reference>
+        <ModReference Include="lib\*.dll" />
+
+        <!-- 额外包含xml和xnb文件，忽略bin和obj目录下的 -->
+        <AdditionalFiles Include="**/*.xml;**/*.xnb" Exclude="bin/**/*;obj/**/*" Pack="true" ModPath="%(Identity)" />
+        
+        <!-- 包含模组描述文件 -->
+        <None Include="./description.txt;./description_workshop.txt;./description_workshop_en.txt">
+            <Visible>true</Visible>
+        </None>
+
+        <!-- 也许是因为现在是空文件夹所以需要显式Include? -->    
+        <Folder Include="Common\Config\Data\DesignateHeatMap\UI\PropertyPanel\" />
+        <Folder Include="UI\ConfigSaveLoader\" />
+
+        <!-- 项目引用 SilkyUIFramework PropertyPanelLibrary SilkyUIAnalyzer-->
+        <ProjectReference Include="..\SilkyUIFramework\SilkyUIFramework.csproj" />
+        <ProjectReference Include="..\PropertyPanel\PropertyPanelLibrary.csproj" />
+        <ProjectReference Include="..\LogSpiralLibrary\LogSpiralLibrary.csproj" />
+        <ProjectReference Include="..\SilkyUIAnalyzer\SilkyUIAnalyzer.csproj">
+            <OutputItemType>Analyzer</OutputItemType>
+            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+        </ProjectReference>
+        
 	</ItemGroup>
 </Project>

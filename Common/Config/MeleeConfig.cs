@@ -62,14 +62,14 @@ public class MeleeConfig : ModConfig
     public SequenceDefinition<MeleeAction> swooshActionStyle = new(nameof(CoolerItemVisualEffect), nameof(CIVESword));
 
     [DefaultValue(7)]
-    [Range(0, 11)]
+    [Range(0, 13)]
     [Slider]
     [CustomPreview<BaseTexSwooshPreview>]
     [DrawTicks]
     public int baseIndexSwoosh = 7;
 
     [DefaultValue(3)]
-    [Range(0, 5)]
+    [Range(0, 6)]
     [Slider]
     [CustomPreview<AnimationTexSwooshPreview>]
     [DrawTicks]

@@ -1,7 +1,17 @@
-﻿basedOnDefaultCondition.Label: Based on Default Condition(Add when whitelist and remove when blacklist)
+basedOnDefaultCondition.Label: Based on Default Condition(Add when whitelist and remove when blacklist)
 whiteList.Label: Use WhiteList Mode(turn off to use BlackListMode)
 BindConfigName.Label: Config of this Group(use current config by default)
 weaponGroup.Label: Weapon list
 Create: Create a new Group on Top Priority
 DefaultName: UserDefinedGroup
 CurrentConfig: Current Melee Config
+Title: Weapon Group Manager
+TooManySameName: "///Failed!/// Hey bro, the file share the default name is toooo many! Please rename Them in time."
+SameDefault: "///Notice!/// Now the saved files are all the default names. I added the serial number for you to distinguish. Remember to tidy up in time"
+EmptyName: Give it a name Plz.
+
+RenameTip: {
+	Exists: A file with the same name already exists
+	TooLong: File name must not exceed 40 characters
+	Illegal: File name must not include following characters: \\, /, :, *, ?, \", <, > or |
+}

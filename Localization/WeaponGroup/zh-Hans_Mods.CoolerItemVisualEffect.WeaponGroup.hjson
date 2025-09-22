@@ -5,3 +5,13 @@ weaponGroup.Label: 武器名单
 Create: 新建一个分组
 DefaultName: 自定义分组
 CurrentConfig: 当前近战设置
+Title: 分组管理器
+TooManySameName: "///存储失败！/// 兄啊你同名的也太多了，请整理并且重命名一下吧"
+SameDefault: "///注意！/// 现在存储出的都是默认名，我帮你加了序号作为区分，记得及时整理"
+EmptyName: 禁止空名
+
+RenameTip: {
+	Exists: 已经存在一个相同名称的文件
+	TooLong: 名称不能超过40个字符
+	Illegal: 文件名不能包含以下字符： \\、/、:、*、?、\"、<、>、|
+}

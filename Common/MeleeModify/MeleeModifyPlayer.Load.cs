@@ -16,6 +16,8 @@ public partial class MeleeModifyPlayer
             player => player.GetModPlayer<MeleeModifyPlayer>().UseSwordModify,
             $"{nameof(CoolerItemVisualEffect)}:MeleeModify");
 
+        MigrateOldGroupPath();
+
         base.Load();
     }
 

@@ -43,11 +43,10 @@ public class SyncMeleeConfig : NetModule
         var plr = Main.player[playerIndex];
         var mplr = plr.GetModPlayer<MeleeModifyPlayer>();
         mplr.ConfigurationSwoosh = configuration;
-        if (mplr.HeatMap != null && mplr.WeaponHSL != default)
-            MeleeModifyPlayerUtils.UpdateHeatMap(mplr);
+
         if (Main.dedServ)
-        {
             Get(playerIndex, configuration).Send(-1, playerIndex);
-        }
+        else if (mplr.HeatMap != null && mplr.WeaponHSL != default)
+            MeleeModifyPlayerUtils.UpdateHeatMap(mplr);
     }
 }

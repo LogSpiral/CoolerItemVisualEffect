@@ -1,11 +1,13 @@
 ﻿using CoolerItemVisualEffect.Common.Config;
+using CoolerItemVisualEffect.Common.ConfigSaveLoader;
 using System.Collections.Generic;
+using System.IO;
 using Weapon_Group = CoolerItemVisualEffect.Common.WeaponGroup.WeaponGroup;
 namespace CoolerItemVisualEffect.Common.MeleeModify;
 
 public partial class MeleeModifyPlayer
 {
-    public List<Weapon_Group> WeaponGroup { get; } = [];
+    public List<Weapon_Group> WeaponGroups { get; } = [];
     public Dictionary<string, MeleeConfig> MeleeConfigs { get; } = [];
 
     private MeleeConfig configurationSwoosh;
@@ -14,32 +16,30 @@ public partial class MeleeModifyPlayer
     {
         get
         {
-#if false
-        if (weaponGroup != null)
-            foreach (var pair in weaponGroup)
-            {
-                if (pair.CheckAvailabe(Player.HeldItem))
+            if (WeaponGroups != null)
+                foreach (var pair in WeaponGroups)
                 {
-                    if (pair.BindSequenceName == "" || pair.BindSequenceName == null) goto label;
-                    if (meleeConfigs != null && meleeConfigs.TryGetValue(pair.BindSequenceName, out var config))
-                        return config;
-                    else if (Main.myPlayer == Player.whoAmI)
+                    if (pair.CheckAvailabe(Player.HeldItem))
                     {
-                        var configPath = Path.Combine(ConfigSLHelper.SavePath, pair.BindSequenceName + ConfigSLHelper.Extension);
-                        if (File.Exists(configPath))
+                        if (pair.BindSequenceName == "" || pair.BindSequenceName == null) goto label;
+                        if (MeleeConfigs != null && MeleeConfigs.TryGetValue(pair.BindSequenceName, out var config))
+                            return config;
+                        else if (Main.myPlayer == Player.whoAmI)
                         {
-                            var meleeConfig = new MeleeConfig();
-                            ConfigSLHelper.Load(meleeConfig, configPath, false, false);
-                            meleeConfigs.Add(pair.BindSequenceName, meleeConfig);
-                            return meleeConfig;
+                            var configPath = Path.Combine(LoadHelper.ConfigSavePath, pair.BindSequenceName + LoadHelper.Extension);
+                            if (File.Exists(configPath))
+                            {
+                                var meleeConfig = new MeleeConfig();
+                                ConfigSaveLoaderHelper.Load(meleeConfig, configPath, false, false);
+                                MeleeConfigs.Add(pair.BindSequenceName, meleeConfig);
+                                return meleeConfig;
+                            }
+                            else goto label;
                         }
                         else goto label;
                     }
-                    else goto label;
                 }
-            }
-#endif
-        label:
+            label:
             configurationSwoosh ??= Main.myPlayer == Player.whoAmI ? MeleeConfig.Instance : new MeleeConfig();
 
             return configurationSwoosh;
@@ -52,8 +52,14 @@ public partial class MeleeModifyPlayer
         SetUpWeaponGroupAndConfig();
 
         RegisterCurrentCanvas();
-
         base.OnEnterWorld();
+    }
+
+    private static void MigrateOldGroupPath() 
+    {
+        var path = LoadHelper.GroupSavePathOld;
+        if (Directory.Exists(path))
+            Directory.Move(path, LoadHelper.GroupSavePath);
     }
 
     private void SetUpWeaponGroupAndConfig(bool forced = false)
@@ -61,37 +67,45 @@ public partial class MeleeModifyPlayer
         if (Player.whoAmI != Main.myPlayer) return;
         if (forced)
         {
-            WeaponGroup.Clear();
+            WeaponGroups.Clear();
             MeleeConfigs.Clear();
         }
         else
             return;
 
-#if false
-        if (!Directory.Exists(WeaponGroupSystem.SavePath))
-            Directory.CreateDirectory(WeaponGroupSystem.SavePath);
-        var tablePath = Path.Combine(WeaponGroupSystem.SavePath, "indexTable.txt");
+
+
+
+        if (!Directory.Exists(LoadHelper.GroupSavePath))
+            Directory.CreateDirectory(LoadHelper.GroupSavePath);
+        var tablePath = Path.Combine(LoadHelper.GroupSavePath, "indexTable.txt");
         if (File.Exists(tablePath))
         {
             var indexTable = File.ReadAllLines(tablePath);
             foreach (string path in indexTable)
             {
-                var selectorPath = Path.Combine(WeaponGroupSystem.SavePath, path + WeaponGroupSystem.Extension);
+                var selectorPath = Path.Combine(LoadHelper.GroupSavePath, path + LoadHelper.Extension);
                 if (!File.Exists(selectorPath))
                     continue;
-                var selector = WeaponGroup.Load(selectorPath);
-                weaponGroup.Add(selector);
-                if (selector.BindSequenceName == null || selector.BindSequenceName.Length == 0 || meleeConfigs.ContainsKey(selector.BindSequenceName)) continue;
-                var configPath = Path.Combine(ConfigSLHelper.SavePath, selector.BindSequenceName + ConfigSLHelper.Extension);
+                var selector = Weapon_Group.Load(selectorPath);
+                WeaponGroups.Add(selector);
+                if (selector.BindSequenceName == null || selector.BindSequenceName.Length == 0 || MeleeConfigs.ContainsKey(selector.BindSequenceName)) continue;
+                var configPath = Path.Combine(LoadHelper.ConfigSavePath, selector.BindSequenceName + LoadHelper.Extension);
                 if (File.Exists(configPath))
                 {
                     var meleeConfig = new MeleeConfig();
-                    ConfigSLHelper.Load(meleeConfig, configPath, false, false);
-                    meleeConfigs.Add(selector.BindSequenceName, meleeConfig);
+                    ConfigSaveLoaderHelper.Load(meleeConfig, configPath, false, false);
+                    MeleeConfigs.Add(selector.BindSequenceName, meleeConfig);
                 }
             }
         }
         WeaponGroupSyncing();
-#endif
     }
+}
+file static class LoadHelper
+{
+    public static string GroupSavePathOld { get; } = Path.Combine(Main.SavePath, "Mods", nameof(CoolerItemVisualEffect), "WeaponSelector");
+    public static string GroupSavePath { get; } = Path.Combine(Main.SavePath, "Mods", nameof(CoolerItemVisualEffect), "WeaponGroup");
+    public static string ConfigSavePath { get; } = Path.Combine(Main.SavePath, "Mods", nameof(CoolerItemVisualEffect), "MeleeConfig");
+    public const string Extension = ".json";
 }

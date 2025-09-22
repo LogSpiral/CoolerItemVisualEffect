@@ -28,7 +28,7 @@ public class SyncWeaponGroup : NetModule
         var result = NetModuleLoader.Get<SyncWeaponGroup>();
         result.plrIndex = (byte)Main.myPlayer;
         var mplr = Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
-        result.list = mplr.WeaponGroup;
+        result.list = mplr.WeaponGroups;
         result.dict = mplr.MeleeConfigs;
         return result;
     }
@@ -87,8 +87,8 @@ public class SyncWeaponGroup : NetModule
         var MMPlr = plr.GetModPlayer<MeleeModifyPlayer>();
         if (list != null)
         {
-            MMPlr.WeaponGroup.Clear();
-            MMPlr.WeaponGroup.AddRange(list);
+            MMPlr.WeaponGroups.Clear();
+            MMPlr.WeaponGroups.AddRange(list);
         }
         if (dict != null)
         {

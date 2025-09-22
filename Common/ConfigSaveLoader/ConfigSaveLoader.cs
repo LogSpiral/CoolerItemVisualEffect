@@ -1,8 +1,7 @@
-﻿using CoolerItemVisualEffect.UI.WeaponGroup;
+﻿namespace CoolerItemVisualEffect.Common.ConfigSaveLoader;
 
-namespace CoolerItemVisualEffect.Common.WeaponGroup;
 
-public class WeaponGroupManager : ModItem
+public class ConfigSaveLoader : ModItem
 {
     public override void SetDefaults()
     {
@@ -16,16 +15,15 @@ public class WeaponGroupManager : ModItem
     {
         if (player.itemAnimation == player.itemAnimationMax)
         {
-            if (WeaponGroupManagerUI.Active)
-                WeaponGroupManagerUI.Close();
-            else
-                WeaponGroupManagerUI.Open();
+            //if (ConfigSLUI.Visible)
+            //    ConfigSLSystem.Instance.configSLUI.Close();
+            //else
+            //    ConfigSLSystem.Instance.configSLUI.Open();
         }
     }
-
-    private static Condition EmptyHandCondition { get; } =
+    private static Condition EmptyHandCondition { get; } = 
         new Condition(
-            "Mods.CoolerItemVisualEffect.EmptyHand",
+            "Mods.CoolerItemVisualEffect.EmptyHand", 
             () => Main.LocalPlayer.HeldItem.type == ItemID.None);
     public override void AddRecipes()
     {

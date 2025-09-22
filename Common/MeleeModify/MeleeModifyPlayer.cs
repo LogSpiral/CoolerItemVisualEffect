@@ -10,8 +10,8 @@ public partial class MeleeModifyPlayer : ModPlayer
     {
         get
         {
-            if (WeaponGroup != null)
-                foreach (var selector in WeaponGroup)
+            if (WeaponGroups != null)
+                foreach (var selector in WeaponGroups)
                     if (selector.CheckAvailabe(Player.HeldItem))
                         return true;
 
