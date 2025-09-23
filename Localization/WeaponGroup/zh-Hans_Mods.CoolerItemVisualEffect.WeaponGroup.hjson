@@ -1,7 +1,7 @@
-basedOnDefaultCondition.Label: 基于默认条件(白名单下从默认增加，黑名单从默认剔除)
-whiteList.Label: 采用白名单(否则黑名单)
-BindConfigName.Label: 采用配置(留空使用当前配置)
-weaponGroup.Label: 武器名单
+BasedOnDefaultCondition.Label: 基于默认分组
+WhiteList.Label: 白名单模式
+BindConfigName.Label: 绑定配置
+WeaponList.Label: 武器名单
 Create: 新建一个分组
 DefaultName: 自定义分组
 CurrentConfig: 当前近战设置
@@ -9,9 +9,12 @@ Title: 分组管理器
 TooManySameName: "///存储失败！/// 兄啊你同名的也太多了，请整理并且重命名一下吧"
 SameDefault: "///注意！/// 现在存储出的都是默认名，我帮你加了序号作为区分，记得及时整理"
 EmptyName: 禁止空名
+SavedAs: 分组已存储为文件
 
 RenameTip: {
 	Exists: 已经存在一个相同名称的文件
 	TooLong: 名称不能超过40个字符
 	Illegal: 文件名不能包含以下字符： \\、/、:、*、?、\"、<、>、|
 }
+
+// BindSequenceName.Label: BindSequenceName

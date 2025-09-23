@@ -1,7 +1,4 @@
-﻿
-using Microsoft.Xna.Framework.Graphics;
-using Newtonsoft.Json;
-using ReLogic.Content;
+﻿using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
@@ -9,7 +6,6 @@ using Terraria.Audio;
 using Terraria.GameInput;
 using Terraria.Localization;
 using Terraria.ModLoader.Config;
-using Terraria.UI;
 
 namespace CoolerItemVisualEffect.Common.ConfigSaveLoader;
 
@@ -72,45 +68,7 @@ public static class ConfigSaveLoaderHelper
 
     public static void Save(ModConfig config, string assignedPath = null, bool announce = true)
     {
-        var ModConfigPath = SavePath;
-        if (!Directory.Exists(SavePath))
-            Directory.CreateDirectory(ModConfigPath);
-        string thisPath = assignedPath;
-        if (assignedPath == null)
-        {
-            string filename = GetText("DefaultName");
-            string resultName = filename + Extension;
-            thisPath = Path.Combine(SavePath, resultName);
-            int maxCount = 30;
-            bool sameDefault = false;
-            if (File.Exists(thisPath))
-            {
-                for (int i = 2; i <= maxCount; i++)
-                {
-                    resultName = $"{filename} ({i}){Extension}";
-                    thisPath = Path.Combine(SavePath, resultName);
-                    if (!File.Exists(thisPath))
-                    {
-                        sameDefault = i == 8;
-                        break;
-                    }
-                    else if (i == maxCount)
-                    {
-                        Main.NewText(GetText("TooManySameName"), Color.Red);
-                        return;
-                    }
-                }
-            }
-            if (sameDefault)
-                Main.NewText(GetText("SameDefault"), Color.Red);
 
-        }
-
-        string json = JsonConvert.SerializeObject(config, ConfigManager.serializerSettings);
-        File.WriteAllText(thisPath, json);
-
-        if (announce)
-            Main.NewText(GetText("SavedAs") + thisPath, Color.Yellow);
 
     }
 
@@ -140,18 +98,15 @@ public static class ConfigSaveLoaderHelper
             JsonConvert.PopulateObject(json, config, ConfigManager.serializerSettings);
             if (announce)
             {
-                Main.NewText(GetText("Successed"), Color.Yellow);
+                Main.NewText(GetText("Succeed"), Color.Yellow);
                 SoundEngine.PlaySound(SoundID.Unlock);
             }
             config.OnChanged();
         }
-        catch (Exception e) when (jsonFileExists && (e is JsonReaderException || e is JsonSerializationException))
+        catch (Exception e) when (jsonFileExists && e is JsonReaderException or JsonSerializationException)
         {
             Logging.tML.Warn($"Then config file {config.Name} from the mod {config.Mod.Name} located at {path} failed to load. The file was likely corrupted somehow, so the defaults will be loaded and the file deleted.");
             File.Delete(path);
-            //JsonConvert.PopulateObject("{}", config, ConfigManager.serializerSettings);
-            //CachedConfigDatas.Clear();
-            // configSLUI.SetupConfigList();
             Main.NewText(GetText("Failed"), Color.Red);
             SoundEngine.PlaySound(SoundID.Thunder);
         }

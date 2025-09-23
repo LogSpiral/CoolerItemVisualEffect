@@ -1,14 +1,15 @@
-﻿using CoolerItemVisualEffect.Common.MeleeModify;
-using CoolerItemVisualEffect.Common.WeaponGroup;
-using PropertyPanelLibrary.PropertyPanelComponents;
+﻿using PropertyPanelLibrary.PropertyPanelComponents;
 using PropertyPanelLibrary.PropertyPanelComponents.BuiltInProcessors.Option.Writers;
 using SilkyUIFramework;
 using SilkyUIFramework.Elements;
 using System.IO;
-using Weapon_Group = CoolerItemVisualEffect.Common.WeaponGroup.WeaponGroup;
-namespace CoolerItemVisualEffect.UI.WeaponGroup;
+using CoolerItemVisualEffect.Common.Config;
+using CoolerItemVisualEffect.Common.ConfigSaveLoader;
+using Terraria.Audio;
 
-public partial class WeaponGroupManagerUI
+namespace CoolerItemVisualEffect.UI.ConfigSaveLoader;
+
+public partial class ConfigSaveLoaderUI
 {
     public PropertyPanel PropertyPanel { get; set; }
 
@@ -20,7 +21,7 @@ public partial class WeaponGroupManagerUI
 
     private void InitializeBody()
     {
-        BackgroundColor = Color.CornflowerBlue * .25f;
+        BackgroundColor = Color.MediumPurple * .25f;
     }
 
     private void InitializeComponentExtra()
@@ -76,29 +77,23 @@ public partial class WeaponGroupManagerUI
         CreateNewButton.LeftMouseClick += delegate
         {
             _pendingUpdateFileList = true;
-            var list = Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>().WeaponGroups;
-            var selector = new Weapon_Group();
-            list.Insert(0, selector);
-            ManagerHelper.SaveWeaponGroup(selector);
-            SyncWeaponGroup.Get(Main.myPlayer, list, null).Send();
+
+            ManagerHelper.SaveConfig(MeleeConfig.Instance);
         };
         HelperButton.LeftMouseClick += delegate
         {
-            if (WeaponGroupHelperUI.Active)
-                WeaponGroupHelperUI.Close();
+            if (ConfigSaveLoaderHelperUI.Active)
+                ConfigSaveLoaderHelperUI.Close();
             else
-                WeaponGroupHelperUI.Open();
+                ConfigSaveLoaderHelperUI.Open();
         };
 
 
         SaveButton.LeftMouseClick += delegate
         {
             if (CurrentEditTarget != null)
-            {
-                var list = Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>().WeaponGroups;
-                ManagerHelper.SaveWeaponGroup(CurrentEditTarget, true);
-                SyncWeaponGroup.Get(Main.myPlayer, list, null).Send();
-            }
+                ManagerHelper.SaveConfig(CurrentEditTarget, CurrentPath, false);
+
             SaveButton.Remove();
             RevertButton.Remove();
         };
@@ -106,7 +101,8 @@ public partial class WeaponGroupManagerUI
         RevertButton.LeftMouseClick += delegate
         {
             if (!File.Exists(CurrentPath)) return;
-            CurrentEditTarget = Weapon_Group.Load(CurrentPath);
+            CurrentEditTarget = new MeleeConfig();
+            ConfigSaveLoaderHelper.Load(CurrentEditTarget, CurrentPath, false, false);
             RefreshPropertyPanelFiller();
             SaveButton.Remove();
             RevertButton.Remove();
@@ -115,6 +111,7 @@ public partial class WeaponGroupManagerUI
         BackButton.LeftMouseClick += delegate
         {
             SwitchToMainPage();
+            SoundEngine.PlaySound(SoundID.MenuClose);
         };
 
 

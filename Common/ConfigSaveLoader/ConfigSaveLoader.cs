@@ -1,4 +1,6 @@
-﻿namespace CoolerItemVisualEffect.Common.ConfigSaveLoader;
+﻿using CoolerItemVisualEffect.UI.ConfigSaveLoader;
+
+namespace CoolerItemVisualEffect.Common.ConfigSaveLoader;
 
 
 public class ConfigSaveLoader : ModItem
@@ -9,6 +11,7 @@ public class ConfigSaveLoader : ModItem
         Item.height = 20;
         Item.useTime = Item.useAnimation = 15;
         Item.useStyle = ItemUseStyleID.HoldUp;
+        Item.ResearchUnlockCount = 0;
     }
 
     public override void UseStyle(Player player, Rectangle heldItemFrame)
@@ -19,16 +22,22 @@ public class ConfigSaveLoader : ModItem
             //    ConfigSLSystem.Instance.configSLUI.Close();
             //else
             //    ConfigSLSystem.Instance.configSLUI.Open();
+
+            if (ConfigSaveLoaderUI.Active)
+                ConfigSaveLoaderUI.Close();
+            else
+                ConfigSaveLoaderUI.Open();
         }
     }
-    private static Condition EmptyHandCondition { get; } = 
+    private static Condition EmptyHandCondition { get; } =
         new Condition(
-            "Mods.CoolerItemVisualEffect.EmptyHand", 
+            "Mods.CoolerItemVisualEffect.EmptyHand",
             () => Main.LocalPlayer.HeldItem.type == ItemID.None);
     public override void AddRecipes()
     {
         CreateRecipe()
             .AddCondition(EmptyHandCondition)
+            .DisableDecraft()
             .Register();
     }
 }

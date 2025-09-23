@@ -1,4 +1,4 @@
-Refresh: 刷新
+﻿Refresh: 刷新
 TooManySameName: "///存储失败！/// 兄啊你同名的也太多了，请整理并且重命名一下吧"
 SameDefault: "///注意！/// 现在存储出的都是默认名，我帮你加了序号作为区分，记得及时整理"
 SavedAs: 配置已存储为文件
@@ -19,3 +19,4 @@ Create: 新建一个配置
 Revert: 撤销改动
 Default: 设为默认值
 Save: 保存
+Title: 配置管理器

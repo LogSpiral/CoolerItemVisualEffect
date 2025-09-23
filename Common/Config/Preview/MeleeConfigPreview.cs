@@ -4,7 +4,6 @@ using CoolerItemVisualEffect.Common.Config.Data.DesignateHeatMap;
 using CoolerItemVisualEffect.Common.MeleeModify;
 using LogSpiralLibrary;
 using LogSpiralLibrary.CodeLibrary.ConfigModification;
-using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing;
 using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingContents;
 using LogSpiralLibrary.CodeLibrary.Utilties.Extensions;
 using Microsoft.Xna.Framework.Graphics;

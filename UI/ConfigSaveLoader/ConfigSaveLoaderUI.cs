@@ -2,11 +2,11 @@ using SilkyUIFramework.Attributes;
 using SilkyUIFramework.Elements;
 using Terraria.Audio;
 
-namespace CoolerItemVisualEffect.UI.WeaponGroup;
-[RegisterUI("Vanilla: Radial Hotbars",$"{nameof(CoolerItemVisualEffect)}:{nameof(WeaponGroupManagerUI)}")]
-public partial class WeaponGroupManagerUI:BaseBody
+namespace CoolerItemVisualEffect.UI.ConfigSaveLoader;
+[RegisterUI("Vanilla: Radial Hotbars",$"{nameof(CoolerItemVisualEffect)}:{nameof(ConfigSaveLoaderUI)}")]
+public partial class ConfigSaveLoaderUI:BaseBody
 {
-    public static WeaponGroupManagerUI Instance { get; private set; }
+    public static ConfigSaveLoaderUI Instance { get; private set; }
 
     public static bool Active { get; set; }
 
@@ -38,7 +38,7 @@ public partial class WeaponGroupManagerUI:BaseBody
         if (Active && !silent)
             SoundEngine.PlaySound(SoundID.MenuClose);
         Active = false;
-        WeaponGroupHelperUI.Close();
+        ConfigSaveLoaderHelperUI.Close();
     }
 
     protected override void UpdateChildrenStatus(GameTime gameTime)

@@ -10,6 +10,7 @@ public class WeaponGroupManager : ModItem
         Item.height = 20;
         Item.useTime = Item.useAnimation = 15;
         Item.useStyle = ItemUseStyleID.HoldUp;
+        Item.ResearchUnlockCount = 0;
     }
 
     public override void UseStyle(Player player, Rectangle heldItemFrame)

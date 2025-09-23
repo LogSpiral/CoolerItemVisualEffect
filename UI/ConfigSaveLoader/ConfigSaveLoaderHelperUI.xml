@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Body Class="CoolerItemVisualEffect.UI.ConfigSaveLoader.ConfigSaveLoaderHelperUI" Height="400px" Width="700px" Left="50#" Top="50#" Gap="0" BorderRadius="8">
+	<DraggableView Name="TitlePanel" Width="100%" Height="40px" BackgroundColor="rgba(0,0,0,0.25)" BorderRadius="6 6 0 0" FlexDirection="Row" MainAlignment="SpaceBetween" CrossAlignment="Center">
+		<!-- 标题 -->
+		<TextView Name="Title" Padding="12 0" Width="25%" Height="100%" TextScale="0.45" TextAlign="0 0.5" IsDeathText="true" />
+		<!-- 关闭 -->
+		<Cross Width="24px" Height="100%" Padding="12 0" Name="CloseButton" BoxSizing="Content" CrossSize="22f" CrossRounded="3.5" />
+	</DraggableView>
+	<ElementGroup Padding="16" Width="100%" Height="-40px 100%" FlexDirection="Column">
+		<TextView Name="HintTextTitle" />
+		<HR BackgroundColor="rgba(0,0,0,0.25)" Margin="0 4 0 0" />
+		<TextView Name="HintTextContent" />
+	</ElementGroup>
+</Body>

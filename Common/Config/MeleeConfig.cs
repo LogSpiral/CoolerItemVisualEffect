@@ -13,8 +13,11 @@ using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Me
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Core.Definition;
 using LogSpiralLibrary.CodeLibrary.Utilties.BaseClasses;
 using System.ComponentModel;
+using PropertyPanelLibrary.EntityDefinition;
+using PropertyPanelLibrary.PropertyPanelComponents.Attributes;
 using Terraria.ModLoader.Config;
 using Terraria.ModLoader.UI;
+using CoolerItemVisualEffect.Common.Config.Data.DesignateHeatMap.UI.PropertyPanel;
 // ReSharper disable InconsistentNaming
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace CoolerItemVisualEffect.Common.Config;
@@ -59,6 +62,7 @@ public class MeleeConfig : ModConfig
 
     [CustomModConfigItem(typeof(SequenceDefinitionElement<MeleeAction>))]
     [TypeConverter(typeof(ToFromStringConverter<SequenceDefinition<MeleeAction>>))]
+    [CustomEntityDefinitionHandler<SequenceDefinitionHandler<MeleeAction>>]
     public SequenceDefinition<MeleeAction> swooshActionStyle = new(nameof(CoolerItemVisualEffect), nameof(CIVESword));
 
     [DefaultValue(7)]

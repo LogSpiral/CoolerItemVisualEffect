@@ -1,14 +1,9 @@
-ConfigSLer: {
-	// DisplayName: Config Reader/Writer
-	// Tooltip: To Show The UI And Choose Or Edit.
+﻿ConfigSaveLoader: {
+	DisplayName: 近战设置管理器
+	Tooltip: 打开界面以选择或编辑
 }
 
 WeaponGroupManager: {
 	DisplayName: 武器分组管理器
 	Tooltip: 打开界面对分组进行管理
-}
-
-ConfigSaveLoader: {
-	DisplayName: 近战设置管理器
-	Tooltip: 打开界面以选择或编辑
 }

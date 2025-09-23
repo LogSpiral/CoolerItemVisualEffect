@@ -9,6 +9,7 @@ namespace CoolerItemVisualEffect.UI.WeaponGroup;
 
 public partial class WeaponGroupManagerUI
 {
+    public static void SaveWeaponGroup(Weapon_Group group, bool overWrite = false, bool resetIndexNeeded = true) => ManagerHelper.SaveWeaponGroup(group, overWrite, resetIndexNeeded);
     private static class ManagerHelper
     {
         public static string SavePath { get; } = Path.Combine(Main.SavePath, "Mods", nameof(CoolerItemVisualEffect), "WeaponGroup");

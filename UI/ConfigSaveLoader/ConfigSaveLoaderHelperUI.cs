@@ -7,12 +7,12 @@ using SilkyUIFramework.Graphics2D;
 using Terraria.Audio;
 using Terraria.Localization;
 
-namespace CoolerItemVisualEffect.UI.WeaponGroup;
-[RegisterUI("Vanilla: Mouse Text", $"{nameof(CoolerItemVisualEffect)}: {nameof(WeaponGroupHelperUI)}")]
-public partial class WeaponGroupHelperUI : BaseBody
+namespace CoolerItemVisualEffect.UI.ConfigSaveLoader;
+[RegisterUI("Vanilla: Mouse Text", $"{nameof(CoolerItemVisualEffect)}: {nameof(ConfigSaveLoaderHelperUI)}")]
+public partial class ConfigSaveLoaderHelperUI : BaseBody
 {
     #region 属性
-    public static WeaponGroupHelperUI Instance { get; set; }
+    public static ConfigSaveLoaderHelperUI Instance { get; set; }
     public static bool Active { get; set; }
     public AnimationTimer SwitchTimer { get; init; } = new(3);
 
@@ -33,8 +33,8 @@ public partial class WeaponGroupHelperUI : BaseBody
             if (value != field && HintTextTitle != null)
             {
                 var key = value ?? "HelpPanel";
-                HintTextTitle.Text = Language.GetTextValue($"Mods.CoolerItemVisualEffect.WeaponGroup.Help.{key}.DisplayName");
-                HintTextContent.Text = Language.GetTextValue($"Mods.CoolerItemVisualEffect.WeaponGroup.Help.{key}.Tooltip");
+                HintTextTitle.Text = Language.GetTextValue($"Mods.CoolerItemVisualEffect.ConfigSaveLoader.Help.{key}.DisplayName");
+                HintTextContent.Text = Language.GetTextValue($"Mods.CoolerItemVisualEffect.ConfigSaveLoader.Help.{key}.Tooltip");
             }
             field = value;
         }
@@ -52,21 +52,21 @@ public partial class WeaponGroupHelperUI : BaseBody
     {
         RectangleRender.ShadowColor = Color.Black * .1f;
         RectangleRender.ShadowSize = 12f;
-        BackgroundColor = Color.CornflowerBlue * .25f;
+        BackgroundColor = Color.MediumPurple * .25f;
         BorderColor = SUIColor.Border;
         CloseButton.CrossBorderColor = SUIColor.Border * 0.75f;
         CloseButton.CrossBackgroundColor = SUIColor.Warn * 0.75f;
         CloseButton.CrossBorderHoverColor = SUIColor.Highlight;
         CloseButton.CrossBackgroundHoverColor = SUIColor.Warn;
         TitlePanel.ControlTarget = this;
-        Title.Text = Language.GetTextValue("Mods.CoolerItemVisualEffect.WeaponGroup.Help.Help");
+        Title.Text = Language.GetTextValue("Mods.CoolerItemVisualEffect.ConfigSaveLoader.Help.Help");
         Title.UseDeathText();
         CloseButton.LeftMouseClick += delegate
         {
             Close();
         };
-        HintTextTitle.Text = Language.GetTextValue("Mods.CoolerItemVisualEffect.WeaponGroup.Help.HelpPanel.DisplayName");
-        HintTextContent.Text = Language.GetTextValue("Mods.CoolerItemVisualEffect.WeaponGroup.Help.HelpPanel.Tooltip");
+        HintTextTitle.Text = Language.GetTextValue("Mods.CoolerItemVisualEffect.ConfigSaveLoader.Help.HelpPanel.DisplayName");
+        HintTextContent.Text = Language.GetTextValue("Mods.CoolerItemVisualEffect.ConfigSaveLoader.Help.HelpPanel.Tooltip");
     }
 
     private void ReloadContent()
@@ -147,9 +147,9 @@ public partial class WeaponGroupHelperUI : BaseBody
     #region 手动显示提示文本
     static void HandleTextManually()
     {
-        if (!WeaponGroupManagerUI.Active) return;
+        if (!ConfigSaveLoaderUI.Active) return;
         Vector2 mousePosition = Main.MouseScreen;
-        var instance = WeaponGroupManagerUI.Instance;
+        var instance = ConfigSaveLoaderUI.Instance;
     }
     #endregion
 }

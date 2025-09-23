@@ -1,0 +1,111 @@
+﻿using CoolerItemVisualEffect.Common.Config;
+using CoolerItemVisualEffect.Common.ConfigSaveLoader;
+using CoolerItemVisualEffect.Common.MeleeModify;
+using CoolerItemVisualEffect.UI.WeaponGroup;
+using CoolerItemVisualEffect.UIBase;
+using LogSpiralLibrary.CodeLibrary.Utilties;
+using Newtonsoft.Json;
+using PropertyPanelLibrary.PropertyPanelComponents.BuiltInProcessors.Panel.Fillers;
+using PropertyPanelLibrary.PropertyPanelComponents.Core;
+using PropertyPanelLibrary.PropertyPanelComponents.Interfaces.Panel;
+using SilkyUIFramework.Extensions;
+using System.Collections.Generic;
+using System.IO;
+using Terraria.Audio;
+using Terraria.IO;
+
+namespace CoolerItemVisualEffect.UI.ConfigSaveLoader;
+
+public partial class ConfigSaveLoaderUI
+{
+    private bool _pendingUpdateFileList;
+
+    private void SetupFileList()
+    {
+        _pendingUpdateFileList = false;
+
+        ItemList.Container.RemoveAllChildren();//清空
+        if (!Directory.Exists(ManagerHelper.SavePath))
+            Directory.CreateDirectory(ManagerHelper.SavePath);
+
+
+        foreach (var path in Directory.GetFiles(ManagerHelper.SavePath))
+        {
+            var folder = ManagerHelper.SavePath;
+            var fileName = Path.GetFileNameWithoutExtension(path);
+            var fileCard = new FileCard()
+            {
+                FileName = fileName,
+                FileFolder = folder,
+                FileExtension = ManagerHelper.Extension
+            };
+            fileCard.DeleteButton.LeftMouseClick += delegate
+            {
+                _pendingUpdateFileList = true;
+            };
+            fileCard.NameBox.InnerText.EndTakingInput += (sender,arg)=>
+            {
+                if (arg.OldValue == arg.NewValue) return;
+                var mplr = Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
+                foreach (var w in mplr.WeaponGroups)
+                {
+                    if (w.BindConfigName == arg.OldValue)
+                    {
+                        w.BindConfigName = arg.NewValue;
+                        WeaponGroupManagerUI.SaveWeaponGroup(w, true, false);
+                    }
+                }
+                if (mplr.MeleeConfigs.TryGetValue(arg.OldValue,out var config))
+                {
+                    mplr.MeleeConfigs.Remove(arg.OldValue);
+                    mplr.MeleeConfigs.Add(arg.NewValue,config);
+                }
+                mplr.WeaponGroupSyncing();
+            };
+            fileCard.EditButton.LeftMouseClick += delegate
+            {
+                var pth = fileCard.FileFullPath;
+                if (!File.Exists(pth)) return;
+                CurrentPath = pth;
+
+                CurrentEditTarget = new MeleeConfig();
+                ConfigSaveLoaderHelper.Load(CurrentEditTarget, fileCard.FileName, true, false);
+                SwitchToEditPage();
+
+                SoundEngine.PlaySound(SoundID.MenuOpen);
+            };
+            ItemList.Container.Add(fileCard);//如果有就添加目标
+        }
+    }
+
+    private string CurrentPath { get; set; }
+    private MeleeConfig CurrentEditTarget { get; set; }
+
+    private void RefreshPropertyPanelFiller()
+    {
+        PropertyPanel.Filler = new ObjectMetaDataFiller(CurrentEditTarget);
+    }
+
+    private void SwitchToEditPage()
+    {
+        this.AddBefore(PropertyPanel, ItemList);
+        ItemList.Remove();
+        RefreshPropertyPanelFiller();
+        BackButton.Join(EditButtonContainer);
+        CreateNewButton.Remove();
+    }
+
+
+    private void SwitchToMainPage() 
+    {
+        this.AddBefore(ItemList, PropertyPanel);
+        PropertyPanel.Remove();
+        _pendingUpdateFileList = true;
+        BackButton.Remove();
+        SaveButton.Remove();
+        RevertButton.Remove();
+        CurrentEditTarget = null;
+        CreateNewButton.Join(FunctionButtonContainer);
+    }
+
+}

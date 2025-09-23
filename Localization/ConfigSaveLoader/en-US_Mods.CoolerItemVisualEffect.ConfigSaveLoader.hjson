@@ -19,3 +19,4 @@ Create: Create a new Config
 Revert: Revert
 Default: Restore to Default
 Save: Save
+Title: Config Save Loader

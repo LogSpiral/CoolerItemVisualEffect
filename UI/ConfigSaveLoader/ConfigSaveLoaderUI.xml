@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Body Class="CoolerItemVisualEffect.UI.ConfigSaveLoader.ConfigSaveLoaderUI" 
+      Left="50#" Top="50#" Width="400px" Height="600px"
+      MaxWidth="75%" MaxHeight="75%" BorderRadius="8">
+    <DraggableView Name="TitlePanel" Width="100%" Height="40px" BackgroundColor="rgba(0,0,0,0.25)" 
+                   FlexDirection="Row" MainAlignment="SpaceBetween" CrossAlignment="Center">
+        <TextView Name="Title" Padding="12 0" Width="25%" Height="100%" TextScale="0.45" TextAlign="0 0.5"/>
+		<Cross Name="CloseButton" Width="24px" Height="100%" Padding="12 0" BoxSizing="Content" CrossSize="22f" CrossRounded="3.5" />
+    </DraggableView>
+	<ScrollView Name="ItemList" Width="100%" FlexGrow="1"/>
+	<ElementGroup Name="ButtonContainer" Width="100%" Height="40px" BackgroundColor="rgba(0,0,0,0.2)" MainAlignment="SpaceBetween">
+		<ElementGroup Name="FunctionButtonContainer" FlexGrow="1" Height="100%" Margin="8 0 0 0" Gap="8 0" CrossAlignment="Center" MainAlignment="Start">
+			<Image Name="OpenFolderButton"/>
+			<Image Name="HelperButton"/>
+			<Image Name="CreateNewButton"/>
+		</ElementGroup>
+		<ElementGroup Name="EditButtonContainer" FlexGrow="1" Height="100%" Margin="0 0 8 0" Gap="8 0" CrossAlignment="Center" MainAlignment="End">
+			<Image Name="SaveButton"/>
+			<Image Name="RevertButton"/>
+			<Image Name="BackButton"/>
+		</ElementGroup>
+	</ElementGroup>
+</Body>

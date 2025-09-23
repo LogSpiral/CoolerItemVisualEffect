@@ -1,4 +1,4 @@
-DisplayName: 近战设置
+﻿DisplayName: 近战设置
 
 Headers: {
 	MeleeModifyPart: "[i:1199]近战视效修改设置"

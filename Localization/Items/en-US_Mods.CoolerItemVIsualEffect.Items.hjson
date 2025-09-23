@@ -1,14 +1,9 @@
-ConfigSLer: {
-	DisplayName: Config Reader/Writer
+ConfigSaveLoader: {
+	DisplayName: Config Save Loader
 	Tooltip: To Show The UI And Choose Or Edit.
 }
 
 WeaponGroupManager: {
 	DisplayName: Weapon Group Manager
 	Tooltip: To Show The UI And Manage Your Weapon Group
-}
-
-ConfigSaveLoader: {
-	DisplayName: Config Save Loader
-	Tooltip: ""
 }

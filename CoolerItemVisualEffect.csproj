@@ -22,9 +22,7 @@
             <Visible>true</Visible>
         </None>
 
-        <!-- 也许是因为现在是空文件夹所以需要显式Include? -->    
-        <Folder Include="Common\Config\Data\DesignateHeatMap\UI\PropertyPanel\" />
-        <Folder Include="UI\ConfigSaveLoader\" />
+        <!-- 也许是因为现在是空文件夹所以需要显式Include? -->
 
         <!-- 项目引用 SilkyUIFramework PropertyPanelLibrary SilkyUIAnalyzer-->
         <ProjectReference Include="..\SilkyUIFramework\SilkyUIFramework.csproj" />
