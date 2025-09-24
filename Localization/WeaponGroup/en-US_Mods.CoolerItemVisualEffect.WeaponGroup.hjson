@@ -1,6 +1,11 @@
-﻿BasedOnDefaultCondition.Label: Based on Default Group
+BasedOnDefaultCondition.Label: Based on Default Group
 WhiteList.Label: Use WhiteList Mode
-BindConfigName.Label: Config of this Group
+
+BindConfigName: {
+	Label: Config of this Group
+	$parentVal: with the local config:{0}
+}
+
 WeaponList.Label: Weapon list
 Create: Create a new Group on Top Priority
 DefaultName: UserDefinedGroup
@@ -17,4 +22,5 @@ RenameTip: {
 	Illegal: File name must not include following characters: \\, /, :, *, ?, \", <, > or |
 }
 
-BindSequenceName.Label: BindSequenceName
+CurrentGroupName: This weapon belongs to group:{0}
+DefaultConfig: using current melee config

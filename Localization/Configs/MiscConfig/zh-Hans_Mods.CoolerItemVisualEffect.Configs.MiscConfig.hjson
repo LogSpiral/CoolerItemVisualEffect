@@ -1,4 +1,4 @@
-﻿DisplayName: 其它设置
+DisplayName: 其它设置
 
 UsePreview: {
 	Label: 启用预览
@@ -37,5 +37,10 @@ VanillaProjectileDrawModifyActive: {
 
 TeleportEffectActive: {
 	Label: 启用传送物品使用特效
+	Tooltip: ""
+}
+
+ShowEntryUI: {
+	Label: 显示配置和分组管理器的开启按钮
 	Tooltip: ""
 }

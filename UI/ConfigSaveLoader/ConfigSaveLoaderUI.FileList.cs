@@ -8,18 +8,20 @@ using Newtonsoft.Json;
 using PropertyPanelLibrary.PropertyPanelComponents.BuiltInProcessors.Panel.Fillers;
 using PropertyPanelLibrary.PropertyPanelComponents.Core;
 using PropertyPanelLibrary.PropertyPanelComponents.Interfaces.Panel;
+using SilkyUIFramework;
 using SilkyUIFramework.Extensions;
 using System.Collections.Generic;
 using System.IO;
 using Terraria.Audio;
 using Terraria.IO;
+using Terraria.ModLoader.Config;
 
 namespace CoolerItemVisualEffect.UI.ConfigSaveLoader;
 
 public partial class ConfigSaveLoaderUI
 {
     private bool _pendingUpdateFileList;
-
+    public static string CurrentConfigName { get; set; }
     private void SetupFileList()
     {
         _pendingUpdateFileList = false;
@@ -39,13 +41,16 @@ public partial class ConfigSaveLoaderUI
                 FileFolder = folder,
                 FileExtension = ManagerHelper.Extension
             };
+            if (CurrentConfigName == fileName)
+                fileCard.BackgroundColor = SUIColor.Background * .2f;
             fileCard.DeleteButton.LeftMouseClick += delegate
             {
                 _pendingUpdateFileList = true;
             };
-            fileCard.NameBox.InnerText.EndTakingInput += (sender,arg)=>
+            fileCard.NameBox.InnerText.EndTakingInput += (sender, arg) =>
             {
                 if (arg.OldValue == arg.NewValue) return;
+                if (CurrentConfigName == arg.OldValue) CurrentConfigName = arg.NewValue;
                 var mplr = Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
                 foreach (var w in mplr.WeaponGroups)
                 {
@@ -55,10 +60,10 @@ public partial class ConfigSaveLoaderUI
                         WeaponGroupManagerUI.SaveWeaponGroup(w, true, false);
                     }
                 }
-                if (mplr.MeleeConfigs.TryGetValue(arg.OldValue,out var config))
+                if (mplr.MeleeConfigs.TryGetValue(arg.OldValue, out var config))
                 {
                     mplr.MeleeConfigs.Remove(arg.OldValue);
-                    mplr.MeleeConfigs.Add(arg.NewValue,config);
+                    mplr.MeleeConfigs.Add(arg.NewValue, config);
                 }
                 mplr.WeaponGroupSyncing();
             };
@@ -73,6 +78,14 @@ public partial class ConfigSaveLoaderUI
                 SwitchToEditPage();
 
                 SoundEngine.PlaySound(SoundID.MenuOpen);
+            };
+            fileCard.RightMouseClick += delegate
+            {
+                SoundEngine.PlaySound(SoundID.ResearchComplete);
+                ConfigSaveLoaderHelper.Load(MeleeConfig.Instance, fileCard.FileName, true, false);
+                ConfigManager.Save(MeleeConfig.Instance);
+                CurrentConfigName = fileCard.FileName;
+                _pendingUpdateFileList = true;
             };
             ItemList.Container.Add(fileCard);//如果有就添加目标
         }
@@ -96,7 +109,7 @@ public partial class ConfigSaveLoaderUI
     }
 
 
-    private void SwitchToMainPage() 
+    private void SwitchToMainPage()
     {
         this.AddBefore(ItemList, PropertyPanel);
         PropertyPanel.Remove();

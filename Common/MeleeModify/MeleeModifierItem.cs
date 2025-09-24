@@ -1,9 +1,15 @@
-﻿using CoolerItemVisualEffect.MeleeModify;
+﻿using CoolerItemVisualEffect.Common.Config;
+using CoolerItemVisualEffect.Common.ConfigSaveLoader;
+using CoolerItemVisualEffect.Common.WeaponGroup;
+using CoolerItemVisualEffect.MeleeModify;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Core;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Core.BuiltInGroups.Arguments;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Core.Definition;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.System;
+using System.Collections.Generic;
+using System.IO;
+using Terraria.Localization;
 
 namespace CoolerItemVisualEffect.Common.MeleeModify;
 
@@ -77,5 +83,42 @@ public class MeleeModifierItem : GlobalItem
         if (mplr.BeAbleToOverhaul)
             return false;
         return base.CanHitPvp(item, player, target);
+    }
+
+
+    public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+    {
+        if (Main.gameMenu) return;
+
+        var plr = Main.LocalPlayer;
+        var mplr = plr.GetModPlayer<MeleeModifyPlayer>();
+
+        if (!mplr.CachedGrouping.TryGetValue(item.type, out var group))
+        {
+            foreach (var weaponGroup in mplr.WeaponGroups)
+                if (weaponGroup.CheckAvailabe(item))
+                {
+                    mplr.CachedGrouping[item.type] = group = weaponGroup;
+                    break;
+                }
+            if (group == null)
+                mplr.CachedGrouping[item.type] = null;
+        }
+
+
+        if (group == null) return;
+
+        string path = "Mods.CoolerItemVisualEffect.WeaponGroup";
+
+        tooltips.Add(new TooltipLine(Mod, "Grouping",
+            Language.GetTextValue($"{path}.CurrentGroupName", group.Name))
+        { OverrideColor = Color.CornflowerBlue });
+
+        tooltips.Add(new TooltipLine(Mod, "BindConfig",
+            string.IsNullOrEmpty(group.BindConfigName)
+            ? Language.GetTextValue($"{path}.DefaultConfig")
+            : Language.GetTextValue($"{path}.BindConfigName", group.BindConfigName))
+        { OverrideColor = Color.MediumPurple });
+
     }
 }

@@ -188,17 +188,17 @@ CosineGenerateHeatMapData_HSL: {
 	// Tooltip: ""
 
 	Hue: {
-		// Label: Hue
+		Label: 色相
 		// Tooltip: ""
 	}
 
 	Saturation: {
-		// Label: Saturation
+		Label: 饱和度
 		// Tooltip: ""
 	}
 
 	Luminosity: {
-		// Label: Luminosity
+		Label: 亮度
 		// Tooltip: ""
 	}
 

@@ -33,6 +33,10 @@ public class ServerConfig : ModConfig
     [DefaultValue(true)] 
     public bool AutoBalanceData = true;
 
+    [DefaultValue(false)]
+    [ReloadRequired]
+    public bool UseItemManager = false;
+
     public override bool AcceptClientChanges(ModConfig pendingConfig, int whoAmI, ref NetworkText message)
     {
         if (NetMessage.DoesPlayerSlotCountAsAHost(whoAmI)) return true;

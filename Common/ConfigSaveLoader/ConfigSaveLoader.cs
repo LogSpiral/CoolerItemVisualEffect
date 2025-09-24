@@ -1,10 +1,13 @@
-﻿using CoolerItemVisualEffect.UI.ConfigSaveLoader;
+﻿using CoolerItemVisualEffect.Common.Config;
+using CoolerItemVisualEffect.UI.ConfigSaveLoader;
+using LogSpiralLibrary.CodeLibrary.ConfigModification;
 
 namespace CoolerItemVisualEffect.Common.ConfigSaveLoader;
 
-
 public class ConfigSaveLoader : ModItem
 {
+    public override bool IsLoadingEnabled(Mod mod) => ServerConfig.Instance.UseItemManager;
+
     public override void SetDefaults()
     {
         Item.width = 34;
@@ -13,16 +16,16 @@ public class ConfigSaveLoader : ModItem
         Item.useStyle = ItemUseStyleID.HoldUp;
         Item.ResearchUnlockCount = 0;
     }
-
+    public override void Load()
+    {
+        base.Load();
+        ConfigPreviewSystem.RegisterRenderOnCondition(() => ConfigSaveLoaderUI.Active);
+    }
     public override void UseStyle(Player player, Rectangle heldItemFrame)
     {
+        if (player.whoAmI != Main.myPlayer) return;
         if (player.itemAnimation == player.itemAnimationMax)
         {
-            //if (ConfigSLUI.Visible)
-            //    ConfigSLSystem.Instance.configSLUI.Close();
-            //else
-            //    ConfigSLSystem.Instance.configSLUI.Open();
-
             if (ConfigSaveLoaderUI.Active)
                 ConfigSaveLoaderUI.Close();
             else

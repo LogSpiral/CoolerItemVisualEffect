@@ -11,6 +11,8 @@ public partial class MeleeModifyPlayer
         On_Player.ItemCheck_EmitUseVisuals += On_Player_ItemCheck_EmitUseVisuals_CIVEMelee;
         IL_Player.ItemCheck_OwnerOnlyCode += ProjectileShootBan;
         ModifyActiveKeybind = KeybindLoader.RegisterKeybind(Mod, "ModifyActive", "I");
+        ConfigManagerKeybind = KeybindLoader.RegisterKeybind(Mod, "ConfigSaveLoaderActive", "J");
+        GroupManagerKeybind = KeybindLoader.RegisterKeybind(Mod, "GroupManagerActive", "K");
 
         CoolerItemVisualEffectMod.ModIntegration.RegisterNoWeaponDisplayCondition(
             player => player.GetModPlayer<MeleeModifyPlayer>().UseSwordModify,

@@ -5,6 +5,7 @@ using PropertyPanelLibrary.PropertyPanelComponents.BuiltInProcessors.Option.Writ
 using SilkyUIFramework;
 using SilkyUIFramework.Elements;
 using System.IO;
+using System.Linq;
 using Weapon_Group = CoolerItemVisualEffect.Common.WeaponGroup.WeaponGroup;
 namespace CoolerItemVisualEffect.UI.WeaponGroup;
 
@@ -95,9 +96,14 @@ public partial class WeaponGroupManagerUI
         {
             if (CurrentEditTarget != null)
             {
-                var list = Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>().WeaponGroups;
+                var mplr = Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
+                var list = mplr.WeaponGroups;
                 ManagerHelper.SaveWeaponGroup(CurrentEditTarget, true);
+                var group = list.FirstOrDefault(g => g.Name == CurrentEditTarget.Name, null);
+                if (group != null)
+                    Weapon_Group.Load(group, CurrentPath);
                 SyncWeaponGroup.Get(Main.myPlayer, list, null).Send();
+                mplr.CachedGrouping.Clear();
             }
             SaveButton.Remove();
             RevertButton.Remove();

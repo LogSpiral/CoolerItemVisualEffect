@@ -75,6 +75,7 @@ public static class PreviewHelper
         content.center = center;
         content.aniTexIndex = aniTex ?? config.animateIndexStab;
         content.baseTexIndex = baseTex ?? config.baseIndexStab;
+        content.xScaler = 1.5f;
 
         content.heatMap = heatMap ?? mplr?.HeatMap ?? PreviewAssistantHeatMap ?? LogSpiralLibraryMod.HeatMap[1].Value;
         content.ColorVector = alphaVector ?? config.colorVector.AlphaVector;

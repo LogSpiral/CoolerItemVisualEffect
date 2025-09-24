@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Body Class="CoolerItemVisualEffect.UI.ManagerEntry.ManagerEntryUI" Left="500px" Top="-10px" FitWidth="true" FitHeight="true" BorderRadius="8" Border="1">
+	<DraggableView Name="Title" Height="20px" Width="80px" BorderRadius="8 8 0 0"/>
+	<Image Name="ConfigManagerEntry" FitHeight="true" FitWidth="true" ImageAlign="0.5" Margin="4 0 4 4"/>
+	<Image Name="GroupManagerEntry" FitHeight="true" FitWidth="true" ImageAlign="0.5" Margin="4 0 4 4"/>
+</Body>

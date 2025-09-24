@@ -1,3 +1,8 @@
-﻿EmptyHand: 空手
+EmptyHand: 空手
 Projectiles.CIVESword.DisplayName: CIVE剑
-Keybinds.ModifyActive.DisplayName: 快速启用/禁用近战修改
+
+Keybinds: {
+	ModifyActive.DisplayName: 快速启用/禁用近战修改
+	ConfigSaveLoaderActive.DisplayName: 开启配置管理器
+	GroupManagerActive.DisplayName: 开启分组管理器
+}

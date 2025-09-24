@@ -1,3 +1,8 @@
-﻿EmptyHand: Held Nothing
+EmptyHand: Held Nothing
 Projectiles.CIVESword.DisplayName: C.I.V.E. Sword
-Keybinds.ModifyActive.DisplayName: Fast enable/disable Melee Modification
+
+Keybinds: {
+	ModifyActive.DisplayName: Fast enable/disable Melee Modification
+	ConfigSaveLoaderActive.DisplayName: Open Config Save-Loader
+	GroupManagerActive.DisplayName: Open Group Manager
+}

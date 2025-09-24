@@ -1,4 +1,4 @@
-﻿DisplayName: Sever Config
+DisplayName: Sever Config
 
 meleeModifyLevel: {
 	Label: Melee Modify Level
@@ -29,4 +29,9 @@ AutoBalanceData: {
 		    / max(1,pow(KnockBackScaler,0.25)) 
 		    / (1 + 0.01 * CirtAdd + 0.2 * CirtMult)
 		'''
+}
+
+UseItemManager: {
+	Label: Load ConfigSaveLoader Item and GroupManager Item
+	Tooltip: ""
 }

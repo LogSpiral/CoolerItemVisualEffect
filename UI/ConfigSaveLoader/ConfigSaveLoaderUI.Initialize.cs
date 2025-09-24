@@ -1,10 +1,15 @@
-﻿using PropertyPanelLibrary.PropertyPanelComponents;
+﻿using CoolerItemVisualEffect.Common.Config;
+using CoolerItemVisualEffect.Common.ConfigSaveLoader;
+using CoolerItemVisualEffect.Common.MeleeModify;
+using CoolerItemVisualEffect.Common.WeaponGroup;
+using Microsoft.Xna.Framework.Graphics;
+using PropertyPanelLibrary.PropertyPanelComponents;
+using PropertyPanelLibrary.PropertyPanelComponents.BuiltInProcessors.Option.OptionDecorators;
 using PropertyPanelLibrary.PropertyPanelComponents.BuiltInProcessors.Option.Writers;
 using SilkyUIFramework;
 using SilkyUIFramework.Elements;
+using System;
 using System.IO;
-using CoolerItemVisualEffect.Common.Config;
-using CoolerItemVisualEffect.Common.ConfigSaveLoader;
 using Terraria.Audio;
 
 namespace CoolerItemVisualEffect.UI.ConfigSaveLoader;
@@ -92,7 +97,14 @@ public partial class ConfigSaveLoaderUI
         SaveButton.LeftMouseClick += delegate
         {
             if (CurrentEditTarget != null)
+            {
+                var configName = Path.GetFileNameWithoutExtension(CurrentPath);
                 ManagerHelper.SaveConfig(CurrentEditTarget, CurrentPath, false);
+                Main.LocalPlayer
+                    .GetModPlayer<MeleeModifyPlayer>()
+                    .MeleeConfigs[configName] = (MeleeConfig)CurrentEditTarget.Clone();
+                SyncWeaponGroup.Get().Send();
+            }
 
             SaveButton.Remove();
             RevertButton.Remove();
@@ -131,11 +143,24 @@ public partial class ConfigSaveLoaderUI
                 EditButtonContainer.Add(SaveButton, 0);
             }
         };
+        var previewDecorator = new DelegateOptionDecorator();
+        previewDecorator.OnPreFillOption += option =>
+        {
+            option.MouseEnter += delegate
+            {
+                previewingOption = option;
+            };
+            option.MouseLeave += delegate
+            {
+                previewingOption = null;
+            };
+        };
         PropertyPanel = new()
         {
             Width = new(0, 1),
             FlexGrow = 1,
-            Writer = new CombinedWriter(DefaultWriter.Instance, writeObserver)
+            Writer = new CombinedWriter(DefaultWriter.Instance, writeObserver),
+            OptionDecorator = new CombinedOptionDecorator(LabelOptionDecorator.NewLabelDecorator(),previewDecorator)
         };
 
     }

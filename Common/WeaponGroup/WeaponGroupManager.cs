@@ -1,9 +1,11 @@
-﻿using CoolerItemVisualEffect.UI.WeaponGroup;
+﻿using CoolerItemVisualEffect.Common.Config;
+using CoolerItemVisualEffect.UI.WeaponGroup;
 
 namespace CoolerItemVisualEffect.Common.WeaponGroup;
 
 public class WeaponGroupManager : ModItem
 {
+    public override bool IsLoadingEnabled(Mod mod) => ServerConfig.Instance.UseItemManager;
     public override void SetDefaults()
     {
         Item.width = 34;
@@ -15,6 +17,7 @@ public class WeaponGroupManager : ModItem
 
     public override void UseStyle(Player player, Rectangle heldItemFrame)
     {
+        if (player.whoAmI != Main.myPlayer) return;
         if (player.itemAnimation == player.itemAnimationMax)
         {
             if (WeaponGroupManagerUI.Active)

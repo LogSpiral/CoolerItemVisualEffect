@@ -1,6 +1,9 @@
 ﻿using CoolerItemVisualEffect.Common.Config;
+using CoolerItemVisualEffect.Common.MeleeModify;
+using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
+using Terraria.GameContent;
 
 namespace CoolerItemVisualEffect.Common.WeaponDisplay;
 
@@ -30,7 +33,7 @@ public partial class WeaponDisplayLayer : PlayerDrawLayer
             //        && WeaponDisplayUtils.CheckDisplay(player, weapon),
             //    null);
             Item firstWeapon = null;
-            foreach (var item in player.inventory) 
+            foreach (var item in player.inventory)
             {
                 if (item != null && WeaponDisplayUtils.CheckDisplay(player, item))
                 {
@@ -49,6 +52,31 @@ public partial class WeaponDisplayLayer : PlayerDrawLayer
             var holditem = player.inventory[player.selectedItem];
             if (WeaponDisplayUtils.CheckDisplay(player, holditem))
                 DrawWeapon(player, holditem, drawInfo);
+
+
+            /*
+            var mplr = player.GetModPlayer<MeleeModifyPlayer>();
+
+            for (int n = 0; n < mplr.WeaponGroups.Count; n++)
+            {
+                var group = mplr.WeaponGroups[n];
+                Main.spriteBatch.DrawString(
+                    FontAssets.MouseText.Value,
+                    (group.Name, group.BindConfigName, group.WeaponList.Count).ToString(),
+                    player.Center - Main.screenPosition + new Vector2(-200, -100 + 40 * n),
+                    Color.CornflowerBlue);
+            }
+
+            int height = -140;
+            foreach (var pair in mplr.MeleeConfigs)
+            {
+                Main.spriteBatch.DrawString(
+                    FontAssets.MouseText.Value,
+                    pair.Key,
+                    player.Center - Main.screenPosition + new Vector2(200, height += 40),
+                    Color.MediumPurple);
+            }
+            */
         }
     }
 

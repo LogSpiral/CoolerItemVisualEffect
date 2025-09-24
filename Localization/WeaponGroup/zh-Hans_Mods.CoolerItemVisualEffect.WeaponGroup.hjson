@@ -1,6 +1,11 @@
 BasedOnDefaultCondition.Label: 基于默认分组
 WhiteList.Label: 白名单模式
-BindConfigName.Label: 绑定配置
+
+BindConfigName: {
+	Label: 绑定配置
+	$parentVal: 使用的近战设置:{0}
+}
+
 WeaponList.Label: 武器名单
 Create: 新建一个分组
 DefaultName: 自定义分组
@@ -17,4 +22,5 @@ RenameTip: {
 	Illegal: 文件名不能包含以下字符： \\、/、:、*、?、\"、<、>、|
 }
 
-// BindSequenceName.Label: BindSequenceName
+CurrentGroupName: 这个武器所属的分组:{0}
+DefaultConfig: 使用当前近战设置

@@ -12,36 +12,45 @@ public partial class MeleeModifyPlayer
     public List<Weapon_Group> WeaponGroups { get; } = [];
     public Dictionary<string, MeleeConfig> MeleeConfigs { get; } = [];
 
+    public Dictionary<int, Weapon_Group> CachedGrouping { get; } = [];
+
     private MeleeConfig configurationSwoosh;
 
     public MeleeConfig ConfigurationSwoosh
     {
         get
         {
-            if (WeaponGroups != null)
-                foreach (var pair in WeaponGroups)
+            if (CachedGrouping.TryGetValue(Player.HeldItem.type, out var group))
+            {
+                if (group != null && !string.IsNullOrEmpty(group.BindConfigName) && MeleeConfigs.TryGetValue(group.BindConfigName, out var config))
+                    return config;
+                else goto label;
+            }
+
+            foreach (var weaponGroup in WeaponGroups)
+            {
+                if (weaponGroup.CheckAvailabe(Player.HeldItem))
                 {
-                    if (pair.CheckAvailabe(Player.HeldItem))
+                    if (weaponGroup.BindConfigName == "" || weaponGroup.BindConfigName == null) goto label;
+                    if (MeleeConfigs != null && MeleeConfigs.TryGetValue(weaponGroup.BindConfigName, out var config))
+                        return config;
+                    else if (Main.myPlayer == Player.whoAmI)
                     {
-                        if (pair.BindConfigName == "" || pair.BindConfigName == null) goto label;
-                        if (MeleeConfigs != null && MeleeConfigs.TryGetValue(pair.BindConfigName, out var config))
-                            return config;
-                        else if (Main.myPlayer == Player.whoAmI)
+                        CachedGrouping[Player.HeldItem.type] = weaponGroup;
+                        var configPath = Path.Combine(LoadHelper.ConfigSavePath, weaponGroup.BindConfigName + LoadHelper.Extension);
+                        if (File.Exists(configPath))
                         {
-                            var configPath = Path.Combine(LoadHelper.ConfigSavePath, pair.BindConfigName + LoadHelper.Extension);
-                            if (File.Exists(configPath))
-                            {
-                                var meleeConfig = new MeleeConfig();
-                                ConfigSaveLoaderHelper.Load(meleeConfig, configPath, false, false);
-                                MeleeConfigs.Add(pair.BindConfigName, meleeConfig);
-                                return meleeConfig;
-                            }
-                            else goto label;
+                            var meleeConfig = new MeleeConfig();
+                            ConfigSaveLoaderHelper.Load(meleeConfig, configPath, false, false);
+                            MeleeConfigs.Add(weaponGroup.BindConfigName, meleeConfig);
+                            return meleeConfig;
                         }
                         else goto label;
                     }
+                    else goto label;
                 }
-            label:
+            }
+        label:
             configurationSwoosh ??= Main.myPlayer == Player.whoAmI ? MeleeConfig.Instance : new MeleeConfig();
 
             return configurationSwoosh;
@@ -51,7 +60,8 @@ public partial class MeleeModifyPlayer
 
     public override void OnEnterWorld()
     {
-        SetUpWeaponGroupAndConfig();
+        if (Main.netMode == NetmodeID.SinglePlayer)
+            SetUpWeaponGroupAndConfig();
 
         RegisterCurrentCanvas();
 

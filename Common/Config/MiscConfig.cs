@@ -49,4 +49,7 @@ public class MiscConfig : ModConfig
     [DefaultValue(false)]
     [CustomPreview<TeleportModificationPreview>]
     public bool TeleportEffectActive = false;
+
+    [DefaultValue(true)]
+    public bool ShowEntryUI = true;
 }

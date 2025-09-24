@@ -1,13 +1,22 @@
+using LogSpiralLibrary.CodeLibrary.ConfigModification;
 using Microsoft.Xna.Framework.Graphics;
+using PropertyPanelLibrary.PropertyPanelComponents.Core;
 using SilkyUIFramework;
 using SilkyUIFramework.Animation;
 using SilkyUIFramework.Graphics2D;
+using System;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.UI;
 
 namespace CoolerItemVisualEffect.UI.ConfigSaveLoader;
 
 public partial class ConfigSaveLoaderUI
 {
     public AnimationTimer SwitchTimer { get; init; } = new(3);
+
+    private PropertyOption previewingOption { get; set; }
+
     #region 开启UI的淡入淡出等
 
     protected override void UpdateStatus(GameTime gameTime)
@@ -47,8 +56,23 @@ public partial class ConfigSaveLoaderUI
             SDFRectangle.SampleVersion(BlurMakeSystem.BlurRenderTarget,
                 Bounds.Position * Main.UIScale, Bounds.Size * Main.UIScale, BorderRadius * Main.UIScale, Matrix.Identity);
         }
-
         base.Draw(gameTime, spriteBatch);
+
+        if (CurrentEditTarget != null && previewingOption != null && previewingOption.IsMouseHovering)
+        {
+            var meta = previewingOption.MetaData;
+            OptionMetaData metaData = 
+                new(
+                    meta.VariableInfo,
+                    meta.Item, 
+                    meta is PropertyOption.ListValueHandler listHandler ? listHandler.List : null, 
+                    meta is PropertyOption.ListValueHandler listHandler2 ? listHandler2.Index : -1, 
+                    CurrentEditTarget);
+            var pvAttribute = metaData.GetAttribute<CustomPreviewAttribute>();
+            var bounds = previewingOption.Bounds;
+            if (pvAttribute != null)
+                ConfigPreviewSystem.PreviewDrawing(pvAttribute, new CalculatedStyle(bounds.Right + 40, bounds.Y, 480, 240), metaData);
+        }
     }
 
     #endregion 毛玻璃效果

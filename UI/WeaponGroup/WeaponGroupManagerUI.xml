@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Body Class="CoolerItemVisualEffect.UI.WeaponGroup.WeaponGroupManagerUI" 
-      Left="50#" Top="50#" Width="400px" Height="600px"
+      Left="75#" Top="50#" Width="400px" Height="600px"
       MaxWidth="75%" MaxHeight="75%" BorderRadius="8">
     <DraggableView Name="TitlePanel" Width="100%" Height="40px" BackgroundColor="rgba(0,0,0,0.25)" 
                    FlexDirection="Row" MainAlignment="SpaceBetween" CrossAlignment="Center">

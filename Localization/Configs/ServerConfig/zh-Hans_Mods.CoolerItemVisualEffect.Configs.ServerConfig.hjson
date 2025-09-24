@@ -1,4 +1,4 @@
-﻿DisplayName: 服务端设置
+DisplayName: 服务端设置
 
 meleeModifyLevel: {
 	Label: 近战修改等级
@@ -28,4 +28,9 @@ AutoBalanceData: {
 		    / max(1,击退系数的四次方根) 
 		    / (1 + 0.01 * 暴击加成 + 0.2 * 暴击系数)
 		'''
+}
+
+UseItemManager: {
+	Label: 加载配置管理器物品和分组管理器物品
+	Tooltip: ""
 }

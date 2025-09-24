@@ -18,6 +18,7 @@ using PropertyPanelLibrary.PropertyPanelComponents.Attributes;
 using Terraria.ModLoader.Config;
 using Terraria.ModLoader.UI;
 using CoolerItemVisualEffect.Common.Config.Data.DesignateHeatMap.UI.PropertyPanel;
+using CoolerItemVisualEffect.UI.ConfigSaveLoader;
 // ReSharper disable InconsistentNaming
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace CoolerItemVisualEffect.Common.Config;
@@ -52,6 +53,9 @@ public class MeleeConfig : ModConfig
         }
         if (GetHashCode() == Interface.modConfig?.modConfig?.GetHashCode())
             SyncMeleeConfig.Get(Main.myPlayer, this).Send();
+
+        ConfigSaveLoaderUI.CurrentConfigName = null;
+
         base.OnChanged();
     }
 

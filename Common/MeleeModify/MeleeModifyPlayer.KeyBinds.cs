@@ -1,4 +1,6 @@
 ﻿using CoolerItemVisualEffect.Common.Config.NetSync;
+using CoolerItemVisualEffect.UI.ConfigSaveLoader;
+using CoolerItemVisualEffect.UI.WeaponGroup;
 using Terraria.GameInput;
 using Terraria.Localization;
 using Terraria.ModLoader.Config;
@@ -7,8 +9,9 @@ namespace CoolerItemVisualEffect.Common.MeleeModify;
 
 public partial class MeleeModifyPlayer
 {
-    public static ModKeybind ModifyActiveKeybind { get; private set; }
-
+    private static ModKeybind ModifyActiveKeybind { get; set; }
+    private static ModKeybind ConfigManagerKeybind { get; set; }
+    private static ModKeybind GroupManagerKeybind { get; set; }
     public override void ProcessTriggers(TriggersSet triggersSet)
     {
         if (ModifyActiveKeybind.JustReleased)
@@ -23,6 +26,20 @@ public partial class MeleeModifyPlayer
             Main.NewText(Language.GetOrRegister($"Mods.CoolerItemVisualEffect.Misc.MeleeModify{(active ? "Active" : "Deactive")}"));
             if (Main.myPlayer == Player.whoAmI)
                 ConfigManager.Save(configurationSwoosh);
+        }
+        if (ConfigManagerKeybind.JustPressed) 
+        {
+            if (ConfigSaveLoaderUI.Active)
+                ConfigSaveLoaderUI.Close();
+            else
+                ConfigSaveLoaderUI.Open();
+        }
+        if (GroupManagerKeybind.JustPressed) 
+        {
+            if (WeaponGroupManagerUI.Active)
+                WeaponGroupManagerUI.Close();
+            else
+                WeaponGroupManagerUI.Open();
         }
         base.ProcessTriggers(triggersSet);
     }

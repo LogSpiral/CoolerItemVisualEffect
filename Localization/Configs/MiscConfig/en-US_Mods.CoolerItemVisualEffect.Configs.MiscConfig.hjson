@@ -1,4 +1,4 @@
-﻿DisplayName: Misc Config
+DisplayName: Misc Config
 
 UsePreview: {
 	Label: Use Preview
@@ -37,5 +37,10 @@ VanillaProjectileDrawModifyActive: {
 
 TeleportEffectActive: {
 	Label: Active Teleport Extra Effect
+	Tooltip: ""
+}
+
+ShowEntryUI: {
+	Label: Display The Entry Button Of Managers
 	Tooltip: ""
 }
