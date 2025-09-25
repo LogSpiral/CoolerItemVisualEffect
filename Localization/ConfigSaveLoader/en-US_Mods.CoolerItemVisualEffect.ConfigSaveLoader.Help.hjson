@@ -1,4 +1,4 @@
-﻿Help: Help - Config Save-Loader
+Help: Help - Config Save-Loader
 
 HelpPanel: {
 	DisplayName: Help Panel
@@ -7,4 +7,69 @@ HelpPanel: {
 		This panel is used to help you know the usage of each component.
 		Hover the cursor on a component for more details.
 		'''
+}
+
+TitleHint: {
+	DisplayName: Title
+	Tooltip:
+		'''
+		Oh yes, this is the Config Save-Loader
+		It is used to load or modify the config you previous saved.
+		'''
+}
+
+Close: {
+	DisplayName: Close Button
+	Tooltip:
+		'''
+		You can close the UI with this
+		And you can also use the way you open it to close it
+		Just in case.
+		'''
+}
+
+ConfigList: {
+	DisplayName: ConfigList
+	Tooltip:
+		'''
+		You can rename the file by click the name text.
+		Click gray rubbish bin to delete the config you don't want
+		Click white pen to edit the content.
+		Right Click to apply the config to current melee config
+		'''
+}
+
+OpenFolder: {
+	DisplayName: Open Folder
+	Tooltip: Open the local folder of your config file.
+}
+
+HelpPanelOpener: {
+	DisplayName: Open Help Panel
+	Tooltip: May be I need to add an hint for opening this panel?
+}
+
+CreateNew: {
+	DisplayName: Create New Button
+	Tooltip: Save your current melee config as local file
+}
+
+Save: {
+	DisplayName: Save Button
+	Tooltip: Click this to save the file
+}
+
+Revert: {
+	DisplayName: Revert Button
+	Tooltip: Click this to revert the modification
+}
+
+Back: {
+	DisplayName: Back Button
+	Tooltip: Click this to back to menu.
+}
+
+EditHint: {
+	DisplayName: Edit Paenl
+	Tooltip: New edit interface, there's nothing more to say.
 }

@@ -76,5 +76,13 @@ Back: {
 
 EditHint: {
 	DisplayName: Edit Paenl
-	Tooltip: ""
+	Tooltip:
+		'''
+		Four Mode in total
+		Based on default group or not, ant whiteList or blackList
+		- Not use default group and white: The weapon you designated is in the group
+		- Use default group and white: Default group union the list you designated
+		- Not use default group and black: ALL weapons WITHOUT you designated ones
+		- Use default group and black: Default group WITHOUT you desinated ones
+		'''
 }

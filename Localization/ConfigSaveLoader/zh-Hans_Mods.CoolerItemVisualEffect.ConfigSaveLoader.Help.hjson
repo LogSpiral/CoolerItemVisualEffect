@@ -1,4 +1,4 @@
-﻿Help: 帮助 - 配置管理器
+Help: 帮助 - 配置管理器
 
 HelpPanel: {
 	DisplayName: 帮助面板
@@ -7,4 +7,75 @@ HelpPanel: {
 		这个面板用于帮助你了解各个控件的用法
 		把光标放在一个控件上获取更多信息
 		'''
+}
+
+TitleHint: {
+	DisplayName: 标题
+	Tooltip:
+		'''
+		是的没错，这个是配置管理器
+		用来加载或者修改自己之前保存到本地目录的配置
+		'''
+}
+
+Close: {
+	DisplayName: 关闭按钮
+	Tooltip:
+		'''
+		可以用这个关闭界面
+		当然你也可以用打开它的方式关掉它
+		这个只是留作备用
+		'''
+}
+
+ConfigList: {
+	DisplayName: 配置列表
+	Tooltip:
+		'''
+		配置卡可以直接点击文本进行重命名
+		点击灰色垃圾桶就可以删除你不想要的配置
+		点击白色的笔就可以编辑配置具体内容了
+		右键点击配置卡会将该配置设给你现在使用的配置
+		'''
+}
+
+OpenFolder: {
+	DisplayName: 打开文件夹
+	Tooltip:
+		'''
+		打开你的配置文件对应的本地文件夹来手动管理
+		'''
+}
+
+HelpPanelOpener: {
+	DisplayName: 打开帮助面板
+	Tooltip: 也许我该加个打开帮助面板的帮助信息？
+}
+
+CreateNew: {
+	DisplayName: 新建按钮
+	Tooltip: 将你目前使用的近战配置保存为本地文件
+}
+
+Save: {
+	DisplayName: 保存按钮
+	Tooltip: 按下这个来确定保存你刚刚的修改
+}
+
+Revert: {
+	DisplayName: 撤销按钮
+	Tooltip: 按下这个按钮来回到你刚进入编辑界面的样子
+}
+
+Back: {
+	DisplayName: 返回按钮
+	Tooltip: 按下这个回到配置列表，和撤销的区别是会回到列表
+}
+
+EditHint: {
+	DisplayName: 编辑面板
+	Tooltip: 
+	'''
+	全新的编辑界面，无需多言
+	'''
 }
