@@ -148,8 +148,30 @@ public partial class WeaponGroupHelperUI : BaseBody
     static void HandleTextManually()
     {
         if (!WeaponGroupManagerUI.Active) return;
-        Vector2 mousePosition = Main.MouseScreen;
         var instance = WeaponGroupManagerUI.Instance;
+        static bool ContainsCheck(UIView view) => view.Parent != null && view.ContainsPoint(Main.MouseScreen);
+
+        if (ContainsCheck(instance.Title))
+            SetHelpHintKey("TitleHint");
+        else if (ContainsCheck(instance.CloseButton))
+            SetHelpHintKey("Close");
+        else if (ContainsCheck(instance.ItemList))
+            SetHelpHintKey("GroupList");
+        else if (ContainsCheck(instance.OpenFolderButton))
+            SetHelpHintKey("OpenFolder");
+        else if (ContainsCheck(instance.HelperButton))
+            SetHelpHintKey("HelpPanelOpener");
+        else if (ContainsCheck(instance.CreateNewButton))
+            SetHelpHintKey("CreateNew");
+        else if (ContainsCheck(instance.SaveButton))
+            SetHelpHintKey("Save");
+        else if (ContainsCheck(instance.RevertButton))
+            SetHelpHintKey("Revert");
+        else if (ContainsCheck(instance.BackButton))
+            SetHelpHintKey("Back");
+        else if (ContainsCheck(instance.PropertyPanel))
+            SetHelpHintKey("EditHint");
+        else SetHelpHintKey(null);
     }
     #endregion
 }

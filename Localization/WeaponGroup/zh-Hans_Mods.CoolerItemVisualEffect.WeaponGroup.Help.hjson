@@ -1,4 +1,4 @@
-﻿Help: 帮助 - 分组管理器
+Help: 帮助 - 分组管理器
 
 HelpPanel: {
 	DisplayName: 帮助面板
@@ -7,4 +7,74 @@ HelpPanel: {
 		这个面板用于帮助你了解各个控件的用法
 		把光标放在一个控件上获取更多信息
 		'''
+}
+
+TitleHint: {
+	DisplayName: 标题
+	Tooltip:
+		'''
+		是的没错，这个是分组管理器
+		用来给你的武器配置近战修改的分组
+		'''
+}
+
+Close: {
+	DisplayName: 关闭按钮
+	Tooltip:
+		'''
+		可以用这个关闭界面
+		当然你也可以用打开它的方式关掉它
+		这个只是留作备用
+		'''
+}
+
+GroupList: {
+	DisplayName: 分组列表
+	Tooltip:
+		'''
+		分组卡可以直接点击文本进行重命名
+		可以点击下面的白色上下三角形调整分组优先级，越在上面的优先级越高
+		点击灰色垃圾桶就可以删除你不想要的分组
+		点击白色的笔就可以编辑分组具体内容了
+		'''
+}
+
+OpenFolder: {
+	DisplayName: 打开文件夹
+	Tooltip:
+		'''
+		打开你的分组文件对应的本地文件夹来手动管理
+		在这里增删文件记得手动修改indexTable.txt
+		调整顺序也可以直接编辑那个
+		'''
+}
+
+HelpPanelOpener: {
+	DisplayName: 打开帮助面板
+	Tooltip: 也许我该加个打开帮助面板的帮助信息？
+}
+
+CreateNew: {
+	DisplayName: 新建按钮
+	Tooltip: 新建一个空分组
+}
+
+Save: {
+	DisplayName: 保存按钮
+	Tooltip: 按下这个来确定保存你刚刚的修改
+}
+
+Revert: {
+	DisplayName: 撤销按钮
+	Tooltip: 按下这个按钮来回到你刚进入编辑界面的样子
+}
+
+Back: {
+	DisplayName: 返回按钮
+	Tooltip: 按下这个回到分组列表，和撤销的区别是会回到列表
+}
+
+EditHint: {
+	DisplayName: 编辑面板
+	Tooltip: ""
 }

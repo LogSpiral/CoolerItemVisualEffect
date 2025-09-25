@@ -1,4 +1,4 @@
-﻿Help: Help - Weapon Group Manager
+Help: Help - Weapon Group Manager
 
 HelpPanel: {
 	DisplayName: Help Panel
@@ -7,4 +7,74 @@ HelpPanel: {
 		This panel is used to help you know the usage of each component.
 		Hover the cursor on a component for more details.
 		'''
+}
+
+TitleHint: {
+	DisplayName: Title
+	Tooltip:
+		'''
+		Oh yes, this is the Weapon Group Manager
+		you can manually control the weapon to which group
+		'''
+}
+
+Close: {
+	DisplayName: Close Button
+	Tooltip:
+		'''
+		You can close the UI with this
+		And you can also use the way you open it to close it
+		Just in case.
+		'''
+}
+
+GroupList: {
+	DisplayName: GroupList
+	Tooltip:
+		'''
+		You can rename the file by click the name text.
+		You can adjust the priority by the white triangles below, the higher the higher priority
+		Click gray rubbish bin to delete the group you don't want
+		Click white pen to edit the content.
+		'''
+}
+
+OpenFolder: {
+	DisplayName: Open Folder
+	Tooltip:
+		'''
+		Open the local folder of your group file.
+		If you add or delete some .json here, you need to modify indexTable.txt
+		and you can adjust priority via edit that.
+		'''
+}
+
+HelpPanelOpener: {
+	DisplayName: Open Help Panel
+	Tooltip: May be I need to add an hint for opening this panel?
+}
+
+CreateNew: {
+	DisplayName: Create New Button
+	Tooltip: Create an empty group
+}
+
+Save: {
+	DisplayName: Save Button
+	Tooltip: Click this to save the file
+}
+
+Revert: {
+	DisplayName: Revert Button
+	Tooltip: Click this to revert the modification
+}
+
+Back: {
+	DisplayName: Back Button
+	Tooltip: Click this to back to menu.
+}
+
+EditHint: {
+	DisplayName: Edit Paenl
+	Tooltip: ""
 }
