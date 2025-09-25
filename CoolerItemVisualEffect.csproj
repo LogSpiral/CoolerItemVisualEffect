@@ -26,9 +26,9 @@
 
         <!-- 项目引用 SilkyUIFramework PropertyPanelLibrary SilkyUIAnalyzer-->
         <ProjectReference Include="..\SilkyUIFramework\SilkyUIFramework.csproj" />
-        <ProjectReference Include="..\PropertyPanel\PropertyPanelLibrary.csproj" />
         <ProjectReference Include="..\LogSpiralLibrary\LogSpiralLibrary.csproj" />
-        <ProjectReference Include="..\SilkyUIAnalyzer\SilkyUIAnalyzer.csproj">
+		<ProjectReference Include="..\PropertyPanelLibrary\PropertyPanelLibrary.csproj" />
+		<ProjectReference Include="..\SilkyUIAnalyzer\SilkyUIAnalyzer.csproj">
             <OutputItemType>Analyzer</OutputItemType>
             <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
         </ProjectReference>

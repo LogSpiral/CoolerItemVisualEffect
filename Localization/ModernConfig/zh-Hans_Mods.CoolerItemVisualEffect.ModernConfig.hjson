@@ -1,0 +1,39 @@
+AboutPage: {
+	Label: 关于大剑
+	Content: 非常酷大剑转转转的配置中心！！！
+	Tooltip: 酷酷酷酷酷
+}
+
+MeleeConfig: {
+	Label: 近战设置
+	Tooltip: 拜托这早就不只是视觉上的修改了
+}
+
+RenderingConfig: {
+	Label: 渲染设置
+	Tooltip:
+		'''
+		现在支持预览啦桀桀桀
+		可以用配置中心的爽爽幽艾看爽爽预览了
+		'''
+}
+
+EffectConfig: {
+	Label: 特效设置
+	Tooltip:
+		'''
+		亮瞎眼了啊喂
+		显卡要冒烟了啊喂
+		'''
+}
+
+MiscConfig: {
+	Label: 杂项设置
+	Tooltip:
+		'''
+		我的妈呀这都是什么鬼东西
+		我觉得这些有很大凑数的嫌疑
+		虽然是叫更酷的物品视觉效果
+		但是果然配置中心这里我都叫大剑转转转模组了不是吗
+		'''
+}

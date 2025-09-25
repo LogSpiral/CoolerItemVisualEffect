@@ -6,3 +6,5 @@ Keybinds: {
 	ConfigSaveLoaderActive.DisplayName: 开启配置管理器
 	GroupManagerActive.DisplayName: 开启分组管理器
 }
+
+ModernConfig.ModernConfigTitle: 大剑配置中心

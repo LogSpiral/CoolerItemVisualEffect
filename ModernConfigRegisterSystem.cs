@@ -12,9 +12,16 @@ public class ModernConfigRegisterSystem : ModSystem
     {
         if (Main.dedServ || !ModLoader.TryGetMod("ImproveGame", out var qot)) return;
 
-        AddModernConfigTitle(qot, Mod, Language.GetOrRegister("Mods.CoolerItemVisualEffect.Configs.ModernConfigTitle"));
-
-        SetAboutPage(qot, Mod, () => "非常酷大剑转转转的配置中心！！！", ItemID.IronShortsword, null, () => "关于大剑", () => "酷酷酷酷酷");
+        AddModernConfigTitle(qot, Mod, Language.GetOrRegister("Mods.CoolerItemVisualEffect.ModernConfig.ModernConfigTitle"));
+        static string GetLocalization(string suffix) => Language.GetOrRegister($"Mods.CoolerItemVisualEffect.ModernConfig.{suffix}").Value;
+        SetAboutPage(
+            qot, 
+            Mod,
+            () => GetLocalization("AboutPage.Content"), 
+            ItemID.IronShortsword, 
+            null, 
+            () => GetLocalization("AboutPage.Label"), 
+            () => GetLocalization("AboutPage.Tooltip"));
 
         RegisterCategory(qot, Mod, [
             (ServerConfig.Instance,[nameof(ServerConfig.meleeModifyLevel)]),
@@ -33,7 +40,10 @@ public class ModernConfigRegisterSystem : ModSystem
              nameof(MeleeConfig.shake),
              nameof(MeleeConfig.dustQuantity)
         ])],
-        ItemID.TitaniumSword, null, () => "近战设置", () => "拜托这早就不只是视觉上的修改了");
+        ItemID.TitaniumSword, 
+        null, 
+        () => GetLocalization("MeleeConfig.Label"),
+        () => GetLocalization("MeleeConfig.Tooltip"));
 
         RegisterCategory(qot, Mod, MeleeConfig.Instance,
         [
@@ -50,7 +60,10 @@ public class ModernConfigRegisterSystem : ModSystem
              nameof(MeleeConfig.designateData),
              nameof(MeleeConfig.directOfHeatMap)
         ],
-        ItemID.RainbowWallpaper, null, () => "渲染设置", () => "说实在的没有预览功能再怎么好看的配置面板也没用(");
+        ItemID.RainbowWallpaper, 
+        null,
+        () => GetLocalization("RenderingConfig.Label"), 
+        () => GetLocalization("RenderingConfig.Tooltip"));
 
         RegisterCategory(qot, Mod, MeleeConfig.Instance,
         [
@@ -60,7 +73,10 @@ public class ModernConfigRegisterSystem : ModSystem
              nameof(MeleeConfig.dyeConfigs),
              nameof(MeleeConfig.bloomConfigs)
         ],
-        ItemID.LastPrism, null, () => "特效设置", () => "亮瞎眼了啊喂，显卡要冒烟了啊喂");
+        ItemID.LastPrism,
+        null,
+        () => GetLocalization("EffectConfig.Label"),
+        () => GetLocalization("EffectConfig.Tooltip"));
 
         RegisterCategory(qot, Mod, MiscConfig.Instance,
         [
@@ -73,7 +89,10 @@ public class ModernConfigRegisterSystem : ModSystem
              nameof(MiscConfig.VanillaProjectileDrawModifyActive),
              nameof(MiscConfig.TeleportEffectActive)
         ],
-        ItemID.Cog, null, () => "杂项设置", () => "非常水");
+        ItemID.Cog,
+        null, 
+        () => GetLocalization("MiscConfig.Label"), 
+        () => GetLocalization("MiscConfig.Tooltip"));
     }
 
     private void UnloadModernConfig()

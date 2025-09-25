@@ -1,6 +1,4 @@
-﻿ModernConfigTitle: Config Center
-
-ColorVector: {
+﻿ColorVector: {
 	MapColorAlpha: {
 		Label: Gradient
 		Tooltip: Coefficient Of Gradient

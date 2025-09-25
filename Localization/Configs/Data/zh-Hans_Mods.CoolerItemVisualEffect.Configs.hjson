@@ -1,6 +1,4 @@
-﻿ModernConfigTitle: 大剑配置中心
-
-ColorVector: {
+﻿ColorVector: {
 	MapColorAlpha: {
 		Label: 单向渐变
 		Tooltip: 单向渐变的系数(占比)

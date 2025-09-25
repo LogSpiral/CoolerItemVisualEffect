@@ -6,3 +6,5 @@ Keybinds: {
 	ConfigSaveLoaderActive.DisplayName: Open Config Save-Loader
 	GroupManagerActive.DisplayName: Open Group Manager
 }
+
+ModernConfig.ModernConfigTitle: Mods.CoolerItemVisualEffect.ModernConfig.ModernConfigTitle

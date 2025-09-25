@@ -1,0 +1,39 @@
+AboutPage: {
+	Label: About Melee Modification
+	Content: Very coooool Rotating Huge Blade!!!!
+	Tooltip: cooooooooooollll(?)
+}
+
+MeleeConfig: {
+	Label: Melee Visual Settings
+	Tooltip: Damn it is already not mere visual effects modification.
+}
+
+RenderingConfig: {
+	Label: Rendering Settings
+	Tooltip:
+		'''
+		Now supports preview
+		Really Nice ConfigCenter UI with the preview animation
+		'''
+}
+
+EffectConfig: {
+	Label: Special Effect Settings
+	Tooltip:
+		'''
+		Oh my eyes...
+		And the video card burning!
+		'''
+}
+
+MiscConfig: {
+	Label: Misc Settings
+	Tooltip:
+		'''
+		WTH these things
+		well you know,
+		though the name is "CoolerItemVisualEffect"
+		But most of its content is about BoardSword Modification right?
+		'''
+}
