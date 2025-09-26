@@ -84,5 +84,10 @@ EditHint: {
 		- Use default group and white: Default group union the list you designated
 		- Not use default group and black: ALL weapons WITHOUT you designated ones
 		- Use default group and black: Default group WITHOUT you desinated ones
+		WeaponList Requires you click with the weapon you already have in inventroy
+		Click without any item to cancel the already added ones
+		You can swap a weapon with another weapon in list
+
+		It can uses a localConfig, if you left it empty then it will use current config
 		'''
 }

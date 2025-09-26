@@ -41,10 +41,7 @@ ConfigList: {
 
 OpenFolder: {
 	DisplayName: 打开文件夹
-	Tooltip:
-		'''
-		打开你的配置文件对应的本地文件夹来手动管理
-		'''
+	Tooltip: 打开你的配置文件对应的本地文件夹来手动管理
 }
 
 HelpPanelOpener: {
@@ -74,8 +71,5 @@ Back: {
 
 EditHint: {
 	DisplayName: 编辑面板
-	Tooltip: 
-	'''
-	全新的编辑界面，无需多言
-	'''
+	Tooltip: 全新的编辑界面，无需多言
 }
