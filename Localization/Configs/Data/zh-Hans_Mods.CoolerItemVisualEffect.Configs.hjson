@@ -1,4 +1,4 @@
-﻿ColorVector: {
+ColorVector: {
 	MapColorAlpha: {
 		Label: 单向渐变
 		Tooltip: 单向渐变的系数(占比)
@@ -24,28 +24,81 @@
 
 HeatMapCreateStyle: {
 	// Tooltip: ""
-	ByFunction.Label: 函数生成
-	FromTexturePixel.Label: 贴图像素
-	Designate.Label: 指定
+
+	ByFunction: {
+		Label: 函数生成
+		// Tooltip: ""
+	}
+
+	FromTexturePixel: {
+		Label: 贴图像素
+		// Tooltip: ""
+	}
+
+	Designate: {
+		Label: 指定
+		// Tooltip: ""
+	}
+
 	// CosineGenerate.Label: Cosine Generate
-	CosineGenerate_RGB.Label: 余弦RGB
-	CosineGenerate_HSL.Label: 余弦HSL
+
+	CosineGenerate_RGB: {
+		Label: 余弦RGB
+		// Tooltip: ""
+	}
+
+	CosineGenerate_HSL: {
+		Label: 余弦HSL
+		// Tooltip: ""
+	}
 }
 
 HeatMapFactorStyle: {
 	// Tooltip: ""
-	Linear.Label: 线性
-	Floor.Label: 分块
-	Quadratic.Label: 二次
-	SquareRoot.Label: 平方根
-	SmoothFloor.Label: 柔和分块
+
+	Linear: {
+		Label: 线性
+		// Tooltip: ""
+	}
+
+	Floor: {
+		Label: 分块
+		// Tooltip: ""
+	}
+
+	Quadratic: {
+		Label: 二次
+		// Tooltip: ""
+	}
+
+	SquareRoot: {
+		Label: 平方根
+		// Tooltip: ""
+	}
+
+	SmoothFloor: {
+		Label: 柔和分块
+		// Tooltip: ""
+	}
 }
 
 MeleeModifyLevel: {
 	Tooltip: ""
-	Vanilla.Label: 原版(不修改)
-	VisualOnly.Label: 仅视觉
-	Overhaul.Label: 大剑转转转
+
+	Vanilla: {
+		Label: 原版(不修改)
+		// Tooltip: ""
+	}
+
+	VisualOnly: {
+		Label: 仅视觉
+		// Tooltip: ""
+	}
+
+	Overhaul: {
+		Label: 大剑转转转
+		// Tooltip: ""
+	}
 }
 
 ByFuncHeatMapData: {

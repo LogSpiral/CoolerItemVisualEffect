@@ -2,6 +2,7 @@ using CoolerItemVisualEffect.Common.Config.Data.DesignateHeatMap.UI.Vanilla;
 using Microsoft.Xna.Framework.Graphics;
 using PropertyPanelLibrary.PropertyPanelComponents.Core;
 using SilkyUIFramework;
+using SilkyUIFramework.Layout;
 using SilkyUIFramework.Elements;
 using Terraria.UI;
 

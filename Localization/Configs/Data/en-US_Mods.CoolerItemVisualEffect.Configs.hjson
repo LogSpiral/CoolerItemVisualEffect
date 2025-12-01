@@ -1,4 +1,4 @@
-﻿ColorVector: {
+ColorVector: {
 	MapColorAlpha: {
 		Label: Gradient
 		Tooltip: Coefficient Of Gradient
@@ -24,28 +24,81 @@
 
 HeatMapCreateStyle: {
 	Tooltip: ""
-	ByFunction.Label: By Function
-	FromTexturePixel.Label: From Texture Pixel
-	Designate.Label: Designate
+
+	ByFunction: {
+		Label: By Function
+		Tooltip: ""
+	}
+
+	FromTexturePixel: {
+		Label: From Texture Pixel
+		Tooltip: ""
+	}
+
+	Designate: {
+		Label: Designate
+		Tooltip: ""
+	}
+
 	CosineGenerate.Label: Cosine Generate
-	CosineGenerate_RGB.Label: Cosine Generate_ R G B
-	CosineGenerate_HSL.Label: Cosine Generate_ H S L
+
+	CosineGenerate_RGB: {
+		Label: Cosine Generate_ R G B
+		Tooltip: ""
+	}
+
+	CosineGenerate_HSL: {
+		Label: Cosine Generate_ H S L
+		Tooltip: ""
+	}
 }
 
 HeatMapFactorStyle: {
 	Tooltip: ""
-	Linear.Label: Linear
-	Floor.Label: Floor
-	Quadratic.Label: Quadratic
-	SquareRoot.Label: Square Root
-	SmoothFloor.Label: Smooth Floor
+
+	Linear: {
+		Label: Linear
+		Tooltip: ""
+	}
+
+	Floor: {
+		Label: Floor
+		Tooltip: ""
+	}
+
+	Quadratic: {
+		Label: Quadratic
+		Tooltip: ""
+	}
+
+	SquareRoot: {
+		Label: Square Root
+		Tooltip: ""
+	}
+
+	SmoothFloor: {
+		Label: Smooth Floor
+		Tooltip: ""
+	}
 }
 
 MeleeModifyLevel: {
 	Tooltip: ""
-	Vanilla.Label: Vanilla
-	VisualOnly.Label: Visual Only
-	Overhaul.Label: Overhaul
+
+	Vanilla: {
+		Label: Vanilla
+		Tooltip: ""
+	}
+
+	VisualOnly: {
+		Label: Visual Only
+		Tooltip: ""
+	}
+
+	Overhaul: {
+		Label: Overhaul
+		Tooltip: ""
+	}
 }
 
 ByFuncHeatMapData: {

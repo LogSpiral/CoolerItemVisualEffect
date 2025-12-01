@@ -1,5 +1,6 @@
 using PropertyPanelLibrary.PropertyPanelComponents.Core;
 using SilkyUIFramework;
+using SilkyUIFramework.Layout;
 using SilkyUIFramework.Elements;
 using System;
 using System.Collections.Generic;

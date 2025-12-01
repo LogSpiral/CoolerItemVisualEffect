@@ -109,7 +109,7 @@ public partial class MeleeModifyPlayer
                 {
                     var meleeConfig = new MeleeConfig();
                     ConfigSaveLoaderHelper.Load(meleeConfig, configPath, false, false);
-                    MeleeConfigs.Add(selector.BindConfigName, meleeConfig);
+                    MeleeConfigs.TryAdd(selector.BindConfigName, meleeConfig);
                 }
             }
         }
