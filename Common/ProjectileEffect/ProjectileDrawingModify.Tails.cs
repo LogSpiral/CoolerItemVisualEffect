@@ -12,7 +12,7 @@ namespace CoolerItemVisualEffect.ProjectileEffect;
 
 public partial class ProjectileDrawingModify
 {
-    private static void DrawTails(Projectile projectile) 
+    private static void DrawTails(Projectile projectile)
     {
         if (CoolerItemVisualEffectMod.RenderEffect == null || CoolerItemVisualEffectMod.ShaderSwooshEX == null) return;
         var spriteBatch = Main.spriteBatch;
@@ -214,16 +214,17 @@ public partial class ProjectileDrawingModify
         List<CustomVertexInfo> _triangleList = [];
         var sampler = SamplerState.AnisotropicWrap;
         //RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
-        var projection = Matrix.CreateOrthographicOffCenter(0, Main.gameMenu ? Main.instance.Window.ClientBounds.Width : Main.screenWidth, Main.gameMenu ? Main.instance.Window.ClientBounds.Height : Main.screenHeight, 0, 0, 1);
+        var bounds = Main.instance.Window.ClientBounds;
+        var projection = Matrix.CreateOrthographicOffCenter(0, bounds.Width, bounds.Height, 0, 0, 1);
         var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
-        var trans = Main.GameViewMatrix != null ? Main.GameViewMatrix.TransformationMatrix : Matrix.Identity;
+        var trans = spriteBatch.transformMatrix;// Main.GameViewMatrix != null ? Main.GameViewMatrix.TransformationMatrix : Matrix.Identity;
         var sb = Main.spriteBatch;
 
         if (bars.Count > 2)
         {
             sb.End();
 
-            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, sampler, DepthStencilState.Default, RasterizerState.CullNone, null, trans);
             //projectile.DrawProjWithStarryTrail(spriteBatch, Main.rgbToHsl(mainColor).X, Color.White, 0);
             var counter = 0;
         theLabel:

@@ -60,11 +60,16 @@ public partial class ProjectileDrawingModify
 
         #endregion offsetAlpha
 
+
+
         var unit = (projectile.rotation - MathHelper.PiOver4).ToRotationVector2();
         var center = projectile.Center - Main.screenPosition;
         spriteBatch.Draw(projectileTexture, center - unit * 24, null, mainColor with { A = 0 }, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), scaleVec * new Vector2(.75f, 1.5f), SpriteEffects.None, 0f);
         spriteBatch.Draw(projectileTexture, center - unit * 24, null, Color.White with { A = 0 }, projectile.rotation - MathHelper.PiOver4 * 3, new Vector2(36), scaleVec * new Vector2(.5f, 1), SpriteEffects.None, 0f);
-        spriteBatch.DrawEffectLine(projectile.Center - unit * 24, projectile.velocity.SafeNormalize(default), mainColor, LogSpiralLibraryMod.BaseTex[12].Value, 1, 0, 96, 15);
+        spriteBatch.DrawEffectLine(projectile.Center - unit * 24, projectile.velocity.SafeNormalize(default), mainColor, LogSpiralLibraryMod.BaseTex[12].Value, 1, 0, 96, 15, true);
+
+        spriteBatch.spriteEffect.CurrentTechnique.Passes[0].Apply();
+
         var asset = TextureAssets.Projectile[projectile.type];
         if (!asset.IsLoaded)
             Main.instance.LoadProjectile(projectile.type);

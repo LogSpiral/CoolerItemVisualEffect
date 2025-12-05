@@ -64,7 +64,7 @@ public class WeaponDisplayPreview : MiscPreview<bool>
 
 public class WeaponScalePreview : MiscPreview<float>
 {
-    private Player plr;
+    private static Player plr;
 
     public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, float data, OptionMetaData metaData)
     {
@@ -114,25 +114,21 @@ public class WeaponScalePreview : MiscPreview<float>
 
 public class ItemEffectPreview : MiscPreview<bool>
 {
+
+    private static Item ItemDummy;
+
     public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, bool data, OptionMetaData metaData)
     {
-        var center = dimension.Center() + new Vector2(-144, 80);
+        var center = dimension.Center();
         if (Main.gameMenu)
-        {
-            GlobalTimeSystem.GlobalTime += .33f;
-            center += new Vector2(880, 280);
-        }
-        spriteBatch.End();
-        spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+            GlobalTimeSystem.GlobalTime += 1f;
+
         spriteBatch.Draw(TextureAssets.Item[ItemID.TerraBlade].Value, center, null, Color.White, 0, new Vector2(23, 27), 1, 0, 0);
-        spriteBatch.End();
-        spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
         if (data)
         {
-            var item = new Item(ItemID.TerraBlade)
-            {
-                Center = center + Main.screenPosition + new Vector2(0, 12)
-            };
+            var item = ItemDummy;
+            item ??= ItemDummy = new Item(ItemID.TerraBlade);
+            item.Center = center + Main.screenPosition + new Vector2(0, 12);
             item.ShaderItemEffectInWorld(spriteBatch, LogSpiralLibraryMod.Misc[0].Value, Color.Green, 0);
         }
     }
@@ -142,55 +138,72 @@ public class ProjectileModificationPreview : MiscPreview<bool>
 {
     public static bool PVDrawing;
 
+    private static Projectile TerraBeamDummy;
+
+    private static Projectile SuperStarDummy;
+
+    private static Projectile HolyArrowDummy;
+
     public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, bool data, OptionMetaData metaData)
     {
-        var terraBeam = new Projectile();
-        terraBeam.SetDefaults(ProjectileID.TerraBeam);
-        terraBeam.Center = dimension.Center() + Main.screenPosition;
-        if (Main.gameMenu)
+        var terraBeam = TerraBeamDummy;
+        if (terraBeam == null)
         {
-            GlobalTimeSystem.GlobalTime += .33f;
-            terraBeam.Center += new Vector2(880, 280);
+            terraBeam = TerraBeamDummy = new Projectile();
+            terraBeam.SetDefaults(ProjectileID.TerraBeam);
+            terraBeam.alpha = 0;
+            terraBeam.velocity = new Vector2(8, -8);
         }
-
-        terraBeam.alpha = 0;
-        terraBeam.velocity = new Vector2(8, -8);
-
-        terraBeam.position += new Vector2(-40, 40);
+        var cen = dimension.Center();
+        terraBeam.Center = cen + Main.screenPosition;
+        if (Main.gameMenu)
+            GlobalTimeSystem.GlobalTime += 1;
+        terraBeam.position += new Vector2(40, -40);
         var flag = MiscConfig.Instance.VanillaProjectileDrawModifyActive;
         PVDrawing = true;
         MiscConfig.Instance.VanillaProjectileDrawModifyActive = data;
-        spriteBatch.End();
-        spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
         Main.instance.DrawProjDirect(terraBeam);
-        terraBeam.type = ProjectileID.SuperStar;
-        terraBeam.position.X -= 120;
-        terraBeam.position.Y -= 40;
 
-        for (var n = 0; n < terraBeam.oldPos.Length; n++)
+        var superStar = SuperStarDummy;
+        if (superStar == null)
         {
-            terraBeam.oldPos[n] = terraBeam.Center + new Vector2(-16, 16) * n;
-            terraBeam.oldRot[n] = n * .15f;
+            superStar = SuperStarDummy = new Projectile();
+            superStar.SetDefaults(ProjectileID.SuperStar);
+            superStar.rotation = MathHelper.PiOver4;
+            superStar.velocity = new Vector2(8, -8);
         }
-        Main.instance.DrawProjDirect(terraBeam);
-        var pendVec = terraBeam.position;
-        terraBeam.SetDefaults(ProjectileID.HolyArrow);
-        terraBeam.position = pendVec + new Vector2(128);
-        terraBeam.rotation = MathHelper.PiOver2;
-        terraBeam.velocity = new Vector2(1, 0);
-        for (var n = 0; n < terraBeam.oldPos.Length; n++)
+        superStar.rotation = MathHelper.PiOver4;
+        superStar.velocity = new Vector2(8, -8);
+        superStar.position = terraBeam.position + new Vector2(-120, -40);
+        for (var n = 0; n < superStar.oldPos.Length; n++)
         {
-            terraBeam.oldPos[n] = terraBeam.Center + new Vector2(-16, 0) * n;
-            terraBeam.oldRot[n] = MathHelper.PiOver2;
+            superStar.oldPos[n] = superStar.Center + new Vector2(-16, 16) * n;
+            superStar.oldRot[n] = n * .15f;
         }
-        Main.instance.DrawProjDirect(terraBeam);
+
+        Main.instance.DrawProjDirect(superStar);
+
+
+        var holyArrow = HolyArrowDummy;
+        if (holyArrow == null)
+        {
+            holyArrow = HolyArrowDummy = new Projectile();
+            holyArrow.SetDefaults(ProjectileID.HolyArrow);
+            holyArrow.rotation = MathHelper.PiOver2;
+            holyArrow.velocity = new Vector2(1, 0);
+        }
+
+        holyArrow.Center = cen + Main.screenPosition + new Vector2(dimension.Width * .5f - 60,64);
+        for (var n = 0; n < holyArrow.oldPos.Length; n++)
+        {
+            holyArrow.oldPos[n] = holyArrow.Center + new Vector2(-16, 0) * n;
+            holyArrow.oldRot[n] = MathHelper.PiOver2;
+        }
+        Main.instance.DrawProjDirect(holyArrow);
 
         //DrawingMethods.DrawQuadraticLaser_PassNormal(spriteBatch, terraBeam.Center, Vector2.UnitX, Color.Red, LogSpiralLibraryMod.AniTex[10].Value);
         //Color color = Color.White;
         //Main.instance.DrawProj_DrawNormalProjs(terraBeam, terraBeam.Center.X, terraBeam.Center.Y, terraBeam.Center, ref color);
-
-        spriteBatch.End();
-        spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
         MiscConfig.Instance.VanillaProjectileDrawModifyActive = flag;
         PVDrawing = false;
     }
@@ -201,7 +214,7 @@ public class TeleportModificationPreview : MiscPreview<bool>
     public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, bool data, OptionMetaData metaData)
     {
         if (Main.gameMenu)
-            GlobalTimeSystem.GlobalTime += .33;
+            GlobalTimeSystem.GlobalTime += 1;
         var fac = (float)(LogSpiralLibraryMod.ModTime % 60 / 60);
         var _fac = (fac * 2 % 1).HillFactor2() * (fac < .5f ? .5f : 1f);
         var rotation = (float)LogSpiralLibraryMod.ModTime * .05f;

@@ -46,6 +46,10 @@ public partial class ProjectileDrawingModify : GlobalProjectile
             case ProjectileID.Shroomerang:
                 {
                     DrawTails(projectile);
+                    if (projectile.type == ProjectileID.SuperStar) 
+                    {
+                        lightColor.A = 127;
+                    }
                     goto mylabel;
                 }
             case ProjectileID.TerraBeam:
@@ -87,6 +91,7 @@ public partial class ProjectileDrawingModify : GlobalProjectile
                 //case ProjectileID.BeeArrow:
                 {
                     DrawArrows(projectile);
+                    lightColor.A = 127;
                     goto mylabel;
                 }
         }
