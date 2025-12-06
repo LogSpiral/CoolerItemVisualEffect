@@ -36,7 +36,7 @@ public partial class OptionColorBar
                     Positioning = Positioning.Absolute,
                     Owner = Owner
                 };
-                Add(singleColor);
+                AddChild(singleColor);
             }
         }
 
@@ -61,7 +61,7 @@ public partial class OptionColorBar
                 Positioning = Positioning.Absolute,
                 Owner = Owner
             };
-            Add(singleColor);
+            AddChild(singleColor);
         }
 
         protected override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

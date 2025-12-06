@@ -26,7 +26,7 @@ public partial class OptionColorBar : PropertyOption
             Height = new(20, 0),
             BackgroundColor = Color.Transparent
         };
-        Add(mask);
+        AddChild(mask);
         ColorBar = new GradientBar()
         {
             Data = GetValue() as DesignateHeatMapData,
@@ -37,7 +37,7 @@ public partial class OptionColorBar : PropertyOption
             Owner = this,
             Positioning = Positioning.Absolute
         };
-        Add(ColorBar);
+        AddChild(ColorBar);
         ColorBar.AddCurrentData();
     }
     private GradientBar ColorBar { get; set; }

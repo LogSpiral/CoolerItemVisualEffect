@@ -60,7 +60,7 @@ public partial class OptionColorBar
                 var data = Owner.ColorBar.Data;
                 if (m > 1 && data.Colors.Count > 2)
                 {
-                    Remove();
+                    RemoveFromParent();
                     data.Colors.Remove(ColorInfo);
                 }
                 else

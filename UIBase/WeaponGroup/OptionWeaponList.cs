@@ -32,7 +32,7 @@ public class OptionWeaponList : PropertyOption
         ItemList.Container.Padding = new Margin(8);
         ItemList.Container.Gap = new Vector2(8);
         SetupList();
-        Add(ItemList);
+        AddChild(ItemList);
     }
 
 
@@ -44,10 +44,10 @@ public class OptionWeaponList : PropertyOption
         int counter = 0;
         foreach (var item in weaponList)
         {
-            ItemList.Container.Add(ItemNameToIcon(item, counter));
+            ItemList.Container.AddChild(ItemNameToIcon(item, counter));
             counter++;
         }
-        ItemList.Container.Add(ItemNameToIcon(null, counter));
+        ItemList.Container.AddChild(ItemNameToIcon(null, counter));
     }
 
     private SUIImage ItemNameToIcon(string itemName, int idx)

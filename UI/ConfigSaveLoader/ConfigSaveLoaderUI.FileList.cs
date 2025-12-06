@@ -87,7 +87,7 @@ public partial class ConfigSaveLoaderUI
                 CurrentConfigName = fileCard.FileName;
                 _pendingUpdateFileList = true;
             };
-            ItemList.Container.Add(fileCard);//如果有就添加目标
+            ItemList.Container.AddChild(fileCard);//如果有就添加目标
         }
     }
 
@@ -102,21 +102,21 @@ public partial class ConfigSaveLoaderUI
     private void SwitchToEditPage()
     {
         this.AddBefore(PropertyPanel, ItemList);
-        ItemList.Remove();
+        ItemList.RemoveFromParent();
         RefreshPropertyPanelFiller();
         BackButton.Join(EditButtonContainer);
-        CreateNewButton.Remove();
+        CreateNewButton.RemoveFromParent();
     }
 
 
     private void SwitchToMainPage()
     {
         this.AddBefore(ItemList, PropertyPanel);
-        PropertyPanel.Remove();
+        PropertyPanel.RemoveFromParent();
         _pendingUpdateFileList = true;
-        BackButton.Remove();
-        SaveButton.Remove();
-        RevertButton.Remove();
+        BackButton.RemoveFromParent();
+        SaveButton.RemoveFromParent();
+        RevertButton.RemoveFromParent();
         CurrentEditTarget = null;
         CreateNewButton.Join(FunctionButtonContainer);
     }

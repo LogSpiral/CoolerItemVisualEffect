@@ -105,8 +105,8 @@ public partial class WeaponGroupManagerUI
                 SyncWeaponGroup.Get(Main.myPlayer, list, null).Send();
                 mplr.CachedGrouping.Clear();
             }
-            SaveButton.Remove();
-            RevertButton.Remove();
+            SaveButton.RemoveFromParent();
+            RevertButton.RemoveFromParent();
         };
 
         RevertButton.LeftMouseClick += delegate
@@ -114,8 +114,8 @@ public partial class WeaponGroupManagerUI
             if (!File.Exists(CurrentPath)) return;
             CurrentEditTarget = Weapon_Group.Load(CurrentPath);
             RefreshPropertyPanelFiller();
-            SaveButton.Remove();
-            RevertButton.Remove();
+            SaveButton.RemoveFromParent();
+            RevertButton.RemoveFromParent();
         };
 
         BackButton.LeftMouseClick += delegate
@@ -124,9 +124,9 @@ public partial class WeaponGroupManagerUI
         };
 
 
-        SaveButton.Remove();
-        RevertButton.Remove();
-        BackButton.Remove();
+        SaveButton.RemoveFromParent();
+        RevertButton.RemoveFromParent();
+        BackButton.RemoveFromParent();
     }
 
     private void InitializePropertyPanel()
@@ -136,8 +136,8 @@ public partial class WeaponGroupManagerUI
         {
             if (SaveButton.Parent == null)
             {
-                EditButtonContainer.Add(RevertButton, 0);
-                EditButtonContainer.Add(SaveButton, 0);
+                EditButtonContainer.AddChild(RevertButton, 0);
+                EditButtonContainer.AddChild(SaveButton, 0);
             }
         };
         PropertyPanel = new()

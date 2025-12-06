@@ -106,8 +106,8 @@ public partial class ConfigSaveLoaderUI
                 SyncWeaponGroup.Get().Send();
             }
 
-            SaveButton.Remove();
-            RevertButton.Remove();
+            SaveButton.RemoveFromParent();
+            RevertButton.RemoveFromParent();
         };
 
         RevertButton.LeftMouseClick += delegate
@@ -116,8 +116,8 @@ public partial class ConfigSaveLoaderUI
             CurrentEditTarget = new MeleeConfig();
             ConfigSaveLoaderHelper.Load(CurrentEditTarget, CurrentPath, false, false);
             RefreshPropertyPanelFiller();
-            SaveButton.Remove();
-            RevertButton.Remove();
+            SaveButton.RemoveFromParent();
+            RevertButton.RemoveFromParent();
         };
 
         BackButton.LeftMouseClick += delegate
@@ -127,9 +127,9 @@ public partial class ConfigSaveLoaderUI
         };
 
 
-        SaveButton.Remove();
-        RevertButton.Remove();
-        BackButton.Remove();
+        SaveButton.RemoveFromParent();
+        RevertButton.RemoveFromParent();
+        BackButton.RemoveFromParent();
     }
 
     private void InitializePropertyPanel()
@@ -139,8 +139,8 @@ public partial class ConfigSaveLoaderUI
         {
             if (SaveButton.Parent == null)
             {
-                EditButtonContainer.Add(RevertButton, 0);
-                EditButtonContainer.Add(SaveButton, 0);
+                EditButtonContainer.AddChild(RevertButton, 0);
+                EditButtonContainer.AddChild(SaveButton, 0);
             }
         };
         var previewDecorator = new DelegateOptionDecorator();

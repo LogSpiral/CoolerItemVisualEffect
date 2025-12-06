@@ -131,8 +131,8 @@ public partial class WeaponGroupManagerUI
                         File.WriteAllText(Path.Combine(ManagerHelper.SavePath, "indexTable.txt"), indexTable);
                         _pendingUpdateFileList = true;
                     };
-                    fileCard.ButtonContainer.Add(upDownButton, 0);
-                    ItemList.Container.Add(fileCard);//如果有就添加目标
+                    fileCard.ButtonContainer.AddChild(upDownButton, 0);
+                    ItemList.Container.AddChild(fileCard);//如果有就添加目标
 
                 }
             }
@@ -157,21 +157,21 @@ public partial class WeaponGroupManagerUI
     private void SwitchToEditPage()
     {
         this.AddBefore(PropertyPanel, ItemList);
-        ItemList.Remove();
+        ItemList.RemoveFromParent();
         RefreshPropertyPanelFiller();
         BackButton.Join(EditButtonContainer);
-        CreateNewButton.Remove();
+        CreateNewButton.RemoveFromParent();
     }
 
 
     private void SwitchToMainPage() 
     {
         this.AddBefore(ItemList, PropertyPanel);
-        PropertyPanel.Remove();
+        PropertyPanel.RemoveFromParent();
         _pendingUpdateFileList = true;
-        BackButton.Remove();
-        SaveButton.Remove();
-        RevertButton.Remove();
+        BackButton.RemoveFromParent();
+        SaveButton.RemoveFromParent();
+        RevertButton.RemoveFromParent();
         CurrentEditTarget = null;
         CreateNewButton.Join(FunctionButtonContainer);
     }
