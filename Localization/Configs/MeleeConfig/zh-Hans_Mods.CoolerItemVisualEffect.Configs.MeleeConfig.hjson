@@ -1,4 +1,4 @@
-﻿DisplayName: 近战设置
+DisplayName: 近战视效设置
 
 Headers: {
 	MeleeModifyPart: "[i:1199]近战视效修改设置"
@@ -200,4 +200,20 @@ hslData: {
 designateData: {
 	Label: 指定颜色列表
 	// Tooltip: ""
+}
+
+AnnouncementForRelocation: {
+	Label: 设置变更公告
+	Tooltip:
+		'''
+		近战设置已更名为近战视效设置
+		相应地这里只修改视觉效果相关的一些参数
+
+		原先是否开启修改
+		以及绑定至哪个序列等
+		已经迁移到分组设置中
+
+		绑定快捷键或者点击物品栏右侧的蓝色图标以开启分组管理器
+		点击分组管理器下方书本图标的按钮可以获取操作帮助
+		'''
 }

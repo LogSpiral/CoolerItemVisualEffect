@@ -22,7 +22,7 @@ public class SyncMeleeModifyActive : NetModule
     {
         var plr = Main.player[playerIndex];
         var mplr = plr.GetModPlayer<MeleeModifyPlayer>();
-        mplr.ConfigurationSwoosh.SwordModifyActive = active;
+        mplr.IsModifyActiveDefaultGroup = active;
         if (mplr.HeatMap != null && mplr.WeaponHSL != default)
             MeleeModifyPlayerUtils.UpdateHeatMap(mplr);
         if (Main.dedServ)

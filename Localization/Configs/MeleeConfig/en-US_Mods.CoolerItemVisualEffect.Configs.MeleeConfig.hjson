@@ -1,4 +1,4 @@
-﻿DisplayName: Melee Config
+DisplayName: Melee Visual Config
 
 Headers: {
 	MeleeModifyPart: "[i:1199]Melee Visual Effect Settings"
@@ -200,4 +200,21 @@ hslData: {
 designateData: {
 	Label: designate Data
 	Tooltip: ""
+}
+
+AnnouncementForRelocation: {
+	Label: Config changes
+	Tooltip:
+		'''
+		Now the name of this config is Melee Visual Config
+		So here only contains some visual-related configs
+
+		Previously use modification or not
+		and which sequence to excute,
+		Has been move to Weapon Group Sets.
+
+		Make a keybind or click the blue icon on the right of inventory
+		to Open the Weapon Group Manager(W.G.M.)
+		Click the book icon in the bottom of W.G.M. to learn more.
+		'''
 }

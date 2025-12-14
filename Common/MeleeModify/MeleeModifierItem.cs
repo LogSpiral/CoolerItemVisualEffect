@@ -43,7 +43,7 @@ public class MeleeModifierItem : GlobalItem
     {
         var mplr = player.GetModPlayer<MeleeModifyPlayer>();
         var key = $"{Mod.Name}/MeleeAction/{typeof(CIVESword).Name}";
-        if (player.GetModPlayer<MeleeModifyPlayer>().ConfigurationSwoosh.swooshActionStyle is SequenceDefinition<MeleeAction> definition)
+        if (player.GetModPlayer<MeleeModifyPlayer>().SwooshActionStyle is SequenceDefinition<MeleeAction> definition)
             key = $"{definition.Mod}/MeleeAction/{definition.Name}";
         if (mplr.BeAbleToOverhaul && SequenceManager<MeleeAction>.Instance.Sequences.TryGetValue(key, out var value))
         {

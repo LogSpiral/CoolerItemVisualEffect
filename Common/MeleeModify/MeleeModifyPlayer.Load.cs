@@ -1,6 +1,12 @@
-﻿using CoolerItemVisualEffect.MeleeModify;
+﻿using CoolerItemVisualEffect.Common.Config;
+using CoolerItemVisualEffect.MeleeModify;
+using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee;
+using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Core.Definition;
 using MonoMod.Cil;
 using System;
+using System.IO;
+using System.Text;
+using Terraria.ModLoader.IO;
 
 namespace CoolerItemVisualEffect.Common.MeleeModify;
 
@@ -19,7 +25,6 @@ public partial class MeleeModifyPlayer
             $"{nameof(CoolerItemVisualEffect)}:MeleeModify");
 
         MigrateOldGroupPath();
-
         base.Load();
     }
 

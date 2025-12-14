@@ -42,7 +42,7 @@ public class SyncMeleeConfig : NetModule
     {
         var plr = Main.player[playerIndex];
         var mplr = plr.GetModPlayer<MeleeModifyPlayer>();
-        mplr.ConfigurationSwoosh = configuration;
+        mplr.DefaultGroupConfig = configuration;
 
         if (Main.dedServ)
             Get(playerIndex, configuration).Send(-1, playerIndex);

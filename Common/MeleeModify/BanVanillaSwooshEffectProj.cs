@@ -29,8 +29,7 @@ public class BanVanillaSwooshEffectProj : GlobalProjectile
             && VanillaSlashProjectiles.Contains(projectile.type) 
             && Main.player[projectile.owner]
                 .GetModPlayer<MeleeModifyPlayer>()
-                .ConfigurationSwoosh
-                .SwordModifyActive)
+                .IsModifyActive)
             return false;
         return base.PreDraw(projectile, ref lightColor);
     }

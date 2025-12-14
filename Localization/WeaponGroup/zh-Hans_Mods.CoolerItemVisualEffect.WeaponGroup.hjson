@@ -22,5 +22,8 @@ RenameTip: {
 	Illegal: 文件名不能包含以下字符： \\、/、:、*、?、\"、<、>、|
 }
 
+DefaultGroup: 默认分组
 CurrentGroupName: 这个武器所属的分组:{0}
 DefaultConfig: 使用当前近战设置
+IsModifyActive.Label: 启用修改
+SwooshActionStyle.Label: 执行序列

@@ -1,13 +1,16 @@
-﻿using CoolerItemVisualEffect.UIBase;
+﻿using CoolerItemVisualEffect.Common.Config;
+using CoolerItemVisualEffect.Common.ConfigSaveLoader;
+using CoolerItemVisualEffect.Common.MeleeModify;
+using CoolerItemVisualEffect.Common.WeaponGroup;
+using CoolerItemVisualEffect.UIBase;
+using CoolerItemVisualEffect.UIBase.WeaponGroup;
+using LogSpiralLibrary.CodeLibrary.Utilties;
+using PropertyPanelLibrary.BasicElements;
+using PropertyPanelLibrary.PropertyPanelComponents.BuiltInProcessors.Panel.Fillers;
+using SilkyUIFramework;
 using SilkyUIFramework.Extensions;
 using System.IO;
-using LogSpiralLibrary.CodeLibrary.Utilties;
 using Weapon_Group = CoolerItemVisualEffect.Common.WeaponGroup.WeaponGroup;
-using PropertyPanelLibrary.PropertyPanelComponents.BuiltInProcessors.Panel.Fillers;
-using CoolerItemVisualEffect.Common.MeleeModify;
-using PropertyPanelLibrary.BasicElements;
-using SilkyUIFramework;
-using CoolerItemVisualEffect.Common.WeaponGroup;
 
 namespace CoolerItemVisualEffect.UI.WeaponGroup;
 
@@ -80,6 +83,29 @@ public partial class WeaponGroupManagerUI
                         if (!File.Exists(path)) return;
                         CurrentPath = path;
                         CurrentEditTarget = Weapon_Group.Load(path);
+
+                        if(CurrentEditTarget.SwooshActionStyle.IsUnloaded)
+                        {
+                            var selector = CurrentEditTarget;
+                            if (string.IsNullOrEmpty(selector.BindConfigName)) goto label;
+                            var configPath = Path.Combine(LoadHelper.ConfigSavePath, selector.BindConfigName + LoadHelper.Extension);
+                            if (!File.Exists(configPath)) goto label;
+
+                            var meleeConfig = new MeleeConfig();
+                            ConfigSaveLoaderHelper.Load(meleeConfig, configPath, false, false);
+                            if (meleeConfig.SwordModifyActiveOld.HasValue)
+                            {
+                                selector.IsModifyActive = meleeConfig.SwordModifyActiveOld.Value;
+                                meleeConfig.SwordModifyActiveOld = null;
+                            }
+                            if (meleeConfig.swooshActionStyleOld != null)
+                            {
+                                selector.SwooshActionStyle = meleeConfig.swooshActionStyleOld;
+                                meleeConfig.swooshActionStyleOld = null;
+                            }
+                        }
+
+                    label:
                         SwitchToEditPage();
                     };
                     var upDownButton = new SUISplitButton()
@@ -137,6 +163,10 @@ public partial class WeaponGroupManagerUI
                 }
             }
         }
+
+
+
+        ItemList.Container.AddChild(new DefaultWeaponGroup());
     }
 
     private string CurrentPath { get; set; }

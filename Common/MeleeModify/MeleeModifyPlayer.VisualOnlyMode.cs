@@ -12,19 +12,17 @@ public partial class MeleeModifyPlayer
 
     public override void PreUpdate()
     {
-        configurationSwoosh ??= Main.myPlayer == Player.whoAmI ? MeleeConfig.Instance : new MeleeConfig();
-
         if (ServerConfig.Instance.meleeModifyLevel != ServerConfig.MeleeModifyLevel.VisualOnly) return;
-        if (!configurationSwoosh.SwordModifyActive) return;
+        if (!IsModifyActive || ConfigurationSwoosh is not { } config) return;
         if (!MeleeModifyPlayerUtils.MeleeBroadSwordCheck(Player.HeldItem)) return;
 
         if (Player.itemAnimationMax != 0 && Player.itemAnimation == Player.itemAnimationMax)
         {
-            var timeLeft = configurationSwoosh.swooshTimeLeft;
+            var timeLeft = config.swooshTimeLeft;
             var length = TextureAssets.Item[Player.HeldItem.type].Value.Size().Length() * 1.2f;
-            var aniIdx = configurationSwoosh.animateIndexSwoosh;
-            var baseIdx = configurationSwoosh.baseIndexSwoosh;
-            var alphaVec = configurationSwoosh.colorVector.AlphaVector;
+            var aniIdx = config.animateIndexSwoosh;
+            var baseIdx = config.baseIndexSwoosh;
+            var alphaVec = config.colorVector.AlphaVector;
             var eVec = alphaVec with { Y = 0 };
             if (eVec.X == 0 && eVec.Z == 0)
                 eVec = new Vector3(.5f, 0, .5f);
@@ -62,7 +60,7 @@ public partial class MeleeModifyPlayer
             else
                 currentSwoosh.angleRange = (2.5f - k * .5f, 1 - .0625f - MathHelper.Lerp(-1f, .25f, k));
             currentSwoosh.center = Player.Center;
-            currentSwoosh.ColorVector = configurationSwoosh.colorVector.AlphaVector * k;
+            currentSwoosh.ColorVector = config.colorVector.AlphaVector * k;
 
             if (extraSwoosh != null)
             {

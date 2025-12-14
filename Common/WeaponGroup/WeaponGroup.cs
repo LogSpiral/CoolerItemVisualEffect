@@ -1,12 +1,15 @@
 ﻿using CoolerItemVisualEffect.Common.MeleeModify;
+using CoolerItemVisualEffect.UIBase.WeaponGroup;
+using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee;
+using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Core.Definition;
 using Newtonsoft.Json;
+using PropertyPanelLibrary.EntityDefinition;
+using PropertyPanelLibrary.PropertyPanelComponents.Attributes;
+using PropertyPanelLibrary.PropertyPanelComponents.Interfaces;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using CoolerItemVisualEffect.UIBase.WeaponGroup;
-using PropertyPanelLibrary.PropertyPanelComponents.Attributes;
-using PropertyPanelLibrary.PropertyPanelComponents.Interfaces;
 using Terraria.Localization;
 using Terraria.ModLoader.Config;
 
@@ -17,10 +20,20 @@ public class WeaponGroup : IMemberLocalized
     [JsonIgnore]
     [PropertyPanelIgnore]
     public string Name;
+
+    [PropertyPanelIgnore]
     public bool BasedOnDefaultCondition { get; set; }
 
     [DefaultValue(true)]
+    [PropertyPanelIgnore]
     public bool WhiteList { get; set; } = true;
+
+    [DefaultValue(true)]
+    public bool IsModifyActive { get; set; } = true;
+
+    [TypeConverter(typeof(ToFromStringConverter<SequenceDefinition<MeleeAction>>))]
+    [CustomEntityDefinitionHandler<SequenceDefinitionHandler<MeleeAction>>]
+    public SequenceDefinition<MeleeAction> SwooshActionStyle { get; set; } = new();
 
     [CustomOptionElement<OptionBindConfig>]
     public string BindConfigName { get; set; } = "";

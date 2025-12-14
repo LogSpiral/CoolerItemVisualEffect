@@ -29,9 +29,6 @@ public class ModernConfigRegisterSystem : ModSystem
         [
              nameof(MeleeConfig.UsePreview),
              nameof(MeleeConfig.useRenderEffectPVInOtherConfig),
-             nameof(MeleeConfig.SwordModifyActive),
-             nameof(MeleeConfig.swooshActionStyle),
-             nameof(MeleeConfig.swooshActionStyle),
              nameof(MeleeConfig.baseIndexSwoosh),
              nameof(MeleeConfig.animateIndexSwoosh),
              nameof(MeleeConfig.baseIndexStab),

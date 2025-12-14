@@ -25,7 +25,7 @@ public partial class MeleeModifyPlayer : ModPlayer
     /// </summary>
     public bool BeAbleToOverhaul =>
         ServerConfig.Instance.meleeModifyLevel == ServerConfig.MeleeModifyLevel.Overhaul
-        && ConfigurationSwoosh.SwordModifyActive
+        && IsModifyActive
         && IsMeleeBroadSword;
 
     /// <summary>
@@ -40,7 +40,7 @@ public partial class MeleeModifyPlayer : ModPlayer
         if (IsMeleeBroadSword)
             ItemID.Sets.SkipsInitialUseSound[Player.HeldItem.type] =
                 ServerConfig.Instance.meleeModifyLevel == ServerConfig.MeleeModifyLevel.Overhaul
-                && ConfigurationSwoosh.SwordModifyActive;
+                && IsModifyActive;
         MeleeModifyPlayerUtils.CheckItemChange(Player);
         base.PostUpdate();
     }

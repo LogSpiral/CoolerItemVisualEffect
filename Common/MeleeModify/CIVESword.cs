@@ -69,7 +69,7 @@ public partial class CIVESword : MeleeSequenceProj
 
         vertexStandard.heatMap = plr.GetModPlayer<MeleeModifyPlayer>().HeatMap ?? LogSpiralLibraryMod.HeatMap[0].Value;
 
-        vertexStandard.scaler = (item.type == ItemID.TrueExcalibur ? 1.5f : 1) * (rectangle == null ? MeleeModifyPlayerUtils.GetWeaponTextureFromItem(item).Size() : rectangle.Value.Size()).Length() * 1.25f * plr.GetAdjustedItemScale(item);
+        vertexStandard.scaler = (item.type is ItemID.NightsEdge or ItemID.TrueExcalibur ? 1.5f : 1) * (rectangle == null ? MeleeModifyPlayerUtils.GetWeaponTextureFromItem(item).Size() : rectangle.Value.Size()).Length() * 1.25f * plr.GetAdjustedItemScale(item);
 
         vertexStandard.timeLeft = ConfigurationSwoosh.swooshTimeLeft;
 
@@ -170,14 +170,16 @@ public partial class CIVESword : MeleeSequenceProj
     public override void AI()
     {
         var mplr = Player.GetModPlayer<MeleeModifyPlayer>();
-        if (!mplr.ConfigurationSwoosh.SwordModifyActive)
+        if (!mplr.IsModifyActive)
             Projectile.Kill();
         base.AI();
     }
 
     public override void InitializeSequence(string modName, string fileName)
     {
-        var definition = ConfigurationSwoosh.swooshActionStyle;
+        var definition = Player.GetModPlayer<MeleeModifyPlayer>().SwooshActionStyle;
+
+        // TODO 适配更多服务端模式
 
         if (definition != null)
             base.InitializeSequence(definition.Mod, definition.Name);

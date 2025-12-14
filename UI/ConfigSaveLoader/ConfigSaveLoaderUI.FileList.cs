@@ -4,16 +4,11 @@ using CoolerItemVisualEffect.Common.MeleeModify;
 using CoolerItemVisualEffect.UI.WeaponGroup;
 using CoolerItemVisualEffect.UIBase;
 using LogSpiralLibrary.CodeLibrary.Utilties;
-using Newtonsoft.Json;
 using PropertyPanelLibrary.PropertyPanelComponents.BuiltInProcessors.Panel.Fillers;
-using PropertyPanelLibrary.PropertyPanelComponents.Core;
-using PropertyPanelLibrary.PropertyPanelComponents.Interfaces.Panel;
 using SilkyUIFramework;
 using SilkyUIFramework.Extensions;
-using System.Collections.Generic;
 using System.IO;
 using Terraria.Audio;
-using Terraria.IO;
 using Terraria.ModLoader.Config;
 
 namespace CoolerItemVisualEffect.UI.ConfigSaveLoader;

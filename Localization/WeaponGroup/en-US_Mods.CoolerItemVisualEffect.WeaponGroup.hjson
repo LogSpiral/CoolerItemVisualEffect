@@ -22,5 +22,8 @@ RenameTip: {
 	Illegal: File name must not include following characters: \\, /, :, *, ?, \", <, > or |
 }
 
+DefaultGroup: Default Group
 CurrentGroupName: This weapon belongs to group:{0}
 DefaultConfig: using current melee config
+IsModifyActive.Label: Use Melee modify
+SwooshActionStyle.Label: Excuting Sequence

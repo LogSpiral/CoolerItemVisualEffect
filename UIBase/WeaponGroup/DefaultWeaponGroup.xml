@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Body Class="CoolerItemVisualEffect.UIBase.WeaponGroup.DefaultWeaponGroup" Width="100%" FitHeight="true" BorderRadius="8"
+      BackgroundColor="rgba(0,0,0,0.25)" Margin="16 2 0 2" Padding="4 4 4 4" Gap="0 4" FlexDirection="Column">
+	<TextView Name="NameBox" Width="100%" Height="40px"/>
+	<HR/>
+	<PropertyPanel Name="DataPanel" Width="100%" Height="240px" Gap="8 0" MainAlignment="End"/>
+</Body>

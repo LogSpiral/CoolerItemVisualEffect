@@ -15,10 +15,10 @@ public partial class MeleeModifyPlayer
 
     public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
     {
-        configurationSwoosh ??= Main.myPlayer == Player.whoAmI ? MeleeConfig.Instance : new MeleeConfig();
+        DefaultGroupConfig ??= Main.myPlayer == Player.whoAmI ? MeleeConfig.Instance : new MeleeConfig();
 
         SetUpWeaponGroupAndConfig();
-        SyncMeleeConfig.Get(Player.whoAmI, configurationSwoosh).Send(toWho, fromWho);
+        SyncMeleeConfig.Get(Player.whoAmI, DefaultGroupConfig).Send(toWho, fromWho);
         SyncWeaponGroup.Get(Player.whoAmI, WeaponGroups, MeleeConfigs).Send(toWho, fromWho);
         SyncRegisterCanvas.Get((byte)Player.whoAmI).Send(toWho, fromWho);
         base.SyncPlayer(toWho, fromWho, newPlayer);

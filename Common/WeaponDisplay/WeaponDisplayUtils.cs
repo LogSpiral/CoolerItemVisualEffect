@@ -6,8 +6,9 @@ public static partial class WeaponDisplayUtils
     {
         return
             CheckDisplayPlayer(player)
-            && CheckDisplayItem(item)
-            && ItemLoader.CanUseItem(item, player);
+            && CheckDisplayItem(item);
+            // 为什么会有在CanUseItem里面发射弹幕的情况啊草
+            // && ItemLoader.CanUseItem(item, player);
 
     }
 }

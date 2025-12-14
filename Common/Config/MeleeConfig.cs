@@ -7,18 +7,22 @@ using CoolerItemVisualEffect.Common.Config.NetSync;
 using CoolerItemVisualEffect.Common.Config.Preview;
 using CoolerItemVisualEffect.Common.MeleeModify;
 using CoolerItemVisualEffect.MeleeModify;
+using CoolerItemVisualEffect.UI.ConfigSaveLoader;
 using LogSpiralLibrary.CodeLibrary.ConfigModification;
 using LogSpiralLibrary.CodeLibrary.DataStructures.Drawing.RenderDrawingEffects;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Core.Definition;
+using LogSpiralLibrary.CodeLibrary.Utilties;
 using LogSpiralLibrary.CodeLibrary.Utilties.BaseClasses;
-using System.ComponentModel;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PropertyPanelLibrary.EntityDefinition;
 using PropertyPanelLibrary.PropertyPanelComponents.Attributes;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.Serialization;
 using Terraria.ModLoader.Config;
 using Terraria.ModLoader.UI;
-using CoolerItemVisualEffect.Common.Config.Data.DesignateHeatMap.UI.PropertyPanel;
-using CoolerItemVisualEffect.UI.ConfigSaveLoader;
 // ReSharper disable InconsistentNaming
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace CoolerItemVisualEffect.Common.Config;
@@ -60,6 +64,9 @@ public class MeleeConfig : ModConfig
     }
 
     [Header("MeleeModifyPart")]
+
+    /*
+    
     [DefaultValue(true)]
     [CustomPreview<ActivePreview>]
     public bool SwordModifyActive = true;
@@ -68,6 +75,12 @@ public class MeleeConfig : ModConfig
     [TypeConverter(typeof(ToFromStringConverter<SequenceDefinition<MeleeAction>>))]
     [CustomEntityDefinitionHandler<SequenceDefinitionHandler<MeleeAction>>]
     public SequenceDefinition<MeleeAction> swooshActionStyle = new(nameof(CoolerItemVisualEffect), nameof(CIVESword));
+
+    */
+
+    [CustomModConfigItem<AnnouncementElement>]
+    [PropertyPanelIgnore]
+    public object AnnouncementForRelocation;
 
     [DefaultValue(7)]
     [Range(0, 13)]
@@ -161,11 +174,13 @@ public class MeleeConfig : ModConfig
     [DrawTicks]
     [DefaultValue(HeatMapCreateStyle.ByFunction)]
     [CustomPreview<HeatMapCreatePreview>]
+    [Slider]
     public HeatMapCreateStyle heatMapCreateStyle = HeatMapCreateStyle.ByFunction;
 
     [DrawTicks]
     [DefaultValue(HeatMapFactorStyle.Linear)]
     [CustomPreview<HeatMapFactorPreview>]
+    [Slider]
     public HeatMapFactorStyle heatMapFactorStyle = HeatMapFactorStyle.Linear;//改为拖动曲线?
 
     [Expand(false)]
@@ -206,5 +221,27 @@ public class MeleeConfig : ModConfig
     [CustomModConfigItem(typeof(AvailableConfigElement))]
     [CustomPreview<RenderEffectPreview>]
     public BloomConfigs bloomConfigs = new();
+
+
+
+    [JsonExtensionData]
+    private IDictionary<string, JToken> _additionalData = new Dictionary<string, JToken>();
+
+    [JsonIgnore]
+    public bool? SwordModifyActiveOld;
+
+    [JsonIgnore]
+    public SequenceDefinition<MeleeAction> swooshActionStyleOld;
+
+
+    [OnDeserialized]
+    internal void OnDeserializedMethod(StreamingContext context)
+    {
+        if (_additionalData.TryGetValue("SwordModifyActive", out var swordModifyActiveToken))
+            SwordModifyActiveOld = swordModifyActiveToken.ToObject<bool>();
+        if (_additionalData.TryGetValue("swooshActionStyle", out var swooshActionStyleToken))
+            swooshActionStyleOld = swooshActionStyleToken.ToObject<SequenceDefinition<MeleeAction>>();
+        _additionalData.Clear(); // make sure to clear this or it'll crash.
+    }
 }
 
