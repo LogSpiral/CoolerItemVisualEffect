@@ -96,7 +96,22 @@ MeleeModifyLevel: {
 	}
 
 	Overhaul: {
-		Label: Overhaul
+		Label: No Limit
+		Tooltip: ""
+	}
+
+	PresetOnly: {
+		Label: Preset Only
+		Tooltip: ""
+	}
+
+	ServerProvide: {
+		Label: Server Provided
+		Tooltip: ""
+	}
+
+	StandardOnly: {
+		Label: Standard Elements Only
 		Tooltip: ""
 	}
 }

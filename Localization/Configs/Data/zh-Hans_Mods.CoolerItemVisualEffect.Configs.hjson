@@ -86,7 +86,7 @@ MeleeModifyLevel: {
 	Tooltip: ""
 
 	Vanilla: {
-		Label: 原版(不修改)
+		Label: 原版
 		// Tooltip: ""
 	}
 
@@ -96,7 +96,22 @@ MeleeModifyLevel: {
 	}
 
 	Overhaul: {
-		Label: 大剑转转转
+		Label: 自由配置
+		// Tooltip: ""
+	}
+
+	PresetOnly: {
+		Label: 仅预设
+		// Tooltip: ""
+	}
+
+	ServerProvide: {
+		Label: 服务器提供
+		// Tooltip: ""
+	}
+
+	StandardOnly: {
+		Label: 仅标准/拓展组件
 		// Tooltip: ""
 	}
 }

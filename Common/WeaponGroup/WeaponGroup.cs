@@ -31,9 +31,14 @@ public class WeaponGroup : IMemberLocalized
     [DefaultValue(true)]
     public bool IsModifyActive { get; set; } = true;
 
-    [TypeConverter(typeof(ToFromStringConverter<SequenceDefinition<MeleeAction>>))]
+    [DefaultValue(true)]
+    [PropertyPanelIgnore]
+    public bool IsGroupActive { get; set; } = true;
+
+
+    [TypeConverter(typeof(ToFromStringConverter<CIVESequenceDefinition>))]
     [CustomEntityDefinitionHandler<SequenceDefinitionHandler<MeleeAction>>]
-    public SequenceDefinition<MeleeAction> SwooshActionStyle { get; set; } = new();
+    public CIVESequenceDefinition SwooshActionStyle { get; set; } = new("");
 
     [CustomOptionElement<OptionBindConfig>]
     public string BindConfigName { get; set; } = "";
@@ -55,6 +60,7 @@ public class WeaponGroup : IMemberLocalized
 
     public bool CheckAvailabe(Item item)
     {
+        if (!IsGroupActive) return false;
         if (item.type == ItemID.None) return false;
         var defaultCondition = !WhiteList;
         if (BasedOnDefaultCondition)

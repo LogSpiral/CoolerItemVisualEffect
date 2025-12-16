@@ -21,7 +21,7 @@ public partial class MeleeModifyPlayer
 
     public bool IsModifyActiveDefaultGroup { get; set; } = true;
 
-    public SequenceDefinition<MeleeAction> SwooshActionStyleDefaultGroup { get; set; } = new();
+    public CIVESequenceDefinition SwooshActionStyleDefaultGroup { get; set; } = new("");
 
     public MeleeConfig ConfigurationSwoosh
     {
@@ -64,15 +64,18 @@ public partial class MeleeModifyPlayer
 
     public bool IsModifyActive => CurrentWeaponGroup?.IsModifyActive ?? IsModifyActiveDefaultGroup;
 
-    public SequenceDefinition<MeleeAction> SwooshActionStyle => CurrentWeaponGroup?.SwooshActionStyle ?? SwooshActionStyleDefaultGroup;
+    public CIVESequenceDefinition SwooshActionStyle => CurrentWeaponGroup?.SwooshActionStyle ?? SwooshActionStyleDefaultGroup;
 
     public override void OnEnterWorld()
     {
         if (Player.whoAmI == Main.myPlayer)
             LoadDefaultGroupData();
 
-        if (Main.netMode == NetmodeID.SinglePlayer)
+        if (Main.netMode == NetmodeID.SinglePlayer) 
+        {
             SetUpWeaponGroupAndConfig();
+            MeleeSequenceManager.RefillServerSequences();
+        }
 
         RegisterCurrentCanvas();
 
@@ -92,7 +95,7 @@ public partial class MeleeModifyPlayer
             string[] contents = File.ReadAllLines(defaultGroupFilePath);
             if (contents is not [string, string]) return;
             if (bool.TryParse(contents[0], out var isActive)) IsModifyActiveDefaultGroup = isActive;
-            SwooshActionStyleDefaultGroup = SequenceDefinition<MeleeAction>.FromString(contents[1]);
+            SwooshActionStyleDefaultGroup = new CIVESequenceDefinition(contents[1]);
         }
         else
         {
@@ -100,7 +103,7 @@ public partial class MeleeModifyPlayer
             if (configInstance.SwordModifyActiveOld.HasValue || configInstance.swooshActionStyleOld != null)
             {
                 IsModifyActiveDefaultGroup = configInstance.SwordModifyActiveOld ?? true;
-                SwooshActionStyleDefaultGroup = configInstance.swooshActionStyleOld;
+                SwooshActionStyleDefaultGroup = CIVESequenceDefinition.FromLSLSequenceDefinition(configInstance.swooshActionStyleOld);
 
                 configInstance.SwordModifyActiveOld = null;
                 configInstance.swooshActionStyleOld = null;
@@ -153,7 +156,7 @@ public partial class MeleeModifyPlayer
                     }
                     if (meleeConfig.swooshActionStyleOld != null)
                     {
-                        selector.SwooshActionStyle = meleeConfig.swooshActionStyleOld;
+                        selector.SwooshActionStyle = CIVESequenceDefinition.FromLSLSequenceDefinition(meleeConfig.swooshActionStyleOld);
                         meleeConfig.swooshActionStyleOld = null;
                     }
                 }

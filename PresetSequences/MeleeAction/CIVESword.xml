@@ -1,26 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Sequence name="CIVESword" AuthorName="错数螺线LogSpiral" Description="更酷刀光默认序列!The Default Sequence" FileName="CIVESword" DisplayName="酷剑CIVESword" ModName="CoolerItemVisualEffect" createTime="638594198586058809" lastModifyDate="638620308843383771" passWord="" Finished="True">
-  <Group>
-    <Wraper condition="Always">
-      <Action mode="0" Cycle="3" ModifyData="(1.00|3.00|1.00|1.00|0|1.00)" name="LogSpiralLibrary/SwooshInfo" />
-    </Wraper>
-  </Group>
-  <Group>
-    <Wraper condition="Always">
-      <Action mode="1" Cycle="4" ModifyData="(1.00|2.00|0.40|0.65|0|1.00)" name="LogSpiralLibrary/SwooshInfo" />
-    </Wraper>
-  </Group>
-  <Group>
-    <Wraper condition="Always">
-      <Action mode="0" Cycle="1" ModifyData="(2.00|3.00|3.15|2.50|10|1.20)" name="LogSpiralLibrary/SwooshInfo" />
-    </Wraper>
-  </Group>
-  <Group>
-    <Wraper condition="TimeNight">
-      <Action givenCycle="3" ModifyData="(1.00|1.00|0.55|0.40|5|1.00)" rangeOffsetMin="0" rangeOffsetMax="2" name="LogSpiralLibrary/RapidlyStabInfo" />
-    </Wraper>
-    <Wraper condition="Always">
-      <Action Cycle="2" ModifyData="(1.50|2.00|5.00|0.95|5|1.30)" name="LogSpiralLibrary/StabInfo" />
-    </Wraper>
+<Sequence>
+  <Data>
+    <DisplayName>酷剑CIVESword</DisplayName>
+    <AuthorName>错数螺线LogSpiral</AuthorName>
+    <Description>更酷刀光默认序列!The Default Sequence</Description>
+    <CreateTime>2024-08-16 15:44:18</CreateTime>
+    <ModifyTime>2025-12-16 13:28:13</ModifyTime>
+  </Data>
+  <Element FullName="LogSpiralLibrary/SwooshInfo">
+    <ModifyData>
+      <TimeScaler>3.0</TimeScaler>
+    </ModifyData>
+    <CounterMax>3</CounterMax>
+  </Element>
+  <Element FullName="LogSpiralLibrary/SwooshInfo">
+    <mode>Slash</mode>
+    <ModifyData>
+      <TimeScaler>2.0</TimeScaler>
+      <KnockBack>0.4</KnockBack>
+      <Damage>0.7</Damage>
+    </ModifyData>
+    <CounterMax>4</CounterMax>
+  </Element>
+  <Element FullName="LogSpiralLibrary/SwooshInfo">
+    <ModifyData>
+      <Size>2.0</Size>
+      <TimeScaler>3.0</TimeScaler>
+      <KnockBack>3.2</KnockBack>
+      <Damage>2.5</Damage>
+      <CritAdder>10</CritAdder>
+      <CritMultiplier>1.2</CritMultiplier>
+    </ModifyData>
+  </Element>
+  <Group FullName="ConditionalMultiGroup">
+    <Element condition="TimeNight" FullName="LogSpiralLibrary/RapidlyStabInfo">
+      <rangeOffsetMin>0</rangeOffsetMin>
+      <rangeOffsetMax>2</rangeOffsetMax>
+      <givenCycle>3</givenCycle>
+      <ModifyData>
+        <KnockBack>0.6</KnockBack>
+        <Damage>0.4</Damage>
+        <CritAdder>5</CritAdder>
+      </ModifyData>
+    </Element>
+    <Element FullName="LogSpiralLibrary/StabInfo">
+      <ModifyData>
+        <Size>1.5</Size>
+        <TimeScaler>2.0</TimeScaler>
+        <KnockBack>5.0</KnockBack>
+        <Damage>1.0</Damage>
+        <CritAdder>5</CritAdder>
+        <CritMultiplier>1.3</CritMultiplier>
+      </ModifyData>
+      <CounterMax>2</CounterMax>
+    </Element>
   </Group>
 </Sequence>

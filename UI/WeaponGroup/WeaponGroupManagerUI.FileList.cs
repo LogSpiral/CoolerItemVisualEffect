@@ -10,6 +10,7 @@ using PropertyPanelLibrary.PropertyPanelComponents.BuiltInProcessors.Panel.Fille
 using SilkyUIFramework;
 using SilkyUIFramework.Extensions;
 using System.IO;
+using System.Linq;
 using Weapon_Group = CoolerItemVisualEffect.Common.WeaponGroup.WeaponGroup;
 
 namespace CoolerItemVisualEffect.UI.WeaponGroup;
@@ -84,7 +85,7 @@ public partial class WeaponGroupManagerUI
                         CurrentPath = path;
                         CurrentEditTarget = Weapon_Group.Load(path);
 
-                        if(CurrentEditTarget.SwooshActionStyle.IsUnloaded)
+                        if (CurrentEditTarget.SwooshActionStyle.IsUnloaded)
                         {
                             var selector = CurrentEditTarget;
                             if (string.IsNullOrEmpty(selector.BindConfigName)) goto label;
@@ -100,7 +101,7 @@ public partial class WeaponGroupManagerUI
                             }
                             if (meleeConfig.swooshActionStyleOld != null)
                             {
-                                selector.SwooshActionStyle = meleeConfig.swooshActionStyleOld;
+                                selector.SwooshActionStyle = CIVESequenceDefinition.FromLSLSequenceDefinition(meleeConfig.swooshActionStyleOld);
                                 meleeConfig.swooshActionStyleOld = null;
                             }
                         }
@@ -158,7 +159,46 @@ public partial class WeaponGroupManagerUI
                         _pendingUpdateFileList = true;
                     };
                     fileCard.ButtonContainer.AddChild(upDownButton, 0);
+
+
+
+                    var activateButton = new SUIToggle();
+                    activateButton.SetSize(48, 26);
+                    var initPath = fileCard.FileFullPath;
+                    activateButton.Enabled = true;
+                    if (File.Exists(initPath))
+                    {
+                        var group = Weapon_Group.Load(initPath);
+                        fileCard.BackgroundColor = group.IsGroupActive ? Color.Black * .25f : Color.Gray * .25f;
+                        activateButton.Enabled = group.IsGroupActive;
+                    }
+                    activateButton.OnContentsChanged += (sender, arg) =>
+                    {
+
+                        var groupPath = fileCard.FileFullPath;
+                        if (!File.Exists(groupPath)) return;
+                        var group = Weapon_Group.Load(groupPath);
+
+                        if (group == null) return;
+
+                        group.IsGroupActive = arg.NewValue;
+
+                        var mplr = Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
+                        var list = mplr.WeaponGroups;
+                        ManagerHelper.SaveWeaponGroup(group, true);
+                        SyncWeaponGroup.Get(Main.myPlayer, list, null).Send();
+                        mplr.CachedGrouping.Clear();
+                        list.FirstOrDefault(g => g.Name == group.Name, null)?.IsGroupActive = arg.NewValue;
+                        fileCard.BackgroundColor = arg.NewValue ? Color.Black * .25f : Color.Gray * .25f;
+                    };
+
+
+                    fileCard.ButtonContainer.AddChild(activateButton, 0);
+
                     ItemList.Container.AddChild(fileCard);//如果有就添加目标
+
+
+
 
                 }
             }
@@ -172,7 +212,7 @@ public partial class WeaponGroupManagerUI
     private string CurrentPath { get; set; }
     private Weapon_Group CurrentEditTarget { get; set; }
 
-    private void RefreshPropertyPanelFiller() 
+    private void RefreshPropertyPanelFiller()
     {
         /*PropertyPanel.Filler = new DesignatedMemberFiller([
             (CurrentEditTarget,
@@ -194,7 +234,7 @@ public partial class WeaponGroupManagerUI
     }
 
 
-    private void SwitchToMainPage() 
+    private void SwitchToMainPage()
     {
         this.AddBefore(ItemList, PropertyPanel);
         PropertyPanel.RemoveFromParent();

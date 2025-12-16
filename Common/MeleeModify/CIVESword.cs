@@ -4,6 +4,7 @@ using LogSpiralLibrary;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee.Core;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee.StandardMelee;
+using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Core;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.System;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -178,13 +179,22 @@ public partial class CIVESword : MeleeSequenceProj
     public override void InitializeSequence(string modName, string fileName)
     {
         var definition = Player.GetModPlayer<MeleeModifyPlayer>().SwooshActionStyle;
-
-        // TODO 适配更多服务端模式
-
-        if (definition != null)
-            base.InitializeSequence(definition.Mod, definition.Name);
-        else
-            base.InitializeSequence(modName, fileName);
+        if (definition == null || definition.GetSequence() is not { } result) 
+        {
+            Projectile.Kill();
+            return;
+        }
+        meleeSequence = result;
+        SequenceModel = new SequenceModel(meleeSequence);
+        SequenceModel.OnInitializeElement += element =>
+        {
+            if (element is not MeleeAction action) return;
+            action.StandardInfo = StandardInfo;
+            action.Owner = Player;
+            action.Projectile = Projectile;
+            Projectile.netUpdate = true;
+            InitializeElement(action);
+        };
     }
 
     public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
@@ -209,7 +219,7 @@ public partial class CIVESword : MeleeSequenceProj
         {
             modifiers.ScalingBonusDamage += 4f; //num *= 5;
             plr.parryDamageBuff = false;
-            plr.ClearBuff(198);
+            plr.ClearBuff(BuffID.ParryDamageBuff);
         }
         if (sItem.type == ItemID.BreakerBlade && target.life >= target.lifeMax * 9 / 10)
             num = (int)((float)num * 2.5f);
@@ -217,13 +227,13 @@ public partial class CIVESword : MeleeSequenceProj
         if (sItem.type == ItemID.HamBat)
         {
             var num3 = 0;
-            if (plr.FindBuffIndex(26) != -1)
+            if (plr.FindBuffIndex(BuffID.WellFed) != -1)
                 num3 = 1;
 
-            if (plr.FindBuffIndex(206) != -1)
+            if (plr.FindBuffIndex(BuffID.WellFed2) != -1)
                 num3 = 2;
 
-            if (plr.FindBuffIndex(207) != -1)
+            if (plr.FindBuffIndex(BuffID.WellFed3) != -1)
                 num3 = 3;
 
             var num4 = 1f + 0.05f * (float)num3;

@@ -21,6 +21,11 @@ public partial class MeleeModifyPlayer
         SyncMeleeConfig.Get(Player.whoAmI, DefaultGroupConfig).Send(toWho, fromWho);
         SyncWeaponGroup.Get(Player.whoAmI, WeaponGroups, MeleeConfigs).Send(toWho, fromWho);
         SyncRegisterCanvas.Get((byte)Player.whoAmI).Send(toWho, fromWho);
+
+        if (newPlayer && toWho == -1)
+            SyncServerSequence.Get(Main.myPlayer).Send();
+
+
         base.SyncPlayer(toWho, fromWho, newPlayer);
     }
 }

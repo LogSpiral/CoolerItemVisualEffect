@@ -42,22 +42,29 @@ public class MeleeModifierItem : GlobalItem
     public override bool AltFunctionUse(Item item, Player player)
     {
         var mplr = player.GetModPlayer<MeleeModifyPlayer>();
-        var key = $"{Mod.Name}/MeleeAction/{typeof(CIVESword).Name}";
-        if (player.GetModPlayer<MeleeModifyPlayer>().SwooshActionStyle is SequenceDefinition<MeleeAction> definition)
-            key = $"{definition.Mod}/MeleeAction/{definition.Name}";
-        if (mplr.BeAbleToOverhaul && SequenceManager<MeleeAction>.Instance.Sequences.TryGetValue(key, out var value))
-        {
-            return CheckRightUse(value);
-        }
+        if (mplr.BeAbleToOverhaul && 
+            mplr.SwooshActionStyle is { Type: >= 0 } definition
+            && definition.GetSequence() is { } sequence)
+            return CheckRightUse(sequence);
+
         return base.AltFunctionUse(item, player);
     }
 
     public override void UseStyle(Item item, Player player, Rectangle heldItemFrame)
     {
         var mplr = player.GetModPlayer<MeleeModifyPlayer>();
-        if (player.itemAnimation == player.itemAnimationMax && player.ownedProjectileCounts[ModContent.ProjectileType<CIVESword>()] == 0 && mplr.BeAbleToOverhaul)
+        if (player.itemAnimation == player.itemAnimationMax 
+            && player.ownedProjectileCounts[ModContent.ProjectileType<CIVESword>()] == 0 
+            && mplr.BeAbleToOverhaul)
         {
-            Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, default, ModContent.ProjectileType<CIVESword>(), player.HeldItem.damage, player.HeldItem.knockBack, player.whoAmI);
+            Projectile.NewProjectile(
+                player.GetSource_FromThis(),
+                player.Center, 
+                default, 
+                ModContent.ProjectileType<CIVESword>(),
+                player.HeldItem.damage,
+                player.HeldItem.knockBack,
+                player.whoAmI);
         }
         base.UseStyle(item, player, heldItemFrame);
     }

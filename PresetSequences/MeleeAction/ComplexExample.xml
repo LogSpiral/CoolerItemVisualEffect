@@ -1,30 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Sequence name="ComplexExample" AuthorName="错数螺线" Description="大杂烩!!" FileName="ComplexExample" DisplayName="复合斩击Complex" ModName="CoolerItemVisualEffect" createTime="638595966420174407" lastModifyDate="638595970649655169" passWord="" Finished="True">
-  <Group>
-    <Wraper condition="TimeDay" IsSequence="True" Mod="CoolerItemVisualEffect">HeavyChop</Wraper>
-    <Wraper condition="Always" IsSequence="True" Mod="CoolerItemVisualEffect">PureSlash</Wraper>
+<Sequence>
+  <Data>
+    <DisplayName>复合斩击Complex</DisplayName>
+    <AuthorName>错数螺线</AuthorName>
+    <Description>大杂烩!!</Description>
+    <CreateTime>2024-08-18 16:50:42</CreateTime>
+    <ModifyTime>2025-12-16 13:28:02</ModifyTime>
+  </Data>
+  <Group FullName="ConditionalMultiGroup">
+    <Sequence condition="TimeDay" FullName="CoolerItemVisualEffect/MeleeAction/HeavyChop" />
+    <Sequence FullName="CoolerItemVisualEffect/MeleeAction/PureSlash" />
   </Group>
-  <Group>
-    <Wraper condition="WorldForTheWorthy">
-      <Action Cycle="1" ModifyData="(3.00|1.50|2.95|2.30|0|1.00)" name="LogSpiralLibrary/StabInfo" />
-    </Wraper>
-    <Wraper condition="WorldNotTheBees" IsSequence="True">
-      <Sequence>
-        <Group>
-          <Wraper condition="Always">
-            <Action mode="1" Cycle="2" ModifyData="(1.50|1.00|1.00|1.00|0|1.00)" name="LogSpiralLibrary/SwooshInfo" />
-          </Wraper>
-        </Group>
-        <Group>
-          <Wraper condition="Always">
-            <Action Cycle="3" ModifyData="(1.00|2.00|1.00|1.00|0|1.00)" name="LogSpiralLibrary/StabInfo" />
-          </Wraper>
-        </Group>
-      </Sequence>
-    </Wraper>
-    <Wraper condition="Always" IsSequence="True" Mod="CoolerItemVisualEffect">PureStab</Wraper>
+  <Group FullName="ConditionalMultiGroup">
+    <Element condition="WorldForTheWorthy" FullName="LogSpiralLibrary/StabInfo">
+      <ModifyData>
+        <Size>3.0</Size>
+        <TimeScaler>1.5</TimeScaler>
+        <KnockBack>3.0</KnockBack>
+        <Damage>2.3</Damage>
+      </ModifyData>
+    </Element>
+    <Sequence condition="WorldNotTheBees">
+      <Element FullName="LogSpiralLibrary/SwooshInfo">
+        <mode>Slash</mode>
+        <ModifyData>
+          <Size>1.5</Size>
+        </ModifyData>
+        <CounterMax>2</CounterMax>
+      </Element>
+      <Element FullName="LogSpiralLibrary/StabInfo">
+        <ModifyData>
+          <TimeScaler>2.0</TimeScaler>
+        </ModifyData>
+        <CounterMax>3</CounterMax>
+      </Element>
+    </Sequence>
+    <Sequence FullName="CoolerItemVisualEffect/MeleeAction/PureStab" />
   </Group>
-  <Group>
-    <Wraper condition="Always" IsSequence="True" Mod="CoolerItemVisualEffect">StormySlash</Wraper>
-  </Group>
+  <Sequence FullName="CoolerItemVisualEffect/MeleeAction/StormySlash" />
 </Sequence>

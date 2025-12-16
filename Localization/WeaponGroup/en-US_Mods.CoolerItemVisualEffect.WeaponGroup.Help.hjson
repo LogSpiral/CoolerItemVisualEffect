@@ -36,6 +36,9 @@ GroupList: {
 		You can adjust the priority by the white triangles below, the higher the higher priority
 		Click gray rubbish bin to delete the group you don't want
 		Click white pen to edit the content.
+
+		Click the toggle on the left of the white triangles to switch on/off current group
+		The inactive group's filecard will be gray.
 		'''
 }
 

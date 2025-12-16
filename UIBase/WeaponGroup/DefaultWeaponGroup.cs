@@ -42,13 +42,13 @@ public class DefaultGroupSetHelper : IMemberLocalized
             ModifyPlayer.IsModifyActiveDefaultGroup = value;
             SaveData();
             if (Main.netMode == NetmodeID.MultiplayerClient)
-                SyncMeleeModifyActive.Get(Main.myPlayer, va).Send(-1, Main.myPlayer);
+                SyncMeleeModifyActive.Get(Main.myPlayer, value).Send(-1, Main.myPlayer);
         }
     }
 
-    [TypeConverter(typeof(ToFromStringConverter<SequenceDefinition<MeleeAction>>))]
-    [CustomEntityDefinitionHandler<SequenceDefinitionHandler<MeleeAction>>]
-    public SequenceDefinition<MeleeAction> SwooshActionStyle
+    [TypeConverter(typeof(ToFromStringConverter<CIVESequenceDefinition>))]
+    [CustomEntityDefinitionHandler<CIVESequenceDefinitionHandler>]
+    public CIVESequenceDefinition SwooshActionStyle
     {
         get => ModifyPlayer.SwooshActionStyleDefaultGroup;
         set

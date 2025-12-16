@@ -1,18 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Sequence name="PureStab" AuthorName="错数螺线" Description="突突突!!" FileName="PureStab" DisplayName="纯穿刺Stab" ModName="CoolerItemVisualEffect" createTime="638595963392921030" lastModifyDate="638620311416220090" passWord="" Finished="True">
-  <Group>
-    <Wraper condition="Always">
-      <Action Cycle="4" ModifyData="(1.00|1.50|1.00|0.45|0|0.75)" name="LogSpiralLibrary/StabInfo" />
-    </Wraper>
-  </Group>
-  <Group>
-    <Wraper condition="Always">
-      <Action givenCycle="3" ModifyData="(1.00|3.00|1.00|0.75|0|1.00)" rangeOffsetMin="0" rangeOffsetMax="4" name="LogSpiralLibrary/RapidlyStabInfo" />
-    </Wraper>
-  </Group>
-  <Group>
-    <Wraper condition="Always">
-      <Action Cycle="2" ModifyData="(1.20|3.00|3.50|1.50|10|1.10)" name="LogSpiralLibrary/StabInfo" />
-    </Wraper>
-  </Group>
+<Sequence>
+  <Data>
+    <DisplayName>纯穿刺Stab</DisplayName>
+    <AuthorName>错数螺线</AuthorName>
+    <Description>突突突!!</Description>
+    <CreateTime>2024-08-18 16:45:39</CreateTime>
+    <ModifyTime>2025-12-16 13:28:17</ModifyTime>
+  </Data>
+  <Element FullName="LogSpiralLibrary/StabInfo">
+    <ModifyData>
+      <TimeScaler>1.5</TimeScaler>
+      <Damage>0.5</Damage>
+      <CritMultiplier>0.8</CritMultiplier>
+    </ModifyData>
+    <CounterMax>4</CounterMax>
+  </Element>
+  <Element FullName="LogSpiralLibrary/RapidlyStabInfo">
+    <rangeOffsetMin>0</rangeOffsetMin>
+    <rangeOffsetMax>4</rangeOffsetMax>
+    <givenCycle>3</givenCycle>
+    <ModifyData>
+      <TimeScaler>3.0</TimeScaler>
+      <Damage>0.8</Damage>
+    </ModifyData>
+  </Element>
+  <Element FullName="LogSpiralLibrary/StabInfo">
+    <ModifyData>
+      <Size>1.2</Size>
+      <TimeScaler>3.0</TimeScaler>
+      <KnockBack>3.5</KnockBack>
+      <Damage>1.5</Damage>
+      <CritAdder>10</CritAdder>
+      <CritMultiplier>1.1</CritMultiplier>
+    </ModifyData>
+    <CounterMax>2</CounterMax>
+  </Element>
 </Sequence>

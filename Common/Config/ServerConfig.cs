@@ -23,6 +23,9 @@ public class ServerConfig : ModConfig
     {
         Vanilla,
         VisualOnly,
+        PresetOnly,
+        ServerProvide,
+        StandardOnly,
         Overhaul
     }
 
