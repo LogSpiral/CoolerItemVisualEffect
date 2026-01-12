@@ -208,7 +208,6 @@ AnnouncementForRelocation: {
 		'''
 		Now the name of this config is Melee Visual Config
 		So here only contains some visual-related configs
-
 		Previously use modification or not
 		and which sequence to excute,
 		Has been move to Weapon Group Sets.
@@ -216,5 +215,48 @@ AnnouncementForRelocation: {
 		Make a keybind or click the blue icon on the right of inventory
 		to Open the Weapon Group Manager(W.G.M.)
 		Click the book icon in the bottom of W.G.M. to learn more.
+		[c/0099FF:--IMPORTANT--]
+		If you find that you can't use weapon in the new version
+		Please check the Melee modify level in the ServerConfig
+		(The meaning of each Value will be explained later)
+		And set a sequence for the Default Group in Weapon Group Manager
+		(You need to rebind a value if it shows "None")
+
+		The description of new version's "modify level" as followed
+		'''
+}
+
+AnnouncementForMeleeModifyLevel: {
+	Label: About "Melee Modify Level"
+	Tooltip:
+		'''
+		Vanilla means no modification.
+
+		Visual only means vanilla hitbox with a meanless slash effect
+
+		Preset only means you can only use the presets in this Mod(Might be adjusted later)
+		You can see the presets in the Edit Panel, but it will use the one build-in the mod.
+
+		Server Provided means that you can use local sequences made by yourself in Single Player,
+		but in Multiplayer, you can only use the sequence provided by the server.
+
+		Which means the sequence made by the Host, notice that when you exit the server and start a single player game,
+		the Sequence almost set to "None", and need to be rebind by yourself.
+
+		If you uses a remote server, you need to copy the xml file of the sequence to that server's local folder.
+
+		Standard Elements Only means that if you uses a not Standard or Extended Element,
+		like the Zenith Element in Vanilla-Like category,
+		the Sequence will be baned, so you can have some freedom in the server but not too IMBA.
+
+		No Limit means no limit, every player can uses their own made sequence in the server,
+		Only required to set the Mod of the seuqence to LogSpiralLibrary or C.I.V.E
+		(The old name of this is "Overhaul")
+
+		[c/FFFF00:I'd advice to use No Limit Mode, since this is convenient]
+		[c/FFFF00:And the migration between old and new version might cause the level to Preset Only,]
+		[c/FFFF00:Please set to No Limit by yourself, so sorry about the inconvenience]
+		[c/FF99CC:In multiplayer, if you are the host and wish to have a more balanced experience,]
+		[c/FF99CC:you can use Preset only or Server Provided mode to prevent IMBA modifications by other player.]
 		'''
 }

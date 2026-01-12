@@ -37,7 +37,7 @@ public class WeaponGroup : IMemberLocalized
 
 
     [TypeConverter(typeof(ToFromStringConverter<CIVESequenceDefinition>))]
-    [CustomEntityDefinitionHandler<SequenceDefinitionHandler<MeleeAction>>]
+    [CustomEntityDefinitionHandler<CIVESequenceDefinitionHandler>]
     public CIVESequenceDefinition SwooshActionStyle { get; set; } = new("");
 
     [CustomOptionElement<OptionBindConfig>]

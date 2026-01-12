@@ -1,5 +1,15 @@
 EmptyHand: 空手
-Projectiles.CIVESword.DisplayName: CIVE剑
+
+Projectiles: {
+	CIVESword: {
+		DisplayName: CIVE剑
+		Failed:
+			'''
+			近战修改失败，请在分组管理器给所在分组重新配置一个执行序列
+			这可能是由于近战修改等级变更导致之前的设置被禁用了
+			'''
+	}
+}
 
 Keybinds: {
 	ModifyActive.DisplayName: 快速启用/禁用近战修改

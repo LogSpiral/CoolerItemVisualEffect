@@ -82,6 +82,10 @@ public class MeleeConfig : ModConfig
     [PropertyPanelIgnore]
     public object AnnouncementForRelocation;
 
+    [CustomModConfigItem<AnnouncementElement>]
+    [PropertyPanelIgnore]
+    public object AnnouncementForMeleeModifyLevel;
+
     [DefaultValue(7)]
     [Range(0, 13)]
     [Slider]

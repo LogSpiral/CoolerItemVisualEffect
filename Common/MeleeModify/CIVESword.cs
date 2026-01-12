@@ -182,6 +182,7 @@ public partial class CIVESword : MeleeSequenceProj
         if (definition == null || definition.GetSequence() is not { } result) 
         {
             Projectile.Kill();
+            Main.NewText(this.GetLocalizedValue("Failed"), Color.Red);
             return;
         }
         meleeSequence = result;

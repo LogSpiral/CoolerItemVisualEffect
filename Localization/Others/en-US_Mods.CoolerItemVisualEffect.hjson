@@ -1,5 +1,15 @@
 EmptyHand: Held Nothing
-Projectiles.CIVESword.DisplayName: C.I.V.E. Sword
+
+Projectiles: {
+	CIVESword: {
+		DisplayName: C.I.V.E. Sword
+		Failed:
+			'''
+			Melee modification Failed, please rebind a excute sequence for the weapon's Group in Group Manager
+			This might due to the change of Melee Modification Level, some of the sequences are baned in different levels.
+			'''
+	}
+}
 
 Keybinds: {
 	ModifyActive.DisplayName: Fast enable/disable Melee Modification
