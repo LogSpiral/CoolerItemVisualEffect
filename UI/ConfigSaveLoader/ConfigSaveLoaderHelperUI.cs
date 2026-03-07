@@ -56,8 +56,12 @@ public partial class ConfigSaveLoaderHelperUI : BaseBody
         BorderColor = SUIColor.Border;
         CloseButton.CrossBorderColor = SUIColor.Border * 0.75f;
         CloseButton.CrossBackgroundColor = SUIColor.Warn * 0.75f;
-        CloseButton.CrossBorderHoverColor = SUIColor.Highlight;
-        CloseButton.CrossBackgroundHoverColor = SUIColor.Warn;
+        CloseButton.OnUpdateStatus += delegate
+        {
+            if (CloseButton.HoverTimer.IsCompleted) return;
+            CloseButton.CrossBorderColor = CloseButton.HoverTimer.Lerp(SUIColor.Border * 0.75f, SUIColor.Highlight);
+            CloseButton.CrossBackgroundColor = CloseButton.HoverTimer.Lerp(SUIColor.Warn * 0.75f, SUIColor.Warn);
+        };
         TitlePanel.ControlTarget = this;
         Title.Text = Language.GetTextValue("Mods.CoolerItemVisualEffect.ConfigSaveLoader.Help.Help");
         Title.UseDeathText();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PropertyPanelLibrary.PropertyPanelComponents.Interfaces;
+using System;
 using System.Collections.Generic;
 using Terraria.ModLoader.Config;
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
@@ -8,12 +9,17 @@ namespace CoolerItemVisualEffect.Common.Config.Data.DesignateHeatMap;
 
 public class DesignateHeatMapData
 {
-    public class ColorInfo
+    public class ColorInfo : IMemberLocalized
     {
         public Color Color { get; set; }
 
-        [Range(0f, 1f)] 
+        [Range(0f, 1f)]
         public float Position { get; set; }
+
+        string IMemberLocalized.LocalizationRootPath => $"Mods.{nameof(CoolerItemVisualEffect)}.Configs.ColorInfo";
+
+        private static string[] Suffixes { get; } = ["Label", "Tooltip"];
+        IReadOnlyList<string> IMemberLocalized.LocalizationSuffixes => Suffixes;
     }
 
     public List<ColorInfo> Colors { get; set; } =

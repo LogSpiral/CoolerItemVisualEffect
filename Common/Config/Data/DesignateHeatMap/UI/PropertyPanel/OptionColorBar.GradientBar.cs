@@ -1,15 +1,7 @@
-﻿using CoolerItemVisualEffect.Common.Config.Data.DesignateHeatMap.UI.Vanilla;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using SilkyUIFramework;
 using SilkyUIFramework.Elements;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.GameContent;
-using Terraria.ModLoader.Config.UI;
-using Terraria.UI;
 
 namespace CoolerItemVisualEffect.Common.Config.Data.DesignateHeatMap.UI.PropertyPanel;
 

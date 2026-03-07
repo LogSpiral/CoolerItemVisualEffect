@@ -33,7 +33,6 @@ public static class PreviewHelper
         IRenderEffect[][] renderEffects = [[config.distortConfigs.EffectInstance], [config.maskConfigs.EffectInstance, config.dyeConfigs.EffectInstance, config.bloomConfigs.EffectInstance]];
 
         RenderingCanvas renderingCanvas = new(useRenderEffect ?? config.useRenderEffectPVInOtherConfig ? renderEffects : []) { IsUILayer = true };
-
         var content = new UltraSwoosh();
         content.timeLeft = content.timeLeftMax = 30;
         content.scaler = 80;

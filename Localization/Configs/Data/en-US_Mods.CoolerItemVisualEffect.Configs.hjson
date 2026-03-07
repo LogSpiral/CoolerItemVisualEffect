@@ -22,6 +22,20 @@ ColorVector: {
 	Tooltip: ""
 }
 
+ColorInfo: {
+	Tooltip: ""
+
+	Color: {
+		Label: Color
+		Tooltip: ""
+	}
+
+	Position: {
+		Label: Position
+		Tooltip: ""
+	}
+}
+
 HeatMapCreateStyle: {
 	Tooltip: ""
 
@@ -289,20 +303,6 @@ DesignateHeatMapData: {
 
 	Colors: {
 		Label: Colors
-		Tooltip: ""
-	}
-}
-
-ColorInfo: {
-	Tooltip: ""
-
-	Color: {
-		Label: Color
-		Tooltip: ""
-	}
-
-	Position: {
-		Label: Position
 		Tooltip: ""
 	}
 }

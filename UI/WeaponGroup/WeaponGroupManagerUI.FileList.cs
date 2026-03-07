@@ -85,7 +85,7 @@ public partial class WeaponGroupManagerUI
                         CurrentPath = path;
                         CurrentEditTarget = Weapon_Group.Load(path);
 
-                        if (CurrentEditTarget.SwooshActionStyle.IsUnloaded)
+                        if (CurrentEditTarget.SwooshActionStyle?.IsUnloaded ?? true)
                         {
                             var selector = CurrentEditTarget;
                             if (string.IsNullOrEmpty(selector.BindConfigName)) goto label;

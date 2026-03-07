@@ -26,7 +26,7 @@ public partial class ConfigSaveLoaderUI
 
         SwitchTimer.Update(gameTime);
 
-        UseRenderTarget = SwitchTimer.IsUpdating;
+        UseRenderTarget = true; //SwitchTimer.IsUpdating;
         Opacity = SwitchTimer.Lerp(0f, 1f);
 
         var center = Bounds.Center * Main.UIScale;
@@ -56,23 +56,24 @@ public partial class ConfigSaveLoaderUI
             SDFRectangle.SampleVersion(BlurMakeSystem.BlurRenderTarget,
                 Bounds.Position * Main.UIScale, Bounds.Size * Main.UIScale, BorderRadius * Main.UIScale, Matrix.Identity);
         }
-        base.Draw(gameTime, spriteBatch);
 
         if (CurrentEditTarget != null && previewingOption != null && previewingOption.IsMouseHovering)
         {
             var meta = previewingOption.MetaData;
-            OptionMetaData metaData = 
+            OptionMetaData metaData =
                 new(
                     meta.VariableInfo,
-                    meta.Item, 
-                    meta is PropertyOption.ListValueHandler listHandler ? listHandler.List : null, 
-                    meta is PropertyOption.ListValueHandler listHandler2 ? listHandler2.Index : -1, 
+                    meta.Item,
+                    meta is PropertyOption.ListValueHandler listHandler ? listHandler.List : null,
+                    meta is PropertyOption.ListValueHandler listHandler2 ? listHandler2.Index : -1,
                     CurrentEditTarget);
             var pvAttribute = metaData.GetAttribute<CustomPreviewAttribute>();
             var bounds = previewingOption.Bounds;
             if (pvAttribute != null)
                 ConfigPreviewSystem.PreviewDrawing(pvAttribute, new CalculatedStyle(bounds.Right + 40, bounds.Y, 480, 240), metaData);
+
         }
+        base.Draw(gameTime, spriteBatch);
     }
 
     #endregion 毛玻璃效果

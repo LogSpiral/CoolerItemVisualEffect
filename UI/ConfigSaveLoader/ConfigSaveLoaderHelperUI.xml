@@ -5,7 +5,7 @@
 		<!-- 标题 -->
 		<TextView Name="Title" Padding="12 0" Width="25%" Height="100%" TextScale="0.45" TextAlign="0 0.5" IsDeathText="true" />
 		<!-- 关闭 -->
-		<Cross Width="24px" Height="100%" Padding="12 0" Name="CloseButton" BoxSizing="Content" CrossSize="22f" CrossRounded="3.5" />
+		<Cross Width="24px" Height="100%" Padding="12 0" Name="CloseButton" BoxSizing="Content" CrossSize="22" CrossRounded="3.5" />
 	</DraggableView>
 	<ElementGroup Padding="16" Width="100%" Height="-40px 100%" FlexDirection="Column">
 		<TextView Name="HintTextTitle" />

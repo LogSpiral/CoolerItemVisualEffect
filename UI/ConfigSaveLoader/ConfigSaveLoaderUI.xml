@@ -5,7 +5,7 @@
     <DraggableView Name="TitlePanel" Width="100%" Height="40px" BackgroundColor="rgba(0,0,0,0.25)" 
                    FlexDirection="Row" MainAlignment="SpaceBetween" CrossAlignment="Center">
         <TextView Name="Title" Padding="12 0" Width="25%" Height="100%" TextScale="0.45" TextAlign="0 0.5"/>
-		<Cross Name="CloseButton" Width="24px" Height="100%" Padding="12 0" BoxSizing="Content" CrossSize="22f" CrossRounded="3.5" />
+		<Cross Name="CloseButton" Width="24px" Height="100%" Padding="12 0" BoxSizing="Content" CrossSize="22" CrossRounded="3.5" />
     </DraggableView>
 	<ScrollView Name="ItemList" Width="100%" FlexGrow="1"/>
 	<ElementGroup Name="ButtonContainer" Width="100%" Height="40px" BackgroundColor="rgba(0,0,0,0.2)" MainAlignment="SpaceBetween">

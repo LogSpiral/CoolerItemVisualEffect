@@ -74,14 +74,18 @@ public class WeaponGroup : IMemberLocalized
     public static WeaponGroup Load(string path)
     {
         var result = new WeaponGroup();
+        var name = result.BindConfigName;
+        var swoosh = result.SwooshActionStyle;
         Load(result, path);
         result.Name = Path.GetFileNameWithoutExtension(path);
+        result.BindConfigName ??= name;
+        result.SwooshActionStyle ??= swoosh;
         return result;
     }
 
-    public static void Load(WeaponGroup WeaponGroup, string path) => JsonConvert.PopulateObject(File.ReadAllText(path), WeaponGroup, ConfigManager.serializerSettings);
+    public static void Load(WeaponGroup WeaponGroup, string path) => JsonConvert.PopulateObject(File.ReadAllText(path), WeaponGroup, ConfigManager.serializerSettingsCompact);
 
-    public static void RestoreToDefault(WeaponGroup WeaponGroup) => JsonConvert.PopulateObject("{}", WeaponGroup, ConfigManager.serializerSettings);
+    public static void RestoreToDefault(WeaponGroup WeaponGroup) => JsonConvert.PopulateObject("{}", WeaponGroup, ConfigManager.serializerSettingsCompact);
 
     string IMemberLocalized.LocalizationRootPath { get; } = $"Mods.{nameof(CoolerItemVisualEffect)}.WeaponGroup";
     IReadOnlyList<string> IMemberLocalized.LocalizationSuffixes { get; } = ["Label"];

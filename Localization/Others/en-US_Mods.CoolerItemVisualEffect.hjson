@@ -5,7 +5,7 @@ Projectiles: {
 		DisplayName: C.I.V.E. Sword
 		Failed:
 			'''
-			Melee modification Failed, please rebind a excute sequence for the weapon's Group in Group Manager
+			Melee modification Failed, please rebind a excute sequence for the weapon's Group in Group Manager(Auto opened)
 			This might due to the change of Melee Modification Level, some of the sequences are baned in different levels.
 			'''
 	}

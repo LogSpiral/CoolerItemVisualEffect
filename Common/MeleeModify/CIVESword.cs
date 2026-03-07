@@ -1,5 +1,6 @@
 ﻿using CoolerItemVisualEffect.Common.Config;
 using CoolerItemVisualEffect.Common.MeleeModify;
+using CoolerItemVisualEffect.UI.WeaponGroup;
 using LogSpiralLibrary;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee.Core;
@@ -139,7 +140,7 @@ public partial class CIVESword : MeleeSequenceProj
             var assistRender = LogSpiralLibraryMod.Instance.Render;
 
             spriteBatch.End();
-            dyeInfo.ProcessRender(Main.spriteBatch, Main.instance.GraphicsDevice, ref contentRender, ref assistRender);
+            dyeInfo.ProcessRender(Main.spriteBatch, Main.instance.GraphicsDevice, Main.screenTarget, Main.screenTargetSwap, ref contentRender, ref assistRender);
 
 
 
@@ -179,9 +180,11 @@ public partial class CIVESword : MeleeSequenceProj
     public override void InitializeSequence(string modName, string fileName)
     {
         var definition = Player.GetModPlayer<MeleeModifyPlayer>().SwooshActionStyle;
-        if (definition == null || definition.GetSequence() is not { } result) 
+        if (definition == null || definition.GetSequence() is not { } result)
         {
             Projectile.Kill();
+            if (!WeaponGroupManagerUI.Active)
+                WeaponGroupManagerUI.Open();
             Main.NewText(this.GetLocalizedValue("Failed"), Color.Red);
             return;
         }

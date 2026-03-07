@@ -456,6 +456,8 @@ public class RenderEffectPreview : MeleePreview<object> //因为那几个通用�
             GlobalTimeSystem.GlobalTime += .33f;
         PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), (MeleeConfig)metaData.config, null, null, null, null, true);
         PreviewHelper.DrawUltraStab(spriteBatch, new Vector2(dimension.X + 20, dimension.Center().Y), (MeleeConfig)metaData.config, null, null, null, null, true);
+
+
     }
 }
 
