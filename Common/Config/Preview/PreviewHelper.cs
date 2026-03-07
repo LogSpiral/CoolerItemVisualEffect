@@ -13,6 +13,7 @@ namespace CoolerItemVisualEffect.Common.Config.Preview;
 
 public static class PreviewHelper
 {
+    public static MeleeConfig CurrentConfig { get; set; }
     public static Vector3 DefaultHSL => new(0.3227513f, 0.25301206f, 0.4882353f);
     public static Texture2D PreviewAssistantHeatMap
     {

@@ -1,3 +1,4 @@
+using CoolerItemVisualEffect.Common.Config.Preview;
 using LogSpiralLibrary.CodeLibrary.ConfigModification;
 using Microsoft.Xna.Framework.Graphics;
 using PropertyPanelLibrary.PropertyPanelComponents.Core;
@@ -69,9 +70,10 @@ public partial class ConfigSaveLoaderUI
                     CurrentEditTarget);
             var pvAttribute = metaData.GetAttribute<CustomPreviewAttribute>();
             var bounds = previewingOption.Bounds;
+            PreviewHelper.CurrentConfig = CurrentEditTarget;
             if (pvAttribute != null)
                 ConfigPreviewSystem.PreviewDrawing(pvAttribute, new CalculatedStyle(bounds.Right + 40, bounds.Y, 480, 240), metaData);
-
+            PreviewHelper.CurrentConfig = null;
         }
         base.Draw(gameTime, spriteBatch);
     }

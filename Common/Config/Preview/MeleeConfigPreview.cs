@@ -19,7 +19,7 @@ namespace CoolerItemVisualEffect.Common.Config.Preview;
 
 public abstract class MeleePreview<T> : SimplePreview<T>
 {
-    public override bool UsePreview => MeleeConfig.Instance.UsePreview;
+    public override bool UsePreview => (PreviewHelper.CurrentConfig ?? MeleeConfig.Instance).UsePreview;
 }
 
 public class UsePVPreview : MeleePreview<bool>
@@ -249,7 +249,7 @@ public class HeatMapFactorPreview : MeleePreview<MeleeConfig.HeatMapFactorStyle>
             config.heatMapFactorStyle = (MeleeConfig.HeatMapFactorStyle)n;
             var tex = curHeatMaps[n];
             CoolerItemVisualEffectHelper.CreateHeatMapIfNull(ref tex);
-            MeleeModifyPlayerUtils.UpdateHeatMap(tex, Main.gameMenu ? PreviewHelper.DefaultHSL : mplr.WeaponHSL, config, Main.gameMenu ? TextureAssets.Item[ItemID.TerraBlade].Value :  MeleeModifyPlayerUtils.GetWeaponTextureFromItem(Main.LocalPlayer.HeldItem));
+            MeleeModifyPlayerUtils.UpdateHeatMap(tex, Main.gameMenu ? PreviewHelper.DefaultHSL : mplr.WeaponHSL, config, Main.gameMenu ? TextureAssets.Item[ItemID.TerraBlade].Value : MeleeModifyPlayerUtils.GetWeaponTextureFromItem(Main.LocalPlayer.HeldItem));
             curHeatMaps[n] = tex;
             spriteBatch.Draw(tex, Utils.CenteredRectangle(new Vector2(dimension.X + 130, dimension.Center().Y + (n - 2) * 45), new Vector2(180, 20)), Color.White);
             if (n == (int)data)
@@ -294,7 +294,7 @@ public class HeatMapRelatedDatePreview : MeleePreview<float>
             metaData.Value = r;
             var tex = curHeatMaps[n];
             CoolerItemVisualEffectHelper.CreateHeatMapIfNull(ref tex);
-            MeleeModifyPlayerUtils.UpdateHeatMap(tex, Main.gameMenu ? PreviewHelper.DefaultHSL : mplr.WeaponHSL, config, Main.gameMenu ? TextureAssets.Item[ItemID.TerraBlade].Value :  MeleeModifyPlayerUtils.GetWeaponTextureFromItem(Main.LocalPlayer.HeldItem));
+            MeleeModifyPlayerUtils.UpdateHeatMap(tex, Main.gameMenu ? PreviewHelper.DefaultHSL : mplr.WeaponHSL, config, Main.gameMenu ? TextureAssets.Item[ItemID.TerraBlade].Value : MeleeModifyPlayerUtils.GetWeaponTextureFromItem(Main.LocalPlayer.HeldItem));
             curHeatMaps[n] = tex;
             spriteBatch.Draw(tex, Utils.CenteredRectangle(new Vector2(dimension.X + 130, dimension.Center().Y + (n - 29.5f) * 2f - 30), new Vector2(180, 2)), Color.White);
             if (Math.Abs(r - data) <= stp && havntDraw)
@@ -317,9 +317,9 @@ public class HeatMapRelatedDatePreview : MeleePreview<float>
 
 public class CosinePreview : MeleePreview<ICosineData>
 {
-    private static Texture2D CurrentHeatMap 
+    private static Texture2D CurrentHeatMap
     {
-        get 
+        get
         {
             CoolerItemVisualEffectHelper.CreateHeatMapIfNull(ref field);
             return field;
@@ -421,9 +421,9 @@ public class DirectionOfHeatMapPreview : MeleePreview<float>
 
 public class ColorListPreview : MeleePreview<List<Color>>
 {
-    private Texture2D HeatMap 
+    private Texture2D HeatMap
     {
-        get 
+        get
         {
             CoolerItemVisualEffectHelper.CreateHeatMapIfNull(ref field);
             return field;
@@ -441,7 +441,7 @@ public class ColorListPreview : MeleePreview<List<Color>>
         if (Main.gameMenu)
             GlobalTimeSystem.GlobalTime += .33f;
         var mplr = Main.gameMenu ? null : Main.LocalPlayer.GetModPlayer<MeleeModifyPlayer>();
-        MeleeModifyPlayerUtils.UpdateHeatMap(HeatMap, Main.gameMenu ? PreviewHelper.DefaultHSL : mplr.WeaponHSL, config, Main.gameMenu ? TextureAssets.Item[ItemID.TerraBlade].Value :  MeleeModifyPlayerUtils.GetWeaponTextureFromItem(Main.LocalPlayer.HeldItem));
+        MeleeModifyPlayerUtils.UpdateHeatMap(HeatMap, Main.gameMenu ? PreviewHelper.DefaultHSL : mplr.WeaponHSL, config, Main.gameMenu ? TextureAssets.Item[ItemID.TerraBlade].Value : MeleeModifyPlayerUtils.GetWeaponTextureFromItem(Main.LocalPlayer.HeldItem));
         var tex = HeatMap;
         spriteBatch.Draw(tex, Utils.CenteredRectangle(new Vector2(dimension.X + 130, dimension.Center().Y), new Vector2(240, 40)), Color.White);
         PreviewHelper.DrawUltraSwoosh(spriteBatch, new Vector2(dimension.X + dimension.Width - 110, dimension.Center().Y), (MeleeConfig)metaData.config, HeatMap);
