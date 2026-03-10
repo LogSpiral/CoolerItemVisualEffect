@@ -23,11 +23,10 @@ public class SyncMeleeModifyActive : NetModule
         var plr = Main.player[playerIndex];
         var mplr = plr.GetModPlayer<MeleeModifyPlayer>();
         mplr.IsModifyActiveDefaultGroup = active;
-        if (mplr.HeatMap != null && mplr.WeaponHSL != default)
-            MeleeModifyPlayerUtils.UpdateHeatMap(mplr);
+
         if (Main.dedServ)
-        {
             Get(playerIndex, active).Send(-1, playerIndex);
-        }
+        else if (mplr.HeatMap != null && mplr.WeaponHSL != default)
+            MeleeModifyPlayerUtils.UpdateHeatMap(mplr);
     }
 }

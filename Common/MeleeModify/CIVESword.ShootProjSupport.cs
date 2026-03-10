@@ -3,6 +3,8 @@ using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Me
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Contents.Melee.StandardMelee;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.Core.Interfaces;
 using LogSpiralLibrary.CodeLibrary.DataStructures.SequenceStructures.System;
+using NetSimplified;
+using NetSimplified.Syncing;
 using System;
 
 namespace CoolerItemVisualEffect.MeleeModify;
@@ -192,6 +194,31 @@ public partial class CIVESword
             }
             else
                 info.ShootExtraProjectile();
+        }
+    }
+}
+[AutoSync]
+public class SyncPlayerPosition : NetModule
+{
+    private byte whoAmI;
+    private Vector2 pos;
+
+    public static SyncPlayerPosition Get(byte whoAmI, Vector2 position)
+    {
+        var result = NetModuleLoader.Get<SyncPlayerPosition>();
+        result.pos = position;
+        result.whoAmI = whoAmI;
+        return result;
+    }
+
+    public static SyncPlayerPosition Get(int whoAmI, Vector2 position) => Get((byte)whoAmI, position);
+
+    public override void Receive()
+    {
+        Main.player[whoAmI].position = pos;
+        if (Main.dedServ)
+        {
+            Get(whoAmI, pos).Send(-1, whoAmI);
         }
     }
 }

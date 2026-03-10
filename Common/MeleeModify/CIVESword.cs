@@ -183,6 +183,7 @@ public partial class CIVESword : MeleeSequenceProj
         if (definition == null || definition.GetSequence() is not { } result)
         {
             Projectile.Kill();
+            if (Projectile.owner != Main.myPlayer) return;
             if (!WeaponGroupManagerUI.Active)
                 WeaponGroupManagerUI.Open();
             Main.NewText(this.GetLocalizedValue("Failed"), Color.Red);
