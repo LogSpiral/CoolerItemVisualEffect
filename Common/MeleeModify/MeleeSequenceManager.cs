@@ -95,7 +95,7 @@ public static class MeleeSequenceManager
 
     public static void RefreshLocalSequences(Sequence sequence, string elementName)
     {
-        if (elementName is not nameof(MeleeAction)) 
+        if (elementName is not nameof(MeleeAction))
             return;
 
         var keyName = $"{sequence.Data.ModDefinition.Name}/{sequence.Data.FileName}";
@@ -110,12 +110,12 @@ public static class MeleeSequenceManager
         else
             _localSequences.Remove(keyName);
 
-         
+
     }
 
     private static bool StandardCheck(Sequence sequence)
     {
-        if (!ModCheck(sequence)) 
+        if (!ModCheck(sequence))
             return false;
 
         foreach (var group in sequence.Groups)
@@ -128,7 +128,7 @@ public static class MeleeSequenceManager
                 if (pair.Wrapper.Sequence is Sequence subSequence && StandardCheck(subSequence))
                     return true;
 
-                if (pair.Wrapper.Element is MeleeAction  action && action.Category != "LsLibrary" && action.Category != "Extended")
+                if (pair.Wrapper.Element is MeleeAction action && action.Category != "LsLibrary" && action.Category != "Extended")
                     return false;
 
             }
@@ -190,14 +190,14 @@ public class CIVESequenceDefinition(string name) : EntityDefinition(nameof(Coole
     {
         if (IsUnloaded
             || MeleeSequenceManager.GetAvailableSequences() is not { } dictionary
-            || !dictionary.TryGetValue(Name, out var sequence)) 
+            || !dictionary.TryGetValue(Name, out var sequence))
             return null;
         return sequence;
     }
 
     public static CIVESequenceDefinition FromLSLSequenceDefinition(SequenceDefinition<MeleeAction> definition)
     {
-        if (definition.IsUnloaded) return new("");
+        if (definition == null || definition.IsUnloaded) return new("");
         var level = ServerConfig.Instance.meleeModifyLevel;
         return level switch
         {
