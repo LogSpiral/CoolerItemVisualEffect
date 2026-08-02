@@ -4,7 +4,8 @@
       "commandName": "Executable",
       "executablePath": "$(DotNetName)",
       "commandLineArgs": "$(tMLPath)",
-      "workingDirectory": "$(tMLSteamPath)"
+      "workingDirectory": "$(tMLSteamPath)",
+      "debugEngines": "managed"
     },
     "TerrariaServer": {
       "commandName": "Executable",

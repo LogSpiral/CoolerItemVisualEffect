@@ -119,13 +119,13 @@ public class MeleeModifierItem : GlobalItem
 
         tooltips.Add(new TooltipLine(Mod, "Grouping",
             Language.GetTextValue($"{path}.CurrentGroupName", group.Name))
-        { OverrideColor = Color.CornflowerBlue });
+        { Color = Color.CornflowerBlue });
 
         tooltips.Add(new TooltipLine(Mod, "BindConfig",
             string.IsNullOrEmpty(group.BindConfigName)
             ? Language.GetTextValue($"{path}.DefaultConfig")
             : Language.GetTextValue($"{path}.BindConfigName", group.BindConfigName))
-        { OverrideColor = Color.MediumPurple });
+        { Color = Color.MediumPurple });
 
     }
 }

@@ -43,11 +43,10 @@ public partial class MeleeModifyPlayer
         c.EmitAnd();
     }
 
-    private Rectangle On_Player_ItemCheck_EmitUseVisuals_CIVEMelee(On_Player.orig_ItemCheck_EmitUseVisuals orig, Player self, Item sItem, Rectangle itemRectangle)
+    private void On_Player_ItemCheck_EmitUseVisuals_CIVEMelee(On_Player.orig_ItemCheck_EmitUseVisuals orig, Player self, Item sItem, Rectangle itemRectangle)
     {
         if (self.ownedProjectileCounts[ModContent.ProjectileType<CIVESword>()] < 1)
             orig(self, sItem, itemRectangle);
-        return itemRectangle;
     }
 
     public override void Unload()

@@ -115,7 +115,7 @@ public class WeaponScalePreview : MiscPreview<float>
 public class ItemEffectPreview : MiscPreview<bool>
 {
 
-    private static Item ItemDummy;
+    private static WorldItem ItemDummy;
 
     public override void Draw(SpriteBatch spriteBatch, CalculatedStyle dimension, bool data, OptionMetaData metaData)
     {
@@ -127,7 +127,11 @@ public class ItemEffectPreview : MiscPreview<bool>
         if (data)
         {
             var item = ItemDummy;
-            item ??= ItemDummy = new Item(ItemID.TerraBlade);
+            if (item == null) 
+            {
+                item = ItemDummy = new WorldItem();
+                item.SetDefaults(ItemID.TerraBlade);
+            }
             item.Center = center + Main.screenPosition + new Vector2(0, 12);
             item.ShaderItemEffectInWorld(spriteBatch, LogSpiralLibraryMod.Misc[0].Value, Color.Green, 0);
         }

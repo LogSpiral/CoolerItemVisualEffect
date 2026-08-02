@@ -23,14 +23,14 @@ public class BanVanillaSwooshEffectProj : GlobalProjectile
         base.AI(projectile);
     }
 
-    public override bool PreDraw(Projectile projectile, ref Color lightColor)
+    public override bool PreDraw(Projectile projectile, Player player, ref Color lightColor)
     {
-        if (ServerConfig.Instance.meleeModifyLevel == ServerConfig.MeleeModifyLevel.VisualOnly 
-            && VanillaSlashProjectiles.Contains(projectile.type) 
+        if (ServerConfig.Instance.meleeModifyLevel == ServerConfig.MeleeModifyLevel.VisualOnly
+            && VanillaSlashProjectiles.Contains(projectile.type)
             && Main.player[projectile.owner]
                 .GetModPlayer<MeleeModifyPlayer>()
                 .IsModifyActive)
             return false;
-        return base.PreDraw(projectile, ref lightColor);
+        return base.PreDraw(projectile, player, ref lightColor);
     }
 }

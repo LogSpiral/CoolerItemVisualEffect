@@ -18,7 +18,7 @@ public class ItemDrawingModify : GlobalItem
         item.ShaderItemEffectInventory(spriteBatch, position, origin, LogSpiralLibraryMod.Misc[0].Value, mainColor, scale);
     }
 
-    public override void PostDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
+    public override void PostDrawInWorld(WorldItem item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
     {
         if (!MiscConfig.Instance.ItemDropEffectActive) return;
         if (!MainColorLookup.TryGetValue(item.type, out var mainColor) && TextureAssets.Item[item.type].Value is { } itemTex)

@@ -24,7 +24,7 @@ public static class ConfigSaveLoaderHelper
             if (inputMode == InputMode.XBoxGamepadUI)
             {
                 KeyConfiguration keyConfiguration = PlayerInput.CurrentProfile.InputModes[inputMode];
-                string input = PlayerInput.BuildCommand("", true, keyConfiguration.KeyStatus["MouseRight"]);
+                string input = PlayerInput.BuildCommand("", keyConfiguration.KeyStatus["MouseRight"]);
                 input = input.Replace(": ", "");
                 text = text.Replace("<right>", input);
             }
@@ -42,7 +42,7 @@ public static class ConfigSaveLoaderHelper
             if (inputMode2 == InputMode.XBoxGamepadUI)
             {
                 KeyConfiguration keyConfiguration2 = PlayerInput.CurrentProfile.InputModes[inputMode2];
-                string input = PlayerInput.BuildCommand("", true, keyConfiguration2.KeyStatus["MouseLeft"]);
+                string input = PlayerInput.BuildCommand("", keyConfiguration2.KeyStatus["MouseLeft"]);
                 input = input.Replace(": ", "");
                 text = text.Replace("<left>", input);
             }

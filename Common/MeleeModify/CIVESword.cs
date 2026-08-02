@@ -110,7 +110,7 @@ public partial class CIVESword : MeleeSequenceProj
     public override string Texture => $"Terraria/Images/Item_{ItemID.TerraBlade}";
     public MeleeConfig ConfigurationSwoosh => Player.GetModPlayer<MeleeModifyPlayer>().ConfigurationSwoosh;
 
-    public override bool PreDraw(ref Color lightColor)
+    public override bool PreDraw(Player player, ref Color lightColor)
     {
         if (!UseSwordModify) return false;
 
@@ -218,7 +218,8 @@ public partial class CIVESword : MeleeSequenceProj
         var weaponCrit = plr.GetWeaponCrit(sItem);
 
     skipStandardCritCalcs:
-        plr.ApplyBannerOffenseBuff(target, ref modifiers);
+        if (Player.GetBannerBuffEffect(target, out var effect))
+            plr.ApplyBannerOffenseBuff(effect, ref modifiers);
 
         if (plr.parryDamageBuff && sItem.melee)
         {

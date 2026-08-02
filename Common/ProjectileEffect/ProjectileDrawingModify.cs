@@ -19,7 +19,7 @@ public partial class ProjectileDrawingModify : GlobalProjectile
 
 
 
-    public override bool PreDraw(Projectile projectile, ref Color lightColor)
+    public override bool PreDraw(Projectile projectile, Player player, ref Color lightColor)
     {
         if (!MiscConfig.Instance.VanillaProjectileDrawModifyActive) goto mylabel;
         switch (projectile.type)
@@ -46,7 +46,7 @@ public partial class ProjectileDrawingModify : GlobalProjectile
             case ProjectileID.Shroomerang:
                 {
                     DrawTails(projectile);
-                    if (projectile.type == ProjectileID.SuperStar) 
+                    if (projectile.type == ProjectileID.SuperStar)
                     {
                         lightColor.A = 127;
                     }
@@ -96,6 +96,6 @@ public partial class ProjectileDrawingModify : GlobalProjectile
                 }
         }
     mylabel:
-        return base.PreDraw(projectile, ref lightColor);
+        return base.PreDraw(projectile, player, ref lightColor);
     }
 }

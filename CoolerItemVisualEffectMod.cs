@@ -38,7 +38,10 @@ public partial class CoolerItemVisualEffectMod : Mod
     {
         Instance = this;
 
-        AddContent<NetModuleLoader>();
+        NetModuleLoader.CurrentMod = this;
+        NetModuleLoader.LoadAutoSyncsFrom(typeof(NetModuleLoader).Assembly);
+        NetModuleLoader.LoadAutoSyncsFrom(Assembly.GetExecutingAssembly());
+        NetModuleLoader.LoadNetModules();
 
         FuckYouCalamityGlobalProjectile();
 
